@@ -4,8 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/quote/quote_view.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import 'app/app.locator.dart';
+import 'app/app.router.dart';
+import 'order/oder_view.dart';
 
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,15 +17,16 @@ void mainCommon() async {
     options: _config.firebaseOptions,
   );
   String quoteId = Uri.base.queryParameters["quoteId"]!;
+  String? version = Uri.base.queryParameters["version"];
   print("el id cotizacion es : ${quoteId}");
   setupLocator();
-  runApp( MyApp(quoteId: quoteId));
+  runApp( MyApp(quoteId: quoteId, version: version,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.quoteId});
+  const MyApp({super.key, required this.quoteId, required this.version});
   final String quoteId;
-
+  final String? version;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -40,7 +44,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: QuoteView(quoteId: quoteId),
+      home: QuoteView(quoteId: quoteId, version: version,),
+      navigatorKey: StackedService.navigatorKey,
+      // home: AddCardView(), // Used when testing a view
+      initialRoute: Routes.quoteView,
+      onGenerateRoute: StackedRouter().onGenerateRoute,
     );
   }
 }

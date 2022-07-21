@@ -7,6 +7,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:stacked_core/stacked_core.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../quote/quote_service.dart';
 
@@ -19,5 +20,6 @@ Future<void> setupLocator(
       environment: environment, environmentFilter: environmentFilter);
 
 // Register dependencies
+  locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => QuoteService());
 }

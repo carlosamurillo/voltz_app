@@ -1,37 +1,53 @@
 
-import 'dart:html';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/order/order_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 import '../app/app.locator.dart';
+import '../utils/custom_colors.dart';
+import '../utils/style.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
 
-
+  final NavigationService _navigationService = locator<NavigationService>();
   @override
   List<ReactiveServiceMixin> get reactiveServices => [QuoteService(),];
-  final _quoteService = locator<QuoteService>();
+
   QuoteModel quote = QuoteModel();
   String _quoteId = "";
+  String? version;
   bool isSaveActive = false;
 
-  init(String quoteId) async {
+  init(String quoteId, String? version) async {
     _quoteId = quoteId;
+    this.version = version;
     _listenChanges();
   }
 
   void _listenChanges() async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
+    DocumentReference reference;
+    if(version == "original"){
+      reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('original').doc(_quoteId);
+    } else {
+      reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
+    }
+
     reference.snapshots().listen((documentSnapshot) async {
       print(documentSnapshot.data().toString());
       if (documentSnapshot.exists) {
         quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+        if(version == null && quote.accepted){
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            _navigationService.navigateToOrderView(orderId: quote.id!);
+          });
+          return;
+        }
         calculateTotals();
         notifyListeners();
       } else {
@@ -63,23 +79,28 @@ class QuoteViewModel  extends ReactiveViewModel  {
   void saveQuote(){
     _deactivateSaveButton();
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    reference.update(quote.toJson());
+    reference.set(quote.toJson());
   }
 
   void onGenerateOrder(BuildContext context) async {
     saveQuote();
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    reference.update({'accepted': true});
+    await reference.update({'accepted': true});
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text("Gracias, hemos recibido tu orden.", style: CustomStyles.styleVolcanicDos,),
       backgroundColor: CustomColors.energyYellow,
       behavior: SnackBarBehavior.floating,
-      duration: const Duration(milliseconds: 7000),
+      duration: const Duration(milliseconds: 5000),
       margin: EdgeInsets.only(
           bottom: MediaQuery.of(context).size.height - 40,
           right: 20,
           left: 20),
+      onVisible: () async {
+
+      },
     ));
+    await _saveOrder(_generateOrder());
+    //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
   void onUpdateQuantity(int i, int b, int quantity) {
@@ -98,6 +119,58 @@ class QuoteViewModel  extends ReactiveViewModel  {
     _activateSaveButton();
   }
 
+
+  Future<void> _saveOrder(OrderModel orderModel) async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_quoteId);
+    reference.set({
+      ...orderModel.toJson(),
+      "created_at": FieldValue.serverTimestamp(),
+    });
+  }
+
+
+  OrderModel _generateOrder(){
+
+    List<OrderDetail> orderDetailList = [];
+    for(int i = 0; i <= quote.detail!.length - 1; i++) {
+      OrderDetail orderDetail = OrderDetail();
+      orderDetail.productRequested =  quote.detail![i].productRequested!;
+      orderDetail.productsOrdered = [];
+      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
+        if(quote.detail![i].productsSuggested![b].selected == true) {
+          orderDetail.productsOrdered!.add(ProductsOrdered(
+            productId: quote.detail![i].productsSuggested![b].productId,
+            sku: quote.detail![i].productsSuggested![b].sku,
+            supplier: quote.detail![i].productsSuggested![b].supplier,
+            skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
+            brand: quote.detail![i].productsSuggested![b].brand,
+            subBrand: quote.detail![i].productsSuggested![b].subBrand,
+            quantity: quote.detail![i].productsSuggested![b].quantity,
+            saleValue: quote.detail![i].productsSuggested![b].saleValue,
+            saleUnit: quote.detail![i].productsSuggested![b].saleUnit,
+            salePrice: quote.detail![i].productsSuggested![b].salePrice,
+          ));
+        }
+      }
+      if(orderDetail.productsOrdered!.isNotEmpty){
+        orderDetailList.add(orderDetail);
+      }
+
+    }
+    OrderModel orderModel = OrderModel(
+      customerId: quote.customerId,
+      alias: quote.alias,
+      name: quote.name,
+      address: quote.address,
+      tel: quote.tel,
+      subTotal: quote.subTotal,
+      discount: quote.discount,
+      tax: quote.tax,
+      total: quote.total,
+      detail: orderDetailList,
+    );
+    return orderModel;
+  }
 
   String createConfirmMessage(){
     String? message;
@@ -122,7 +195,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     } else {
       final List l = message.split(' ');
       if(l.length == 1){
-        message = "La fila $message no tienen un producto asignado. ¿Deseas generar el pedido sin ellos?";
+        message = "La fila $message no tienen un producto asignado. ¿Deseas generar el pedido sin él?";
       } else {
         message = "Las filas $message no tienen un producto asignado. ¿Deseas generar el pedido sin ellos?";
       }

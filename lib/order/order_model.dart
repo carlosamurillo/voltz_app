@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class QuoteModel {
+class OrderModel {
   String? id;
   String? customerId;
   String? alias;
@@ -12,11 +12,9 @@ class QuoteModel {
   double? tax;
   double? total;
   Timestamp? createdAt;
-  List<Detail>? detail;
-  bool accepted = false;
-  List<DiscardedProducts>? discardedProducts = <DiscardedProducts>[];
+  List<OrderDetail>? detail;
 
-  QuoteModel(
+  OrderModel(
       {this.id,
         this.customerId,
         this.alias,
@@ -28,11 +26,9 @@ class QuoteModel {
         this.tax = 0.0,
         this.total = 0.0,
         this.createdAt,
-        this.detail,
-        this.accepted = false,
-        this.discardedProducts});
+        this.detail,});
 
-  QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
+  OrderModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
     customerId = json['customer_id'];
     alias = json['alias'];
@@ -44,17 +40,10 @@ class QuoteModel {
     tax = json['tax'];
     total = json['total'];
     createdAt = json['created_at'];
-    accepted = json['accepted'];
     if (json['detail'] != null) {
-      detail = <Detail>[];
+      detail = <OrderDetail>[];
       json['detail'].forEach((v) {
-        detail!.add(new Detail.fromJson(v));
-      });
-    }
-    if (json['discarded_products'] != null) {
-      discardedProducts = <DiscardedProducts>[];
-      json['discarded_products'].forEach((v) {
-        discardedProducts!.add(new DiscardedProducts.fromJson(v));
+        detail!.add(new OrderDetail.fromJson(v));
       });
     }
   }
@@ -71,30 +60,25 @@ class QuoteModel {
     data['tax'] = this.tax;
     data['total'] = this.total;
     data['created_at'] = this.createdAt;
-    data['accepted'] = this.accepted;
     if (this.detail != null) {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();
-    }
-    if (this.discardedProducts != null) {
-      data['discarded_products'] =
-          this.discardedProducts!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Detail {
+class OrderDetail {
   String? productRequested;
-  List<ProductsSuggested>? productsSuggested;
+  List<ProductsOrdered>? productsOrdered;
 
-  Detail({this.productRequested, this.productsSuggested});
+  OrderDetail({this.productRequested, this.productsOrdered});
 
-  Detail.fromJson(Map<String, dynamic> json) {
+  OrderDetail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
-    if (json['products_suggested'] != null) {
-      productsSuggested = <ProductsSuggested>[];
-      json['products_suggested'].forEach((v) {
-        productsSuggested!.add(new ProductsSuggested.fromJson(v));
+    if (json['products_ordered'] != null) {
+      productsOrdered = <ProductsOrdered>[];
+      json['products_ordered'].forEach((v) {
+        productsOrdered!.add(new ProductsOrdered.fromJson(v));
       });
     }
   }
@@ -102,15 +86,15 @@ class Detail {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['product_requested'] = this.productRequested;
-    if (this.productsSuggested != null) {
-      data['products_suggested'] =
-          this.productsSuggested!.map((v) => v.toJson()).toList();
+    if (this.productsOrdered != null) {
+      data['products_ordered'] =
+          this.productsOrdered!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class ProductsSuggested {
+class ProductsOrdered {
   String? productId;
   String? sku;
   String? supplier;
@@ -121,9 +105,8 @@ class ProductsSuggested {
   double? saleValue;
   String? saleUnit;
   double? salePrice;
-  bool? selected;
 
-  ProductsSuggested(
+  ProductsOrdered(
       {this.productId,
         this.sku,
         this.supplier,
@@ -133,10 +116,9 @@ class ProductsSuggested {
         this.quantity = 0,
         this.saleValue,
         this.saleUnit,
-        this.salePrice = 0.0,
-        this.selected});
+        this.salePrice = 0.0,});
 
-  ProductsSuggested.fromJson(Map<String, dynamic> json) {
+  ProductsOrdered.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     sku = json['sku'];
     supplier = json['supplier'];
@@ -147,7 +129,6 @@ class ProductsSuggested {
     saleValue = json['sale_value'];
     saleUnit = json['sale_unit'];
     salePrice = json['sale_price'];
-    selected = json['selected'];
   }
 
   Map<String, dynamic> toJson() {
@@ -162,26 +143,7 @@ class ProductsSuggested {
     data['sale_value'] = this.saleValue;
     data['sale_unit'] = this.saleUnit;
     data['sale_price'] = this.salePrice;
-    data['selected'] = this.selected;
     return data;
   }
 }
 
-class DiscardedProducts {
-  String? requestedProducts;
-  String? reason;
-
-  DiscardedProducts({this.requestedProducts, this.reason});
-
-  DiscardedProducts.fromJson(Map<String, dynamic> json) {
-    requestedProducts = json['requested_products'];
-    reason = json['reason'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['requested_products'] = this.requestedProducts;
-    data['reason'] = this.reason;
-    return data;
-  }
-}

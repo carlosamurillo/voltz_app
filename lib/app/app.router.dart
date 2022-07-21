@@ -11,12 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../order/oder_view.dart';
 import '../quote/quote_view.dart';
 
 class Routes {
   static const String quoteView = '/';
+  static const String orderView = '/order-view';
   static const all = <String>{
     quoteView,
+    orderView,
   };
 }
 
@@ -25,6 +28,7 @@ class StackedRouter extends RouterBase {
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
     RouteDef(Routes.quoteView, page: QuoteView),
+    RouteDef(Routes.orderView, page: OrderView),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -35,6 +39,17 @@ class StackedRouter extends RouterBase {
         builder: (context) => QuoteView(
           key: args.key,
           quoteId: args.quoteId,
+          version: args.version,
+        ),
+        settings: data,
+      );
+    },
+    OrderView: (data) {
+      var args = data.getArgs<OrderViewArguments>(nullOk: false);
+      return CupertinoPageRoute<dynamic>(
+        builder: (context) => OrderView(
+          key: args.key,
+          orderId: args.orderId,
         ),
         settings: data,
       );
@@ -50,7 +65,15 @@ class StackedRouter extends RouterBase {
 class QuoteViewArguments {
   final Key? key;
   final String quoteId;
-  QuoteViewArguments({this.key, required this.quoteId});
+  final String? version;
+  QuoteViewArguments({this.key, required this.quoteId, required this.version});
+}
+
+/// OrderView arguments holder class
+class OrderViewArguments {
+  final Key? key;
+  final String orderId;
+  OrderViewArguments({this.key, required this.orderId});
 }
 
 /// ************************************************************************
@@ -61,6 +84,7 @@ extension NavigatorStateExtension on NavigationService {
   Future<dynamic> navigateToQuoteView({
     Key? key,
     required String quoteId,
+    required String? version,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -69,7 +93,27 @@ extension NavigatorStateExtension on NavigationService {
   }) async {
     return navigateTo(
       Routes.quoteView,
-      arguments: QuoteViewArguments(key: key, quoteId: quoteId),
+      arguments:
+          QuoteViewArguments(key: key, quoteId: quoteId, version: version),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
+  }
+
+  Future<dynamic> navigateToOrderView({
+    Key? key,
+    required String orderId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo(
+      Routes.orderView,
+      arguments: OrderViewArguments(key: key, orderId: orderId),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,

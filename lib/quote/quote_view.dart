@@ -15,8 +15,9 @@ import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class QuoteView extends StatefulWidget {
-  const QuoteView({Key? key, required this.quoteId}) : super(key: key);
+  const QuoteView({Key? key, required this.quoteId, required this.version}) : super(key: key);
   final String quoteId;
+  final String? version;
 
   @override
   _QuoteViewState createState() => _QuoteViewState();
@@ -36,7 +37,7 @@ class _QuoteViewState extends State<QuoteView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<QuoteViewModel>.reactive(
       viewModelBuilder: () => QuoteViewModel(),
-      onModelReady: (viewModel) => viewModel.init(widget.quoteId),
+      onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
       fireOnModelReadyOnce: false,
       disposeViewModel: false,
       builder: (context, viewModel, child) {
@@ -61,7 +62,7 @@ class _QuoteViewState extends State<QuoteView> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote,),
+                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote, ),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
@@ -85,6 +86,7 @@ class _QuoteViewState extends State<QuoteView> {
                   ),
                   _QuoteTotals(tax: model.quote.tax!, total: model.quote.total!,
                       subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
+                      quoteId: model.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                 ],
               ),
@@ -106,7 +108,7 @@ class _QuoteViewState extends State<QuoteView> {
     }
   }
 
-  void _acceptQuote() async {
+  _acceptQuote() async {
     model.onGenerateOrder(context);
   }
 }
@@ -178,38 +180,40 @@ class _QuoteHeader extends StatelessWidget {
               )
           ),*/
           SizedBox(width: 16,),
-          Container(
-            width: 300,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(26),),
-                color: CustomColors.safeBlue,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(26)),
-                  hoverColor: CustomColors.safeBlueHover,
-                  onTap: (){
-                    _Dialogs dialog = _Dialogs();
-                    dialog.showAlertDialog(context, onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage());
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    alignment: Alignment.center,
-                    child:  Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text('Hacer pedido  -  ${currencyFormat.format(total)}' , style: CustomStyles.styleWhiteDos,)
-                      ],
+          if(context.read<QuoteViewModel>().version != 'original') ...[
+            Container(
+                width: 300,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(26),),
+                  color: CustomColors.safeBlue,
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(26)),
+                    hoverColor: CustomColors.safeBlueHover,
+                    onTap: (){
+                      _Dialogs dialog = _Dialogs();
+                      dialog.showAlertDialog(context, onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), context.read<QuoteViewModel>().quote.id!);
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                      alignment: Alignment.center,
+                      child:  Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text('Hacer pedido  -  ${currencyFormat.format(total)}' , style: CustomStyles.styleWhiteDos,)
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )
-          ),
+                )
+            ),
+          ],
         ],
       ),
     );
@@ -372,13 +376,14 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
 
 
 class _QuoteTotals extends StatefulWidget {
-  _QuoteTotals({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.discount, this.isSaveActive = false, required this.onAcceptQuote}) : super(key: key, );
+  const _QuoteTotals({Key? key, required this.tax, required this.total, required this.subTotal,
+    required this.discount, this.isSaveActive = false, required this.quoteId, required this.onAcceptQuote}) : super(key: key, );
   final double tax;
   final double total;
   final double subTotal;
   final double discount;
   final bool isSaveActive;
+  final String quoteId;
   final VoidCallback onAcceptQuote;
 
   @override
@@ -447,85 +452,87 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
             ),
           ),
           ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 64),
-              child: Column(
-                children: [
-                  Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(26),),
-                          color: CustomColors.safeBlue,
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: const BorderRadius.all(Radius.circular(26)),
-                          hoverColor: CustomColors.safeBlueHover,
-                          onTap: (){
-                            _Dialogs dialog = _Dialogs();
-                            dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage());
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                            alignment: Alignment.center,
-                            child:  Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text('Hacer pedido  -  ${currencyFormat.format(widget.total)}' , style: CustomStyles.styleWhiteDos,)
-                              ],
-                            ),
+          if(context.read<QuoteViewModel>().version != 'original') ...[
+            Expanded(
+              child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 64),
+                  child: Column(
+                    children: [
+                      Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(26),),
+                            color: CustomColors.safeBlue,
                           ),
-                        ),
-                      )
-                  ),
-                  const SizedBox(height: 8,),
-                  Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(26),),
-                        color: widget.isSaveActive == true ? CustomColors.energyYellow : Colors.grey.withOpacity(0.2),
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: const BorderRadius.all(Radius.circular(26)),
-                          hoverColor: CustomColors.energyYellowHover,
-                          overlayColor: MaterialStateProperty.resolveWith((states) {
-                            // If the button is pressed, return green, otherwise blue
-                            if (states.contains(MaterialState.pressed)) {
-                              return Colors.grey.withOpacity(0.2);
-                            }
-                            return Colors.grey.withOpacity(0.2);
-                          }),
-                          onTap: widget.isSaveActive == true ? () => context.read<QuoteViewModel>().saveQuote() : null,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                            alignment: Alignment.center,
-                            child:  Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text('Guardar cambios' , style: widget.isSaveActive == true ? CustomStyles.styleBlackContrastUno : CustomStyles.styleWhiteDos,)
-                              ],
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: const BorderRadius.all(Radius.circular(26)),
+                              hoverColor: CustomColors.safeBlueHover,
+                              onTap: (){
+                                _Dialogs dialog = _Dialogs();
+                                dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), widget.quoteId);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                alignment: Alignment.center,
+                                child:  Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text('Hacer pedido  -  ${currencyFormat.format(widget.total)}' , style: CustomStyles.styleWhiteDos,)
+                                  ],
+                                ),
+                              ),
                             ),
+                          )
+                      ),
+                      const SizedBox(height: 8,),
+                      Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(26),),
+                            color: widget.isSaveActive == true ? CustomColors.energyYellow : Colors.grey.withOpacity(0.2),
                           ),
-                        ),
-                      )
-                  ),
-                ],
-              )
-            ),
-          )
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: const BorderRadius.all(Radius.circular(26)),
+                              hoverColor: CustomColors.energyYellowHover,
+                              overlayColor: MaterialStateProperty.resolveWith((states) {
+                                // If the button is pressed, return green, otherwise blue
+                                if (states.contains(MaterialState.pressed)) {
+                                  return Colors.grey.withOpacity(0.2);
+                                }
+                                return Colors.grey.withOpacity(0.2);
+                              }),
+                              onTap: widget.isSaveActive == true ? () => context.read<QuoteViewModel>().saveQuote() : null,
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                alignment: Alignment.center,
+                                child:  Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text('Guardar cambios' , style: widget.isSaveActive == true ? CustomStyles.styleBlackContrastUno : CustomStyles.styleWhiteDos,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ],
+                  )
+              ),
+            )
+          ],
         ],
       ),
     );
@@ -641,129 +648,136 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
 
     return Container(
       padding: const EdgeInsets.only(left: 60, right: 60, top: 16, bottom: 16 ),
-      child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
-              color: headerColor,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    color: CustomColors.energyYellow,
-                  ),
-                  alignment: Alignment.center,
-                  width: 56,
-                  child: Text(
-                    (widget.i + 1).toString(),
-                    style: CustomStyles.styleBlueUno,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: Text( model.quote.detail![widget.i].productRequested!,
-                    style: CustomStyles.styleWhiteUno,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/svg/delete_icon.svg',
-                      width: 64,
-                      height: 64,
-                    ),
-                    onPressed: () async {
-                      model.onDeleteSku(model.quote.detail![widget.i]);
-                      _updateTotals();
-                    } //do something,
-                ),
-              ],
-            ),
-          ),
-          for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) ...{
+      child:  Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
               decoration: BoxDecoration(
-                borderRadius: b == 3 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
+                borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                color: headerColor,
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    width: 140,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 24,
-                          child: Checkbox(
-                            checkColor: Colors.white,
-                            fillColor: MaterialStateProperty.resolveWith(getColor),
-                            value: model.quote.detail![widget.i].productsSuggested![b].selected,
-                            onChanged: (bool? value) async {
-                              setState(() {
-                                model.onSelectedSku(value!, widget.i, b);
-                                _updateTotals();
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        if(1==1) ...{
-                          SvgPicture.asset(
-                            'assets/svg/no_image_ico.svg',
-                            width: 56,
-                            height: 56,
-                          ),
-                        },
-                        const SizedBox(
-                          width: 30,
-                        ),
-                      ],
-                    ) ,
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          model.quote.detail![widget.i].productsSuggested![b].sku!,
-                          style: CustomStyles.styleVolcanicBlueUno,
-                          textAlign: TextAlign.left,
-                        ),
-                        Text(
-                          model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                          style: CustomStyles.styleVolcanicUno,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.clip,
-                        ),
-                      ],
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      color: CustomColors.energyYellow,
+                    ),
+                    alignment: Alignment.center,
+                    width: 56,
+                    child: Text(
+                      (widget.i + 1).toString(),
+                      style: CustomStyles.styleBlueUno,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(
-                    width: 524,
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 30,
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    child: Text( model.quote.detail![widget.i].productRequested!,
+                      style: CustomStyles.styleWhiteUno,
+                    ),
+                  ),
+                  const Spacer(),
+                  if(context.read<QuoteViewModel>().version != 'original') ...[
+                    IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/svg/delete_icon.svg',
+                          width: 64,
+                          height: 64,
                         ),
-                        Container(
+                        onPressed: () async {
+                          model.onDeleteSku(model.quote.detail![widget.i]);
+                          _updateTotals();
+                        } //do something,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) ...{
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                decoration: BoxDecoration(
+                  borderRadius: b == model.quote.detail![widget.i].productsSuggested!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                  color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 140,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            child: context.read<QuoteViewModel>().version != 'original' ? Checkbox(
+                              checkColor: Colors.white,
+                              fillColor: MaterialStateProperty.resolveWith(getColor),
+                              value: model.quote.detail![widget.i].productsSuggested![b].selected,
+                              onChanged: (bool? value) async {
+                                setState(() {
+                                  model.onSelectedSku(value!, widget.i, b);
+                                  _updateTotals();
+                                });
+                              },
+                            ) : Container(),
+                          ),
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          if(1==1) ...{
+                            SvgPicture.asset(
+                              'assets/svg/no_image_ico.svg',
+                              width: 56,
+                              height: 56,
+                            ),
+                          },
+                          const SizedBox(
+                            width: 30,
+                          ),
+                        ],
+                      ) ,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            model.quote.detail![widget.i].productsSuggested![b].sku!,
+                            style: CustomStyles.styleVolcanicBlueUno,
+                            textAlign: TextAlign.left,
+                          ),
+                          Text(
+                            model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                            style: CustomStyles.styleVolcanicUno,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.clip,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 524,
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 30,
+                          ),
+                          Container(
                             width: 159,
                             padding: const EdgeInsets.all(8),
                             alignment: Alignment.center,
@@ -787,56 +801,57 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                 ),
                               ],
                             ),
-                        ),
-                        Container(
-                          width: 158,
-                          child: Row(
-                            children: [
-                              _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Text(
-                                model.quote.detail![widget.i].productsSuggested![b].saleUnit!,
-                                style: CustomStyles.styleVolcanicUno,
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
                           ),
-                        ),
-                        Container(
+                          Container(
+                            width: 158,
+                            child: Row(
+                              children: [
+                                _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  model.quote.detail![widget.i].productsSuggested![b].saleUnit!,
+                                  style: CustomStyles.styleVolcanicUno,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
                             padding: EdgeInsets.all(24),
                             width: 177,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
-                                      style: CustomStyles.styleVolcanicBlueTres,
-                                      textAlign: TextAlign.right,
-                                    ),
-                                    Text(
-                                      currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!),
-                                      style: CustomStyles.styleVolcanicUno,
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ],
-                                ),
-                              ]
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
+                                        style: CustomStyles.styleVolcanicBlueTres,
+                                        textAlign: TextAlign.right,
+                                      ),
+                                      Text(
+                                        currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!),
+                                        style: CustomStyles.styleVolcanicUno,
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ],
+                                  ),
+                                ]
                             ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          }
-        ],
-      ),
+            }
+          ],
+        ),
+      )
     );
   }
 
@@ -882,10 +897,11 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: EdgeInsets.all(8),
       width: 90,
-      child: NumberInputWithIncrementDecrement(
+      child: context.read<QuoteViewModel>().version != 'original' ? NumberInputWithIncrementDecrement(
         controller: textEditingController,
         initialValue: _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!,
         onIncrement: (num newlyIncrementedValue) {
@@ -939,6 +955,10 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         incIconColor: CustomColors.volcanicBlue,
         decIconSize: 16,
         incIconSize: 16,
+      ) : Text(
+        _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
+        style: CustomStyles.styleVolcanicBlueDos,
+        textAlign: TextAlign.left,
       ),
     );
   }
@@ -946,7 +966,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
 
 class _Dialogs {
 
-  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message) {
+  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
     // show the dialog
     showDialog(
       context: context,
@@ -966,7 +986,7 @@ class _Dialogs {
                 child: const Text("Cancelar")
             ),
             ElevatedButton(
-                onPressed: (){
+                onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
