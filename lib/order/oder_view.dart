@@ -345,6 +345,20 @@ class _OrderTotalsState extends State<_OrderTotals> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 8,),
+                Row(
+                  children: [
+                    Text(
+                      "Total",
+                      style: CustomStyles.styleWhiteUno,
+                    ),
+                    Spacer(),
+                    Text(
+                      currencyFormat.format(widget.total),
+                      style: CustomStyles.styleWhiteUno,
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

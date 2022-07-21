@@ -448,6 +448,22 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     ),
                   ],
                 ),
+                if(context.read<QuoteViewModel>().version == 'original') ...[
+                  const SizedBox(height: 8,),
+                  Row(
+                    children: [
+                      Text(
+                        "Total",
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                      Spacer(),
+                      Text(
+                        currencyFormat.format(widget.total),
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

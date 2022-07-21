@@ -1,4 +1,3 @@
-import 'dart:html';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:stacked_services/stacked_services.dart';
 
 import 'app/app.locator.dart';
 import 'app/app.router.dart';
-import 'order/oder_view.dart';
 
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +14,7 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: _config.firebaseOptions,
   );
-  String quoteId = Uri.base.queryParameters["quoteId"]!;
+  String quoteId = Uri.base.queryParameters["id"]!;
   String? version = Uri.base.queryParameters["version"];
   print("el id cotizacion es : ${quoteId}");
   setupLocator();
