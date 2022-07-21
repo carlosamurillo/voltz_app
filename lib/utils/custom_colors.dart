@@ -2,7 +2,11 @@ import 'dart:ui';
 
 class CustomColors {
   static const Color safeBlue = Color(0xFF2E5CFF);
+  static const Color safeBlueHover = Color(0xFF274DD2);
+
   static const Color energyYellow = Color(0xFFF7CB2F);
+  static const Color energyYellowHover = Color(0xFFDCB52B);
+
   static const Color volcanicBlue = Color(0xFF394055);
 
   static const Color energyYellow_20 = Color(0xFFFDF5D5);

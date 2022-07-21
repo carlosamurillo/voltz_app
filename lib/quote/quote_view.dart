@@ -1,30 +1,54 @@
 
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
+class QuoteView extends StatefulWidget {
+  const QuoteView({Key? key, required this.quoteId}) : super(key: key);
+  final String quoteId;
 
-class QuoteView extends StatelessWidget {
-  const QuoteView ({ Key? key, }): super(key: key);
+  @override
+  _QuoteViewState createState() => _QuoteViewState();
+}
+
+class _QuoteViewState extends State<QuoteView> {
+  late QuoteViewModel model;
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    initializeDateFormatting();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<QuoteViewModel>.reactive(
       viewModelBuilder: () => QuoteViewModel(),
-      onModelReady: (viewModel) => viewModel.init(),
+      onModelReady: (viewModel) => viewModel.init(widget.quoteId),
       fireOnModelReadyOnce: false,
-      disposeViewModel: true,
+      disposeViewModel: false,
       builder: (context, viewModel, child) {
-        print ("paso por aqui xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        model = context.read<QuoteViewModel>();
         if(viewModel.quote.detail == null){
-          return const CircularProgressIndicator();
+          return const Center(
+            child: SizedBox(
+              width: 30,
+              height: 30,
+              child: CircularProgressIndicator(),
+            ),
+          );
         } else {
           return Scaffold(
             backgroundColor: CustomColors.backgroundCanvas,
@@ -34,14 +58,15 @@ class QuoteView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: _scrollController,
                       child: Column(
                         children: [
-                          _QuoteHeader(),
+                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote,),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
                           ),
-                          _QuoteHeaderId(),
+                          _QuoteHeaderId(listener: _scrollDown,),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
@@ -50,7 +75,7 @@ class QuoteView extends StatelessWidget {
                           if(viewModel.quote.detail != null) ...[
                             for(int i = 0; i <=
                                 viewModel.quote.detail!.length - 1; i++) ...{
-                              _QuoteTableDetail(i: i,),
+                              _QuoteTableDetail(i: i, listener: _updateTotals,),
                             },
                           ],
                           _QuoteTableNotInclude(),
@@ -58,7 +83,9 @@ class QuoteView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _QuoteTotals(),
+                  _QuoteTotals(tax: model.quote.tax!, total: model.quote.total!,
+                      subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
+                      onAcceptQuote: _acceptQuote,),
                 ],
               ),
             ),
@@ -67,17 +94,32 @@ class QuoteView extends StatelessWidget {
       }
     );
   }
+
+  _scrollDown(){
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  }
+
+  void _updateTotals() async {
+    if (mounted) {
+      setState(() {
+      });
+    }
+  }
+
+  void _acceptQuote() async {
+    model.onGenerateOrder(context);
+  }
 }
 
 
-class _QuoteHeader extends HookViewModelWidget<QuoteViewModel> {
-  const _QuoteHeader({Key? key}) : super(key: key, reactive: false);
+class _QuoteHeader extends StatelessWidget {
+   _QuoteHeader({required this.total, required this.onAcceptQuote});
+  double total;
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+  final VoidCallback onAcceptQuote;
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
       color: Colors.white,
@@ -90,7 +132,7 @@ class _QuoteHeader extends HookViewModelWidget<QuoteViewModel> {
             height: 24.5,
           ),
           const Spacer(),
-          Container(
+          /*Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(26),),
                   color: Color(0xFFFFFDFB),
@@ -134,25 +176,39 @@ class _QuoteHeader extends HookViewModelWidget<QuoteViewModel> {
                   ),
                 ),
               )
-          ),
+          ),*/
           SizedBox(width: 16,),
-          ElevatedButton(
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                        side: BorderSide(color: CustomColors.energyYellow)
+          Container(
+            width: 300,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(26),),
+                color: CustomColors.safeBlue,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(26)),
+                  hoverColor: CustomColors.safeBlueHover,
+                  onTap: (){
+                    _Dialogs dialog = _Dialogs();
+                    dialog.showAlertDialog(context, onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage());
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    alignment: Alignment.center,
+                    child:  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text('Hacer pedido  -  ${currencyFormat.format(total)}' , style: CustomStyles.styleWhiteDos,)
+                      ],
                     ),
                   ),
-                  backgroundColor: MaterialStateProperty.all(CustomColors.energyYellow),
-                  padding:
-                  MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  textStyle: MaterialStateProperty.all(
-                      const TextStyle(fontSize: 14, color: Colors.white))),
-              onPressed: () {
-
-              },
-              child: const Text('Hacer pedido  -  \$135,971.19 ', style: CustomStyles.styleBlackContrastUno,)
+                ),
+              )
           ),
         ],
       ),
@@ -161,13 +217,16 @@ class _QuoteHeader extends HookViewModelWidget<QuoteViewModel> {
 }
 
 class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
-  const _QuoteHeaderId({Key? key}) : super(key: key, reactive: false);
+  _QuoteHeaderId({Key? key, required this.listener}) : super(key: key, reactive: false);
+  final VoidCallback listener;
 
   @override
   Widget buildViewModelWidget(
       BuildContext context,
       QuoteViewModel model,
       ) {
+    final f = intl.DateFormat('MMMM dd, yyyy hh:mm', 'es_MX');
+    String formattedDate = f.format(model.quote.createdAt!.toDate().toLocal()) ;
     return Container(
       padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
       color: Colors.white,
@@ -178,18 +237,18 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
             textAlign: TextAlign.start,
             text: new TextSpan(
               children: [
-                new TextSpan(text: 'Cotización',
+                new TextSpan(text: 'Cotización: ',
                   style: TextStyle(
                     fontFamily: "Hellix",
                     color: CustomColors.volcanicBlue,
                     fontSize: 48,
                     fontWeight: FontWeight.w600,),
                 ),
-                new TextSpan(text: ' #',
+                new TextSpan(text: model.quote.id,
                   style: TextStyle(
                     fontFamily: "Hellix",
                     color: CustomColors.volcanicBlue,
-                    fontSize: 32,
+                    fontSize: 24,
                     fontWeight: FontWeight.w600,),
                 ),
               ],
@@ -209,13 +268,13 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                   textAlign: TextAlign.start,
                   text: new TextSpan(
                     children: [
-                      new TextSpan(text: 'CLIENTE:',
+                      /*new TextSpan(text: 'CLIENTE: ',
                         style: TextStyle(
                           fontFamily: "Hellix",
                           color: CustomColors.volcanicBlue,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,),
-                      ),
+                      ),*/
                       new TextSpan(text: model.quote.alias,
                         style: TextStyle(
                           fontFamily: "Hellix",
@@ -237,17 +296,17 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                 ),
                 child: RichText(
                   textAlign: TextAlign.start,
-                  text: new TextSpan(
+                  text: TextSpan(
                     children: [
-                      new TextSpan(text: 'FECHA:',
+                      const TextSpan(text: 'FECHA: ',
                         style: TextStyle(
                           fontFamily: "Hellix",
                           color: CustomColors.volcanicBlue,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,),
                       ),
-                      new TextSpan(text: ' 31/07/2022',
-                        style: TextStyle(
+                      TextSpan(text: formattedDate,
+                        style: const TextStyle(
                           fontFamily: "Hellix",
                           color: CustomColors.volcanicBlue,
                           fontSize: 14,
@@ -270,7 +329,7 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                     borderRadius: BorderRadius.all(Radius.circular(26)),
                     hoverColor: CustomColors.energyYellow_20,
                     onTap: (){
-
+                      listener();
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 16),
@@ -311,18 +370,30 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
-  const _QuoteTotals({Key? key}) : super(key: key, reactive: false);
+
+class _QuoteTotals extends StatefulWidget {
+  _QuoteTotals({Key? key, required this.tax, required this.total, required this.subTotal,
+    required this.discount, this.isSaveActive = false, required this.onAcceptQuote}) : super(key: key, );
+  final double tax;
+  final double total;
+  final double subTotal;
+  final double discount;
+  final bool isSaveActive;
+  final VoidCallback onAcceptQuote;
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+  _QuoteTotalsState createState() => _QuoteTotalsState();
+}
+
+class _QuoteTotalsState extends State<_QuoteTotals> {
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
-        color: CustomColors.safeBlue,
+        color: CustomColors.volcanicBlue,
       ),
       padding: EdgeInsets.all(16),
       child: Row(
@@ -339,7 +410,7 @@ class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
                     ),
                     Spacer(),
                     Text(
-                      model.quote.total.toString(),
+                      currencyFormat.format(widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
@@ -353,7 +424,7 @@ class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
                     ),
                     Spacer(),
                     Text(
-                      model.quote.discount.toString(),
+                      currencyFormat.format(widget.discount),
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
@@ -367,7 +438,7 @@ class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
                     ),
                     Spacer(),
                     Text(
-                      model.quote.tax.toString(),
+                      currencyFormat.format(widget.tax * widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
@@ -380,26 +451,78 @@ class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
             child: Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(horizontal: 64),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0),
-                                side: BorderSide(color: CustomColors.energyYellow)
-                              ),
+              child: Column(
+                children: [
+                  Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(26),),
+                          color: CustomColors.safeBlue,
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: const BorderRadius.all(Radius.circular(26)),
+                          hoverColor: CustomColors.safeBlueHover,
+                          onTap: (){
+                            _Dialogs dialog = _Dialogs();
+                            dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage());
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                            alignment: Alignment.center,
+                            child:  Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text('Hacer pedido  -  ${currencyFormat.format(widget.total)}' , style: CustomStyles.styleWhiteDos,)
+                              ],
                             ),
-                    backgroundColor: MaterialStateProperty.all(CustomColors.energyYellow),
-                    padding:
-                    MaterialStateProperty.all(const EdgeInsets.all(20)),
-                    textStyle: MaterialStateProperty.all(
-                            const TextStyle(fontSize: 14, color: Colors.white))),
-                    onPressed: () {
-
-                    },
-                    child: Text('Hacer pedido  -  ${model.quote.total}' , style: CustomStyles.styleBlackContrastUno,)
-                ),
+                          ),
+                        ),
+                      )
+                  ),
+                  const SizedBox(height: 8,),
+                  Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(26),),
+                        color: widget.isSaveActive == true ? CustomColors.energyYellow : Colors.grey.withOpacity(0.2),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: const BorderRadius.all(Radius.circular(26)),
+                          hoverColor: CustomColors.energyYellowHover,
+                          overlayColor: MaterialStateProperty.resolveWith((states) {
+                            // If the button is pressed, return green, otherwise blue
+                            if (states.contains(MaterialState.pressed)) {
+                              return Colors.grey.withOpacity(0.2);
+                            }
+                            return Colors.grey.withOpacity(0.2);
+                          }),
+                          onTap: widget.isSaveActive == true ? () => context.read<QuoteViewModel>().saveQuote() : null,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                            alignment: Alignment.center,
+                            child:  Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text('Guardar cambios' , style: widget.isSaveActive == true ? CustomStyles.styleBlackContrastUno : CustomStyles.styleWhiteDos,)
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
+                ],
               )
             ),
           )
@@ -407,6 +530,8 @@ class _QuoteTotals extends HookViewModelWidget<QuoteViewModel> {
       ),
     );
   }
+
+
 }
 
 class _QuoteTableNotInclude extends HookViewModelWidget<QuoteViewModel> {
@@ -469,15 +594,30 @@ class _QuoteTableNotInclude extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
-  _QuoteTableDetail({Key? key, required this.i}) : super(key: key, reactive: true);
-  int i = 0;
+
+class _QuoteTableDetail extends StatefulWidget {
+  _QuoteTableDetail({Key? key, required this.i, required this.listener}) : super(key: key);
+  int i;
+  final VoidCallback listener;
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+  _QuoteTableDetailState createState() => _QuoteTableDetailState();
+}
+
+class _QuoteTableDetailState extends State<_QuoteTableDetail> {
+  late QuoteViewModel model;
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+
+  TextEditingController textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    model = context.read<QuoteViewModel>();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -488,7 +628,17 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
         return CustomColors.energyYellow;
       }
       return CustomColors.safeBlue;
+    };
+    Color headerColor = CustomColors.volcanicBlue;
+    for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) {
+      if (model.quote.detail![widget.i].productsSuggested![b].selected == true) {
+        headerColor =  CustomColors.safeBlue;
+        break;
+      } else {
+        headerColor = CustomColors.volcanicBlue;
+      }
     }
+
     return Container(
       padding: const EdgeInsets.only(left: 60, right: 60, top: 16, bottom: 16 ),
       child:  Column(
@@ -499,7 +649,7 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
-              color: CustomColors.safeBlue,
+              color: headerColor,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -513,7 +663,7 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
                   alignment: Alignment.center,
                   width: 56,
                   child: Text(
-                    (i + 1).toString(),
+                    (widget.i + 1).toString(),
                     style: CustomStyles.styleBlueUno,
                     textAlign: TextAlign.center,
                   ),
@@ -523,7 +673,7 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                   ),
-                  child: Text( model.quote.detail![i].productRequested!,
+                  child: Text( model.quote.detail![widget.i].productRequested!,
                     style: CustomStyles.styleWhiteUno,
                   ),
                 ),
@@ -534,169 +684,149 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
                       width: 64,
                       height: 64,
                     ),
-                    onPressed: () {
-                      print('clicked');
+                    onPressed: () async {
+                      model.onDeleteSku(model.quote.detail![widget.i]);
+                      _updateTotals();
                     } //do something,
                 ),
               ],
             ),
           ),
-          for(int b = 0; b <= model.quote.detail![i].productsSuggested!.length -1; b++) ...{
+          for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) ...{
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
               decoration: BoxDecoration(
                 borderRadius: b == 3 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                color: Colors.white,
+                color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
               ),
               child: Row(
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Checkbox(
-                    checkColor: Colors.white,
-                    fillColor: MaterialStateProperty.resolveWith(getColor),
-                    value: false,
-                    onChanged: (bool? value) {
-
-                    },
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  if(1==1) ...{
-                    SvgPicture.asset(
-                      'assets/svg/no_image_ico.svg',
-                      width: 56,
-                      height: 56,
-                    ),
-                  },
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        model.quote.detail![i].productsSuggested![b].sku!,
-                        style: CustomStyles.styleVolcanicBlueUno,
-                        textAlign: TextAlign.left,
-                      ),
-                      Text(
-                        model.quote.detail![i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                        style: CustomStyles.styleVolcanicUno,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.clip,
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Container(
-                    width: 159,
-                    padding: const EdgeInsets.all(8),
-                    alignment: Alignment.center,
-                    child: Expanded(
-                      child:  Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:  [
-                          Text( model.quote.detail![i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                            style: CustomStyles.styleVolcanicBlueDos,
-                            textAlign: TextAlign.left,
-                          ),
-                          Text( model.quote.detail![i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                            style: CustomStyles.styleVolcanicBlueDos,
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      ),
-                    )
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(8),
+                  SizedBox(
+                    width: 140,
                     child: Row(
                       children: [
-                        Container(
-                          width: 90,
-                          child: NumberInputWithIncrementDecrement(
-                            controller: TextEditingController(),
-                            onIncrement: (num newlyIncrementedValue) {
-                              print('Newly incremented value is $newlyIncrementedValue');
-                              model.onChangeDetailQuantity(i, b, newlyIncrementedValue.toInt());
+                        SizedBox(
+                          width: 24,
+                          child: Checkbox(
+                            checkColor: Colors.white,
+                            fillColor: MaterialStateProperty.resolveWith(getColor),
+                            value: model.quote.detail![widget.i].productsSuggested![b].selected,
+                            onChanged: (bool? value) async {
+                              setState(() {
+                                model.onSelectedSku(value!, widget.i, b);
+                                _updateTotals();
+                              });
                             },
-                            onDecrement: (num newlyDecrementedValue) {
-                              print('Newly decremented value is $newlyDecrementedValue');
-                              model.onChangeDetailQuantity(i, b, newlyDecrementedValue.toInt());
-                            },
-                            numberFieldDecoration: InputDecoration(
-                              border: InputBorder.none,
-                            ),
-                            widgetContainerDecoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              color: Color(0xFFF9FAFF),
-                              border: Border.all(
-                                color: Color(0xFFE6E8F2),
-                                width: 1.6,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.1),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: Offset(0, 2), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            separateIcons: true,
-                            decIconDecoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                              ),
-                            ),
-                            incIconDecoration: BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(10),
-                              ),
-                            ),
-                            incDecBgColor: Colors.transparent,
-                            incIcon: Icons.expand_less,
-                            decIcon: Icons.expand_more,
-                            decIconColor: CustomColors.volcanicBlue,
-                            incIconColor: CustomColors.volcanicBlue,
-                            decIconSize: 16,
-                            incIconSize: 16,
                           ),
                         ),
                         const SizedBox(
-                          width: 8,
+                          width: 30,
+                        ),
+                        if(1==1) ...{
+                          SvgPicture.asset(
+                            'assets/svg/no_image_ico.svg',
+                            width: 56,
+                            height: 56,
+                          ),
+                        },
+                        const SizedBox(
+                          width: 30,
+                        ),
+                      ],
+                    ) ,
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          model.quote.detail![widget.i].productsSuggested![b].sku!,
+                          style: CustomStyles.styleVolcanicBlueUno,
+                          textAlign: TextAlign.left,
                         ),
                         Text(
-                          model.quote.detail![i].productsSuggested![b].saleUnit!,
+                          model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                           style: CustomStyles.styleVolcanicUno,
                           textAlign: TextAlign.left,
+                          overflow: TextOverflow.clip,
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(24),
-                    width: 177,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                  SizedBox(
+                    width: 524,
+                    child: Row(
                       children: [
-                        Text(
-                          (model.quote.detail![i].productsSuggested![b].salePrice! * model.quote.detail![i].productsSuggested![b].quantity!).toString(),
-                          style: CustomStyles.styleVolcanicBlueTres,
-                          textAlign: TextAlign.right,
+                        const SizedBox(
+                          width: 30,
                         ),
-                        Text(
-                          model.quote.detail![i].productsSuggested![b].salePrice!.toString(),
-                          style: CustomStyles.styleVolcanicUno,
-                          textAlign: TextAlign.right,
+                        Container(
+                            width: 159,
+                            padding: const EdgeInsets.all(8),
+                            alignment: Alignment.center,
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:  [
+                                    Text( model.quote.detail![widget.i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                      style: CustomStyles.styleVolcanicBlueDos,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    if (model.quote.detail![widget.i].productsSuggested![b].subBrand != null ) ...[
+                                      Text(  model.quote.detail![widget.i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                        style: CustomStyles.styleVolcanicBlueDos,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ]
+                                  ],
+                                ),
+                              ],
+                            ),
+                        ),
+                        Container(
+                          width: 158,
+                          child: Row(
+                            children: [
+                              _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                model.quote.detail![widget.i].productsSuggested![b].saleUnit!,
+                                style: CustomStyles.styleVolcanicUno,
+                                textAlign: TextAlign.left,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                            padding: EdgeInsets.all(24),
+                            width: 177,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
+                                      style: CustomStyles.styleVolcanicBlueTres,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    Text(
+                                      currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!),
+                                      style: CustomStyles.styleVolcanicUno,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ],
+                                ),
+                              ]
+                            ),
                         ),
                       ],
                     ),
@@ -709,4 +839,143 @@ class _QuoteTableDetail extends HookViewModelWidget<QuoteViewModel> {
       ),
     );
   }
+
+  _updateTotals() async {
+    if (mounted) {
+      model.calculateTotals();
+      widget.listener();
+    }
+  }
+
 }
+
+
+class _QuantityWidget extends StatefulWidget {
+  const _QuantityWidget({Key? key, required this.i, required this.b, required this.listenerUpdateTotals}) : super(key: key);
+  final int i; final int b;
+  final VoidCallback listenerUpdateTotals;
+
+  @override
+  _QuantityWidgetState createState() => _QuantityWidgetState();
+}
+
+class _QuantityWidgetState extends State<_QuantityWidget> {
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+  late QuoteViewModel _model;
+
+  TextEditingController textEditingController = TextEditingController();
+  bool indicator = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _model = context.read<QuoteViewModel>();
+    textEditingController.addListener(() {
+      if(indicator == true) {
+        _model.onUpdateQuantity(
+          widget.i, widget.b, int.parse(textEditingController.text),);
+        widget.listenerUpdateTotals();
+      }
+      indicator = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      width: 90,
+      child: NumberInputWithIncrementDecrement(
+        controller: textEditingController,
+        initialValue: _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!,
+        onIncrement: (num newlyIncrementedValue) {
+          print('Newly incremented value is $newlyIncrementedValue');
+          //model.saveNewQuantity(widget.i, b, newlyIncrementedValue.toInt(), model.quote.detail![widget.i]);
+          _model.onUpdateQuantity(widget.i, widget.b, newlyIncrementedValue.toInt(),);
+          widget.listenerUpdateTotals();
+        },
+        onDecrement: (num newlyDecrementedValue) {
+          print('Newly decremented value is $newlyDecrementedValue');
+          //model.saveNewQuantity(widget.i, b, newlyDecrementedValue.toInt(), model.quote.detail![widget.i]);
+          _model.onUpdateQuantity(widget.i, widget.b, newlyDecrementedValue.toInt(),);
+          widget.listenerUpdateTotals();
+        },
+        numberFieldDecoration: InputDecoration(
+          border: InputBorder.none,
+        ),
+        widgetContainerDecoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          color: Color(0xFFF9FAFF),
+          border: Border.all(
+            color: Color(0xFFE6E8F2),
+            width: 1.6,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 2,
+              offset: Offset(0, 2), // changes position of shadow
+            ),
+          ],
+        ),
+        separateIcons: true,
+        decIconDecoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10),
+          ),
+        ),
+        incIconDecoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(10),
+          ),
+        ),
+        incDecBgColor: Colors.transparent,
+        incIcon: Icons.expand_less,
+        decIcon: Icons.expand_more,
+        decIconColor: CustomColors.volcanicBlue,
+        incIconColor: CustomColors.volcanicBlue,
+        decIconSize: 16,
+        incIconSize: 16,
+      ),
+    );
+  }
+}
+
+class _Dialogs {
+
+  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message) {
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Hacer pedido"),
+          titleTextStyle:
+          TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,fontSize: 20),
+          actionsOverflowButtonSpacing: 20,
+          actions: [
+            ElevatedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancelar")
+            ),
+            ElevatedButton(
+                onPressed: (){
+                  onConfirm();
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Confirmar")),
+          ],
+          content: Text(message),
+        );
+      },
+    );
+  }
+}
+

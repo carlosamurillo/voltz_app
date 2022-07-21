@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/keys_model.dart';
@@ -11,12 +13,15 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: _config.firebaseOptions,
   );
-  await setupLocator();
-  runApp(const MyApp());
+  String quoteId = Uri.base.queryParameters["quoteId"]!;
+  print("el id cotizacion es : ${quoteId}");
+  setupLocator();
+  runApp( MyApp(quoteId: quoteId));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.quoteId});
+  final String quoteId;
 
   // This widget is the root of your application.
   @override
@@ -35,7 +40,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const QuoteView(),
+      home: QuoteView(quoteId: quoteId),
     );
   }
 }

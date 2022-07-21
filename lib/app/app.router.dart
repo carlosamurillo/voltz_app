@@ -14,7 +14,7 @@ import 'package:stacked_services/stacked_services.dart';
 import '../quote/quote_view.dart';
 
 class Routes {
-  static const String quoteView = '/quote-view';
+  static const String quoteView = '/';
   static const all = <String>{
     quoteView,
   };
@@ -30,12 +30,27 @@ class StackedRouter extends RouterBase {
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
     QuoteView: (data) {
+      var args = data.getArgs<QuoteViewArguments>(nullOk: false);
       return CupertinoPageRoute<dynamic>(
-        builder: (context) => const QuoteView(),
+        builder: (context) => QuoteView(
+          key: args.key,
+          quoteId: args.quoteId,
+        ),
         settings: data,
       );
     },
   };
+}
+
+/// ************************************************************************
+/// Arguments holder classes
+/// *************************************************************************
+
+/// QuoteView arguments holder class
+class QuoteViewArguments {
+  final Key? key;
+  final String quoteId;
+  QuoteViewArguments({this.key, required this.quoteId});
 }
 
 /// ************************************************************************
@@ -44,6 +59,8 @@ class StackedRouter extends RouterBase {
 
 extension NavigatorStateExtension on NavigationService {
   Future<dynamic> navigateToQuoteView({
+    Key? key,
+    required String quoteId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -52,6 +69,7 @@ extension NavigatorStateExtension on NavigationService {
   }) async {
     return navigateTo(
       Routes.quoteView,
+      arguments: QuoteViewArguments(key: key, quoteId: quoteId),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,

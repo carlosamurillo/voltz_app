@@ -10,7 +10,7 @@ import 'package:stacked/stacked_annotations.dart';
   routes: [
 
     /** Onboarding and signup **/
-    CupertinoRoute(page: QuoteView),
+    CupertinoRoute(page: QuoteView,  initial: true),
   ],
 )
 class AppSetup {

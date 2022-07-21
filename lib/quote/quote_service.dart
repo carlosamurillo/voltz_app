@@ -4,6 +4,7 @@ import 'package:maketplace/quote/quote_model.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 
+
 class QuoteService with ReactiveServiceMixin {
 
   final RxValue<QuoteModel> _rxQuote = RxValue<QuoteModel>(QuoteModel());
@@ -19,11 +20,15 @@ class QuoteService with ReactiveServiceMixin {
 
   void _listenChanges() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc("SWCTsMKJJ9mvatWyNuxQ");
-    reference.snapshots().listen((documentSnapshot) {
+    reference.snapshots().listen((documentSnapshot) async {
       print(documentSnapshot.data().toString());
+      print("AAA");
       if (documentSnapshot.exists) {
-        _rxQuote.value = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+        print("BB");
+        _rxQuote.value = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+        print("CC");
         notifyListeners();
+        print("DD");
       } else {
         _rxQuote.value = QuoteModel();
       }
@@ -43,7 +48,7 @@ class QuoteService with ReactiveServiceMixin {
       discount: data['discount'],
       tax: data['tax'],
       total: data['total'],
-      expirationDate: data['expiration_date'],
+      createdAt: data['expiration_date'],
     );
 
     List<DiscardedProducts> discardedProductsList = [];

@@ -11,9 +11,9 @@ class QuoteModel {
   double? discount;
   double? tax;
   double? total;
-  Timestamp? expirationDate;
+  Timestamp? createdAt;
   List<Detail>? detail;
-  List<DiscardedProducts>? discardedProducts;
+  List<DiscardedProducts>? discardedProducts = <DiscardedProducts>[];
 
   QuoteModel(
       {this.id,
@@ -22,16 +22,16 @@ class QuoteModel {
         this.name,
         this.address,
         this.tel,
-        this.subTotal,
-        this.discount,
-        this.tax,
-        this.total,
-        this.expirationDate,
+        this.subTotal = 0.0,
+        this.discount = 0.0,
+        this.tax = 0.0,
+        this.total = 0.0,
+        this.createdAt,
         this.detail,
         this.discardedProducts});
 
-  QuoteModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+  QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
+    id = docId;
     customerId = json['customer_id'];
     alias = json['alias'];
     name = json['name'];
@@ -41,7 +41,7 @@ class QuoteModel {
     discount = json['discount'];
     tax = json['tax'];
     total = json['total'];
-    expirationDate = json['expiration_date'];
+    createdAt = json['created_at'];
     if (json['detail'] != null) {
       detail = <Detail>[];
       json['detail'].forEach((v) {
@@ -67,7 +67,7 @@ class QuoteModel {
     data['discount'] = this.discount;
     data['tax'] = this.tax;
     data['total'] = this.total;
-    data['expiration_date'] = this.expirationDate;
+    data['created_at'] = this.createdAt;
     if (this.detail != null) {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();
     }
@@ -108,7 +108,6 @@ class Detail {
 
 class ProductsSuggested {
   String? productId;
-  String? baseName;
   String? sku;
   String? supplier;
   String? skuDescription;
@@ -122,21 +121,19 @@ class ProductsSuggested {
 
   ProductsSuggested(
       {this.productId,
-        this.baseName,
         this.sku,
         this.supplier,
         this.skuDescription,
         this.brand,
         this.subBrand,
-        this.quantity,
+        this.quantity = 0,
         this.saleValue,
         this.saleUnit,
-        this.salePrice,
+        this.salePrice = 0.0,
         this.selected});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
-    baseName = json['base_name'];
     sku = json['sku'];
     supplier = json['supplier'];
     skuDescription = json['sku_description'];
@@ -152,7 +149,6 @@ class ProductsSuggested {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['product_id'] = this.productId;
-    data['base_name'] = this.baseName;
     data['sku'] = this.sku;
     data['supplier'] = this.supplier;
     data['sku_description'] = this.skuDescription;
