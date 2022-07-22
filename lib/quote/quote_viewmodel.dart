@@ -76,16 +76,18 @@ class QuoteViewModel  extends ReactiveViewModel  {
     isSaveActive = false;
   }
 
-  void saveQuote(){
+  Future<void> saveQuote() async {
     _deactivateSaveButton();
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    reference.set(quote.toJson());
+    return reference.set(quote.toJson());
   }
 
   void onGenerateOrder(BuildContext context) async {
-    saveQuote();
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    await reference.update({'accepted': true});
+    saveQuote().then((value) async {
+        DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
+        await reference.update({'accepted': true});
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text("Gracias, hemos recibido tu orden.", style: CustomStyles.styleVolcanicDos,),
       backgroundColor: CustomColors.energyYellow,
@@ -159,10 +161,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
     OrderModel orderModel = OrderModel(
       customerId: quote.customerId,
+      consecutive: 0,
       alias: quote.alias,
-      name: quote.name,
-      address: quote.address,
-      tel: quote.tel,
       subTotal: quote.subTotal,
       discount: quote.discount,
       tax: quote.tax,

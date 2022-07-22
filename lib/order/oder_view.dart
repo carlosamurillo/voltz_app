@@ -62,7 +62,7 @@ class _OrderViewState extends State<OrderView> {
                               height: 1,
                               color: CustomColors.grayBackground,
                             ),
-                            _OrderHeaderId(createdAt: viewModel.order!.createdAt!.toDate(), alias: viewModel.order!.alias!, orderId: viewModel.order!.id!,),
+                            _OrderHeaderId(createdAt: viewModel.order!.createdAt!.toDate(), alias: viewModel.order!.alias!, orderId: viewModel.order!.consecutive!.toString(),),
                             const Divider(
                               height: 1,
                               color: CustomColors.grayBackground,
@@ -186,18 +186,18 @@ class _OrderHeaderId extends StatelessWidget {
               textAlign: TextAlign.start,
               text: new TextSpan(
                 children: [
-                  new TextSpan(text: 'Pedido: ',
+                  new TextSpan(text: 'Pedido ',
                     style: TextStyle(
                       fontFamily: "Hellix",
                       color: CustomColors.volcanicBlue,
                       fontSize: 48,
                       fontWeight: FontWeight.w600,),
                   ),
-                  new TextSpan(text: orderId,
+                  new TextSpan(text: "#${orderId}",
                     style: TextStyle(
                       fontFamily: "Hellix",
                       color: CustomColors.volcanicBlue,
-                      fontSize: 24,
+                      fontSize: 32,
                       fontWeight: FontWeight.w600,),
                   ),
                 ],

@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuoteModel {
   String? id;
+  int? consecutive;
   String? customerId;
   String? alias;
-  String? name;
-  String? address;
-  String? tel;
   double? subTotal;
   double? discount;
   double? tax;
@@ -18,11 +16,9 @@ class QuoteModel {
 
   QuoteModel(
       {this.id,
+        this.consecutive,
         this.customerId,
         this.alias,
-        this.name,
-        this.address,
-        this.tel,
         this.subTotal = 0.0,
         this.discount = 0.0,
         this.tax = 0.0,
@@ -34,11 +30,9 @@ class QuoteModel {
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
+    consecutive = json['consecutive'];
     customerId = json['customer_id'];
     alias = json['alias'];
-    name = json['name'];
-    address = json['address'];
-    tel = json['tel'];
     subTotal = json['sub_total'];
     discount = json['discount'];
     tax = json['tax'];
@@ -61,11 +55,9 @@ class QuoteModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['consecutive'] = this.consecutive;
     data['customer_id'] = this.customerId;
     data['alias'] = this.alias;
-    data['name'] = this.name;
-    data['address'] = this.address;
-    data['tel'] = this.tel;
     data['sub_total'] = this.subTotal;
     data['discount'] = this.discount;
     data['tax'] = this.tax;

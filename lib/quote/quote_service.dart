@@ -42,8 +42,6 @@ class QuoteService with ReactiveServiceMixin {
     quote = QuoteModel(
       customerId: data['customer_id'],
       alias: data['alias'],
-      address: data['address'],
-      tel: data['tel'],
       subTotal: data['sub_total'],
       discount: data['discount'],
       tax: data['tax'],

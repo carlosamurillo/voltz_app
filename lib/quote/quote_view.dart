@@ -241,18 +241,18 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
             textAlign: TextAlign.start,
             text: new TextSpan(
               children: [
-                new TextSpan(text: 'Cotización: ',
+                new TextSpan(text: 'Cotización ',
                   style: TextStyle(
                     fontFamily: "Hellix",
                     color: CustomColors.volcanicBlue,
                     fontSize: 48,
                     fontWeight: FontWeight.w600,),
                 ),
-                new TextSpan(text: model.quote.id,
+                new TextSpan(text: "#${model.quote.consecutive.toString()}",
                   style: TextStyle(
                     fontFamily: "Hellix",
                     color: CustomColors.volcanicBlue,
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.w600,),
                 ),
               ],
