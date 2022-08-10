@@ -14,7 +14,7 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: _config.firebaseOptions,
   );
-  String quoteId = Uri.base.queryParameters["id"]!;
+  String quoteId = Uri.base.queryParameters["cotz"]!;
   String? version = Uri.base.queryParameters["version"];
   print("el id cotizacion es : ${quoteId}");
   setupLocator();

@@ -1,11 +1,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart';
-import 'package:maketplace/quote/quote_model.dart';
-import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 

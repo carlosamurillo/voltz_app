@@ -9,6 +9,8 @@ class CustomColors {
 
   static const Color volcanicBlue = Color(0xFF394055);
 
+  static const Color volcanicGrey = Color(0xFF686868);
+
   static const Color energyYellow_20 = Color(0xFFFDF5D5);
   static const Color energyYellow_40 = Color(0xFFFCEAAC);
   static const Color energyYellow_60 = Color(0xFFFAE082);
@@ -21,6 +23,7 @@ class CustomColors {
   static const Color redAlert = Color(0xFFF4493E);
   static const Color orangeAlert = Color(0xFFFFA620);
   static const Color blackContrast = Color(0xFF212121);
+
 
   static const Color backgroundCanvas = Color(0xFFF5F5F5);
 }

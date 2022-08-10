@@ -435,7 +435,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-                      child: Text( model.order!.detail![widget.i].productRequested!,
+                      child: Text( model.order!.detail![widget.i].productRequested!.toUpperCase(),
                         style: CustomStyles.styleWhiteUno,
                       ),
                     ),
@@ -509,6 +509,8 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                               padding: const EdgeInsets.all(8),
                               alignment: Alignment.center,
                               child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -517,11 +519,13 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                       Text( model.order!.detail![widget.i].productsOrdered![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                         style: CustomStyles.styleVolcanicBlueDos,
                                         textAlign: TextAlign.left,
+                                        overflow: TextOverflow.clip,
                                       ),
                                       if (model.order!.detail![widget.i].productsOrdered![b].subBrand != null ) ...[
                                         Text(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                           style: CustomStyles.styleVolcanicBlueDos,
                                           textAlign: TextAlign.left,
+                                          overflow: TextOverflow.clip,
                                         ),
                                       ]
                                     ],
@@ -537,9 +541,6 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                     model.order!.detail![widget.i].productsOrdered![b].quantity.toString(),
                                     style: CustomStyles.styleVolcanicBlueDos,
                                     textAlign: TextAlign.left,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
                                   ),
                                   Text(
                                     model.order!.detail![widget.i].productsOrdered![b].saleUnit!,
@@ -564,7 +565,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                           textAlign: TextAlign.right,
                                         ),
                                         Text(
-                                          currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!),
+                                          "${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u",
                                           style: CustomStyles.styleVolcanicUno,
                                           textAlign: TextAlign.right,
                                         ),
