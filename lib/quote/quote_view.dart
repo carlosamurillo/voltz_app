@@ -84,10 +84,12 @@ class _QuoteViewState extends State<QuoteView> {
                       ),
                     ),
                   ),
-                  _QuoteTotals(tax: model.quote.tax!, total: model.quote.total!,
+                  if(model.version != 'original') ...[
+                    _QuoteTotals(tax: model.quote.tax!, total: model.quote.total!,
                       subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
                       quoteId: model.quote.id!,
                       onAcceptQuote: _acceptQuote,),
+                  ],
                 ],
               ),
             ),
@@ -478,8 +480,8 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                       Container(
                           width: double.infinity,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(26),),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(26),),
                             color: CustomColors.safeBlue,
                           ),
                           child: Material(
@@ -513,19 +515,21 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(Radius.circular(26),),
-                            color: widget.isSaveActive == true ? CustomColors.energyYellow : Colors.grey.withOpacity(0.2),
+                            color: widget.isSaveActive == true ? CustomColors.energyYellow : CustomColors.volcanicGrey,
                           ),
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
                               borderRadius: const BorderRadius.all(Radius.circular(26)),
-                              hoverColor: CustomColors.energyYellowHover,
                               overlayColor: MaterialStateProperty.resolveWith((states) {
                                 // If the button is pressed, return green, otherwise blue
                                 if (states.contains(MaterialState.pressed)) {
-                                  return Colors.grey.withOpacity(0.2);
+                                  return CustomColors.volcanicGrey;
                                 }
-                                return Colors.grey.withOpacity(0.2);
+                                if (states.contains(MaterialState.hovered)) {
+                                  return widget.isSaveActive == true ? CustomColors.energyYellowHover : CustomColors.volcanicGrey;
+                                }
+                                return CustomColors.volcanicGrey;
                               }),
                               onTap: widget.isSaveActive == true ? () => context.read<QuoteViewModel>().saveQuote() : null,
                               child: Container(
@@ -536,8 +540,8 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('Guardar cambios' , style: widget.isSaveActive == true ? CustomStyles.styleBlackContrastUno : CustomStyles.styleWhiteDos,)
+                                  children: const [
+                                    Text('Guardar cambios' , style: CustomStyles.styleBlackContrastUno,)
                                   ],
                                 ),
                               ),
@@ -567,51 +571,75 @@ class _QuoteTableNotInclude extends HookViewModelWidget<QuoteViewModel> {
       ) {
     return Container(
       padding: const EdgeInsets.only(left: 60, right: 60, top: 16, bottom: 40 ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
-              color: CustomColors.redAlert,
-            ),
-            child: Row(
-              children: [
-                Text(
-                  "PRODUCTOS NO INCLUIDOS EN TU COTIZACIÓN",
-                  style: CustomStyles.styleWhiteUno,
-                ),
-                const Spacer(),
-              ],
-            ),
-          ),
-          if(model.quote.discardedProducts != null) ...[
-            for(int i = 0; i <= model.quote.discardedProducts!.length - 1 ; i++) ...{
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                decoration: BoxDecoration(
-                  borderRadius: i == 3 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    Text(
-                      model.quote.discardedProducts![i].requestedProducts!,
-                      style: CustomStyles.styleVolcanicUno,
-                      textAlign: TextAlign.left,
-                    ),
-                    const Spacer(),
-                    Text(
-                      model.quote.discardedProducts![i].reason!,
-                      style: CustomStyles.styleVolcanicUno,
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 2,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                color: CustomColors.redAlert,
               ),
-            }
-          ]
-        ],
+              child: Row(
+                children: [
+                  Text(
+                    "PRODUCTOS NO INCLUIDOS EN TU COTIZACIÓN",
+                    style: CustomStyles.styleWhiteUno,
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              height: 20,
+            ),
+            if(model.quote.discardedProducts != null) ...[
+              for(int i = 0; i <= model.quote.discardedProducts!.length - 1 ; i++) ...{
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+                  decoration: BoxDecoration(
+                    borderRadius: i == 3 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          model.quote.discardedProducts![i].requestedProducts!.toUpperCase(),
+                          style: CustomStyles.styleVolcanicUno,
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.clip,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          model.quote.discardedProducts![i].reason!,
+                          style: CustomStyles.styleVolcanicUno,
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.clip,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              }
+            ],
+            Container(
+              height: 20,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)),
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -701,7 +729,7 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                     decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
-                    child: Text( model.quote.detail![widget.i].productRequested!,
+                    child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ),
@@ -798,23 +826,29 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                             padding: const EdgeInsets.all(8),
                             alignment: Alignment.center,
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children:  [
-                                    Text( model.quote.detail![widget.i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                                      style: CustomStyles.styleVolcanicBlueDos,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                    if (model.quote.detail![widget.i].productsSuggested![b].subBrand != null ) ...[
-                                      Text(  model.quote.detail![widget.i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children:  [
+                                      Text( model.quote.detail![widget.i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                         style: CustomStyles.styleVolcanicBlueDos,
                                         textAlign: TextAlign.left,
+                                        overflow: TextOverflow.clip,
                                       ),
-                                    ]
-                                  ],
-                                ),
+                                      if (model.quote.detail![widget.i].productsSuggested![b].subBrand != null ) ...[
+                                        Text(  model.quote.detail![widget.i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                          style: CustomStyles.styleVolcanicBlueDos,
+                                          textAlign: TextAlign.left,
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ]
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -849,7 +883,7 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                         textAlign: TextAlign.right,
                                       ),
                                       Text(
-                                        currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!),
+                                        "${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u",
                                         style: CustomStyles.styleVolcanicUno,
                                         textAlign: TextAlign.right,
                                       ),

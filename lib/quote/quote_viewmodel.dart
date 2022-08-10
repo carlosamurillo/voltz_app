@@ -33,7 +33,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   void _listenChanges() async {
     DocumentReference reference;
     if(version == "original"){
-      reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('original').doc(_quoteId);
+      reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('version').doc(_quoteId);
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
