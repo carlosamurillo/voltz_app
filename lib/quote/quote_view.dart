@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/quote/quote_view_mobile.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
@@ -53,7 +54,7 @@ class _QuoteViewState extends State<QuoteView> {
         } else {
           return Scaffold(
             backgroundColor: CustomColors.backgroundCanvas,
-            body: Container(
+            body: MediaQuery.of(context).size.width >= 480 ? Container(
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
@@ -90,6 +91,43 @@ class _QuoteViewState extends State<QuoteView> {
                       quoteId: model.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                   ],
+                ],
+              ),
+            )
+                : // Version Mobile ***************** Version Mobile
+            Container(
+              padding: EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), ),
+                  const Divider(
+                    height: 1,
+                    color: CustomColors.grayBackground,
+                  ),
+                  if(model.version != 'original') ...[
+                    QuoteTotalsMobile(tax: model.quote.tax!, total: model.quote.total!,
+                      subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
+                      quoteId: model.quote.id!,
+                      onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
+
+                    ),
+                  ],
+                  const SizedBox(height: 16,),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          if(viewModel.quote.detail != null) ...[
+                            for(int i = 0; i <=
+                                viewModel.quote.detail!.length - 1; i++) ...{
+                              QuoteTableDetailMobile(i: i, listener: _updateTotals,),
+                            },
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -422,7 +460,7 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8,),
+                /*const SizedBox(height: 8,),
                 Row(
                   children: [
                     Text(
@@ -435,7 +473,7 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
-                ),
+                ),*/
                 const SizedBox(height: 8,),
                 Row(
                   children: [
@@ -719,21 +757,22 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                     alignment: Alignment.center,
                     width: 56,
                     child: Text(
-                      (widget.i + 1).toString(),
+                      model.quote.detail![widget.i].position!.toString(),
                       style: CustomStyles.styleBlueUno,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
-                      style: CustomStyles.styleWhiteUno,
+                  Expanded(
+                    child:Container(
+                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
+                        style: CustomStyles.styleWhiteUno, overflow: TextOverflow.clip,
+                      ),
                     ),
                   ),
-                  const Spacer(),
                   if(context.read<QuoteViewModel>().version != 'original') ...[
                     IconButton(
                         icon: SvgPicture.asset(

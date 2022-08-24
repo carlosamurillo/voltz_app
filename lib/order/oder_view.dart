@@ -10,6 +10,7 @@ import 'package:stacked/stacked.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'order_view_mobile.dart';
 import 'order_viewmodel.dart';
 
 class OrderView extends StatefulWidget {
@@ -48,7 +49,7 @@ class _OrderViewState extends State<OrderView> {
           } else {
             return Scaffold(
               backgroundColor: CustomColors.backgroundCanvas,
-              body: Container(
+              body: MediaQuery.of(context).size.width >= 480 ? Container(
                 padding: EdgeInsets.all(0),
                 child: Column(
                   children: [
@@ -80,6 +81,38 @@ class _OrderViewState extends State<OrderView> {
                     ),
                     _OrderTotals(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
                       subTotal: viewModel.order!.subTotal!, discount: viewModel.order!.discount!,),
+                  ],
+                ),
+              ) :
+              Container(
+                padding: EdgeInsets.all(0),
+                child: Column(
+                  children: [
+                    OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
+                    const Divider(
+                      height: 1,
+                      color: CustomColors.grayBackground,
+                    ),
+                    OrderTotalsMobile(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
+                      subTotal: viewModel.order!.subTotal!, discount: viewModel.order!.discount!,
+                      quoteId: viewModel.order!.id!, totalProducts: viewModel.order!.detail!.length,
+                    ),
+                    const SizedBox(height: 24,),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        child: Column(
+                          children: [
+                            if(viewModel.order!.detail != null) ...[
+                              for(int i = 0; i <=
+                                  viewModel.order!.detail!.length - 1; i++) ...{
+                                OrderTableDetailMobile(i: i,),
+                              },
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

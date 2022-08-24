@@ -44,12 +44,14 @@ class QuoteModel {
       json['detail'].forEach((v) {
         detail!.add(new Detail.fromJson(v));
       });
+      detail!.sort((a, b) => a.position!.compareTo(b.position!));
     }
     if (json['discarded_products'] != null) {
       discardedProducts = <DiscardedProducts>[];
       json['discarded_products'].forEach((v) {
         discardedProducts!.add(new DiscardedProducts.fromJson(v));
       });
+      discardedProducts!.sort((a, b) => a.position!.compareTo(b.position!));
     }
   }
 
@@ -78,11 +80,13 @@ class QuoteModel {
 class Detail {
   String? productRequested;
   List<ProductsSuggested>? productsSuggested;
+  int? position;
 
-  Detail({this.productRequested, this.productsSuggested});
+  Detail({this.productRequested, this.productsSuggested, this.position});
 
   Detail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
+    position = json['position'];
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
       json['products_suggested'].forEach((v) {
@@ -98,6 +102,7 @@ class Detail {
       data['products_suggested'] =
           this.productsSuggested!.map((v) => v.toJson()).toList();
     }
+    data['position'] = this.position;
     return data;
   }
 }
@@ -126,7 +131,7 @@ class ProductsSuggested {
         this.saleValue,
         this.saleUnit,
         this.salePrice = 0.0,
-        this.selected});
+        this.selected,});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -162,18 +167,21 @@ class ProductsSuggested {
 class DiscardedProducts {
   String? requestedProducts;
   String? reason;
+  int? position;
 
   DiscardedProducts({this.requestedProducts, this.reason});
 
   DiscardedProducts.fromJson(Map<String, dynamic> json) {
     requestedProducts = json['requested_products'];
     reason = json['reason'];
+    position = json['position'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['requested_products'] = this.requestedProducts;
     data['reason'] = this.reason;
+    data['position'] = this.position;
     return data;
   }
 }
