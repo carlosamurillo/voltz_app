@@ -460,7 +460,7 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8,),
+                /*const SizedBox(height: 8,),
                 Row(
                   children: [
                     Text(
@@ -473,7 +473,7 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
-                ),
+                ),*/
                 const SizedBox(height: 8,),
                 Row(
                   children: [
@@ -762,16 +762,17 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
-                      style: CustomStyles.styleWhiteUno,
+                  Expanded(
+                    child:Container(
+                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
+                        style: CustomStyles.styleWhiteUno, overflow: TextOverflow.clip,
+                      ),
                     ),
                   ),
-                  const Spacer(),
                   if(context.read<QuoteViewModel>().version != 'original') ...[
                     IconButton(
                         icon: SvgPicture.asset(
