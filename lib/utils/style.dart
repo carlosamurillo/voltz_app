@@ -24,4 +24,6 @@ abstract class CustomStyles {
   static const TextStyle styleMobileVolcanic700 = TextStyle(color: CustomColors.volcanic, fontWeight: FontWeight.w700, fontSize: 12, fontFamily: "Hellix");
   static const TextStyle styleMobileVolcanic400 = TextStyle(color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Hellix");
   static const TextStyle styleMobileWhite500 = TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14, fontFamily: "Hellix");
+  static const TextStyle styleMobileVolcanicBlue18x600 = TextStyle(color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: "Hellix");
+
 }

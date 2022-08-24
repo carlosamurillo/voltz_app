@@ -99,25 +99,25 @@ class _QuoteViewState extends State<QuoteView> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
+                  QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), ),
+                  const Divider(
+                    height: 1,
+                    color: CustomColors.grayBackground,
+                  ),
+                  if(model.version != 'original') ...[
+                    QuoteTotalsMobile(tax: model.quote.tax!, total: model.quote.total!,
+                      subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
+                      quoteId: model.quote.id!,
+                      onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
+
+                    ),
+                  ],
+                  const SizedBox(height: 16,),
                   Expanded(
                     child: SingleChildScrollView(
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), ),
-                          const Divider(
-                            height: 1,
-                            color: CustomColors.grayBackground,
-                          ),
-                          if(model.version != 'original') ...[
-                            QuoteTotalsMobile(tax: model.quote.tax!, total: model.quote.total!,
-                              subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
-                              quoteId: model.quote.id!,
-                              onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
-                              
-                            ),
-                          ],
-                          const SizedBox(height: 24,),
                           if(viewModel.quote.detail != null) ...[
                             for(int i = 0; i <=
                                 viewModel.quote.detail!.length - 1; i++) ...{

@@ -8,23 +8,20 @@ import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:provider/provider.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'order_viewmodel.dart';
 
 
-class QuoteTableDetailMobile extends StatefulWidget {
-  QuoteTableDetailMobile({Key? key, required this.i, required this.listener}) : super(key: key);
+class OrderTableDetailMobile extends StatefulWidget {
+  OrderTableDetailMobile({Key? key, required this.i,}) : super(key: key);
   int i;
-  final VoidCallback listener;
 
   @override
-  _QuoteTableDetailMobileState createState() => _QuoteTableDetailMobileState();
+  _OrderTableDetailMobileState createState() => _OrderTableDetailMobileState();
 }
 
-class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
-  late QuoteViewModel model;
+class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
+  late OrderViewModel model;
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   TextEditingController textEditingController = TextEditingController();
@@ -32,7 +29,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
   @override
   void initState() {
     super.initState();
-    model = context.read<QuoteViewModel>();
+    model = context.read<OrderViewModel>();
   }
 
   @override
@@ -48,18 +45,10 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
       }
       return CustomColors.safeBlue;
     };
-    Color headerColor = CustomColors.volcanicBlue;
-    for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) {
-      if (model.quote.detail![widget.i].productsSuggested![b].selected == true) {
-        headerColor =  CustomColors.safeBlue;
-        break;
-      } else {
-        headerColor = CustomColors.volcanicBlue;
-      }
-    }
+    Color headerColor = CustomColors.safeBlue;
 
     return Container(
-        padding: const EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8 ),
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4 ),
         child:  Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -79,48 +68,26 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex:1,
-                      child: Text( model.quote.detail![widget.i].productRequested!,
-                        style: CustomStyles.styleMobileWhite500, overflow: TextOverflow.clip,
-                      )
+                        flex:1,
+                        child: Text( model.order!.detail![widget.i].productRequested!,
+                          style: CustomStyles.styleMobileWhite500, overflow: TextOverflow.clip,
+                        )
                     ),
                   ],
                 ),
               ),
-              for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) ...{
+              for(int b = 0; b <= model.order!.detail![widget.i].productsOrdered!.length -1; b++) ...{
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   decoration: BoxDecoration(
-                    borderRadius: b == model.quote.detail![widget.i].productsSuggested!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                    color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
+                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                    color: CustomColors.blueBackground,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 36,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              child: context.read<QuoteViewModel>().version != 'original' ? Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(getColor),
-                                value: model.quote.detail![widget.i].productsSuggested![b].selected,
-                                onChanged: (bool? value) async {
-                                  setState(() {
-                                    model.onSelectedSku(value!, widget.i, b);
-                                    _updateTotals();
-                                  });
-                                },
-                              ) : Container(),
-                            ),
-                            const SizedBox(width: 16),
-                          ],
-                        ) ,
-                      ),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,14 +96,14 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                               textAlign: TextAlign.start,
                               text: TextSpan(
                                 children: [
-                                  TextSpan(text: model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                  TextSpan(text: model.order!.detail![widget.i].productsOrdered![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                     style: CustomStyles.styleMobileVolcanic400,
                                   ),
-                                  TextSpan(text: " - ${model.quote.detail![widget.i].productsSuggested![b].brand!}",
+                                  TextSpan(text: " - ${model.order!.detail![widget.i].productsOrdered![b].brand!}",
                                     style: CustomStyles.styleMobileVolcanic700,
                                   ),
-                                  if(model.quote.detail![widget.i].productsSuggested![b].subBrand != null) ...[
-                                    TextSpan(text: ", ${model.quote.detail![widget.i].productsSuggested![b].subBrand!}",
+                                  if(model.order!.detail![widget.i].productsOrdered![b].subBrand != null) ...[
+                                    TextSpan(text: ", ${model.order!.detail![widget.i].productsOrdered![b].subBrand!}",
                                       style: CustomStyles.styleMobileVolcanic700,
                                     ),
                                   ]
@@ -147,12 +114,15 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                               textAlign: TextAlign.start,
                               text: TextSpan(
                                 children: [
-                                  TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
+
+                                  TextSpan(text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice! * model.order!.detail![widget.i].productsOrdered![b].quantity!),
                                     style: CustomStyles.styleMobileBlue700,
                                   ),
-                                  TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
+                                  TextSpan(text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u)",
                                     style: CustomStyles.styleMobileBlue400,
                                   ),
+
+
                                 ],
                               ),
                             ),
@@ -160,8 +130,12 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                         ),
                       ),
                       SizedBox(
-                        width: 72,
-                        child: _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
+                        width: 30,
+                        child: Text(
+                          model.order!.detail![widget.i].productsOrdered![b].quantity.toString(),
+                          style: CustomStyles.styleVolcanicBlueDos,
+                          textAlign: TextAlign.right,
+                        ),
                       )
                     ],
                   ),
@@ -173,15 +147,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
     );
   }
 
-  _updateTotals() async {
-    if (mounted) {
-      model.calculateTotals();
-      widget.listener();
-    }
-  }
-
 }
-
 
 class _QuantityWidget extends StatefulWidget {
   const _QuantityWidget({Key? key, required this.i, required this.b, required this.listenerUpdateTotals}) : super(key: key);
@@ -282,12 +248,10 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
   }
 }
 
-
-class QuoteHeaderMobile extends StatelessWidget {
-  QuoteHeaderMobile({required this.total, required this.onAcceptQuote, required this.consecutive});
+class OrderHeaderMobile extends StatelessWidget {
+  OrderHeaderMobile({required this.total, required this.consecutive});
   double total;
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  final VoidCallback onAcceptQuote;
   String consecutive;
 
   @override
@@ -309,7 +273,7 @@ class QuoteHeaderMobile extends StatelessWidget {
             textAlign: TextAlign.start,
             text: TextSpan(
               children: [
-                const TextSpan(text: 'Cotización ',
+                const TextSpan(text: 'Pedido ',
                   style: TextStyle(
                     fontFamily: "Hellix",
                     color: CustomColors.volcanicBlue,
@@ -332,25 +296,21 @@ class QuoteHeaderMobile extends StatelessWidget {
   }
 }
 
-
-
-class QuoteTotalsMobile extends StatefulWidget {
-  const QuoteTotalsMobile({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.discount, this.isSaveActive = false, required this.quoteId, required this.onAcceptQuote, required this.totalProducts}) : super(key: key, );
+class OrderTotalsMobile extends StatefulWidget {
+  const OrderTotalsMobile({Key? key, required this.tax, required this.total, required this.subTotal,
+    required this.discount, required this.quoteId, required this.totalProducts}) : super(key: key, );
   final double tax;
   final double total;
   final double subTotal;
   final double discount;
-  final bool isSaveActive;
   final String quoteId;
   final int totalProducts;
-  final VoidCallback onAcceptQuote;
 
   @override
-  _QuoteTotalsMobileState createState() => _QuoteTotalsMobileState();
+  _OrderTotalsMobileState createState() => _OrderTotalsMobileState();
 }
 
-class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
+class _OrderTotalsMobileState extends State<OrderTotalsMobile> {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
@@ -363,68 +323,22 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
           Expanded(
             flex: 2,
             child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "${widget.totalProducts} productos",
-                  style: CustomStyles.styleWhiteUno,
-                ),
-                Text(
-                  "${currencyFormat.format(widget.total)} (iva incluido)",
-                  style: CustomStyles.styleWhiteUno,
-                ),
-              ],
+              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${widget.totalProducts} productos",
+                    style: CustomStyles.styleWhiteUno,
+                  ),
+                  Text(
+                    "${currencyFormat.format(widget.total)} (iva incluido)",
+                    style: CustomStyles.styleWhiteUno,
+                  ),
+                ],
+              ),
             ),
           ),
-          ),
-          if(context.read<QuoteViewModel>().version != 'original') ...[
-            Expanded(
-              child: Container(
-                  width: 107,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                          width: 107,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(26),),
-                            color: CustomColors.energyYellow,
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(26)),
-                              hoverColor: CustomColors.energyYellow,
-                              onTap: (){
-                                _Dialogs dialog = _Dialogs();
-                                dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), widget.quoteId);
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                alignment: Alignment.center,
-                                child:  Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('Aceptar', style: CustomStyles.styleMobileVolcanicBlue18x600,)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                    ],
-                  )
-              ),
-            )
-          ],
         ],
       ),
     );
