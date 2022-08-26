@@ -89,9 +89,16 @@ class Detail {
     position = json['position'];
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
-      json['products_suggested'].forEach((v) {
-        productsSuggested!.add(new ProductsSuggested.fromJson(v));
-      });
+      bool selected = false;
+      for(int a = 0; a < json['products_suggested'].length; a++) {
+        if(json['products_suggested'][a]['selected']){
+          selected = true;
+        }
+        productsSuggested!.add(new ProductsSuggested.fromJson(json['products_suggested'][a]));
+        if ( selected == false) {
+          productsSuggested![0].selected = true;
+        }
+      }
     }
   }
 
@@ -114,6 +121,7 @@ class ProductsSuggested {
   String? skuDescription;
   String? brand;
   String? subBrand;
+  String? techFile;
   int? quantity;
   double? saleValue;
   String? saleUnit;
@@ -140,6 +148,7 @@ class ProductsSuggested {
     skuDescription = json['sku_description'];
     brand = json['brand'];
     subBrand = json['sub_brand'];
+    techFile = json['tech_file'];
     quantity = json['quantity'];
     saleValue = json['sale_value'];
     saleUnit = json['sale_unit'];
@@ -155,6 +164,7 @@ class ProductsSuggested {
     data['sku_description'] = this.skuDescription;
     data['brand'] = this.brand;
     data['sub_brand'] = this.subBrand;
+    data['tech_file'] = this.techFile;
     data['quantity'] = this.quantity;
     data['sale_value'] = this.saleValue;
     data['sale_unit'] = this.saleUnit;

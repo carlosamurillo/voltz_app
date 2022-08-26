@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -28,6 +29,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   TextEditingController textEditingController = TextEditingController();
+  bool opened = false;
 
   @override
   void initState() {
@@ -37,6 +39,10 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setApplicationSwitcherDescription(ApplicationSwitcherDescription(
+      label: "Cotización #${model.quote.consecutive}",
+      primaryColor: Theme.of(context).primaryColor.value, // This line is required
+    ));
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -58,21 +64,20 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
       }
     }
 
+    var productsFiltered = model.quote.detail![widget.i].productsSuggested!.where((product) => product.selected! == true).toList();
+
     return Container(
         padding: const EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8 ),
-        child:  Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 2,
+        child:  Container(
+          color: Colors.transparent,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                  borderRadius: BorderRadius.only(topLeft:Radius.circular(12), topRight: Radius.circular(12)),
                   color: headerColor,
                 ),
                 child: Row(
@@ -80,7 +85,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                   children: [
                     Expanded(
                       flex:1,
-                      child: Text( model.quote.detail![widget.i].productRequested!,
+                      child: Text('${(widget.i + 1).toString()}. ${model.quote.detail![widget.i].productRequested!}',
                         style: CustomStyles.styleMobileWhite500, overflow: TextOverflow.clip,
                       )
                     ),
@@ -88,85 +93,118 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                 ),
               ),
               for(int b = 0; b <= model.quote.detail![widget.i].productsSuggested!.length -1; b++) ...{
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: b == model.quote.detail![widget.i].productsSuggested!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                    color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 36,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              child: context.read<QuoteViewModel>().version != 'original' ? Checkbox(
-                                checkColor: Colors.white,
-                                fillColor: MaterialStateProperty.resolveWith(getColor),
-                                value: model.quote.detail![widget.i].productsSuggested![b].selected,
-                                onChanged: (bool? value) async {
-                                  setState(() {
-                                    model.onSelectedSku(value!, widget.i, b);
-                                    _updateTotals();
-                                  });
-                                },
-                              ) : Container(),
-                            ),
-                            const SizedBox(width: 16),
-                          ],
-                        ) ,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(text: model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                                    style: CustomStyles.styleMobileVolcanic400,
-                                  ),
-                                  TextSpan(text: " - ${model.quote.detail![widget.i].productsSuggested![b].brand!}",
-                                    style: CustomStyles.styleMobileVolcanic700,
-                                  ),
-                                  if(model.quote.detail![widget.i].productsSuggested![b].subBrand != null) ...[
-                                    TextSpan(text: ", ${model.quote.detail![widget.i].productsSuggested![b].subBrand!}",
+
+                if(opened || (opened == false && model.quote.detail![widget.i].productsSuggested![b].selected!)) ...{
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                    decoration: BoxDecoration(
+                      //borderRadius: b == model.quote.detail![widget.i].productsSuggested!.length -1 ? (model.quote.detail![widget.i].productsSuggested!.length == 1 ? BorderRadius.only(bottomLeft:Radius.circular(12), bottomRight:Radius.circular(12)) : BorderRadius.only(bottomLeft:Radius.circular(12),)) : (opened == true ? BorderRadius.only(bottomLeft:Radius.circular(12),) : null),
+
+                      color: model.quote.detail![widget.i].productsSuggested![b].selected == false ? Colors.white : CustomColors.blueBackground,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 36,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 20,
+                                child: context.read<QuoteViewModel>().version != 'original' ? Checkbox(
+                                  checkColor: Colors.white,
+                                  fillColor: MaterialStateProperty.resolveWith(getColor),
+                                  value: model.quote.detail![widget.i].productsSuggested![b].selected,
+                                  onChanged: (bool? value) async {
+                                    setState(() {
+                                      model.onSelectedSku(value!, widget.i, b);
+                                      _updateTotals();
+                                    });
+                                  },
+                                ) : Container(),
+                              ),
+                              const SizedBox(width: 16),
+                            ],
+                          ) ,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                textAlign: TextAlign.start,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(text: model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                      style: CustomStyles.styleMobileVolcanic400,
+                                    ),
+                                    TextSpan(text: " - ${model.quote.detail![widget.i].productsSuggested![b].brand!}",
                                       style: CustomStyles.styleMobileVolcanic700,
                                     ),
-                                  ]
-                                ],
+                                    if(model.quote.detail![widget.i].productsSuggested![b].subBrand != null) ...[
+                                      TextSpan(text: ", ${model.quote.detail![widget.i].productsSuggested![b].subBrand!}",
+                                        style: CustomStyles.styleMobileVolcanic700,
+                                      ),
+                                    ]
+                                  ],
+                                ),
                               ),
-                            ),
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
-                                    style: CustomStyles.styleMobileBlue700,
-                                  ),
-                                  TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
-                                    style: CustomStyles.styleMobileBlue400,
-                                  ),
-                                ],
+                              RichText(
+                                textAlign: TextAlign.start,
+                                text: TextSpan(
+                                  children: [
+                                    TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
+                                      style: CustomStyles.styleMobileBlue700,
+                                    ),
+                                    TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
+                                      style: CustomStyles.styleMobileBlue400,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        SizedBox(
+                          width: 72,
+                          child: _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
+                        )
+                      ],
+                    ),
+                  ),
+                },
+              },
+              if((model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) > 0) ...{
+                Container(
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(bottomLeft:Radius.circular(12), bottomRight: Radius.circular(12)),
+                      color: CustomColors.volcanicBlue,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell (
+                      onTap: () => {
+                        setState(() {
+                          opened = !opened;
+                        })
+                      },
+                      borderRadius: const BorderRadius.only(bottomLeft:Radius.circular(12), bottomRight: Radius.circular(12)),
+                      child: FractionallySizedBox(
+                          alignment: Alignment.centerRight,
+                          widthFactor: 0.4,
+                          child: SizedBox(
+                              width: double.infinity,
+                              height: 33,
+                              child: Center(child: Text(opened ? "Ocultar opciones" : (model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) >= 2 ? "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opciones más" : "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opción más",
+                                style: CustomStyles.styleMobileWhite14600,),)
+                          )
                       ),
-                      SizedBox(
-                        width: 72,
-                        child: _QuantityWidget(i: widget.i, b: b, listenerUpdateTotals: _updateTotals),
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              }
+              },
             ],
           ),
         )
