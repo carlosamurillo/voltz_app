@@ -1,5 +1,6 @@
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class QuoteTableDetailMobile extends StatefulWidget {
@@ -164,6 +166,26 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                                   ],
                                 ),
                               ),
+                              if(model.quote.detail![widget.i].productsSuggested![b].techFile != null) ...{
+                                RichText(
+                                  textAlign: TextAlign.start,
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(text: "Ficha técnica.",
+                                          recognizer: TapGestureRecognizer()..onTap =  () async{
+                                            var url = Uri.parse(model.quote.detail![widget.i].productsSuggested![b].techFile!);
+                                            if (await canLaunchUrl(url)) {
+                                              await launchUrl(url);
+                                            } else {
+                                              throw 'Could not launch $url';
+                                            }
+                                          },
+                                        style: CustomStyles.styleMobileHyperlink14600,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              },
                             ],
                           ),
                         ),

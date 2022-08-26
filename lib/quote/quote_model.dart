@@ -148,7 +148,7 @@ class ProductsSuggested {
     skuDescription = json['sku_description'];
     brand = json['brand'];
     subBrand = json['sub_brand'];
-    techFile = json['tech_file'];
+    techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
     quantity = json['quantity'];
     saleValue = json['sale_value'];
     saleUnit = json['sale_unit'];

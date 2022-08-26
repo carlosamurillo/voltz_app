@@ -26,4 +26,5 @@ abstract class CustomStyles {
   static const TextStyle styleMobileWhite500 = TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14, fontFamily: "Hellix");
   static const TextStyle styleMobileVolcanicBlue18x600 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: "Hellix");
   static const TextStyle styleMobileWhite14600 = TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, fontFamily: "Hellix");
+  static const TextStyle styleMobileHyperlink14600 = TextStyle(decoration: TextDecoration.underline, fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, fontFamily: "Hellix");
 }
