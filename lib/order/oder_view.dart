@@ -545,33 +545,37 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children:  [
-                                      Text( model.order!.detail![widget.i].productsOrdered![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                                        style: CustomStyles.styleVolcanicBlueDos,
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                      if (model.order!.detail![widget.i].productsOrdered![b].subBrand != null ) ...[
-                                        Text(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children:  [
+                                        Text( model.order!.detail![widget.i].productsOrdered![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                           style: CustomStyles.styleVolcanicBlueDos,
                                           textAlign: TextAlign.left,
                                           overflow: TextOverflow.clip,
                                         ),
-                                      ]
-                                    ],
+                                        if (model.order!.detail![widget.i].productsOrdered![b].subBrand != null ) ...[
+                                          Text(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                            style: CustomStyles.styleVolcanicBlueDos,
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.clip,
+                                          ),
+                                        ]
+                                      ],
+                                    ),
                                   ),
+
                                 ],
                               ),
                             ),
                             Container(
                               width: 158,
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    model.order!.detail![widget.i].productsOrdered![b].quantity.toString(),
+                                    '${model.order!.detail![widget.i].productsOrdered![b].quantity} ',
                                     style: CustomStyles.styleVolcanicBlueDos,
                                     textAlign: TextAlign.left,
                                   ),
