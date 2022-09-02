@@ -80,16 +80,26 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft:Radius.circular(12), topRight: Radius.circular(12)),
-                  color: headerColor,
+                  color: CustomColors.volcanicBlue,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      flex:1,
-                      child: Text('${(widget.i + 1).toString()}. ${model.quote.detail![widget.i].productRequested!}',
-                        style: CustomStyles.styleMobileWhite500, overflow: TextOverflow.clip,
-                      )
+                      flex: 1,
+                      child: RichText(
+                        textAlign: TextAlign.start,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(text: (widget.i + 1).toString(),
+                              style: CustomStyles.styleMobileYellow500,
+                            ),
+                            TextSpan(text: '. ${model.quote.detail![widget.i].productRequested!}',
+                              style: CustomStyles.styleMobileWhite500,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -171,7 +181,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                                   textAlign: TextAlign.start,
                                   text: TextSpan(
                                     children: [
-                                      TextSpan(text: "Ficha técnica.",
+                                      TextSpan(text: "VER FICHA TÉCNICA",
                                           recognizer: TapGestureRecognizer()..onTap =  () async{
                                             var url = Uri.parse(model.quote.detail![widget.i].productsSuggested![b].techFile!);
                                             if (await canLaunchUrl(url)) {
@@ -202,7 +212,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                 Container(
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(bottomLeft:Radius.circular(12), bottomRight: Radius.circular(12)),
-                      color: CustomColors.volcanicBlue,
+                      color: CustomColors.safeBlue,
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -344,16 +354,17 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
 
 
 class QuoteHeaderMobile extends StatelessWidget {
-  QuoteHeaderMobile({required this.total, required this.onAcceptQuote, required this.consecutive});
+  QuoteHeaderMobile({required this.total, required this.onAcceptQuote, required this.consecutive, required this.quoteId});
   double total;
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final VoidCallback onAcceptQuote;
   String consecutive;
+  String quoteId;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 24),
+      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 24),
       color: Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -365,7 +376,7 @@ class QuoteHeaderMobile extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(width: 16,),
-          RichText(
+          /*RichText(
             textAlign: TextAlign.start,
             text: TextSpan(
               children: [
@@ -385,7 +396,53 @@ class QuoteHeaderMobile extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          ),*/
+          if(context.read<QuoteViewModel>().version != 'original') ...[
+            Expanded(
+              child: Container(
+                  width: 107,
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                          width: 107,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(26),),
+                            color: CustomColors.safeBlue,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: const BorderRadius.all(Radius.circular(26)),
+                              hoverColor: CustomColors.energyYellow,
+                              onTap: (){
+                                _Dialogs dialog = _Dialogs();
+                                dialog.showAlertDialog(context, onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), quoteId);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                alignment: Alignment.center,
+                                child:  Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite18x600,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ],
+                  )
+              ),
+            )
+          ],
         ],
       ),
     );
@@ -416,7 +473,7 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: CustomColors.volcanicBlue,
+      color: CustomColors.energyYellow,
       padding: EdgeInsets.symmetric(vertical: 9, horizontal: 24),
       child: Row(
         children: [
@@ -425,66 +482,20 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
             child: Container(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   "${widget.totalProducts} productos",
-                  style: CustomStyles.styleWhiteUno,
+                  style: CustomStyles.styleMobileVolcanicBlue18x600,
                 ),
                 Text(
                   "${currencyFormat.format(widget.total)} (iva incluido)",
-                  style: CustomStyles.styleWhiteUno,
+                  style: CustomStyles.styleMobileVolcanicBlue18x600,
                 ),
               ],
             ),
           ),
           ),
-          if(context.read<QuoteViewModel>().version != 'original') ...[
-            Expanded(
-              child: Container(
-                  width: 107,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                          width: 107,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(26),),
-                            color: CustomColors.energyYellow,
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(26)),
-                              hoverColor: CustomColors.energyYellow,
-                              onTap: (){
-                                _Dialogs dialog = _Dialogs();
-                                dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), widget.quoteId);
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                alignment: Alignment.center,
-                                child:  Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('Aceptar', style: CustomStyles.styleMobileVolcanicBlue18x600,)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                    ],
-                  )
-              ),
-            )
-          ],
         ],
       ),
     );

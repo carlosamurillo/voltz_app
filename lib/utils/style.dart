@@ -1,30 +1,33 @@
 
 import 'package:flutter/material.dart';
 import 'package:maketplace/utils/custom_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class CustomStyles {
-  static const TextStyle styleBlueUno = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 24, fontFamily: "Hellix");
+  static TextStyle styleBlueUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 24,));
 
-  static const TextStyle styleWhiteUno = TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16, fontFamily: "Hellix");
-  static const TextStyle styleWhiteDos = TextStyle(fontStyle : FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16, fontFamily: "Hellix");
+  static TextStyle styleWhiteUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16,));
+  static TextStyle styleWhiteDos = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16,));
 
-  static const TextStyle styleVolcanicBlueUno = TextStyle(fontStyle: FontStyle.normal,color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 14, fontFamily: "Hellix");
-  static const TextStyle styleVolcanicBlueDos = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 14, fontFamily: "Hellix");
-  static const TextStyle styleVolcanicBlueTres = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 18, fontFamily: "Hellix");
+  static TextStyle styleVolcanicBlueUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal,color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 14,));
+  static TextStyle styleVolcanicBlueDos = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 14,));
+  static TextStyle styleVolcanicBlueTres = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 18,));
 
-  static const TextStyle styleVolcanicUno = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w600, fontSize: 16, fontFamily: "Hellix");
-  static const TextStyle styleVolcanicDos = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 12, fontFamily: "Hellix");
+  static TextStyle styleVolcanicUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w600, fontSize: 16,));
+  static TextStyle styleVolcanicDos = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 12,));
 
-  static const TextStyle styleBlackContrastUno = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.blackContrast, fontWeight: FontWeight.w800, fontSize: 16, fontFamily: "Hellix");
+  static TextStyle styleBlackContrastUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.blackContrast, fontWeight: FontWeight.w800, fontSize: 16,));
 
 
-  static const TextStyle styleMobileBlue700 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 12, fontFamily: "Hellix");
-  static const TextStyle styleMobileBlue400 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Hellix");
+  static TextStyle styleMobileBlue700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 12,));
+  static TextStyle styleMobileBlue400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w400, fontSize: 12,));
 
-  static const TextStyle styleMobileVolcanic700 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w700, fontSize: 12, fontFamily: "Hellix");
-  static const TextStyle styleMobileVolcanic400 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 12, fontFamily: "Hellix");
-  static const TextStyle styleMobileWhite500 = TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14, fontFamily: "Hellix");
-  static const TextStyle styleMobileVolcanicBlue18x600 = TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18, fontFamily: "Hellix");
-  static const TextStyle styleMobileWhite14600 = TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, fontFamily: "Monserrat" );
-  static const TextStyle styleMobileHyperlink14600 = TextStyle(decoration: TextDecoration.underline, fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, fontFamily: "Hellix");
+  static TextStyle styleMobileVolcanic700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w700, fontSize: 12, ));
+  static TextStyle styleMobileVolcanic400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 12, ));
+  static TextStyle styleMobileWhite500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14,));
+  static TextStyle styleMobileYellow500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.energyYellow, fontWeight: FontWeight.w500, fontSize: 14, ));
+  static TextStyle styleMobileVolcanicBlue18x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18, ));
+  static TextStyle styleMobileVolcanicWhite18x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18, ));
+  static TextStyle styleMobileWhite14600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, ));
+  static TextStyle styleMobileHyperlink14600 = GoogleFonts.montserrat(textStyle: const TextStyle(decoration: TextDecoration.underline, fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, ));
 }

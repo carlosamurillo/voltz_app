@@ -99,7 +99,7 @@ class _QuoteViewState extends State<QuoteView> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
-                  QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), ),
+                  QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), quoteId: model.quote.id! ),
                   const Divider(
                     height: 1,
                     color: CustomColors.grayBackground,
@@ -585,7 +585,7 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
-                                  children: const [
+                                  children: [
                                     Text('Guardar cambios' , style: CustomStyles.styleBlackContrastUno,)
                                   ],
                                 ),
