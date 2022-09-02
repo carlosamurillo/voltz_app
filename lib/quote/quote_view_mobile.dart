@@ -273,6 +273,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
   void initState() {
     super.initState();
     _model = context.read<QuoteViewModel>();
+    textEditingController.text = _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
     textEditingController.addListener(() {
       if(indicator == true) {
         _model.onUpdateQuantity(
@@ -289,60 +290,14 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     return Container(
       padding: EdgeInsets.all(8),
       width: 90,
-      child: context.read<QuoteViewModel>().version != 'original' ? NumberInputWithIncrementDecrement(
+      child: context.read<QuoteViewModel>().version != 'original' ?  TextField(
         controller: textEditingController,
-        initialValue: _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!,
-        onIncrement: (num newlyIncrementedValue) {
-          print('Newly incremented value is $newlyIncrementedValue');
-          //model.saveNewQuantity(widget.i, b, newlyIncrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.onUpdateQuantity(widget.i, widget.b, newlyIncrementedValue.toInt(),);
+        textAlign: TextAlign.center,
+        onChanged: (value) {
+          _model.onUpdateQuantity(widget.i, widget.b, int.parse(value), );
           widget.listenerUpdateTotals();
         },
-        onDecrement: (num newlyDecrementedValue) {
-          print('Newly decremented value is $newlyDecrementedValue');
-          //model.saveNewQuantity(widget.i, b, newlyDecrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.onUpdateQuantity(widget.i, widget.b, newlyDecrementedValue.toInt(),);
-          widget.listenerUpdateTotals();
-        },
-        numberFieldDecoration: InputDecoration(
-          border: InputBorder.none,
-        ),
-        widgetContainerDecoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          color: Color(0xFFF9FAFF),
-          border: Border.all(
-            color: Color(0xFFE6E8F2),
-            width: 1.6,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: Offset(0, 2), // changes position of shadow
-            ),
-          ],
-        ),
-        separateIcons: true,
-        decIconDecoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-          ),
-        ),
-        incIconDecoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-          ),
-        ),
-        incDecBgColor: Colors.transparent,
-        incIcon: Icons.expand_less,
-        decIcon: Icons.expand_more,
-        decIconColor: CustomColors.volcanicBlue,
-        incIconColor: CustomColors.volcanicBlue,
-        decIconSize: 14,
-        incIconSize: 14,
+
       ) : Text(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
         style:  CustomStyles.styleMobileVolcanic400,
@@ -431,7 +386,7 @@ class QuoteHeaderMobile extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite18x600,)
+                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
                                   ],
                                 ),
                               ),
@@ -486,11 +441,11 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
               children: [
                 Text(
                   "${widget.totalProducts} productos",
-                  style: CustomStyles.styleMobileVolcanicBlue18x600,
+                  style: CustomStyles.styleMobileVolcanicBlue15x500,
                 ),
                 Text(
                   "${currencyFormat.format(widget.total)} (iva incluido)",
-                  style: CustomStyles.styleMobileVolcanicBlue18x600,
+                  style: CustomStyles.styleMobileVolcanicBlue15x700,
                 ),
               ],
             ),

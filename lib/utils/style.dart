@@ -26,8 +26,9 @@ abstract class CustomStyles {
   static TextStyle styleMobileVolcanic400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 12, ));
   static TextStyle styleMobileWhite500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w500, fontSize: 14,));
   static TextStyle styleMobileYellow500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.energyYellow, fontWeight: FontWeight.w500, fontSize: 14, ));
-  static TextStyle styleMobileVolcanicBlue18x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18, ));
-  static TextStyle styleMobileVolcanicWhite18x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18, ));
+  static TextStyle styleMobileVolcanicBlue15x500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w500, fontSize: 15, ));
+  static TextStyle styleMobileVolcanicBlue15x700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 15, ));
+  static TextStyle styleMobileVolcanicWhite15x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15, ));
   static TextStyle styleMobileWhite14600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, ));
   static TextStyle styleMobileHyperlink14600 = GoogleFonts.montserrat(textStyle: const TextStyle(decoration: TextDecoration.underline, fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, ));
 }
