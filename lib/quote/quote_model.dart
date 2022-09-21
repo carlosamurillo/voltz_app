@@ -179,7 +179,7 @@ class DiscardedProducts {
   String? reason;
   int? position;
 
-  DiscardedProducts({this.requestedProducts, this.reason});
+  DiscardedProducts({this.requestedProducts, this.reason, this.position});
 
   DiscardedProducts.fromJson(Map<String, dynamic> json) {
     requestedProducts = json['requested_products'];

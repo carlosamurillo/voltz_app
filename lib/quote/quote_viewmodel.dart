@@ -117,7 +117,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   void onDeleteSku(Detail value){
     quote.detail!.remove(value);
-    quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero."));
+    quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     _activateSaveButton();
   }
 

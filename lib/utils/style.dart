@@ -31,4 +31,5 @@ abstract class CustomStyles {
   static TextStyle styleMobileVolcanicWhite15x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 15, ));
   static TextStyle styleMobileWhite14600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14, ));
   static TextStyle styleMobileHyperlink14600 = GoogleFonts.montserrat(textStyle: const TextStyle(decoration: TextDecoration.underline, fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, ));
+  static TextStyle styleMobileVolcanic15x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w600, fontSize: 15, ));
 }

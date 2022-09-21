@@ -291,6 +291,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
       padding: EdgeInsets.all(8),
       width: 90,
       child: context.read<QuoteViewModel>().version != 'original' ?  TextField(
+        style: CustomStyles.styleMobileVolcanic15x600,
         controller: textEditingController,
         textAlign: TextAlign.center,
         onChanged: (value) {
