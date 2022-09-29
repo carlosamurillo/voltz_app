@@ -1,19 +1,17 @@
 
+import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
-import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:provider/provider.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -319,6 +317,7 @@ class QuoteHeaderMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _url = 'https://us-central1-voltz-pro.cloudfunctions.net/exportToExcel-createCsv/${quoteId}';
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 24),
       color: Colors.white,
@@ -332,6 +331,44 @@ class QuoteHeaderMobile extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(width: 16,),
+          Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(26),),
+                  color: Color(0xFFFFFDFB),
+                  border: Border.all(width: 1, color: CustomColors.volcanicBlue)
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.all(Radius.circular(26)),
+                  hoverColor: CustomColors.volcanicBlue,
+                  onTap: () async {
+                    html.window.open(_url, "_blank");
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    alignment: Alignment.center,
+                    child:  Row(
+                      children: [
+                        RichText(
+                          textAlign: TextAlign.start,
+                          text: new TextSpan(
+                            children: [
+                              new TextSpan(text: 'Exportar CSV',
+                                style: GoogleFonts.montserrat(
+                                  color: CustomColors.volcanicBlue,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+          ),
           /*RichText(
             textAlign: TextAlign.start,
             text: TextSpan(
@@ -353,52 +390,7 @@ class QuoteHeaderMobile extends StatelessWidget {
               ],
             ),
           ),*/
-          if(context.read<QuoteViewModel>().version != 'original') ...[
-            Expanded(
-              child: Container(
-                  width: 107,
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                          width: 107,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(26),),
-                            color: CustomColors.safeBlue,
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(26)),
-                              hoverColor: CustomColors.energyYellow,
-                              onTap: (){
-                                _Dialogs dialog = _Dialogs();
-                                dialog.showAlertDialog(context, onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), quoteId);
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                alignment: Alignment.center,
-                                child:  Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                    ],
-                  )
-              ),
-            )
-          ],
+
         ],
       ),
     );
@@ -438,7 +430,7 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
             child: Container(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "${widget.totalProducts} productos",
@@ -452,6 +444,52 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
             ),
           ),
           ),
+          if(context.read<QuoteViewModel>().version != 'original') ...[
+            Expanded(
+              child: Container(
+                  width: 107,
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                          width: 107,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(26),),
+                            color: CustomColors.energyGreen,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: const BorderRadius.all(Radius.circular(26)),
+                              hoverColor: CustomColors.energyGreen,
+                              onTap: (){
+                                _Dialogs dialog = _Dialogs();
+                                dialog.showAlertDialog(context, widget.onAcceptQuote, context.read<QuoteViewModel>().createConfirmMessage(), widget.quoteId);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                alignment: Alignment.center,
+                                child:  Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                      ),
+                    ],
+                  )
+              ),
+            )
+          ],
         ],
       ),
     );

@@ -1,5 +1,5 @@
 
-
+import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -63,7 +63,7 @@ class _QuoteViewState extends State<QuoteView> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote, ),
+                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote, id: model.quote.id!),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
@@ -162,13 +162,15 @@ class _QuoteViewState extends State<QuoteView> {
 
 
 class _QuoteHeader extends StatelessWidget {
-   _QuoteHeader({required this.total, required this.onAcceptQuote});
+   _QuoteHeader({required this.total, required this.onAcceptQuote, required this.id});
   double total;
+  String id;
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final VoidCallback onAcceptQuote;
 
   @override
   Widget build(BuildContext context) {
+    final _url = 'https://us-central1-voltz-pro.cloudfunctions.net/exportToExcel-createCsv/${id}';
     return Container(
       padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
       color: Colors.white,
@@ -181,7 +183,7 @@ class _QuoteHeader extends StatelessWidget {
             height: 24.5,
           ),
           const Spacer(),
-          /*Container(
+          Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(26),),
                   color: Color(0xFFFFFDFB),
@@ -192,25 +194,25 @@ class _QuoteHeader extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(26)),
                   hoverColor: CustomColors.blueBackground,
-                  onTap: (){
-
+                  onTap: () async {
+                    html.window.open(_url, "_blank");
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                     alignment: Alignment.center,
                     child:  Row(
                       children: [
-                        SvgPicture.asset(
+                        /*SvgPicture.asset(
                           'assets/svg/pdf_export_ico.svg',
                           width: 16,
                           height: 20,
                         ),
-                        const SizedBox(width: 8,),
+                        const SizedBox(width: 8,),*/
                         RichText(
                           textAlign: TextAlign.start,
                           text: new TextSpan(
                             children: [
-                              new TextSpan(text: 'Exportar PDF',
+                              new TextSpan(text: 'Exportar CSV',
                                 style: TextStyle(
                                   fontFamily: "Hellix",
                                   color: CustomColors.safeBlue,
@@ -225,7 +227,7 @@ class _QuoteHeader extends StatelessWidget {
                   ),
                 ),
               )
-          ),*/
+          ),
           SizedBox(width: 16,),
           if(context.read<QuoteViewModel>().version != 'original') ...[
             Container(

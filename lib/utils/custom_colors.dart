@@ -26,4 +26,6 @@ class CustomColors {
 
 
   static const Color backgroundCanvas = Color(0xFFF5F5F5);
+
+  static const Color energyGreen = Color(0xFF00AC1C);
 }
