@@ -209,8 +209,7 @@ class _QuoteHeader extends StatelessWidget {
                         ),
                         const SizedBox(width: 8,),*/
                         RichText(
-                          textAlign: TextAlign.start,
-                          text: new TextSpan(
+                          text: TextSpan(
                             children: [
                               new TextSpan(text: 'Exportar CSV',
                                 style: TextStyle(
@@ -221,6 +220,7 @@ class _QuoteHeader extends StatelessWidget {
                               ),
                             ],
                           ),
+                          textAlign: TextAlign.start,
                         ),
                       ],
                     ),
@@ -286,9 +286,8 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(
-            textAlign: TextAlign.start,
-            text: new TextSpan(
+          SelectableText.rich(
+            TextSpan(
               children: [
                 new TextSpan(text: 'Cotización ',
                   style: TextStyle(
@@ -306,6 +305,7 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                 ),
               ],
             ),
+            textAlign: TextAlign.start,
           ),
           const SizedBox(height: 24,),
           Row(
@@ -317,9 +317,8 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                   color: Color(0xFFF9FAFF),
                   border: Border.all(width: 1, color: Color(0xFFE5E7EB))
                 ),
-                child: RichText(
-                  textAlign: TextAlign.start,
-                  text: new TextSpan(
+                child: SelectableText.rich(
+                  TextSpan(
                     children: [
                       /*new TextSpan(text: 'CLIENTE: ',
                         style: TextStyle(
@@ -337,6 +336,7 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                       ),
                     ],
                   ),
+                  textAlign: TextAlign.start,
                 ),
               ),
               const SizedBox(width: 40,),
@@ -347,9 +347,8 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                     color: Color(0xFFF9FAFF),
                     border: Border.all(width: 1, color: Color(0xFFE5E7EB))
                 ),
-                child: RichText(
-                  textAlign: TextAlign.start,
-                  text: TextSpan(
+                child: SelectableText.rich(
+                  TextSpan(
                     children: [
                       const TextSpan(text: 'FECHA: ',
                         style: TextStyle(
@@ -367,6 +366,7 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                       ),
                     ],
                   ),
+                  textAlign: TextAlign.start,
                 ),
               ),
               Spacer(),
@@ -389,9 +389,8 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                       alignment: Alignment.center,
                       child:  Row(
                         children: [
-                          RichText(
-                            textAlign: TextAlign.start,
-                            text: new TextSpan(
+                          SelectableText.rich(
+                            TextSpan(
                               children: [
                                 new TextSpan(text: model.quote.discardedProducts!.length.toString() + ' Productos no incluidos',
                                   style: TextStyle(
@@ -402,6 +401,7 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
                                 ),
                               ],
                             ),
+                            textAlign: TextAlign.start,
                           ),
                           const SizedBox(width: 8,),
                           SvgPicture.asset(
@@ -458,12 +458,12 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
               children: [
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "Subtotal único",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -472,12 +472,12 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                 /*const SizedBox(height: 8,),
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "Descuento",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.discount),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -486,12 +486,12 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                 const SizedBox(height: 8,),
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "IVA",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.tax * widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -501,12 +501,12 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                   const SizedBox(height: 8,),
                   Row(
                     children: [
-                      Text(
+                      SelectableText(
                         "Total",
                         style: CustomStyles.styleWhiteUno,
                       ),
                       Spacer(),
-                      Text(
+                      SelectableText(
                         currencyFormat.format(widget.total),
                         style: CustomStyles.styleWhiteUno,
                       ),
@@ -657,20 +657,20 @@ class _QuoteTableNotInclude extends HookViewModelWidget<QuoteViewModel> {
                     children: [
                       Expanded(
                         flex: 2,
-                        child: Text(
+                        child: SelectableText(
                           model.quote.discardedProducts![i].requestedProducts!.toUpperCase(),
                           style: CustomStyles.styleVolcanicUno,
                           textAlign: TextAlign.left,
-                          overflow: TextOverflow.clip,
+                          //overflow: TextOverflow.clip,
                         ),
                       ),
                       Expanded(
                         flex: 1,
-                        child: Text(
+                        child: SelectableText(
                           model.quote.discardedProducts![i].reason!,
                           style: CustomStyles.styleVolcanicUno,
                           textAlign: TextAlign.right,
-                          overflow: TextOverflow.clip,
+                          //overflow: TextOverflow.clip,
                         ),
                       ),
                     ],
@@ -765,7 +765,7 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                     ),
                     alignment: Alignment.center,
                     width: 56,
-                    child: Text(
+                    child: SelectableText(
                       model.quote.detail![widget.i].position!.toString(),
                       style: CustomStyles.styleBlueUno,
                       textAlign: TextAlign.center,
@@ -777,8 +777,8 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-                      child: Text( model.quote.detail![widget.i].productRequested!.toUpperCase(),
-                        style: CustomStyles.styleWhiteUno, overflow: TextOverflow.clip,
+                      child: SelectableText( model.quote.detail![widget.i].productRequested!.toUpperCase(),
+                        style: CustomStyles.styleWhiteUno, //overflow: TextOverflow.clip,
                       ),
                     ),
                   ),
@@ -848,16 +848,16 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          SelectableText(
                             model.quote.detail![widget.i].productsSuggested![b].sku!,
                             style: CustomStyles.styleVolcanicBlueUno,
                             textAlign: TextAlign.left,
                           ),
-                          Text(
+                          SelectableText(
                             model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                             style: CustomStyles.styleVolcanicUno,
                             textAlign: TextAlign.left,
-                            overflow: TextOverflow.clip,
+                            //overflow: TextOverflow.clip,
                           ),
                         ],
                       ),
@@ -882,16 +882,16 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children:  [
-                                      Text( model.quote.detail![widget.i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                      SelectableText( model.quote.detail![widget.i].productsSuggested![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                         style: CustomStyles.styleVolcanicBlueDos,
                                         textAlign: TextAlign.left,
-                                        overflow: TextOverflow.clip,
+                                        //overflow: TextOverflow.clip,
                                       ),
                                       if (model.quote.detail![widget.i].productsSuggested![b].subBrand != null ) ...[
-                                        Text(  model.quote.detail![widget.i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                        SelectableText(  model.quote.detail![widget.i].productsSuggested![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                           style: CustomStyles.styleVolcanicBlueDos,
                                           textAlign: TextAlign.left,
-                                          overflow: TextOverflow.clip,
+                                          //overflow: TextOverflow.clip,
                                         ),
                                       ]
                                     ],
@@ -908,7 +908,7 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                Text(
+                                SelectableText(
                                   model.quote.detail![widget.i].productsSuggested![b].saleUnit!,
                                   style: CustomStyles.styleVolcanicUno,
                                   textAlign: TextAlign.left,
@@ -925,12 +925,12 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
+                                      SelectableText(
                                         (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
                                         style: CustomStyles.styleVolcanicBlueTres,
                                         textAlign: TextAlign.right,
                                       ),
-                                      Text(
+                                      SelectableText(
                                         "${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u",
                                         style: CustomStyles.styleVolcanicUno,
                                         textAlign: TextAlign.right,
@@ -1053,7 +1053,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         incIconColor: CustomColors.volcanicBlue,
         decIconSize: 16,
         incIconSize: 16,
-      ) : Text(
+      ) : SelectableText(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
         style: CustomStyles.styleVolcanicBlueDos,
         textAlign: TextAlign.left,
@@ -1070,7 +1070,7 @@ class _Dialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Hacer pedido"),
+          title: const SelectableText("Hacer pedido"),
           titleTextStyle:
           TextStyle(
               fontWeight: FontWeight.bold,
@@ -1081,16 +1081,16 @@ class _Dialogs {
                 onPressed: (){
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancelar")
+                child: const SelectableText("Cancelar")
             ),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
-                child: const Text("Confirmar")),
+                child: const SelectableText("Confirmar")),
           ],
-          content: Text(message),
+          content: SelectableText(message),
         );
       },
     );

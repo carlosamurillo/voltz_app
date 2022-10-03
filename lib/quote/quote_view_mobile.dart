@@ -85,18 +85,18 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: RichText(
+                      child: SelectableText.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(text: (widget.i + 1).toString(),
+                                style: CustomStyles.styleMobileYellow500,
+                              ),
+                              TextSpan(text: '. ${model.quote.detail![widget.i].productRequested!}',
+                                style: CustomStyles.styleMobileWhite500,
+                              ),
+                            ],
+                          ),
                         textAlign: TextAlign.start,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(text: (widget.i + 1).toString(),
-                              style: CustomStyles.styleMobileYellow500,
-                            ),
-                            TextSpan(text: '. ${model.quote.detail![widget.i].productRequested!}',
-                              style: CustomStyles.styleMobileWhite500,
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],
@@ -143,9 +143,8 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              RichText(
-                                textAlign: TextAlign.start,
-                                text: TextSpan(
+                              SelectableText.rich(
+                                TextSpan(
                                   children: [
                                     TextSpan(text: model.quote.detail![widget.i].productsSuggested![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                       style: CustomStyles.styleMobileVolcanic400,
@@ -160,24 +159,24 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                                     ]
                                   ],
                                 ),
-                              ),
-                              RichText(
                                 textAlign: TextAlign.start,
-                                text: TextSpan(
-                                  children: [
-                                    TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
-                                      style: CustomStyles.styleMobileBlue700,
-                                    ),
-                                    TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
-                                      style: CustomStyles.styleMobileBlue400,
-                                    ),
-                                  ],
-                                ),
+                              ),
+                              SelectableText.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
+                                        style: CustomStyles.styleMobileBlue700,
+                                      ),
+                                      TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
+                                        style: CustomStyles.styleMobileBlue400,
+                                      ),
+                                    ],
+                                  ),
+                                textAlign: TextAlign.start
                               ),
                               if(model.quote.detail![widget.i].productsSuggested![b].techFile != null) ...{
-                                RichText(
-                                  textAlign: TextAlign.start,
-                                  text: TextSpan(
+                                SelectableText.rich(
+                                  TextSpan(
                                     children: [
                                       TextSpan(text: "VER FICHA TÉCNICA",
                                           recognizer: TapGestureRecognizer()..onTap =  () async{
@@ -192,6 +191,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                                       ),
                                     ],
                                   ),
+                                  textAlign: TextAlign.start,
                                 ),
                               },
                             ],
@@ -227,7 +227,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                           child: SizedBox(
                               width: double.infinity,
                               height: 33,
-                              child: Center(child: Text(opened ? "Ocultar opciones" : (model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) >= 2 ? "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opciones más" : "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opción más",
+                              child: Center(child: SelectableText(opened ? "Ocultar opciones" : (model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) >= 2 ? "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opciones más" : "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opción más",
                                 style: CustomStyles.styleMobileWhite14600,),)
                           )
                       ),
@@ -297,7 +297,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
           widget.listenerUpdateTotals();
         },
 
-      ) : Text(
+      ) : SelectableText(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
         style:  CustomStyles.styleMobileVolcanic400,
         textAlign: TextAlign.left,
@@ -350,9 +350,8 @@ class QuoteHeaderMobile extends StatelessWidget {
                     alignment: Alignment.center,
                     child:  Row(
                       children: [
-                        RichText(
-                          textAlign: TextAlign.start,
-                          text: new TextSpan(
+                        SelectableText.rich(
+                          TextSpan(
                             children: [
                               new TextSpan(text: 'Exportar CSV',
                                 style: GoogleFonts.montserrat(
@@ -362,6 +361,7 @@ class QuoteHeaderMobile extends StatelessWidget {
                               ),
                             ],
                           ),
+                          textAlign: TextAlign.start,
                         ),
                       ],
                     ),
@@ -369,7 +369,7 @@ class QuoteHeaderMobile extends StatelessWidget {
                 ),
               )
           ),
-          /*RichText(
+          /*SelectableText.rich(
             textAlign: TextAlign.start,
             text: TextSpan(
               children: [
@@ -432,11 +432,11 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                SelectableText(
                   "${widget.totalProducts} productos",
                   style: CustomStyles.styleMobileVolcanicBlue15x500,
                 ),
-                Text(
+                SelectableText(
                   "${currencyFormat.format(widget.total)} (iva incluido)",
                   style: CustomStyles.styleMobileVolcanicBlue15x700,
                 ),
@@ -478,7 +478,7 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Text('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
+                                    SelectableText('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
                                   ],
                                 ),
                               ),
@@ -505,7 +505,7 @@ class _Dialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Hacer pedido"),
+          title: const SelectableText("Hacer pedido"),
           titleTextStyle:
           TextStyle(
               fontWeight: FontWeight.bold,
@@ -516,16 +516,16 @@ class _Dialogs {
                 onPressed: (){
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancelar")
+                child: const SelectableText("Cancelar")
             ),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
-                child: const Text("Confirmar")),
+                child: const SelectableText("Confirmar")),
           ],
-          content: Text(message),
+          content: SelectableText(message),
         );
       },
     );

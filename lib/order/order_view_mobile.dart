@@ -74,8 +74,8 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                   children: [
                     Expanded(
                         flex:1,
-                        child: Text( model.order!.detail![widget.i].productRequested!,
-                          style: CustomStyles.styleMobileWhite500, overflow: TextOverflow.clip,
+                        child: SelectableText( model.order!.detail![widget.i].productRequested!,
+                          style: CustomStyles.styleMobileWhite500, //overflow: TextOverflow.clip,
                         )
                     ),
                   ],
@@ -97,9 +97,8 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
+                            SelectableText.rich(
+                              TextSpan(
                                 children: [
                                   TextSpan(text: model.order!.detail![widget.i].productsOrdered![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                     style: CustomStyles.styleMobileVolcanic400,
@@ -114,10 +113,10 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                                   ]
                                 ],
                               ),
-                            ),
-                            RichText(
                               textAlign: TextAlign.start,
-                              text: TextSpan(
+                            ),
+                            SelectableText.rich(
+                              TextSpan(
                                 children: [
 
                                   TextSpan(text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice! * model.order!.detail![widget.i].productsOrdered![b].quantity!),
@@ -126,17 +125,16 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                                   TextSpan(text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u)",
                                     style: CustomStyles.styleMobileBlue400,
                                   ),
-
-
                                 ],
                               ),
+                              textAlign: TextAlign.start,
                             ),
                           ],
                         ),
                       ),
                       SizedBox(
                         width: 30,
-                        child: Text(
+                        child: SelectableText(
                           model.order!.detail![widget.i].productsOrdered![b].quantity.toString(),
                           style: CustomStyles.styleVolcanicBlueDos,
                           textAlign: TextAlign.right,
@@ -244,7 +242,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         incIconColor: CustomColors.volcanicBlue,
         decIconSize: 14,
         incIconSize: 14,
-      ) : Text(
+      ) : SelectableText(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
         style:  CustomStyles.styleMobileVolcanic400,
         textAlign: TextAlign.left,
@@ -274,9 +272,8 @@ class OrderHeaderMobile extends StatelessWidget {
           ),
           const Spacer(),
           SizedBox(width: 16,),
-          RichText(
-            textAlign: TextAlign.start,
-            text: TextSpan(
+          SelectableText.rich(
+            TextSpan(
               children: [
                 const TextSpan(text: 'Pedido ',
                   style: TextStyle(
@@ -294,6 +291,7 @@ class OrderHeaderMobile extends StatelessWidget {
                 ),
               ],
             ),
+            textAlign: TextAlign.start,
           ),
         ],
       ),
@@ -332,11 +330,11 @@ class _OrderTotalsMobileState extends State<OrderTotalsMobile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  SelectableText(
                     "${widget.totalProducts} productos",
                     style: CustomStyles.styleWhiteUno,
                   ),
-                  Text(
+                  SelectableText(
                     "${currencyFormat.format(widget.total)} (iva incluido)",
                     style: CustomStyles.styleWhiteUno,
                   ),
@@ -359,7 +357,7 @@ class _Dialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("Hacer pedido"),
+          title: const SelectableText("Hacer pedido"),
           titleTextStyle:
           TextStyle(
               fontWeight: FontWeight.bold,
@@ -370,16 +368,16 @@ class _Dialogs {
                 onPressed: (){
                   Navigator.of(context).pop();
                 },
-                child: const Text("Cancelar")
+                child: const SelectableText("Cancelar")
             ),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
-                child: const Text("Confirmar")),
+                child: const SelectableText("Confirmar")),
           ],
-          content: Text(message),
+          content: SelectableText(message),
         );
       },
     );

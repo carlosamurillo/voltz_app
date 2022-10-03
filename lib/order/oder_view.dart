@@ -169,7 +169,7 @@ class _OrderHeader extends StatelessWidget {
                           height: 20,
                         ),
                         const SizedBox(width: 8,),
-                        RichText(
+                        SelectableText.rich(
                           textAlign: TextAlign.start,
                           text: new TextSpan(
                             children: [
@@ -215,9 +215,8 @@ class _OrderHeaderId extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RichText(
-              textAlign: TextAlign.start,
-              text: new TextSpan(
+            SelectableText.rich(
+              TextSpan(
                 children: [
                   new TextSpan(text: 'Pedido ',
                     style: TextStyle(
@@ -235,6 +234,7 @@ class _OrderHeaderId extends StatelessWidget {
                   ),
                 ],
               ),
+              textAlign: TextAlign.start,
             ),
             const SizedBox(height: 24,),
             Row(
@@ -246,9 +246,8 @@ class _OrderHeaderId extends StatelessWidget {
                       color: Color(0xFFF9FAFF),
                       border: Border.all(width: 1, color: Color(0xFFE5E7EB))
                   ),
-                  child: RichText(
-                    textAlign: TextAlign.start,
-                    text: new TextSpan(
+                  child: SelectableText.rich(
+                    TextSpan(
                       children: [
                         /*new TextSpan(text: 'CLIENTE: ',
                         style: TextStyle(
@@ -266,6 +265,7 @@ class _OrderHeaderId extends StatelessWidget {
                         ),
                       ],
                     ),
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 const SizedBox(width: 40,),
@@ -276,9 +276,8 @@ class _OrderHeaderId extends StatelessWidget {
                       color: Color(0xFFF9FAFF),
                       border: Border.all(width: 1, color: Color(0xFFE5E7EB))
                   ),
-                  child: RichText(
-                    textAlign: TextAlign.start,
-                    text: TextSpan(
+                  child: SelectableText.rich(
+                    TextSpan(
                       children: [
                         const TextSpan(text: 'FECHA: ',
                           style: TextStyle(
@@ -296,6 +295,7 @@ class _OrderHeaderId extends StatelessWidget {
                         ),
                       ],
                     ),
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 Spacer(),
@@ -339,12 +339,12 @@ class _OrderTotalsState extends State<_OrderTotals> {
               children: [
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "Subtotal único",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -353,12 +353,12 @@ class _OrderTotalsState extends State<_OrderTotals> {
                 const SizedBox(height: 8,),
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "Descuento",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.discount),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -367,12 +367,12 @@ class _OrderTotalsState extends State<_OrderTotals> {
                 const SizedBox(height: 8,),
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "IVA",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.tax * widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -381,12 +381,12 @@ class _OrderTotalsState extends State<_OrderTotals> {
                 const SizedBox(height: 8,),
                 Row(
                   children: [
-                    Text(
+                    SelectableText(
                       "Total",
                       style: CustomStyles.styleWhiteUno,
                     ),
                     Spacer(),
-                    Text(
+                    SelectableText(
                       currencyFormat.format(widget.total),
                       style: CustomStyles.styleWhiteUno,
                     ),
@@ -457,7 +457,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                       ),
                       alignment: Alignment.center,
                       width: 56,
-                      child: Text(
+                      child: SelectableText(
                         (widget.i + 1).toString(),
                         style: CustomStyles.styleBlueUno,
                         textAlign: TextAlign.center,
@@ -468,7 +468,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-                      child: Text( model.order!.detail![widget.i].productRequested!.toUpperCase(),
+                      child: SelectableText( model.order!.detail![widget.i].productRequested!.toUpperCase(),
                         style: CustomStyles.styleWhiteUno,
                       ),
                     ),
@@ -516,16 +516,16 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            SelectableText(
                               model.order!.detail![widget.i].productsOrdered![b].sku!,
                               style: CustomStyles.styleVolcanicBlueUno,
                               textAlign: TextAlign.left,
                             ),
-                            Text(
+                            SelectableText(
                               model.order!.detail![widget.i].productsOrdered![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                               style: CustomStyles.styleVolcanicUno,
                               textAlign: TextAlign.left,
-                              overflow: TextOverflow.clip,
+                              //overflow: TextOverflow.clip,
                             ),
                           ],
                         ),
@@ -550,16 +550,16 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children:  [
-                                        Text( model.order!.detail![widget.i].productsOrdered![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                        SelectableText( model.order!.detail![widget.i].productsOrdered![b].brand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                           style: CustomStyles.styleVolcanicBlueDos,
                                           textAlign: TextAlign.left,
-                                          overflow: TextOverflow.clip,
+                                          //overflow: TextOverflow.clip,
                                         ),
                                         if (model.order!.detail![widget.i].productsOrdered![b].subBrand != null ) ...[
-                                          Text(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                          SelectableText(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                             style: CustomStyles.styleVolcanicBlueDos,
                                             textAlign: TextAlign.left,
-                                            overflow: TextOverflow.clip,
+                                            //overflow: TextOverflow.clip,
                                           ),
                                         ]
                                       ],
@@ -574,12 +574,12 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
+                                  SelectableText(
                                     '${model.order!.detail![widget.i].productsOrdered![b].quantity} ',
                                     style: CustomStyles.styleVolcanicBlueDos,
                                     textAlign: TextAlign.left,
                                   ),
-                                  Text(
+                                  SelectableText(
                                     model.order!.detail![widget.i].productsOrdered![b].saleUnit!,
                                     style: CustomStyles.styleVolcanicBlueDos,
                                     textAlign: TextAlign.left,
@@ -596,12 +596,12 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        Text(
+                                        SelectableText(
                                           (currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice! * model.order!.detail![widget.i].productsOrdered![b].quantity!)),
                                           style: CustomStyles.styleVolcanicBlueTres,
                                           textAlign: TextAlign.right,
                                         ),
-                                        Text(
+                                        SelectableText(
                                           "${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u",
                                           style: CustomStyles.styleVolcanicUno,
                                           textAlign: TextAlign.right,
