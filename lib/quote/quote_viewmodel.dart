@@ -209,7 +209,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
         }
       }
     }
-    quote.total = quote.subTotal! * (1 - quote.discount! ) * (1 + quote.tax!);
+    quote.total = (quote.subTotal! * (1 - quote.discount! ) * (1 + quote.tax!)) + quote.shipping!.total!;
     print('_calculate Totals.... ${quote.total}');
   }
 

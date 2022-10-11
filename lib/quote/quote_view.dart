@@ -87,7 +87,7 @@ class _QuoteViewState extends State<QuoteView> {
                   ),
                   if(viewModel.version != 'original') ...[
                     _QuoteTotals(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
-                      subTotal: viewModel.quote.subTotal!, discount: viewModel.quote.discount!, isSaveActive: viewModel.isSaveActive,
+                      subTotal: viewModel.quote.subTotal!, shippingTotal: viewModel.quote.shipping!.total!, isSaveActive: viewModel.isSaveActive,
                       quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                   ],
@@ -136,7 +136,6 @@ class _QuoteViewState extends State<QuoteView> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -428,11 +427,11 @@ class _QuoteHeaderId extends HookViewModelWidget<QuoteViewModel> {
 
 class _QuoteTotals extends StatefulWidget {
   const _QuoteTotals({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.discount, this.isSaveActive = false, required this.quoteId, required this.onAcceptQuote}) : super(key: key, );
+    required this.shippingTotal, this.isSaveActive = false, required this.quoteId, required this.onAcceptQuote}) : super(key: key, );
   final double tax;
   final double total;
   final double subTotal;
-  final double discount;
+  final double shippingTotal;
   final bool isSaveActive;
   final String quoteId;
   final VoidCallback onAcceptQuote;
@@ -471,20 +470,6 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     ),
                   ],
                 ),
-                /*const SizedBox(height: 8,),
-                Row(
-                  children: [
-                    SelectableText(
-                      "Descuento",
-                      style: CustomStyles.styleWhiteUno,
-                    ),
-                    Spacer(),
-                    SelectableText(
-                      currencyFormat.format(widget.discount),
-                      style: CustomStyles.styleWhiteUno,
-                    ),
-                  ],
-                ),*/
                 const SizedBox(height: 8,),
                 Row(
                   children: [
@@ -495,6 +480,20 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     Spacer(),
                     SelectableText(
                       currencyFormat.format(widget.tax * widget.subTotal),
+                      style: CustomStyles.styleWhiteUno,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8,),
+                Row(
+                  children: [
+                    SelectableText(
+                      "Costo de envío",
+                      style: CustomStyles.styleWhiteUno,
+                    ),
+                    Spacer(),
+                    SelectableText(
+                      currencyFormat.format(widget.shippingTotal),
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],

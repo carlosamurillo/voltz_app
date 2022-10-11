@@ -228,7 +228,7 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                           child: SizedBox(
                               width: double.infinity,
                               height: 33,
-                              child: Center(child: SelectableText(opened ? "Ocultar opciones" : (model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) >= 2 ? "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opciones más" : "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opción más",
+                              child: Center(child: Text(opened ? "Ocultar opciones" : (model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length) >= 2 ? "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opciones más" : "${(model.quote.detail![widget.i].productsSuggested!.length - productsFiltered.toList().length).toString()} opción más",
                                 style: CustomStyles.styleMobileWhite14600,),)
                           )
                       ),

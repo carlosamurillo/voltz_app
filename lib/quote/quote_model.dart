@@ -13,6 +13,7 @@ class QuoteModel {
   List<Detail>? detail;
   bool accepted = false;
   List<DiscardedProducts>? discardedProducts = <DiscardedProducts>[];
+  Shipping? shipping;
 
   QuoteModel(
       {this.id,
@@ -26,7 +27,8 @@ class QuoteModel {
         this.createdAt,
         this.detail,
         this.accepted = false,
-        this.discardedProducts});
+        this.discardedProducts,
+        this.shipping});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
@@ -53,6 +55,9 @@ class QuoteModel {
       });
       discardedProducts!.sort((a, b) => a.position!.compareTo(b.position!));
     }
+    if (json.containsKey('shipping') && json['shipping'] != null) {
+      shipping = new Shipping.fromJson(json['shipping']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -72,6 +77,9 @@ class QuoteModel {
     if (this.discardedProducts != null) {
       data['discarded_products'] =
           this.discardedProducts!.map((v) => v.toJson()).toList();
+    }
+    if (this.shipping != null) {
+      data['shipping'] = this.shipping!.toMap();
     }
     return data;
   }
@@ -185,6 +193,22 @@ class DiscardedProducts {
     data['requested_products'] = this.requestedProducts;
     data['reason'] = this.reason;
     data['position'] = this.position;
+    return data;
+  }
+}
+
+class Shipping {
+  double? total;
+
+  Shipping({this.total,});
+
+  Shipping.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = this.total;
     return data;
   }
 }

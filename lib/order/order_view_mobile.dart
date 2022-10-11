@@ -301,11 +301,11 @@ class OrderHeaderMobile extends StatelessWidget {
 
 class OrderTotalsMobile extends StatefulWidget {
   const OrderTotalsMobile({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.discount, required this.quoteId, required this.totalProducts}) : super(key: key, );
+    required this.shippingTotal, required this.quoteId, required this.totalProducts}) : super(key: key, );
   final double tax;
   final double total;
   final double subTotal;
-  final double discount;
+  final double shippingTotal;
   final String quoteId;
   final int totalProducts;
 

@@ -96,7 +96,7 @@ class _OrderViewState extends State<OrderView> {
                       color: CustomColors.grayBackground,
                     ),
                     OrderTotalsMobile(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                      subTotal: viewModel.order!.subTotal!, discount: viewModel.order!.discount!,
+                      subTotal: viewModel.order!.subTotal!, shippingTotal: viewModel.order!.shipping!.total!,
                       quoteId: viewModel.order!.id!, totalProducts: viewModel.order!.detail!.length,
                     ),
                     const SizedBox(height: 24,),

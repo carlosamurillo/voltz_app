@@ -11,6 +11,7 @@ class OrderModel {
   double? total;
   Timestamp? createdAt;
   List<OrderDetail>? detail;
+  Shipping? shipping;
 
   OrderModel(
       {this.id,
@@ -22,7 +23,8 @@ class OrderModel {
         this.tax = 0.0,
         this.total = 0.0,
         this.createdAt,
-        this.detail,});
+        this.detail,
+        this.shipping});
 
   OrderModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
@@ -40,6 +42,9 @@ class OrderModel {
         detail!.add(new OrderDetail.fromJson(v));
       });
     }
+    if (json.containsKey('shipping') && json['shipping'] != null) {
+      shipping = new Shipping.fromJson(json['shipping']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +59,9 @@ class OrderModel {
     data['created_at'] = this.createdAt;
     if (this.detail != null) {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();
+    }
+    if (this.shipping != null) {
+      data['shipping'] = this.shipping!.toMap();
     }
     return data;
   }
@@ -139,3 +147,19 @@ class ProductsOrdered {
   }
 }
 
+
+class Shipping {
+  double? total;
+
+  Shipping({this.total,});
+
+  Shipping.fromJson(Map<String, dynamic> json) {
+    total = json['total'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total'] = this.total;
+    return data;
+  }
+}
