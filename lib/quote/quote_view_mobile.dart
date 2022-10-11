@@ -11,6 +11,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -294,7 +295,6 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         textAlign: TextAlign.center,
         onChanged: (value) {
           _model.onUpdateQuantity(widget.i, widget.b, int.parse(value), );
-          widget.listenerUpdateTotals();
         },
 
       ) : SelectableText(
@@ -495,6 +495,94 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
     );
   }
 }
+
+
+class QuoteMobileTableNotInclude extends HookViewModelWidget<QuoteViewModel> {
+  const QuoteMobileTableNotInclude({Key? key}) : super(key: key, reactive: false);
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    return Container(
+      padding: const EdgeInsets.only(left: 12, right: 12, top: 8, bottom: 8 ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 2,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                color: CustomColors.redAlert,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      "PRODUCTOS NO INCLUIDOS EN TU COTIZACIÓN",
+                      style: CustomStyles.styleMobileWhite500,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              height: 20,
+            ),
+            if(model.quote.discardedProducts != null) ...[
+              for(int i = 0; i <= model.quote.discardedProducts!.length - 1 ; i++) ...{
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: i == 3 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: SelectableText(
+                          model.quote.discardedProducts![i].requestedProducts!.toUpperCase(),
+                          style: CustomStyles.styleMobileVolcanic400,
+                          textAlign: TextAlign.left,
+                          //overflow: TextOverflow.clip,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: SelectableText(
+                          model.quote.discardedProducts![i].reason!,
+                          style: CustomStyles.styleMobileVolcanic400,
+                          textAlign: TextAlign.right,
+                          //overflow: TextOverflow.clip,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              }
+            ],
+            Container(
+              height: 20,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)),
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 
 class _Dialogs {

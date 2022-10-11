@@ -97,6 +97,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   void onUpdateQuantity(int i, int b, int quantity) {
     quote.detail![i].productsSuggested![b].quantity = quantity;
+    calculateTotals();
     saveQuote();
   }
 
