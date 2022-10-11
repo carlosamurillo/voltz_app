@@ -89,15 +89,8 @@ class Detail {
     position = json['position'];
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
-      bool selected = false;
       for(int a = 0; a < json['products_suggested'].length; a++) {
-        if(json['products_suggested'][a]['selected']){
-          selected = true;
-        }
         productsSuggested!.add(new ProductsSuggested.fromJson(json['products_suggested'][a]));
-        if ( selected == false) {
-          productsSuggested![0].selected = true;
-        }
       }
     }
   }

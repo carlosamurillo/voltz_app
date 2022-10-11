@@ -56,28 +56,18 @@ class QuoteViewModel  extends ReactiveViewModel  {
     });
   }
   
-  void saveNewQuantity(int i, int b, int quantity, Detail detail){
+  void updateDetail(Detail detail) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     reference.update({
       "detail": FieldValue.arrayRemove([detail.toJson()]),
     }).whenComplete(() {
-      onUpdateQuantity(i, b, quantity);
       reference.update({
         "detail": FieldValue.arrayUnion([detail.toJson()]),
       });
     });
   }
 
-  void _activateSaveButton(){
-    isSaveActive = true;
-  }
-
-  void _deactivateSaveButton(){
-    isSaveActive = false;
-  }
-
   Future<void> saveQuote() async {
-    _deactivateSaveButton();
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     return reference.set(quote.toJson());
   }
@@ -107,18 +97,18 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   void onUpdateQuantity(int i, int b, int quantity) {
     quote.detail![i].productsSuggested![b].quantity = quantity;
-    _activateSaveButton();
+    saveQuote();
   }
 
   void onSelectedSku(bool value, int i, int b){
     quote.detail![i].productsSuggested![b].selected = value;
-    _activateSaveButton();
+    saveQuote();
   }
 
   void onDeleteSku(Detail value){
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
-    _activateSaveButton();
+    saveQuote();
   }
 
 

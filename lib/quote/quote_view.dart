@@ -1,4 +1,4 @@
-
+import 'package:get/get.dart';
 import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +25,13 @@ class QuoteView extends StatefulWidget {
 }
 
 class _QuoteViewState extends State<QuoteView> {
-  late QuoteViewModel model;
   ScrollController _scrollController = ScrollController();
-
+  late QuoteViewModel model;
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
+
   }
 
   @override
@@ -52,6 +52,7 @@ class _QuoteViewState extends State<QuoteView> {
             ),
           );
         } else {
+          html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
           return Scaffold(
             backgroundColor: CustomColors.backgroundCanvas,
             body: MediaQuery.of(context).size.width >= 480 ? Container(
@@ -63,7 +64,7 @@ class _QuoteViewState extends State<QuoteView> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          _QuoteHeader(total: model.quote.total!, onAcceptQuote: _acceptQuote, id: model.quote.id!),
+                          _QuoteHeader(total: viewModel.quote.total!, onAcceptQuote: _acceptQuote, id: viewModel.quote.id!),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
@@ -85,10 +86,10 @@ class _QuoteViewState extends State<QuoteView> {
                       ),
                     ),
                   ),
-                  if(model.version != 'original') ...[
-                    _QuoteTotals(tax: model.quote.tax!, total: model.quote.total!,
-                      subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
-                      quoteId: model.quote.id!,
+                  if(viewModel.version != 'original') ...[
+                    _QuoteTotals(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
+                      subTotal: viewModel.quote.subTotal!, discount: viewModel.quote.discount!, isSaveActive: viewModel.isSaveActive,
+                      quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                   ],
                 ],
@@ -99,15 +100,15 @@ class _QuoteViewState extends State<QuoteView> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
-                  QuoteHeaderMobile(total: model.quote.total!, onAcceptQuote: _acceptQuote, consecutive: model.quote.consecutive.toString(), quoteId: model.quote.id! ),
+                  QuoteHeaderMobile(total: viewModel.quote.total!, onAcceptQuote: _acceptQuote, consecutive: viewModel.quote.consecutive.toString(), quoteId: viewModel.quote.id! ),
                   const Divider(
                     height: 1,
                     color: CustomColors.grayBackground,
                   ),
-                  if(model.version != 'original') ...[
-                    QuoteTotalsMobile(tax: model.quote.tax!, total: model.quote.total!,
-                      subTotal: model.quote.subTotal!, discount: model.quote.discount!, isSaveActive: model.isSaveActive,
-                      quoteId: model.quote.id!,
+                  if(viewModel.version != 'original') ...[
+                    QuoteTotalsMobile(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
+                      subTotal: viewModel.quote.subTotal!, discount: viewModel.quote.discount!, isSaveActive: viewModel.isSaveActive,
+                      quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
 
                     ),
@@ -550,45 +551,6 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Text('Hacer pedido  -  ${currencyFormat.format(widget.total)}' , style: CustomStyles.styleWhiteDos,)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          )
-                      ),
-                      const SizedBox(height: 8,),
-                      Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(Radius.circular(26),),
-                            color: widget.isSaveActive == true ? CustomColors.energyYellow : CustomColors.volcanicGrey,
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(26)),
-                              overlayColor: MaterialStateProperty.resolveWith((states) {
-                                // If the button is pressed, return green, otherwise blue
-                                if (states.contains(MaterialState.pressed)) {
-                                  return CustomColors.volcanicGrey;
-                                }
-                                if (states.contains(MaterialState.hovered)) {
-                                  return widget.isSaveActive == true ? CustomColors.energyYellowHover : CustomColors.volcanicGrey;
-                                }
-                                return CustomColors.volcanicGrey;
-                              }),
-                              onTap: widget.isSaveActive == true ? () => context.read<QuoteViewModel>().saveQuote() : null,
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                                alignment: Alignment.center,
-                                child:  Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('Guardar cambios' , style: CustomStyles.styleBlackContrastUno,)
                                   ],
                                 ),
                               ),
@@ -1081,14 +1043,14 @@ class _Dialogs {
                 onPressed: (){
                   Navigator.of(context).pop();
                 },
-                child: const SelectableText("Cancelar")
+                child: const Text("Cancelar")
             ),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
-                child: const SelectableText("Confirmar")),
+                child: const Text("Confirmar")),
           ],
           content: SelectableText(message),
         );

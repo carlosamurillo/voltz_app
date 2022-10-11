@@ -175,8 +175,8 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                                 textAlign: TextAlign.start
                               ),
                               if(model.quote.detail![widget.i].productsSuggested![b].techFile != null) ...{
-                                SelectableText.rich(
-                                  TextSpan(
+                                RichText(
+                                  text: TextSpan(
                                     children: [
                                       TextSpan(text: "VER FICHA TÉCNICA",
                                           recognizer: TapGestureRecognizer()..onTap =  () async{
@@ -350,8 +350,8 @@ class QuoteHeaderMobile extends StatelessWidget {
                     alignment: Alignment.center,
                     child:  Row(
                       children: [
-                        SelectableText.rich(
-                          TextSpan(
+                        RichText(
+                          text: TextSpan(
                             children: [
                               new TextSpan(text: 'Exportar CSV',
                                 style: GoogleFonts.montserrat(
@@ -478,7 +478,7 @@ class _QuoteTotalsMobileState extends State<QuoteTotalsMobile> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    SelectableText('Generar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
+                                    Text('Aceptar', style: CustomStyles.styleMobileVolcanicWhite15x600,)
                                   ],
                                 ),
                               ),
@@ -505,7 +505,7 @@ class _Dialogs {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const SelectableText("Hacer pedido"),
+          title: const Text("Hacer pedido"),
           titleTextStyle:
           TextStyle(
               fontWeight: FontWeight.bold,
@@ -516,16 +516,16 @@ class _Dialogs {
                 onPressed: (){
                   Navigator.of(context).pop();
                 },
-                child: const SelectableText("Cancelar")
+                child: const Text("Cancelar")
             ),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();
                   Navigator.of(context).pop();
                 },
-                child: const SelectableText("Confirmar")),
+                child: const Text("Confirmar")),
           ],
-          content: SelectableText(message),
+          content: Text(message),
         );
       },
     );

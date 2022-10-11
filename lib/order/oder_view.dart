@@ -1,4 +1,5 @@
 
+import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -47,6 +48,7 @@ class _OrderViewState extends State<OrderView> {
               ),
             );
           } else {
+            html.window.history.pushState(null, 'Voltz - Pedido ${viewModel.order!.consecutive}', '?cotz=${viewModel.order!.id}');
             return Scaffold(
               backgroundColor: CustomColors.backgroundCanvas,
               body: MediaQuery.of(context).size.width >= 480 ? Container(
@@ -350,7 +352,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8,),
+               /* const SizedBox(height: 8,),
                 Row(
                   children: [
                     SelectableText(
@@ -363,7 +365,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                       style: CustomStyles.styleWhiteUno,
                     ),
                   ],
-                ),
+                ),*/
                 const SizedBox(height: 8,),
                 Row(
                   children: [
