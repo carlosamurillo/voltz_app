@@ -15,21 +15,7 @@ void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
   VoltzKeys _config = VoltzKeys();
 
-  await Segment.config(
-    options: SegmentConfig(
-      writeKey: _config.segmentWriteKey!,
-      trackApplicationLifecycleEvents: false,
-    ),
-  );
 
-  //Segment.debug(true);
-
-  Segment.setContext({
-    'os': {'name': 'Chrome', 'version': '1.1'},
-    'device': {
-      'token': 'testing',
-    }
-  });
 
   if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
     // Some android/ios specific code

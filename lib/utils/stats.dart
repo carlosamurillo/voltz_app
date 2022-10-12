@@ -5,14 +5,12 @@ class Stats {
     Segment.screen(
       screenName: 'Cotizacion',
     );
-    Segment.flush();
   }
 
   static OrderViewed() {
     Segment.screen(
       screenName: 'Pedido',
     );
-    Segment.flush();
   }
 
   static ButtonClicked(String name){
