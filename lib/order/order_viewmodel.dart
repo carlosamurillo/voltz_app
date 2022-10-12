@@ -5,6 +5,7 @@ import 'package:maketplace/order/order_model.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import '../utils/stats.dart';
 import '../app/app.locator.dart';
 
 class OrderViewModel  extends BaseViewModel {
@@ -17,6 +18,7 @@ class OrderViewModel  extends BaseViewModel {
   init(String quoteId) {
     _orderId = quoteId;
     _listenChanges();
+    Stats.OrderViewed();
   }
 
   void _listenChanges() async {

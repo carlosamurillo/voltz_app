@@ -1,17 +1,47 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/quote/quote_view.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 
+import 'package:flutter/foundation.dart';
 import 'app/app.locator.dart';
 import 'app/app.router.dart';
 
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
   VoltzKeys _config = VoltzKeys();
+
+  await Segment.config(
+    options: SegmentConfig(
+      writeKey: _config.segmentWriteKey!,
+      trackApplicationLifecycleEvents: false,
+    ),
+  );
+
+  //Segment.debug(true);
+
+  Segment.setContext({
+    'os': {'name': 'Chrome', 'version': '1.1'},
+    'device': {
+      'token': 'testing',
+    }
+  });
+
+  if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
+    // Some android/ios specific code
+  }
+  else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
+    // Some desktop specific code there
+  }
+  else {
+    // Some web specific code there
+
+  }
+
   await Firebase.initializeApp(
     options: _config.firebaseOptions,
   );
@@ -30,6 +60,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [
+        SegmentObserver(),
+      ],
       title: 'Voltz - Cotización',
       theme: ThemeData(
         // This is the theme of your application.

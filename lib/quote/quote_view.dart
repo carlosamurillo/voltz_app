@@ -197,6 +197,7 @@ class _QuoteHeader extends StatelessWidget {
                   hoverColor: CustomColors.blueBackground,
                   onTap: () async {
                     html.window.open(_url, "_blank");
+                    context.read<QuoteViewModel>().trackCSVExport();
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),

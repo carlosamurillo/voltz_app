@@ -12,6 +12,7 @@ import 'package:stacked_services/stacked_services.dart';
 import '../app/app.locator.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
+import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
 
@@ -28,6 +29,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     _quoteId = quoteId;
     this.version = version;
     _listenChanges();
+    Stats.QuoteViewed();
   }
 
   void _listenChanges() async {
@@ -218,4 +220,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     print('_calculate Totals.... ${quote.total}');
   }
 
+  trackCSVExport(){
+    Stats.ButtonClicked('Exportar CSV');
+  }
 }
