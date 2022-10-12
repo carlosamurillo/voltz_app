@@ -305,7 +305,7 @@ class OrderTotalsMobile extends StatefulWidget {
   final double tax;
   final double total;
   final double subTotal;
-  final double shippingTotal;
+  final double? shippingTotal;
   final String quoteId;
   final int totalProducts;
 

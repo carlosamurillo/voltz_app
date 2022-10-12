@@ -126,9 +126,10 @@ class ProductsOrdered {
     brand = json['brand'];
     subBrand = json['sub_brand'];
     quantity = json['quantity'];
-    saleValue = json['sale_value'];
+    quantity = int.tryParse(json['quantity'].toString());
+    saleValue = double.tryParse(json['sale_value'].toString());
     saleUnit = json['sale_unit'];
-    salePrice = json['sale_price'];
+    salePrice = double.tryParse(json['sale_price'].toString());
   }
 
   Map<String, dynamic> toJson() {

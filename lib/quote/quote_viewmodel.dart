@@ -3,7 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
-import 'package:maketplace/order/order_model.dart';
+import 'package:maketplace/order/order_model.dart' as OrderModel;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked.dart';
@@ -113,7 +113,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
 
-  Future<void> _saveOrder(OrderModel orderModel) async {
+  Future<void> _saveOrder(OrderModel.OrderModel orderModel) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_quoteId);
     reference.set({
       ...orderModel.toJson(),
@@ -122,16 +122,16 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
 
-  OrderModel _generateOrder(){
+  OrderModel.OrderModel _generateOrder(){
 
-    List<OrderDetail> orderDetailList = [];
+    List<OrderModel.OrderDetail> orderDetailList = [];
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
-      OrderDetail orderDetail = OrderDetail();
+      OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();
       orderDetail.productRequested =  quote.detail![i].productRequested!;
       orderDetail.productsOrdered = [];
       for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
         if(quote.detail![i].productsSuggested![b].selected == true) {
-          orderDetail.productsOrdered!.add(ProductsOrdered(
+          orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
             productId: quote.detail![i].productsSuggested![b].productId,
             sku: quote.detail![i].productsSuggested![b].sku,
             supplier: quote.detail![i].productsSuggested![b].supplier,
@@ -148,9 +148,12 @@ class QuoteViewModel  extends ReactiveViewModel  {
       if(orderDetail.productsOrdered!.isNotEmpty){
         orderDetailList.add(orderDetail);
       }
+    }
+    if(quote.shipping != null){
 
     }
-    OrderModel orderModel = OrderModel(
+
+    OrderModel.OrderModel orderModel = OrderModel.OrderModel(
       customerId: quote.customerId,
       consecutive: 0,
       alias: quote.alias,
@@ -159,6 +162,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
       tax: quote.tax,
       total: quote.total,
       detail: orderDetailList,
+      shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
     );
     return orderModel;
   }
@@ -209,7 +213,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
         }
       }
     }
-    quote.total = (quote.subTotal! * (1 - quote.discount! ) * (1 + quote.tax!)) + quote.shipping!.total!;
+
+    quote.total = (quote.subTotal! * (1 - quote.discount! ) * (1 + quote.tax!)) + (quote.shipping != null ? quote.shipping!.total! : 0);
     print('_calculate Totals.... ${quote.total}');
   }
 

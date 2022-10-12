@@ -87,7 +87,7 @@ class _QuoteViewState extends State<QuoteView> {
                   ),
                   if(viewModel.version != 'original') ...[
                     _QuoteTotals(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
-                      subTotal: viewModel.quote.subTotal!, shippingTotal: viewModel.quote.shipping!.total!, isSaveActive: viewModel.isSaveActive,
+                      subTotal: viewModel.quote.subTotal!, shippingTotal: (viewModel.quote!.shipping != null ? viewModel.quote!.shipping!.total! : null) , isSaveActive: viewModel.isSaveActive,
                       quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                   ],
@@ -431,7 +431,7 @@ class _QuoteTotals extends StatefulWidget {
   final double tax;
   final double total;
   final double subTotal;
-  final double shippingTotal;
+  final double? shippingTotal;
   final bool isSaveActive;
   final String quoteId;
   final VoidCallback onAcceptQuote;
@@ -484,20 +484,22 @@ class _QuoteTotalsState extends State<_QuoteTotals> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8,),
-                Row(
-                  children: [
-                    SelectableText(
-                      "Costo de envío",
-                      style: CustomStyles.styleWhiteUno,
-                    ),
-                    Spacer(),
-                    SelectableText(
-                      currencyFormat.format(widget.shippingTotal),
-                      style: CustomStyles.styleWhiteUno,
-                    ),
-                  ],
-                ),
+                if(widget.shippingTotal != null) ...[
+                  const SizedBox(height: 8,),
+                  Row(
+                    children: [
+                      SelectableText(
+                        "Costo de envío",
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                      Spacer(),
+                      SelectableText(
+                        currencyFormat.format(widget.shippingTotal),
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                    ],
+                  ),
+                ],
                 if(context.read<QuoteViewModel>().version == 'original') ...[
                   const SizedBox(height: 8,),
                   Row(

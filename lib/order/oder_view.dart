@@ -82,7 +82,7 @@ class _OrderViewState extends State<OrderView> {
                       ),
                     ),
                     _OrderTotals(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                      subTotal: viewModel.order!.subTotal!, discount: viewModel.order!.discount!,),
+                      subTotal: viewModel.order!.subTotal!, shippingTotal: (viewModel.order!.shipping != null ? viewModel.order!.shipping!.total! : null) ,),
                   ],
                 ),
               ) :
@@ -312,11 +312,11 @@ class _OrderHeaderId extends StatelessWidget {
 
 class _OrderTotals extends StatefulWidget {
   _OrderTotals({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.discount,}) : super(key: key, );
+    required this.shippingTotal,}) : super(key: key, );
   final double tax;
   final double total;
   final double subTotal;
-  final double discount;
+  final double? shippingTotal;
 
   @override
   _OrderTotalsState createState() => _OrderTotalsState();
@@ -380,6 +380,22 @@ class _OrderTotalsState extends State<_OrderTotals> {
                     ),
                   ],
                 ),
+                if(widget.shippingTotal != null) ...[
+                  const SizedBox(height: 8,),
+                  Row(
+                    children: [
+                      SelectableText(
+                        "Costo de envío",
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                      Spacer(),
+                      SelectableText(
+                        currencyFormat.format(widget.shippingTotal),
+                        style: CustomStyles.styleWhiteUno,
+                      ),
+                    ],
+                  ),
+                ],
                 const SizedBox(height: 8,),
                 Row(
                   children: [
