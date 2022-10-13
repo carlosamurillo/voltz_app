@@ -101,7 +101,7 @@ class ProductsOrdered {
   String? skuDescription;
   String? brand;
   String? subBrand;
-  int? quantity;
+  double? quantity;
   double? saleValue;
   String? saleUnit;
   double? salePrice;
@@ -125,8 +125,7 @@ class ProductsOrdered {
     skuDescription = json['sku_description'];
     brand = json['brand'];
     subBrand = json['sub_brand'];
-    quantity = json['quantity'];
-    quantity = int.tryParse(json['quantity'].toString());
+    quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
     saleUnit = json['sale_unit'];
     salePrice = double.tryParse(json['sale_price'].toString());

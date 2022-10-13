@@ -175,7 +175,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     textEditingController.addListener(() {
       if(indicator == true) {
         _model.onUpdateQuantity(
-          widget.i, widget.b, int.parse(textEditingController.text),);
+          widget.i, widget.b, double.parse(textEditingController.text),);
         widget.listenerUpdateTotals();
       }
       indicator = true;
@@ -194,13 +194,13 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         onIncrement: (num newlyIncrementedValue) {
           print('Newly incremented value is $newlyIncrementedValue');
           //model.saveNewQuantity(widget.i, b, newlyIncrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.onUpdateQuantity(widget.i, widget.b, newlyIncrementedValue.toInt(),);
+          _model.onUpdateQuantity(widget.i, widget.b, newlyIncrementedValue.toDouble(),);
           widget.listenerUpdateTotals();
         },
         onDecrement: (num newlyDecrementedValue) {
           print('Newly decremented value is $newlyDecrementedValue');
           //model.saveNewQuantity(widget.i, b, newlyDecrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.onUpdateQuantity(widget.i, widget.b, newlyDecrementedValue.toInt(),);
+          _model.onUpdateQuantity(widget.i, widget.b, newlyDecrementedValue.toDouble(),);
           widget.listenerUpdateTotals();
         },
         numberFieldDecoration: InputDecoration(

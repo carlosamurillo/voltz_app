@@ -123,7 +123,7 @@ class ProductsSuggested {
   String? brand;
   String? subBrand;
   String? techFile;
-  int? quantity;
+  double? quantity;
   double? saleValue;
   String? saleUnit;
   double? salePrice;
@@ -150,7 +150,7 @@ class ProductsSuggested {
     brand = json['brand'];
     subBrand = json['sub_brand'];
     techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
-    quantity = int.tryParse(json['quantity'].toString());
+    quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
     saleUnit = json['sale_unit'];
     salePrice = double.tryParse(json['sale_price'].toString());

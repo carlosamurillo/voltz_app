@@ -29,9 +29,9 @@ class QuoteViewModel  extends ReactiveViewModel  {
     _quoteId = quoteId;
     this.version = version;
     _listenChanges();
-    Stats.QuoteViewed();
   }
 
+  bool viewRecorded = false;
   void _listenChanges() async {
     DocumentReference reference;
     if(version == "original"){
@@ -49,6 +49,9 @@ class QuoteViewModel  extends ReactiveViewModel  {
             _navigationService.navigateToOrderView(orderId: quote.id!);
           });
           return;
+        } else if(!viewRecorded) {
+          Stats.QuoteViewed(_quoteId);
+          viewRecorded = true;
         }
         calculateTotals();
         notifyListeners();
@@ -94,10 +97,11 @@ class QuoteViewModel  extends ReactiveViewModel  {
       },
     ));
     await _saveOrder(_generateOrder());
+    Stats.QuoteAccepted(_quoteId, quote.total!);
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
-  void onUpdateQuantity(int i, int b, int quantity) {
+  void onUpdateQuantity(int i, int b, double quantity) {
     quote.detail![i].productsSuggested![b].quantity = quantity;
     calculateTotals();
     saveQuote();
@@ -106,12 +110,18 @@ class QuoteViewModel  extends ReactiveViewModel  {
   void onSelectedSku(bool value, int i, int b){
     quote.detail![i].productsSuggested![b].selected = value;
     saveQuote();
+    Stats.SkuSeleccionado(quoteId: _quoteId, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
+        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
+        countProductsSuggested: quote.detail![i].productsSuggested!.length);
   }
 
   void onDeleteSku(Detail value){
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     saveQuote();
+    Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
+        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
+        countProductsSuggested: value.productsSuggested!.length);
   }
 
 
@@ -209,6 +219,11 @@ class QuoteViewModel  extends ReactiveViewModel  {
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
       for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
         if(quote.detail![i].productsSuggested![b].selected == true) {
+          print('SubTotal ........... ' + quote.subTotal.toString());
+          print('product id ........... ' + quote.detail![i].productsSuggested![b].productId!.toString());
+          print('pocision  ........... ' + quote.detail![i].position.toString());
+          print('quantity ........... ' + quote.detail![i].productsSuggested![b].quantity!.toString());
+          print('sale Price ............'+ quote.detail![i].productsSuggested![b].salePrice!.toString());
           quote.subTotal = quote.subTotal! +
               (quote.detail![i].productsSuggested![b].quantity! *
                   quote.detail![i].productsSuggested![b].salePrice!);

@@ -952,7 +952,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     textEditingController.addListener(() {
       if(indicator == true) {
         _model.onUpdateQuantity(
-          widget.i, widget.b, int.parse(textEditingController.text),);
+          widget.i, widget.b, double.parse(textEditingController.text),);
         widget.listenerUpdateTotals();
       }
       indicator = true;
@@ -970,7 +970,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         controller: textEditingController,
         textAlign: TextAlign.center,
         onChanged: (value) {
-          _model.onUpdateQuantity(widget.i, widget.b, int.parse(value), );
+          _model.onUpdateQuantity(widget.i, widget.b, double.parse(value), );
         },
 
       ) : SelectableText(

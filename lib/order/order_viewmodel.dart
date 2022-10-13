@@ -18,7 +18,7 @@ class OrderViewModel  extends BaseViewModel {
   init(String quoteId) {
     _orderId = quoteId;
     _listenChanges();
-    Stats.OrderViewed();
+    Stats.OrderViewed( _orderId);
   }
 
   void _listenChanges() async {
