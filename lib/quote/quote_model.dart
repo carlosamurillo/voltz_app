@@ -10,6 +10,7 @@ class QuoteModel {
   double? tax;
   double? total;
   Timestamp? createdAt;
+  Timestamp? publishedAt;
   List<Detail>? detail;
   bool accepted = false;
   List<DiscardedProducts>? discardedProducts = <DiscardedProducts>[];
@@ -25,6 +26,7 @@ class QuoteModel {
         this.tax = 0.0,
         this.total = 0.0,
         this.createdAt,
+        this.publishedAt,
         this.detail,
         this.accepted = false,
         this.discardedProducts,
@@ -40,6 +42,9 @@ class QuoteModel {
     tax = json['tax'];
     total = json['total'];
     createdAt = json['created_at'];
+    if (json.containsKey('published_at')) {
+      publishedAt = json['published_at'];
+    }
     accepted = json['accepted'];
     if (json['detail'] != null) {
       detail = <Detail>[];
@@ -70,6 +75,9 @@ class QuoteModel {
     data['tax'] = this.tax;
     data['total'] = this.total;
     data['created_at'] = this.createdAt;
+    if (this.publishedAt != null) {
+      data['published_at'] = this.publishedAt;
+    }
     data['accepted'] = this.accepted;
     if (this.detail != null) {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();

@@ -12,6 +12,7 @@ class OrderModel {
   Timestamp? createdAt;
   List<OrderDetail>? detail;
   Shipping? shipping;
+  String? paymentStatus;
 
   OrderModel(
       {this.id,
@@ -24,7 +25,8 @@ class OrderModel {
         this.total = 0.0,
         this.createdAt,
         this.detail,
-        this.shipping});
+        this.shipping,
+      this.paymentStatus = 'pending'});
 
   OrderModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
@@ -45,6 +47,7 @@ class OrderModel {
     if (json.containsKey('shipping') && json['shipping'] != null) {
       shipping = new Shipping.fromJson(json['shipping']);
     }
+    paymentStatus = json['payment_status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +66,7 @@ class OrderModel {
     if (this.shipping != null) {
       data['shipping'] = this.shipping!.toMap();
     }
+    data['payment_status'] = this.paymentStatus;
     return data;
   }
 }

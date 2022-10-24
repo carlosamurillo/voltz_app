@@ -21,6 +21,19 @@ class OrderViewModel  extends BaseViewModel {
     Stats.OrderViewed( _orderId);
   }
 
+  void changePaymentStatus(){
+    bool execute = false;
+    if(order!.paymentStatus == null || order!.paymentStatus == 'pending') {
+      order!.paymentStatus = 'verifying';
+      execute = true;
+    }
+    if ( execute == true) {
+      DocumentReference reference = FirebaseFirestore.instance.collection(
+          'order-detail').doc(_orderId);
+      reference.update({'payment_status': order!.paymentStatus});
+    }
+  }
+
   void _listenChanges() async {
     DocumentReference reference = FirebaseFirestore.instance.collection(
         'order-detail').doc(_orderId);

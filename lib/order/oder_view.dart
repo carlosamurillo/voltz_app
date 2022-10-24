@@ -8,6 +8,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
+import '../payment/payment_view.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -24,6 +25,8 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView> {
   ScrollController _scrollController = ScrollController();
+
+  bool showPaymentView = true;
 
   @override
   void initState() {
@@ -54,35 +57,45 @@ class _OrderViewState extends State<OrderView> {
               body: MediaQuery.of(context).size.width >= 480 ? Container(
                 padding: EdgeInsets.all(0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        child: Column(
-                          children: [
-                            _OrderHeader(total: viewModel.order!.total!,),
-                            const Divider(
-                              height: 1,
-                              color: CustomColors.grayBackground,
-                            ),
-                            _OrderHeaderId(createdAt: viewModel.order!.createdAt!.toDate(), alias: viewModel.order!.alias!, orderId: viewModel.order!.consecutive!.toString(),),
-                            const Divider(
-                              height: 1,
-                              color: CustomColors.grayBackground,
-                            ),
-                            const SizedBox(height: 24,),
-                            if(viewModel.order!.detail != null) ...[
-                              for(int i = 0; i <=
-                                  viewModel.order!.detail!.length - 1; i++) ...{
-                                _OrerdeTableDetail(i: i,),
-                              },
+                    if(showPaymentView)...[
+                      _OrderHeader(total: viewModel.order!.total!,),
+                      Expanded(
+                        child: PaymentInstructions(total: viewModel.order!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
+                      ),
+
+                    ] else...[
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Column(
+                            children: [
+                              _OrderHeader(total: viewModel.order!.total!,),
+                              const Divider(
+                                height: 1,
+                                color: CustomColors.grayBackground,
+                              ),
+                              _OrderHeaderId(createdAt: viewModel.order!.createdAt!.toDate(), alias: viewModel.order!.alias!, orderId: viewModel.order!.consecutive!.toString(), showOrder: showOrder),
+                              const Divider(
+                                height: 1,
+                                color: CustomColors.grayBackground,
+                              ),
+                              const SizedBox(height: 24,),
+                              if(viewModel.order!.detail != null) ...[
+                                for(int i = 0; i <=
+                                    viewModel.order!.detail!.length - 1; i++) ...{
+                                  _OrerdeTableDetail(i: i,),
+                                },
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                    _OrderTotals(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                      subTotal: viewModel.order!.subTotal!, shippingTotal: (viewModel.order!.shipping != null ? viewModel.order!.shipping!.total! : null) ,),
+                      _OrderTotals(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
+                        subTotal: viewModel.order!.subTotal!, shippingTotal: (viewModel.order!.shipping != null ? viewModel.order!.shipping!.total! : null) ,),
+                    ],
                   ],
                 ),
               ) :
@@ -90,31 +103,39 @@ class _OrderViewState extends State<OrderView> {
                 padding: EdgeInsets.all(0),
                 child: Column(
                   children: [
-                    OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
-                    const Divider(
-                      height: 1,
-                      color: CustomColors.grayBackground,
-                    ),
-                    OrderTotalsMobile(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                      subTotal: viewModel.order!.subTotal!, shippingTotal: viewModel.order!.shipping!.total!,
-                      quoteId: viewModel.order!.id!, totalProducts: viewModel.order!.detail!.length,
-                    ),
-                    const SizedBox(height: 24,),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        child: Column(
-                          children: [
-                            if(viewModel.order!.detail != null) ...[
-                              for(int i = 0; i <=
-                                  viewModel.order!.detail!.length - 1; i++) ...{
-                                OrderTableDetailMobile(i: i,),
-                              },
+                    if(showPaymentView) ...[
+                      OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
+                      Expanded(
+                        child: PaymentInstructionsMobile(total: viewModel.order!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
+                      ),
+                    ] else...[
+                      OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
+                      const Divider(
+                        height: 1,
+                        color: CustomColors.grayBackground,
+                      ),
+                      OrderTotalsMobile(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
+                        subTotal: viewModel.order!.subTotal!, shippingTotal: viewModel.order!.shipping == null ? null : viewModel.order!.shipping!.total,
+                        quoteId: viewModel.order!.id!, totalProducts: viewModel.order!.detail!.length,
+                      ),
+                      const SizedBox(height: 24,),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Column(
+                            children: [
+                              if(viewModel.order!.detail != null) ...[
+                                for(int i = 0; i <=
+                                    viewModel.order!.detail!.length - 1; i++) ...{
+                                  OrderTableDetailMobile(i: i,),
+                                },
+                              ],
                             ],
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                      _GoToPayment(listenerShowOrder: showOrder,)
+                    ],
                   ],
                 ),
               ),
@@ -124,6 +145,65 @@ class _OrderViewState extends State<OrderView> {
     );
   }
 
+  showOrder(){
+    setState(() {
+      showPaymentView = !showPaymentView;
+    });
+  }
+}
+
+class _GoToPayment extends StatefulWidget {
+  _GoToPayment({Key? key, required this.listenerShowOrder,}) : super(key: key, );
+  VoidCallback listenerShowOrder;
+  @override
+  _GoToPaymentSate createState() => _GoToPaymentSate();
+}
+class _GoToPaymentSate extends State<_GoToPayment>{
+
+  @override
+  void initState() {
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      color: Colors.white,
+      child: Container(
+          width: double.infinity,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(26),),
+            color: CustomColors.energyYellow,
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(26)),
+              hoverColor: CustomColors.energyYellowHover,
+              onTap: (){
+                setState(() {
+                  widget.listenerShowOrder();
+                });
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                alignment: Alignment.center,
+                child:  Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text('Ir a pago' , style: CustomStyles.styleVolcanicBlueDos,)
+                  ],
+                ),
+              ),
+            ),
+          )
+      ),
+    );
+  }
 }
 
 
@@ -146,6 +226,7 @@ class _OrderHeader extends StatelessWidget {
             height: 24.5,
           ),
           const Spacer(),
+
           /*Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(26),),
@@ -200,11 +281,16 @@ class _OrderHeader extends StatelessWidget {
 
 class _OrderHeaderId extends StatelessWidget {
   _OrderHeaderId(
-      {required this.orderId, required this.alias, required this.createdAt});
+      {required this.orderId, required this.alias, required this.createdAt, required this.showOrder});
 
   final DateTime createdAt;
   final String orderId;
   final String alias;
+  final VoidCallback showOrder;
+
+  final Color _buttonColor = CustomColors.safeBlue;
+  final Color _buttonHoverColor = CustomColors.safeBlueHover;
+
 
   @override
   Widget build(BuildContext context) {
@@ -301,6 +387,37 @@ class _OrderHeaderId extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
+                Container(
+                    width: 250,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(26),),
+                      color: _buttonColor,
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: const BorderRadius.all(Radius.circular(26)),
+                        hoverColor: _buttonHoverColor,
+                        onTap: (){
+                          showOrder();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                          alignment: Alignment.center,
+                          child:  Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text('Ir a pago' , style: CustomStyles.styleWhiteDos,)
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                ),
               ],
             )
           ],

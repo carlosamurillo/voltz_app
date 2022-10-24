@@ -12,12 +12,16 @@ abstract class CustomStyles {
   static TextStyle styleVolcanicBlueUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal,color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 14,));
   static TextStyle styleVolcanicBlueDos = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 14,));
   static TextStyle styleVolcanicBlueTres = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 18,));
+  static TextStyle styleVolcanic32x700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w700, fontSize: 32,));
 
   static TextStyle styleVolcanicUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanic, fontWeight: FontWeight.w600, fontSize: 16,));
   static TextStyle styleVolcanicDos = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 12,));
 
   static TextStyle styleBlackContrastUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.blackContrast, fontWeight: FontWeight.w800, fontSize: 16,));
 
+  static TextStyle styleBlue14x500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w500, fontSize: 14, decoration: TextDecoration.underline,));
+  static TextStyle styleVolcanic14x500 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w500, fontSize: 14, height: 1.1,));
+  static TextStyle styleBlue14x700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 14, height: 1.1));
 
   static TextStyle styleMobileBlue700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 12,));
   static TextStyle styleMobileBlue400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w400, fontSize: 12,));
