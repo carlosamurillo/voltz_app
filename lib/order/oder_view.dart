@@ -65,7 +65,6 @@ class _OrderViewState extends State<OrderView> {
                       Expanded(
                         child: PaymentInstructions(total: viewModel.order!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
                       ),
-
                     ] else...[
                       Expanded(
                         child: SingleChildScrollView(
