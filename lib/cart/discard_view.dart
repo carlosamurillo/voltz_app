@@ -32,51 +32,46 @@ class _DiscardViewState extends State<DiscardView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Expanded(
+    return RefreshIndicator(
+        onRefresh: () => _handleRefresh(),
         child:
-        RefreshIndicator(
-            onRefresh: () => _handleRefresh(),
-            child:
-            Builder(
-              builder: (BuildContext context) {
-                if (widget.viewModel.quote.discardedProducts != null) {
-                  return
-                    Container(
-                      color: Colors.white,
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-                        reverse: false,
-                        controller: widget.viewModel.scrollController,
-                        itemCount: widget.viewModel.quote.discardedProducts!.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return NoIncludeSign();
-                          } else {
-                            return _BacklogItemView(viewModel: widget.viewModel, i: index,);
-                          }
-                        },
-                      ),
-                    );
-                } else {
-                  return true ?
-                  const CircularProgressIndicator(): Container(
-                      padding: EdgeInsets.all(80),
-                      color: CustomColors.backgroundCanvas,
-                      alignment: Alignment.center,
-                      child: Container(
-                        color: Colors.white,
-                        child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                          overflow: TextOverflow.clip,
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.styleVolcanicUno,
-                        ),
-                      ));
-                }
-              },
-            )
-        ),
-      ),
+        Builder(
+          builder: (BuildContext context) {
+            if (widget.viewModel.quote.discardedProducts != null) {
+              return
+                Container(
+                  color: Colors.white,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                    reverse: false,
+                    controller: widget.viewModel.scrollController,
+                    itemCount: widget.viewModel.quote.discardedProducts!.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return NoIncludeSign();
+                      } else {
+                        return _BacklogItemView(viewModel: widget.viewModel, i: index,);
+                      }
+                    },
+                  ),
+                );
+            } else {
+              return true ?
+              const CircularProgressIndicator(): Container(
+                  padding: EdgeInsets.all(80),
+                  color: CustomColors.backgroundCanvas,
+                  alignment: Alignment.center,
+                  child: Container(
+                    color: Colors.white,
+                    child: Text('Ups!, sin resultados. Intenta con otros filtros...',
+                      overflow: TextOverflow.clip,
+                      textAlign: TextAlign.center,
+                      style: CustomStyles.styleVolcanicUno,
+                    ),
+                  ));
+            }
+          },
+        )
     );
   }
 }

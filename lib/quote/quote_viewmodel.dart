@@ -14,7 +14,7 @@ import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
 
-class QuoteViewModel  extends ReactiveViewModel  {
+class QuoteViewModel  extends BaseViewModel  {
 
   final NavigationService _navigationService = locator<NavigationService>();
   @override
@@ -70,6 +70,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
     });*/
   }
+
   
   void updateDetail(Detail detail) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
@@ -248,7 +249,5 @@ class QuoteViewModel  extends ReactiveViewModel  {
   trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
   }
-
-  late VoidCallback listenerUpdateTotals;
 
 }

@@ -42,7 +42,6 @@ class _CartViewState extends State<CartView> {
         disposeViewModel: false,
         builder: (context, viewModel, child) {
           model = context.read<QuoteViewModel>();
-          model.listenerUpdateTotals = _updateTotals;
           if(viewModel.quote.detail == null){
             return const Center(
               child: SizedBox(
@@ -60,7 +59,7 @@ class _CartViewState extends State<CartView> {
                   child: Column(
                     children: [
                       _Header(),
-                      _Container(viewModel: viewModel,),
+                      _Container(viewModel: viewModel, listenerUpdateTotals: _updateTotals,),
                     ],
                   ),
                 )
@@ -104,8 +103,9 @@ class _Header extends StatelessWidget {
 }
 
 class _Container extends StatefulWidget {
-  _Container({required this.viewModel,});
+  _Container({required this.viewModel, required this.listenerUpdateTotals});
   QuoteViewModel viewModel;
+  final VoidCallback listenerUpdateTotals;
 
   @override
   _ContainerState createState() => _ContainerState();
@@ -124,7 +124,7 @@ class _ContainerState extends State<_Container> {
           width: double.infinity,
           child: Column(
             children: [
-              Expanded(child: _CartContent(viewModel: widget.viewModel,),),
+              Expanded(child: _CartContent(viewModel: widget.viewModel, listenerUpdateTotals: widget.listenerUpdateTotals,),),
               // Spacer(),
               _CartTotals(),
             ],
@@ -135,8 +135,9 @@ class _ContainerState extends State<_Container> {
 }
 
 class _CartContent extends StatefulWidget {
-  _CartContent({required this.viewModel,});
+  _CartContent({required this.viewModel, required this.listenerUpdateTotals});
   QuoteViewModel viewModel;
+  final VoidCallback listenerUpdateTotals;
 
   @override
   _CartContentState createState() => _CartContentState();
@@ -167,7 +168,8 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
       child: Column(
         children: [
           Tabs(tabController: _tabController, viewModel : widget.viewModel),
-          Expanded(child: TabsContent(tabController: _tabController, viewModel : widget.viewModel), ),
+          Expanded(child: TabsContent(tabController: _tabController, viewModel : widget.viewModel,
+            listenerUpdateTotals: widget.listenerUpdateTotals,), ),
         ],
       ),
     );

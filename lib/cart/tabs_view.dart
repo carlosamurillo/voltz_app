@@ -193,16 +193,14 @@ class __TabsState extends State<Tabs>  {
 }
 
 class TabsContent extends StatefulWidget {
-  TabsContent({Key? key, required this.tabController, required this.viewModel}) : super(key: key);
+  TabsContent({Key? key, required this.tabController, required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
   QuoteViewModel viewModel;
   TabController tabController;
+  final VoidCallback listenerUpdateTotals;
   @override
   __TabsContentState createState() => __TabsContentState();
 }
-class __TabsContentState extends State<TabsContent>  with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin<TabsContent> {
-
-  @override
-  bool get wantKeepAlive => true;
+class __TabsContentState extends State<TabsContent> {
 
   @override
   void initState() {
@@ -217,16 +215,14 @@ class __TabsContentState extends State<TabsContent>  with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     // if (authUser == null) return Loading();
-    return Expanded(
-      child: TabBarView(
-          controller: widget.tabController,
-          dragStartBehavior: DragStartBehavior.start,
-          children: [
-            CartList(),
-            BacklogView(viewModel: widget.viewModel,),
-            DiscardView(viewModel: widget.viewModel,),
-          ]),
-    );
+    return TabBarView(
+        controller: widget.tabController,
+        dragStartBehavior: DragStartBehavior.start,
+        children: [
+          CartList(listenerUpdateTotals: widget.listenerUpdateTotals, viewModel: widget.viewModel,),
+          BacklogView(viewModel: widget.viewModel,),
+          DiscardView(viewModel: widget.viewModel,),
+        ]);
   }
 }
 

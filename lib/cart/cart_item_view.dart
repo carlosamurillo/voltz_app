@@ -15,10 +15,16 @@ import '../utils/inputText.dart';
 import '../utils/style.dart';
 import 'cart_view.dart';
 
-class CartList extends HookViewModelWidget<QuoteViewModel> {
-  CartList({Key? key}) : super(key: key, reactive: false);
+class CartList extends StatefulWidget {
+  CartList({required this.viewModel, required this.listenerUpdateTotals});
+  QuoteViewModel viewModel;
+  final VoidCallback listenerUpdateTotals;
 
-  late QuoteViewModel model;
+  @override
+  _CartListState createState() => _CartListState();
+}
+class _CartListState extends State<CartList> {
+
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   TextEditingController textEditingController = TextEditingController();
 
@@ -27,57 +33,47 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
   }
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
-    return Container(
-        //padding: const EdgeInsets.only(left: 60, right: 60, top: 16, bottom: 16 ),
-        child: Expanded(
-          child:
-          RefreshIndicator(
-            onRefresh: () => _handleRefresh(),
-            child:
-            Builder(
-              builder: (BuildContext context) {
-                if (model.quote.detail != null) {
-                  return
-                    Container(
-                      color: Colors.white,
-                      child: ListView.builder(
-                        padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-                        reverse: false,
-                        controller: model.scrollController,
-                        itemCount: model.quote.detail!.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index < model.quote.detail!.length) {
-                            return CartItemView(viewModel: model, i: index,);
-                          } else {
-                            return ComebackLater(totalProducts: model.quote.pendingProducts!.length,);
-                          }
-                        },
-                      ),
-                    );
-                } else {
-                return true ?
-                const CircularProgressIndicator(): Container(
-                    padding: EdgeInsets.all(80),
-                    color: CustomColors.backgroundCanvas,
-                    alignment: Alignment.center,
-                    child: Container(
-                      color: Colors.white,
-                      child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                        overflow: TextOverflow.clip,
-                        textAlign: TextAlign.center,
-                        style: CustomStyles.styleVolcanicUno,
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+        onRefresh: () => _handleRefresh(),
+        child:
+        Builder(
+          builder: (BuildContext context) {
+            if (widget.viewModel.quote.detail != null) {
+              return
+                Container(
+                  color: Colors.white,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                    reverse: false,
+                    controller: widget.viewModel.scrollController,
+                    itemCount: widget.viewModel.quote.detail!.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index < widget.viewModel.quote.detail!.length) {
+                        return CartItemView(viewModel: widget.viewModel, i: index, listenerUpdateTotals: widget.listenerUpdateTotals,);
+                      } else {
+                        return ComebackLater(totalProducts: widget.viewModel.quote.pendingProducts!.length,);
+                      }
+                    },
+                  ),
+                );
+            } else {
+              return true ?
+              const CircularProgressIndicator(): Container(
+                  padding: EdgeInsets.all(80),
+                  color: CustomColors.backgroundCanvas,
+                  alignment: Alignment.center,
+                  child: Container(
+                    color: Colors.white,
+                    child: Text('Ups!, sin resultados. Intenta con otros filtros...',
+                      overflow: TextOverflow.clip,
+                      textAlign: TextAlign.center,
+                      style: CustomStyles.styleVolcanicUno,
                     ),
                   ));
-                }
-              },
-            )
-          ),
-        ),
+            }
+          },
+        )
     );
   }
 }
@@ -85,9 +81,10 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
 
 
 class CartItemView extends StatefulWidget {
-  CartItemView({Key? key, required this.i, required this.viewModel}) : super(key: key);
+  CartItemView({Key? key, required this.i, required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
   int i;
   QuoteViewModel viewModel;
+  final VoidCallback listenerUpdateTotals;
 
   @override
   _CartItemState createState() => _CartItemState();
@@ -186,7 +183,7 @@ class _CartItemState extends State<CartItemView>  {
             ),
             Spacer(),
             const SizedBox(width: 50,),
-            _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
+            _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel, listenerUpdateTotals: widget.listenerUpdateTotals,)
           ],
         )
     );
@@ -195,9 +192,11 @@ class _CartItemState extends State<CartItemView>  {
 
 
 class _QuantityCalculatorWidget extends StatefulWidget {
-  const _QuantityCalculatorWidget({Key? key, required this.i, required this.b, required this.viewModel}) : super(key: key);
+  const _QuantityCalculatorWidget({Key? key, required this.i, required this.b,
+    required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
   final int i; final int b;
   final QuoteViewModel viewModel;
+  final VoidCallback listenerUpdateTotals;
   @override
   _QuantityCalculatorWidgetState createState() => _QuantityCalculatorWidgetState();
 }
@@ -240,7 +239,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
             textAlign: TextAlign.center,
             onChanged: (value) {
               _model.onUpdateQuantity(widget.i, widget.b, double.parse(value), );
-              _model.listenerUpdateTotals();
+              widget.viewModel.notifyListeners();
             },
           ),
           const SizedBox(height: 20,),
