@@ -25,40 +25,50 @@ class QuoteViewModel  extends ReactiveViewModel  {
   String? version;
   bool isSaveActive = false;
 
+  int documentLimit = 20;
+  QueryDocumentSnapshot? lastDocument = null;
+  ScrollController scrollController = ScrollController();
+  late DocumentSnapshot postByUser;
+
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     _listenChanges();
   }
 
+  bool isLoading = true;
   bool viewRecorded = false;
   void _listenChanges() async {
+
     DocumentReference reference;
     if(version == "original"){
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('version').doc(_quoteId);
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
+    DocumentSnapshot documentSnapshot = await reference.get();
 
-    reference.snapshots().listen((documentSnapshot) async {
-      print(documentSnapshot.data().toString());
-      if (documentSnapshot.exists) {
-        quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
-        if(version == null && quote.accepted){
-          Future.delayed(const Duration(milliseconds: 1500), () {
-            _navigationService.navigateToOrderView(orderId: quote.id!);
-          });
-          return;
-        } else if(!viewRecorded) {
-          Stats.QuoteViewed(_quoteId);
-          viewRecorded = true;
-        }
-        calculateTotals();
-        notifyListeners();
-      } else {
-        quote = QuoteModel();
+    if (documentSnapshot.exists) {
+      quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+      if(version == null && quote.accepted){
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          _navigationService.navigateToOrderView(orderId: quote.id!);
+        });
+        return;
+      } else if(!viewRecorded) {
+        Stats.QuoteViewed(_quoteId);
+        viewRecorded = true;
       }
-    });
+      calculateTotals();
+      notifyListeners();
+    } else {
+      quote = QuoteModel();
+    }
+    /*reference.snapshots().listen((documentSnapshot) async {
+      print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
+      print(documentSnapshot.data().toString());
+
+    });*/
   }
   
   void updateDetail(Detail detail) async {
@@ -238,4 +248,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
   }
+
+  late VoidCallback listenerUpdateTotals;
+
 }

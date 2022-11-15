@@ -28,4 +28,12 @@ class CustomColors {
   static const Color backgroundCanvas = Color(0xFFF5F5F5);
 
   static const Color energyGreen = Color(0xFF00AC1C);
+
+
+  static const Color superVolcanic = Color(0xFF1F232F);
+  static const Color muggleGray = Color(0xFFE2E2E2);
+  static const Color muggleGray_2 = Color(0xFFA8A8A8);
+  static const Color muggleGray_3 = Color(0xFF4C5366);
+  static const Color muggleGray_4 = Color(0xFF394055);
+
 }

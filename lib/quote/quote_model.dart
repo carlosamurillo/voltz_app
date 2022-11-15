@@ -15,6 +15,7 @@ class QuoteModel {
   bool accepted = false;
   List<DiscardedProducts>? discardedProducts = <DiscardedProducts>[];
   Shipping? shipping;
+  List<PendingProduct>? pendingProducts = <PendingProduct>[];
 
   QuoteModel(
       {this.id,
@@ -30,7 +31,8 @@ class QuoteModel {
         this.detail,
         this.accepted = false,
         this.discardedProducts,
-        this.shipping});
+        this.shipping,
+      this.pendingProducts});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
@@ -63,6 +65,13 @@ class QuoteModel {
     if (json.containsKey('shipping') && json['shipping'] != null) {
       shipping = new Shipping.fromJson(json['shipping']);
     }
+    if (json['arr_not_result'] != null) {
+      pendingProducts = <PendingProduct>[];
+      json['arr_not_result'].forEach((v) {
+        pendingProducts!.add(new PendingProduct.fromJson(v));
+      });
+      pendingProducts!.sort((a, b) => a.position!.compareTo(b.position!));
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -88,6 +97,10 @@ class QuoteModel {
     }
     if (this.shipping != null) {
       data['shipping'] = this.shipping!.toMap();
+    }
+    if (this.pendingProducts != null) {
+      data['arr_not_result'] =
+          this.pendingProducts!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -136,6 +149,7 @@ class ProductsSuggested {
   String? saleUnit;
   double? salePrice;
   bool? selected;
+  String? coverImage;
 
   ProductsSuggested(
       {this.productId,
@@ -148,7 +162,8 @@ class ProductsSuggested {
         this.saleValue,
         this.saleUnit,
         this.salePrice = 0.0,
-        this.selected,});
+        this.selected,
+        this.coverImage});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -163,6 +178,7 @@ class ProductsSuggested {
     saleUnit = json['sale_unit'];
     salePrice = double.tryParse(json['sale_price'].toString());
     selected = json['selected'];
+    coverImage = json['image_cover'];
   }
 
   Map<String, dynamic> toJson() {
@@ -179,6 +195,7 @@ class ProductsSuggested {
     data['sale_unit'] = this.saleUnit;
     data['sale_price'] = this.salePrice;
     data['selected'] = this.selected;
+    data['image_cover'] = this.coverImage;
     return data;
   }
 }
@@ -201,6 +218,29 @@ class DiscardedProducts {
     data['requested_products'] = this.requestedProducts;
     data['reason'] = this.reason;
     data['position'] = this.position;
+    return data;
+  }
+}
+
+
+class PendingProduct {
+  String? requestedProduct;
+  int? position;
+  double? quantity;
+
+  PendingProduct({this.requestedProduct, this.position, this.quantity = 0});
+
+  PendingProduct.fromJson(Map<String, dynamic> json) {
+    requestedProduct = json['requested_products'];
+    position = json['position'];
+    quantity = double.tryParse(json['quantity'].toString());
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['requested_products'] = this.requestedProduct;
+    data['position'] = this.position;
+    data['quantity'] = this.quantity;
     return data;
   }
 }
