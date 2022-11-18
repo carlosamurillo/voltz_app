@@ -1,10 +1,9 @@
 
+import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -14,52 +13,44 @@ import '../utils/custom_colors.dart';
 import '../utils/inputText.dart';
 import '../utils/style.dart';
 import 'cart_view.dart';
-
-class CartList extends StatefulWidget {
-  CartList({required this.viewModel, required this.listenerUpdateTotals});
-  QuoteViewModel viewModel;
-  final VoidCallback listenerUpdateTotals;
+class CartList extends HookViewModelWidget<QuoteViewModel> {
+  const CartList({Key? key}) : super(key: key, reactive: true);
 
   @override
-  _CartListState createState() => _CartListState();
-}
-class _CartListState extends State<CartList> {
-
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-
-  _handleRefresh() async{
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: () => _handleRefresh(),
-        child:
-        Builder(
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
+    return Builder(
           builder: (BuildContext context) {
-            if (widget.viewModel.quote.detail != null) {
+            if (viewModel.quote.detail != null) {
+              html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
               return
                 Container(
                   color: Colors.white,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
                     reverse: false,
-                    controller: widget.viewModel.scrollController,
-                    itemCount: widget.viewModel.quote.detail!.length + 1,
+                    controller: viewModel.scrollController,
+                    itemCount: viewModel.quote.detail!.length + 1,
                     itemBuilder: (context, index) {
-                      if (index < widget.viewModel.quote.detail!.length) {
-                        return CartItemView(viewModel: widget.viewModel, i: index, listenerUpdateTotals: widget.listenerUpdateTotals,);
+                      if (index < viewModel.quote.detail!.length) {
+                        return CartItemView(viewModel: viewModel, i: index,);
                       } else {
-                        return ComebackLater(totalProducts: widget.viewModel.quote.pendingProducts!.length,);
+                        return ComebackLater(totalProducts: viewModel.quote.pendingProducts!.length,);
                       }
                     },
                   ),
                 );
             } else {
               return true ?
-              const CircularProgressIndicator(): Container(
+              const Center(
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              ) : Container(
                   padding: EdgeInsets.all(80),
                   color: CustomColors.backgroundCanvas,
                   alignment: Alignment.center,
@@ -73,7 +64,6 @@ class _CartListState extends State<CartList> {
                   ));
             }
           },
-        )
     );
   }
 }
@@ -81,10 +71,9 @@ class _CartListState extends State<CartList> {
 
 
 class CartItemView extends StatefulWidget {
-  CartItemView({Key? key, required this.i, required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
+  CartItemView({Key? key, required this.i, required this.viewModel,}) : super(key: key);
   int i;
   QuoteViewModel viewModel;
-  final VoidCallback listenerUpdateTotals;
 
   @override
   _CartItemState createState() => _CartItemState();
@@ -170,7 +159,9 @@ class _CartItemState extends State<CartItemView>  {
                       child: SelectableText.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: "${currencyFormat.format(product.salePrice!)} c/u",
+                            TextSpan(text: "${currencyFormat.format(product.price!.pricePublic!)}",
+                              style: CustomStyles.styleMuggleGray_416x600Tachado,),
+                            TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
                               style: CustomStyles.styleSafeBlue16x600,),
                           ],
                         ),
@@ -183,7 +174,7 @@ class _CartItemState extends State<CartItemView>  {
             ),
             Spacer(),
             const SizedBox(width: 50,),
-            _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel, listenerUpdateTotals: widget.listenerUpdateTotals,)
+            _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
           ],
         )
     );
@@ -193,10 +184,9 @@ class _CartItemState extends State<CartItemView>  {
 
 class _QuantityCalculatorWidget extends StatefulWidget {
   const _QuantityCalculatorWidget({Key? key, required this.i, required this.b,
-    required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
+    required this.viewModel,}) : super(key: key);
   final int i; final int b;
   final QuoteViewModel viewModel;
-  final VoidCallback listenerUpdateTotals;
   @override
   _QuantityCalculatorWidgetState createState() => _QuantityCalculatorWidgetState();
 }
@@ -213,13 +203,13 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
     super.initState();
     _model = context.read<QuoteViewModel>();
     textEditingController.text = _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
-    textEditingController.addListener(() {
+    /*textEditingController.addListener(() async {
       if(indicator == true) {
         _model.onUpdateQuantity(
           widget.i, widget.b, double.parse(textEditingController.text),);
       }
       indicator = true;
-    });
+    });*/
   }
 
   @override
@@ -239,7 +229,6 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
             textAlign: TextAlign.center,
             onChanged: (value) {
               _model.onUpdateQuantity(widget.i, widget.b, double.parse(value), );
-              widget.viewModel.notifyListeners();
             },
           ),
           const SizedBox(height: 20,),
@@ -253,7 +242,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               ),
               const Spacer(),
               SelectableText(
-                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].salePrice! * widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!),
+                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.discount),
                 style: CustomStyles.styleWhite14x400,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
@@ -271,7 +260,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               ),
               const Spacer(),
               SelectableText(
-                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].salePrice! * widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!),
+                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.afterDiscount!),
                 style: CustomStyles.styleWhite14x400,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
@@ -291,7 +280,8 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   hoverColor: CustomColors.energyYellowHover,
                   onTap: (){
-
+                    widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
+                    widget.viewModel.notifyListeners();
                   },
                   child: Container(
                     width: 232,

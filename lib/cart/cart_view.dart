@@ -1,14 +1,11 @@
-import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/cart/tabs_view.dart';
-import 'package:maketplace/quote/quote_view_mobile.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
-import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../utils/custom_colors.dart';
@@ -25,7 +22,6 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  ScrollController _scrollController = ScrollController();
   late QuoteViewModel model;
   @override
   void initState() {
@@ -35,46 +31,26 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<QuoteViewModel>.reactive(
-        viewModelBuilder: () => QuoteViewModel(),
-        onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
-        fireOnModelReadyOnce: false,
-        disposeViewModel: false,
-        builder: (context, viewModel, child) {
-          model = context.read<QuoteViewModel>();
-          if(viewModel.quote.detail == null){
-            return const Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator(),
+    return ViewModelBuilder<QuoteViewModel>.nonReactive(
+      viewModelBuilder: () => QuoteViewModel(),
+      builder: (context, viewModel, child) {
+        return Scaffold(
+            backgroundColor: Colors.white,
+            body: Container(
+              padding: EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  _Header(),
+                  _Container(),
+                ],
               ),
-            );
-          } else {
-            html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
-            return Scaffold(
-                backgroundColor: Colors.white,
-                body: Container(
-                  padding: EdgeInsets.all(0),
-                  child: Column(
-                    children: [
-                      _Header(),
-                      _Container(viewModel: viewModel, listenerUpdateTotals: _updateTotals,),
-                    ],
-                  ),
-                )
-            );
-          }
-        }
+            )
+        );
+      },
+      onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
     );
   }
 
-  void _updateTotals() async {
-    if (mounted) {
-      setState(() {
-      });
-    }
-  }
 }
 
 class _Header extends StatelessWidget {
@@ -86,7 +62,7 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           SvgPicture.asset(
-            'assets/svg/voltz_logo.svg',
+            'assets/svg/logo_dark_background.svg',
             width: 122,
             height: 24.5,
           ),
@@ -102,18 +78,12 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _Container extends StatefulWidget {
-  _Container({required this.viewModel, required this.listenerUpdateTotals});
-  QuoteViewModel viewModel;
-  final VoidCallback listenerUpdateTotals;
+class _Container extends StatelessWidget {
 
   @override
-  _ContainerState createState() => _ContainerState();
-}
-class _ContainerState extends State<_Container> {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(
+      BuildContext context,
+      ) {
     return Expanded(
       child: Container(
           decoration: BoxDecoration(
@@ -124,7 +94,7 @@ class _ContainerState extends State<_Container> {
           width: double.infinity,
           child: Column(
             children: [
-              Expanded(child: _CartContent(viewModel: widget.viewModel, listenerUpdateTotals: widget.listenerUpdateTotals,),),
+              Expanded(child: _CartContent(),),
               // Spacer(),
               _CartTotals(),
             ],
@@ -135,9 +105,6 @@ class _ContainerState extends State<_Container> {
 }
 
 class _CartContent extends StatefulWidget {
-  _CartContent({required this.viewModel, required this.listenerUpdateTotals});
-  QuoteViewModel viewModel;
-  final VoidCallback listenerUpdateTotals;
 
   @override
   _CartContentState createState() => _CartContentState();
@@ -167,9 +134,8 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
       margin: EdgeInsets.only(top: 20, left: 50, right: 50),
       child: Column(
         children: [
-          Tabs(tabController: _tabController, viewModel : widget.viewModel),
-          Expanded(child: TabsContent(tabController: _tabController, viewModel : widget.viewModel,
-            listenerUpdateTotals: widget.listenerUpdateTotals,), ),
+          Tabs(tabController: _tabController,),
+          Expanded(child: TabsContent(tabController: _tabController,), ),
         ],
       ),
     );
@@ -226,20 +192,8 @@ class ComebackLater extends StatelessWidget {
   }
 }
 
-class _CartTotals extends StatefulWidget {
-  const _CartTotals();
-  @override
-  _CartTotalsState createState() => _CartTotalsState();
-}
-class _CartTotalsState extends State<_CartTotals> {
+class _CartTotals extends StatelessWidget {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  late QuoteViewModel model;
-
-  @override
-  void initState() {
-    super.initState();
-    model = context.read<QuoteViewModel>();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -263,40 +217,76 @@ class _CartTotalsState extends State<_CartTotals> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Spacer(),
-          Expanded(
-            child: Container(
-                width: 300,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(6),),
-                  color: CustomColors.safeBlue,
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    borderRadius: const BorderRadius.all(Radius.circular(6)),
-                    hoverColor: CustomColors.safeBlueHover,
-                    onTap: (){
+          _labelSubTotales(currencyFormat: currencyFormat,),
+          SizedBox(width: 40,),
+          Container(
+            width: 189,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(6),),
+                color: CustomColors.safeBlue,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  hoverColor: CustomColors.safeBlueHover,
+                  onTap: (){
 
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                      alignment: Alignment.center,
-                      child:  Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text('Hacer pedido  -  ${currencyFormat.format(model.quote.total)}', textAlign: TextAlign.center , style: CustomStyles.styleWhite16x600,)
-                        ],
-                      ),
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    alignment: Alignment.center,
+                    child:  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text('Generar cotización', textAlign: TextAlign.center , style: CustomStyles.styleWhite16x600,),
+                      ],
                     ),
                   ),
-                )
-            ),
+                ),
+              )
           ),
         ],
       ),
     );
+  }
+}
+
+
+class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
+  _labelSubTotales({Key? key, required this.currencyFormat}) : super(key: key, reactive: true);
+  var currencyFormat;
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    if (model.quote.detail != null) {
+      return SelectableText.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: 'Subtotal',
+              style: CustomStyles.styleMuggleGray_416x400,),
+            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal)}",
+              style: CustomStyles.styleMuggleGray_416x600,),
+            TextSpan(text: '    Dcto. adicional',
+              style: CustomStyles.styleMuggleGray_416x400,),
+            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.discount!)}",
+              style: CustomStyles.styleEnergyYellow_416x600,),
+            TextSpan(text: '    Total',
+              style: CustomStyles.styleMuggleGray_416x400,),
+            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal! - model.quote.totals!.discount!)}",
+              style: CustomStyles.styleMuggleGray_416x600,),
+          ],
+        ),
+        textAlign: TextAlign.left,
+      );
+    } else {
+      return Text("Calculando ... ");
+    }
   }
 }

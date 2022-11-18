@@ -10,48 +10,32 @@ import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
-
-class BacklogView extends StatefulWidget {
-  const BacklogView({Key? key, required this.viewModel}) : super(key: key);
-  final QuoteViewModel viewModel;
-  @override
-  _BacklogViewState createState() => _BacklogViewState();
-}
-
-class _BacklogViewState extends State<BacklogView> {
+class BacklogView extends HookViewModelWidget<QuoteViewModel> {
+  BacklogView({Key? key, }) : super(key: key, reactive: true);
 
   @override
-  void initState() {
-    super.initState();
-    initializeDateFormatting();
-  }
-
-  _handleRefresh() async{
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: () => _handleRefresh(),
-        child:
-        Builder(
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
+    return Builder(
           builder: (BuildContext context) {
-            if (widget.viewModel.quote.pendingProducts != null) {
+            if (viewModel.quote.pendingProducts != null) {
               return
                 Container(
                   color: Colors.white,
                   child: ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
                     reverse: false,
-                    controller: widget.viewModel.scrollController,
-                    itemCount: widget.viewModel.quote.pendingProducts!.length + 1,
+                    controller: viewModel.scrollController,
+                    itemCount: viewModel.quote.pendingProducts!.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
-                        return WeAreWorking(createdAt: widget.viewModel.quote.createdAt!,);
+                        return WeAreWorking(createdAt: viewModel.quote.createdAt!,);
                       } else {
-                        return BacklogItemView(viewModel: widget.viewModel, i: index,);
+                        return BacklogItemView(viewModel: viewModel, i: index,);
                       }
                     },
                   ),
@@ -72,8 +56,7 @@ class _BacklogViewState extends State<BacklogView> {
                   ));
             }
           },
-        )
-    );
+        );
   }
 }
 
@@ -147,7 +130,8 @@ class _BacklogItemViewState extends State<BacklogItemView>  {
   }
 
   _discardProduct() async {
-
+    widget.viewModel.onDeleteSkuFromPending(product);
+    widget.viewModel.notifyListeners();
   }
 
   @override

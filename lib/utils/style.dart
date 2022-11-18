@@ -48,9 +48,14 @@ abstract class CustomStyles {
   static TextStyle styleVolcanic14x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 14,overflow: TextOverflow.clip));
   static TextStyle styleSafeBlue16x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 16, overflow: TextOverflow.clip));
   static TextStyle styleSafeBlue14x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w400, fontSize: 14, overflow: TextOverflow.clip));
+  static TextStyle styleMuggleGray_416x600Tachado = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.muggleGray_4, fontWeight: FontWeight.w600, fontSize: 16, overflow: TextOverflow.clip, decoration: TextDecoration.lineThrough));
 
   static TextStyle styleVolcanic16x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w400, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),);
   static TextStyle styleRedAlert16x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.redAlert, fontWeight: FontWeight.w400, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),);
   static TextStyle styleRedAlert16x400Underline = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.redAlert, fontWeight: FontWeight.w400, fontSize: 16, height: 1.2, overflow: TextOverflow.clip, decoration: TextDecoration.underline),);
+
+  static TextStyle styleMuggleGray_416x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.muggleGray_4, fontWeight: FontWeight.w400, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),);
+  static TextStyle styleMuggleGray_416x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.muggleGray_4, fontWeight: FontWeight.w600, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),);
+  static TextStyle styleEnergyYellow_416x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.energyYellow, fontWeight: FontWeight.w600, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),);
 
 }

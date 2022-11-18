@@ -11,11 +11,11 @@ import '../utils/style.dart';
 import 'backlog_view.dart';
 import 'cart_item_view.dart';
 import 'discard_view.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
 class Tabs extends StatefulWidget {
-  Tabs({Key? key, required this.tabController, required this.viewModel }) : super(key: key);
+  Tabs({Key? key, required this.tabController }) : super(key: key);
   TabController tabController;
-  QuoteViewModel viewModel;
 
   @override
   __TabsState createState() => __TabsState();
@@ -56,17 +56,18 @@ class __TabsState extends State<Tabs>  {
 
   @override
   Widget build(BuildContext context) {
-
+    _setupTabs();
     return Container(
       decoration: BoxDecoration(
-        boxShadow: <BoxShadow>[
+        color: Colors.white,
+        /*boxShadow: <BoxShadow>[
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
             spreadRadius: 2,
             blurRadius: 50,
             offset: Offset(0, 0),
           ),
-        ],
+        ],*/
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -116,7 +117,7 @@ class __TabsState extends State<Tabs>  {
                           ),
                         ],
                         SizedBox(width: 12,),
-                        Text("Cotizados (${widget.viewModel.quote.detail!.length})"),
+                        _textTab1(),
                       ],
                     ),
                   ),
@@ -145,7 +146,7 @@ class __TabsState extends State<Tabs>  {
                             ),
                           ],
                           SizedBox(width: 12,),
-                          Text("En proceso (${widget.viewModel.quote.pendingProducts!.length})"),
+                          _textTab2(),
                         ],
                       ),
                     ),
@@ -174,7 +175,7 @@ class __TabsState extends State<Tabs>  {
                           ),
                         ],
                         SizedBox(width: 12,),
-                        Text("Descartados (${widget.viewModel.quote.discardedProducts!.length})"),
+                        _textTab3(),
                       ],
                     ),
                   ),
@@ -192,11 +193,55 @@ class __TabsState extends State<Tabs>  {
   }
 }
 
+class _textTab1 extends HookViewModelWidget<QuoteViewModel> {
+const _textTab1({Key? key}) : super(key: key, reactive: true);
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    if (model.quote.detail != null) {
+      return Text("Cotizados (${model.quote.detail!.length})");
+    } else {
+      return Text("Cotizados");
+    }
+  }
+}
+class _textTab2 extends HookViewModelWidget<QuoteViewModel> {
+  const _textTab2({Key? key}) : super(key: key, reactive: true);
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    if (model.quote.detail != null) {
+      return Text("En Proceso (${model.quote.pendingProducts!.length})");
+    } else {
+      return Text("En Proceso");
+    }
+  }
+}
+class _textTab3 extends HookViewModelWidget<QuoteViewModel> {
+  const _textTab3({Key? key}) : super(key: key, reactive: true);
+
+  @override
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    if (model.quote.detail != null) {
+      return Text("Descartados (${model.quote.discardedProducts!.length})");
+    } else {
+      return Text("Descartados");
+    }
+  }
+}
+
 class TabsContent extends StatefulWidget {
-  TabsContent({Key? key, required this.tabController, required this.viewModel, required this.listenerUpdateTotals}) : super(key: key);
-  QuoteViewModel viewModel;
+  TabsContent({Key? key, required this.tabController,}) : super(key: key);
   TabController tabController;
-  final VoidCallback listenerUpdateTotals;
   @override
   __TabsContentState createState() => __TabsContentState();
 }
@@ -219,9 +264,9 @@ class __TabsContentState extends State<TabsContent> {
         controller: widget.tabController,
         dragStartBehavior: DragStartBehavior.start,
         children: [
-          CartList(listenerUpdateTotals: widget.listenerUpdateTotals, viewModel: widget.viewModel,),
-          BacklogView(viewModel: widget.viewModel,),
-          DiscardView(viewModel: widget.viewModel,),
+          CartList(),
+          BacklogView(),
+          DiscardView(),
         ]);
   }
 }

@@ -9,69 +9,52 @@ import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
-
-class DiscardView extends StatefulWidget {
-  const DiscardView({Key? key, required this.viewModel}) : super(key: key);
-  final QuoteViewModel viewModel;
-  @override
-  _DiscardViewState createState() => _DiscardViewState();
-}
-
-class _DiscardViewState extends State<DiscardView> {
+class DiscardView extends HookViewModelWidget<QuoteViewModel> {
+  DiscardView({Key? key, }) : super(key: key, reactive: true);
 
   @override
-  void initState() {
-    super.initState();
-    initializeDateFormatting();
-  }
-
-  _handleRefresh() async{
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RefreshIndicator(
-        onRefresh: () => _handleRefresh(),
-        child:
-        Builder(
-          builder: (BuildContext context) {
-            if (widget.viewModel.quote.discardedProducts != null) {
-              return
-                Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-                    reverse: false,
-                    controller: widget.viewModel.scrollController,
-                    itemCount: widget.viewModel.quote.discardedProducts!.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return NoIncludeSign();
-                      } else {
-                        return _BacklogItemView(viewModel: widget.viewModel, i: index,);
-                      }
-                    },
-                  ),
-                );
-            } else {
-              return true ?
-              const CircularProgressIndicator(): Container(
-                  padding: EdgeInsets.all(80),
-                  color: CustomColors.backgroundCanvas,
-                  alignment: Alignment.center,
-                  child: Container(
-                    color: Colors.white,
-                    child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                      overflow: TextOverflow.clip,
-                      textAlign: TextAlign.center,
-                      style: CustomStyles.styleVolcanicUno,
-                    ),
-                  ));
-            }
-          },
-        )
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
+    return Builder(
+      builder: (BuildContext context) {
+        if (viewModel.quote.discardedProducts != null) {
+          return
+            Container(
+              color: Colors.white,
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                reverse: false,
+                controller: viewModel.scrollController,
+                itemCount: viewModel.quote.discardedProducts!.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return NoIncludeSign();
+                  } else {
+                    return _BacklogItemView(viewModel: viewModel, i: index,);
+                  }
+                },
+              ),
+            );
+        } else {
+          return true ?
+          const CircularProgressIndicator(): Container(
+              padding: EdgeInsets.all(80),
+              color: CustomColors.backgroundCanvas,
+              alignment: Alignment.center,
+              child: Container(
+                color: Colors.white,
+                child: Text('Ups!, sin resultados. Intenta con otros filtros...',
+                  overflow: TextOverflow.clip,
+                  textAlign: TextAlign.center,
+                  style: CustomStyles.styleVolcanicUno,
+                ),
+              ));
+        }
+      },
     );
   }
 }
