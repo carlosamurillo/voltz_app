@@ -25,42 +25,100 @@ class QuoteViewModel  extends ReactiveViewModel  {
   String? version;
   bool isSaveActive = false;
 
+  int documentLimit = 20;
+  QueryDocumentSnapshot? lastDocument = null;
+  ScrollController scrollController = ScrollController();
+  late DocumentSnapshot postByUser;
+
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
-    _listenChanges();
+    initReference();
+    await _getQuote();
+    return _listenChanges();
   }
 
+  initConfirmation(String quoteId, String? version) async {
+    _quoteId = quoteId;
+    this.version = version;
+    initReference();
+    await _getQuote();
+    await _fillSelectedProductsList();
+    return notifyListeners();
+  }
+
+  bool isLoading = true;
   bool viewRecorded = false;
-  void _listenChanges() async {
-    DocumentReference reference;
+
+  late DocumentReference reference;
+
+  initReference(){
     if(version == "original"){
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('version').doc(_quoteId);
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
+  }
 
-    reference.snapshots().listen((documentSnapshot) async {
-      print(documentSnapshot.data().toString());
-      if (documentSnapshot.exists) {
-        quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
-        if(version == null && quote.accepted){
-          Future.delayed(const Duration(milliseconds: 1500), () {
-            _navigationService.navigateToOrderView(orderId: quote.id!);
-          });
-          return;
-        } else if(!viewRecorded) {
-          Stats.QuoteViewed(_quoteId);
-          viewRecorded = true;
+  Future<void> _getQuote() async {
+    DocumentSnapshot documentSnapshot = await reference.get();
+    if (documentSnapshot.exists) {
+      quote = await processQuote(documentSnapshot);
+    } else {
+      quote = QuoteModel();
+    }
+  }
+
+  void _listenChanges() async {
+    reference.snapshots().listen(
+          (documentSnapshot) async {
+            if (documentSnapshot.exists) {
+              print("Listen success");
+              quote = await processQuote(documentSnapshot);
+              notifyListeners();
+            } else {
+              quote = QuoteModel();
+            }
+
+          },
+      onError: (error) => print("Listen failed: $error"),
+    );
+  }
+
+  Future<QuoteModel> processQuote(DocumentSnapshot documentSnapshot) async {
+    quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+    if(version == null && quote.accepted){
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        _navigationService.navigateToOrderView(orderId: quote.id!);
+      });
+    } else if(!viewRecorded) {
+      Stats.QuoteViewed(_quoteId);
+      viewRecorded = true;
+    }
+    return quote;
+  }
+
+
+  List<ProductsSuggested> selectedProducts = [];
+  Future<void> _fillSelectedProductsList() async {
+    selectedProducts = [];
+    quote.detail?.forEach((element) {
+      element.productsSuggested?.forEach((element2) {
+        if (element2.selected == true){
+          selectedProducts.add(element2);
         }
-        calculateTotals();
-        notifyListeners();
-      } else {
-        quote = QuoteModel();
-      }
+      });
     });
   }
-  
+
+  Future<void> navigateToQuoteConfirmation() async {
+    return _navigationService.navigateToQuoteConfirmation(quoteId: quote.id!, version: version);
+  }
+
+  Future<void> navigateToQuoteView() async {
+    return _navigationService.navigateToQuoteView(quoteId: quote.id!, version: version);
+  }
+
   void updateDetail(Detail detail) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     reference.update({
@@ -97,18 +155,24 @@ class QuoteViewModel  extends ReactiveViewModel  {
       },
     ));
     await _saveOrder(_generateOrder());
-    Stats.QuoteAccepted(_quoteId, quote.total!);
+    Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
-  void onUpdateQuantity(int i, int b, double quantity) {
+  Future<void> onUpdateQuantity(int i, int b, double quantity) async {
     quote.detail![i].productsSuggested![b].quantity = quantity;
     calculateTotals();
     saveQuote();
   }
 
+  // instruccion para que el backend calcule totales
+  void calculateTotals(){
+    quote.record!.nextAction = 'calculate_totals';
+  }
+
   void onSelectedSku(bool value, int i, int b){
     quote.detail![i].productsSuggested![b].selected = value;
+    calculateTotals();
     saveQuote();
     Stats.SkuSeleccionado(quoteId: _quoteId, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
@@ -118,10 +182,19 @@ class QuoteViewModel  extends ReactiveViewModel  {
   void onDeleteSku(Detail value){
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
+    calculateTotals();
     saveQuote();
     Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);
+  }
+
+  void onDeleteSkuFromPending(PendingProduct value){
+    quote.pendingProducts!.remove(value);
+    quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.requestedProduct, reason: "No lo quiero.", position: value.position));
+    saveQuote();
+    Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
+        countProductsSuggested: 0);
   }
 
 
@@ -169,10 +242,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
       customerId: quote.customerId,
       consecutive: 0,
       alias: quote.alias,
-      subTotal: quote.subTotal,
-      discount: quote.discount,
-      tax: quote.tax,
-      total: quote.total,
+      subTotal: quote.totals!.subTotal,
+      discount: quote.totals!.discount,
+      tax: quote.totals!.tax,
+      total: quote.totals!.total,
       detail: orderDetailList,
       shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
     );
@@ -211,31 +284,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   }
 
-  void calculateTotals() {
-    quote.subTotal = 0;
-    quote.tax = 0.16;
-    quote.total = 0;
-    quote.discount = 0;
-    for(int i = 0; i <= quote.detail!.length - 1; i++) {
-      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
-        if(quote.detail![i].productsSuggested![b].selected == true) {
-          print('SubTotal ........... ' + quote.subTotal.toString());
-          print('product id ........... ' + quote.detail![i].productsSuggested![b].productId!.toString());
-          print('pocision  ........... ' + quote.detail![i].position.toString());
-          print('quantity ........... ' + quote.detail![i].productsSuggested![b].quantity!.toString());
-          print('sale Price ............'+ quote.detail![i].productsSuggested![b].salePrice!.toString());
-          quote.subTotal = quote.subTotal! +
-              (quote.detail![i].productsSuggested![b].quantity! *
-                  quote.detail![i].productsSuggested![b].salePrice!);
-        }
-      }
-    }
-
-    quote.total = (quote.subTotal! * (1 - quote.discount! ) * (1 + quote.tax!)) + (quote.shipping != null ? quote.shipping!.total! : 0);
-    print('_calculate Totals.... ${quote.total}');
-  }
-
   trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
   }
+
 }
