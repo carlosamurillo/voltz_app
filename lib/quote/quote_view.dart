@@ -109,7 +109,6 @@ class _QuoteViewState extends State<QuoteView> {
                       subTotal: viewModel.quote.subTotal!, discount: viewModel.quote.discount!, isSaveActive: viewModel.isSaveActive,
                       quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
-
                     ),
                   ],
                   const SizedBox(height: 16,),
@@ -119,13 +118,6 @@ class _QuoteViewState extends State<QuoteView> {
                       child: Column(
                         children: [
                           if(viewModel.quote.detail != null) ...[
-                            /*ListView.builder(
-                                padding: const EdgeInsets.all(8),
-                                itemCount: viewModel.quote.detail!.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return QuoteTableDetailMobile(i: index, listener: _updateTotals,);
-                                }
-                            ),*/
                             for(int i = 0; i <=
                                 viewModel.quote.detail!.length - 1; i++) ...{
                               QuoteTableDetailMobile(i: i, listener: _updateTotals,),
