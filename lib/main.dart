@@ -10,6 +10,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:flutter/foundation.dart';
 import 'app/app.locator.dart';
 import 'app/app.router.dart';
+import 'cart/cart_view.dart';
 
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,7 +65,8 @@ class MyApp extends StatelessWidget {
         primaryColor: CustomColors.safeBlue,
         fontFamily: "Hellix",
       ),
-      home: QuoteView(quoteId: quoteId, version: version,),
+      //home: QuoteView(quoteId: quoteId, version: version,),
+      home: CartView(quoteId: quoteId, version: version,),
       navigatorKey: StackedService.navigatorKey,
       // home: AddCardView(), // Used when testing a view
       initialRoute: Routes.quoteView,

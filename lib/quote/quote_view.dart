@@ -63,7 +63,7 @@ class _QuoteViewState extends State<QuoteView> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          _QuoteHeader(total: viewModel.quote.total!, onAcceptQuote: _acceptQuote, id: viewModel.quote.id!),
+                          _QuoteHeader(total: viewModel.quote.totals!.total!, onAcceptQuote: _acceptQuote, id: viewModel.quote.id!),
                           const Divider(
                             height: 1,
                             color: CustomColors.grayBackground,
@@ -86,8 +86,8 @@ class _QuoteViewState extends State<QuoteView> {
                     ),
                   ),
                   if(viewModel.version != 'original') ...[
-                    _QuoteTotals(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
-                      subTotal: viewModel.quote.subTotal!, shippingTotal: (viewModel.quote!.shipping != null ? viewModel.quote!.shipping!.total! : null) , isSaveActive: viewModel.isSaveActive,
+                    _QuoteTotals(tax: viewModel.quote.totals!.tax!, total: viewModel.quote.totals!.total!,
+                      subTotal: viewModel.quote.totals!.subTotal!, shippingTotal: (viewModel.quote.shipping != null ? viewModel.quote.shipping!.total! : null) , isSaveActive: viewModel.isSaveActive,
                       quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote,),
                   ],
@@ -99,14 +99,14 @@ class _QuoteViewState extends State<QuoteView> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
-                  QuoteHeaderMobile(total: viewModel.quote.total!, onAcceptQuote: _acceptQuote, consecutive: viewModel.quote.consecutive.toString(), quoteId: viewModel.quote.id! ),
+                  QuoteHeaderMobile(total: viewModel.quote.totals!.total!, onAcceptQuote: _acceptQuote, consecutive: viewModel.quote.consecutive.toString(), quoteId: viewModel.quote.id! ),
                   const Divider(
                     height: 1,
                     color: CustomColors.grayBackground,
                   ),
                   if(viewModel.version != 'original') ...[
-                    QuoteTotalsMobile(tax: viewModel.quote.tax!, total: viewModel.quote.total!,
-                      subTotal: viewModel.quote.subTotal!, discount: viewModel.quote.discount!, isSaveActive: viewModel.isSaveActive,
+                    QuoteTotalsMobile(tax: viewModel.quote.totals!.tax!, total: viewModel.quote.totals!.total!,
+                      subTotal: viewModel.quote.totals!.subTotal!, discount: viewModel.quote.totals!.discount!, isSaveActive: viewModel.isSaveActive,
                       quoteId: viewModel.quote.id!,
                       onAcceptQuote: _acceptQuote, totalProducts: viewModel.quote.detail!.length,
                     ),

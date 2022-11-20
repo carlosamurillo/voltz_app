@@ -7,9 +7,10 @@ import 'package:stacked/stacked.dart';
 class QuoteService with ReactiveServiceMixin {
 
   final RxValue<QuoteModel> _rxQuote = RxValue<QuoteModel>(QuoteModel());
+
   QuoteModel get quote => _rxQuote.value;
 
-  QuoteService(){
+  QuoteService() {
     listenToReactiveValues([_rxQuote,]);
   }
 
@@ -18,15 +19,17 @@ class QuoteService with ReactiveServiceMixin {
   }
 
   void _listenChanges() async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc("SWCTsMKJJ9mvatWyNuxQ");
+    DocumentReference reference = FirebaseFirestore.instance.collection(
+        'quote-detail').doc("SWCTsMKJJ9mvatWyNuxQ");
     reference.snapshots().listen((documentSnapshot) async {
       if (documentSnapshot.exists) {
-        _rxQuote.value = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+        _rxQuote.value = QuoteModel.fromJson(
+            documentSnapshot.data() as Map<String, dynamic>,
+            documentSnapshot.id);
         notifyListeners();
       } else {
         _rxQuote.value = QuoteModel();
       }
     });
   }
-
 }
