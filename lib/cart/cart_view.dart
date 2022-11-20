@@ -1,16 +1,16 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
+import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 
 class CartView extends StatefulWidget {
   const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
@@ -40,7 +40,7 @@ class _CartViewState extends State<CartView> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
-                  _Header(),
+                  Header(),
                   _Container(),
                 ],
               ),
@@ -51,31 +51,6 @@ class _CartViewState extends State<CartView> {
     );
   }
 
-}
-
-class _Header extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
-      color: CustomColors.superVolcanic,
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/svg/logo_dark_background.svg',
-            width: 122,
-            height: 24.5,
-          ),
-          const Spacer(),
-          SvgPicture.asset(
-            'assets/svg/help_button.svg',
-            width: 74,
-            height: 39,
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _Container extends StatelessWidget {
@@ -192,11 +167,15 @@ class ComebackLater extends StatelessWidget {
   }
 }
 
-class _CartTotals extends StatelessWidget {
+class _CartTotals extends HookViewModelWidget<QuoteViewModel> {
+  _CartTotals({Key? key,}) : super(key: key, reactive: true);
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -230,8 +209,8 @@ class _CartTotals extends StatelessWidget {
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   hoverColor: CustomColors.safeBlueHover,
-                  onTap: (){
-
+                  onTap: () async {
+                    return model.navigateToQuoteConfirmation();
                   },
                   child: Container(
                     width: double.infinity,

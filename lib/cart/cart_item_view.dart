@@ -278,7 +278,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                 color: Colors.transparent,
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  hoverColor: CustomColors.energyYellowHover,
+                  hoverColor: CustomColors.muggleGray,
                   onTap: (){
                     widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
                     widget.viewModel.notifyListeners();

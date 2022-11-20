@@ -33,26 +33,43 @@ class QuoteViewModel  extends ReactiveViewModel  {
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
-    _listenChanges();
+    initReference();
+    await _getQuote();
+    return _listenChanges();
+  }
+
+  initConfirmation(String quoteId, String? version) async {
+    _quoteId = quoteId;
+    this.version = version;
+    initReference();
+    await _getQuote();
+    await _fillSelectedProductsList();
+    return notifyListeners();
   }
 
   bool isLoading = true;
   bool viewRecorded = false;
-  void _listenChanges() async {
 
-    DocumentReference reference;
+  late DocumentReference reference;
+
+  initReference(){
     if(version == "original"){
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('version').doc(_quoteId);
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
+  }
 
+  Future<void> _getQuote() async {
     DocumentSnapshot documentSnapshot = await reference.get();
     if (documentSnapshot.exists) {
       quote = await processQuote(documentSnapshot);
     } else {
       quote = QuoteModel();
     }
+  }
+
+  void _listenChanges() async {
     reference.snapshots().listen(
           (documentSnapshot) async {
             if (documentSnapshot.exists) {
@@ -81,7 +98,27 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return quote;
   }
 
-  
+
+  List<ProductsSuggested> selectedProducts = [];
+  Future<void> _fillSelectedProductsList() async {
+    selectedProducts = [];
+    quote.detail?.forEach((element) {
+      element.productsSuggested?.forEach((element2) {
+        if (element2.selected == true){
+          selectedProducts.add(element2);
+        }
+      });
+    });
+  }
+
+  Future<void> navigateToQuoteConfirmation() async {
+    return _navigationService.navigateToQuoteConfirmation(quoteId: quote.id!, version: version);
+  }
+
+  Future<void> navigateToQuoteView() async {
+    return _navigationService.navigateToQuoteView(quoteId: quote.id!, version: version);
+  }
+
   void updateDetail(Detail detail) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     reference.update({
@@ -118,7 +155,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
       },
     ));
     await _saveOrder(_generateOrder());
-    Stats.QuoteAccepted(_quoteId, quote.total!);
+    Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
@@ -205,10 +242,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
       customerId: quote.customerId,
       consecutive: 0,
       alias: quote.alias,
-      subTotal: quote.subTotal,
-      discount: quote.discount,
-      tax: quote.tax,
-      total: quote.total,
+      subTotal: quote.totals!.subTotal,
+      discount: quote.totals!.discount,
+      tax: quote.totals!.tax,
+      total: quote.totals!.total,
       detail: orderDetailList,
       shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
     );

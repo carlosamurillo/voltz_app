@@ -12,14 +12,17 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../order/oder_view.dart';
+import '../quote/quote_confirmation.dart';
 import '../quote/quote_view.dart';
 
 class Routes {
   static const String quoteView = '/';
   static const String orderView = '/order-view';
+  static const String quoteConfirmation = '/quote-confirmation';
   static const all = <String>{
     quoteView,
     orderView,
+    quoteConfirmation,
   };
 }
 
@@ -29,6 +32,7 @@ class StackedRouter extends RouterBase {
   final _routes = <RouteDef>[
     RouteDef(Routes.quoteView, page: QuoteView),
     RouteDef(Routes.orderView, page: OrderView),
+    RouteDef(Routes.quoteConfirmation, page: QuoteConfirmation),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -54,6 +58,17 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    QuoteConfirmation: (data) {
+      var args = data.getArgs<QuoteConfirmationArguments>(nullOk: false);
+      return CupertinoPageRoute<dynamic>(
+        builder: (context) => QuoteConfirmation(
+          key: args.key,
+          quoteId: args.quoteId,
+          version: args.version,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -74,6 +89,15 @@ class OrderViewArguments {
   final Key? key;
   final String orderId;
   OrderViewArguments({this.key, required this.orderId});
+}
+
+/// QuoteConfirmation arguments holder class
+class QuoteConfirmationArguments {
+  final Key? key;
+  final String quoteId;
+  final String? version;
+  QuoteConfirmationArguments(
+      {this.key, required this.quoteId, required this.version});
 }
 
 /// ************************************************************************
@@ -114,6 +138,27 @@ extension NavigatorStateExtension on NavigationService {
     return navigateTo(
       Routes.orderView,
       arguments: OrderViewArguments(key: key, orderId: orderId),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
+  }
+
+  Future<dynamic> navigateToQuoteConfirmation({
+    Key? key,
+    required String quoteId,
+    required String? version,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo(
+      Routes.quoteConfirmation,
+      arguments: QuoteConfirmationArguments(
+          key: key, quoteId: quoteId, version: version),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,

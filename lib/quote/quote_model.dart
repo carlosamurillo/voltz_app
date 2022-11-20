@@ -6,10 +6,6 @@ class QuoteModel {
   int? consecutive;
   String? customerId;
   String? alias;
-  double? subTotal;
-  double? discount;
-  double? tax;
-  double? total;
   Timestamp? createdAt;
   Timestamp? publishedAt;
   List<Detail>? detail;
@@ -27,10 +23,6 @@ class QuoteModel {
         this.consecutive,
         this.customerId,
         this.alias,
-        this.subTotal = 0.0,
-        this.discount = 0.0,
-        this.tax = 0.0,
-        this.total = 0.0,
         this.createdAt,
         this.publishedAt,
         this.detail,
@@ -48,10 +40,6 @@ class QuoteModel {
     consecutive = json['consecutive'];
     customerId = json['customer_id'];
     alias = json['alias'];
-    subTotal = json['sub_total'];
-    discount = json['discount'];
-    tax = json['tax'];
-    total = json['total'];
     createdAt = json['created_at'];
     if (json.containsKey('published_at')) {
       publishedAt = json['published_at'];
@@ -96,10 +84,6 @@ class QuoteModel {
     data['consecutive'] = this.consecutive;
     data['customer_id'] = this.customerId;
     data['alias'] = this.alias;
-    data['sub_total'] = this.subTotal;
-    data['discount'] = this.discount;
-    data['tax'] = this.tax;
-    data['total'] = this.total;
     data['created_at'] = this.createdAt;
     if (this.publishedAt != null) {
       data['published_at'] = this.publishedAt;
@@ -139,8 +123,9 @@ class Totals {
   double? subTotal;
   double? tax;
   double? total;
+  double? saving;
 
-  Totals({this.discount = 0, this.factorDiscount = 0, this.subTotal = 0, this.tax = 0, this.total = 0});
+  Totals({this.discount = 0, this.factorDiscount = 0, this.subTotal = 0, this.tax = 0, this.total = 0, this.saving = 0});
 
   Totals.fromJson(Map<String, dynamic> json) {
     discount = json['discount'];
@@ -148,6 +133,7 @@ class Totals {
     subTotal = json['sub_total'];
     tax = json['tax'];
     total = json['total'];
+    saving = json['saving'];
   }
 
   Map<String, dynamic> toMap() {
@@ -157,6 +143,7 @@ class Totals {
     data['sub_total'] = subTotal;
     data['tax'] =  tax;
     data['total'] = total;
+    data['saving'] = saving;
     return data;
   }
 }
