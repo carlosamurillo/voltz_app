@@ -11,6 +11,7 @@ import 'package:stacked_hooks/stacked_hooks.dart';
 import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../utils/shimmer.dart';
 
 class CartView extends StatefulWidget {
   const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
@@ -48,6 +49,7 @@ class _CartViewState extends State<CartView> {
         );
       },
       onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
+      fireOnModelReadyOnce: true,
     );
   }
 
@@ -98,7 +100,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
   }
 
   _initTabControllerForPrincipalMenu() {
-    _tabController = new TabController(length: 3, vsync: this, initialIndex: 0);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
   }
 
   @override
@@ -234,7 +236,6 @@ class _CartTotals extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-
 class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
   _labelSubTotales({Key? key, required this.currencyFormat}) : super(key: key, reactive: true);
   var currencyFormat;
@@ -244,28 +245,32 @@ class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
       BuildContext context,
       QuoteViewModel model,
       ) {
-    if (model.quote.detail != null) {
-      return SelectableText.rich(
-        TextSpan(
-          children: [
-            TextSpan(text: 'Subtotal',
-              style: CustomStyles.styleMuggleGray_416x400,),
-            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal)}",
-              style: CustomStyles.styleMuggleGray_416x600,),
-            TextSpan(text: '    Dcto. adicional',
-              style: CustomStyles.styleMuggleGray_416x400,),
-            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.discount!)}",
-              style: CustomStyles.styleEnergyYellow_416x600,),
-            TextSpan(text: '    Total',
-              style: CustomStyles.styleMuggleGray_416x400,),
-            TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal! - model.quote.totals!.discount!)}",
-              style: CustomStyles.styleMuggleGray_416x600,),
-          ],
+    return
+      Shimmer(
+        linearGradient: model.shimmerGradient,
+        child: ShimmerLoading(
+          isLoading: model.isLoading,
+          shimmerEmptyBox: const ShimmerEmptyBox(width: 500, height: 21,),
+          child: model.isLoading ? Container() :
+          SelectableText.rich(TextSpan(
+            children: [
+              TextSpan(text: 'Subtotal',
+                style: CustomStyles.styleMuggleGray_416x400,),
+              TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal)}",
+                style: CustomStyles.styleMuggleGray_416x600,),
+              TextSpan(text: '    Dcto. adicional',
+                style: CustomStyles.styleMuggleGray_416x400,),
+              TextSpan(text: " ${currencyFormat.format(model.quote.totals!.discount!)}",
+                style: CustomStyles.styleEnergyYellow_416x600,),
+              TextSpan(text: '    Total',
+                style: CustomStyles.styleMuggleGray_416x400,),
+              TextSpan(text: " ${currencyFormat.format(model.quote.totals!.subTotal! - model.quote.totals!.discount!)}",
+                style: CustomStyles.styleMuggleGray_416x600,),
+            ],
+          ),
+            textAlign: TextAlign.left,
+          ),
         ),
-        textAlign: TextAlign.left,
       );
-    } else {
-      return Text("Calculando ... ");
-    }
   }
 }

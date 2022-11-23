@@ -1,21 +1,25 @@
 
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
+import 'package:maketplace/quote/quote_stream.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../app/app.locator.dart';
+import '../cart/socket_futures.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
-
+  QueueService queueService = QueueService();
   final NavigationService _navigationService = locator<NavigationService>();
   @override
   List<ReactiveServiceMixin> get reactiveServices => [QuoteService(),];
@@ -30,12 +34,43 @@ class QuoteViewModel  extends ReactiveViewModel  {
   ScrollController scrollController = ScrollController();
   late DocumentSnapshot postByUser;
 
+  final shimmerGradient = const LinearGradient(
+    colors: [
+      Color(0xFFEBEBF4),
+      Color(0xFFF4F4F4),
+      Color(0xFFEBEBF4),
+    ],
+    stops: [
+      0.1,
+      0.3,
+      0.4,
+    ],
+    begin: Alignment(-1.0, -0.3),
+    end: Alignment(1.0, 0.3),
+    tileMode: TileMode.clamp,
+  );
+  final shimmerGradient2 = const LinearGradient(
+    colors: [
+      Color(0xFF4C5365),
+      Color(0xFF4C5367),
+      Color(0xFF4C5370),
+    ],
+    stops: [
+      0.1,
+      0.3,
+      0.4,
+    ],
+    begin: Alignment(-1.0, -0.3),
+    end: Alignment(1.0, 0.3),
+    tileMode: TileMode.clamp,
+  );
+
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     initReference();
-    await _getQuote();
-    return _listenChanges();
+    await _listenChanges();
+    _initStreamQuote();
   }
 
   initConfirmation(String quoteId, String? version) async {
@@ -44,6 +79,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     initReference();
     await _getQuote();
     await _fillSelectedProductsList();
+    stopLoading();
     return notifyListeners();
   }
 
@@ -69,22 +105,29 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
   }
 
-  void _listenChanges() async {
+  Future<void> _listenChanges() async {
     reference.snapshots().listen(
           (documentSnapshot) async {
             if (documentSnapshot.exists) {
-              print("Listen success");
               quote = await processQuote(documentSnapshot);
-              notifyListeners();
+              print('Ult. cantidad recibida fue: ' + quote.detail![0].productsSuggested![0].quantity.toString());
             } else {
               quote = QuoteModel();
             }
-
+            stopLoading();
+            notifyListeners();
           },
       onError: (error) => print("Listen failed: $error"),
     );
   }
 
+  stopLoading() {
+    if (quote.record != null && quote.record!.nextAction == null) {
+      isLoading = false;
+    }
+  }
+
+  //factory Future.delayed(Duration duration, [FutureOr<QuoteModel> computation()?]) {
   Future<QuoteModel> processQuote(DocumentSnapshot documentSnapshot) async {
     quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
     if(version == null && quote.accepted){
@@ -97,7 +140,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
     return quote;
   }
-
 
   List<ProductsSuggested> selectedProducts = [];
   Future<void> _fillSelectedProductsList() async {
@@ -118,25 +160,29 @@ class QuoteViewModel  extends ReactiveViewModel  {
   Future<void> navigateToQuoteView() async {
     return _navigationService.navigateToQuoteView(quoteId: quote.id!, version: version);
   }
-
-  void updateDetail(Detail detail) async {
+/*
+  Future<bool> updateDetail(int i, int b, double newQuantity) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    reference.update({
-      "detail": FieldValue.arrayRemove([detail.toJson()]),
+    await reference.update({
+      "detail": FieldValue.arrayRemove([quote.detail![i].toJson()]),
     }).whenComplete(() {
+      quote.detail![i].productsSuggested![b].quantity = newQuantity;
       reference.update({
-        "detail": FieldValue.arrayUnion([detail.toJson()]),
+        "detail": FieldValue.arrayUnion([quote.detail![i].toJson()]),
       });
     });
-  }
+    return true;
+  }*/
 
-  Future<void> saveQuote() async {
+  @deprecated
+  Future<bool> saveQuote() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    return reference.set(quote.toJson());
+    await reference.set(quote.toJson());
+    return true;
   }
 
   void onGenerateOrder(BuildContext context) async {
-    saveQuote().then((value) async {
+    _saveQuote(quote).then((value) async {
         DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
         await reference.update({'accepted': true});
     });
@@ -159,10 +205,51 @@ class QuoteViewModel  extends ReactiveViewModel  {
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
-  Future<void> onUpdateQuantity(int i, int b, double quantity) async {
+  setQuantity(int i, int b, double quantity){
     quote.detail![i].productsSuggested![b].quantity = quantity;
+  }
+
+  Future<bool> onUpdateQuote() async {
     calculateTotals();
-    saveQuote();
+    addQuoteToStream();
+    return true;
+  }
+
+  final QuoteStream quoteStream = QuoteStream();
+  addQuoteToStream () {
+    quoteStream.add(quote);
+  }
+
+  _initStreamQuote(){
+    final subscription = quoteStream.stream.listen(
+          (data) {
+            _saveQuote(quote);
+            print('ultimo en el stream ' + data.detail![0].productsSuggested![0].quantity.toString());
+          },
+          onError: (err) {
+            print('Error!');
+          },
+          cancelOnError: false,
+          onDone: () {
+            print('Done!');
+          },
+    );
+  }
+
+  Future<bool> _saveQuote(QuoteModel quote) async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.set(reference, quote.toJson());
+    }).then(
+          (value) => print("DocumentSnapshot successfully updated!" + quote.id! ),
+      onError: (e) => print("Error updating document $e"),
+    );
+    return true;
+  }
+
+  void loading () {
+    isLoading = true;
+    notifyListeners();
   }
 
   // instruccion para que el backend calcule totales
@@ -170,33 +257,34 @@ class QuoteViewModel  extends ReactiveViewModel  {
     quote.record!.nextAction = 'calculate_totals';
   }
 
-  void onSelectedSku(bool value, int i, int b){
+  Future<void> onSelectedSku(bool value, int i, int b) async {
+    loading();
     quote.detail![i].productsSuggested![b].selected = value;
     calculateTotals();
-    saveQuote();
-    Stats.SkuSeleccionado(quoteId: _quoteId, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
+    await _saveQuote(quote);
+    return Stats.SkuSeleccionado(quoteId: _quoteId, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
   }
 
-  void onDeleteSku(Detail value){
+  Future<void> onDeleteSku(Detail value) async {
+    loading();
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();
-    saveQuote();
-    Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
+    await _saveQuote(quote);
+    return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);
   }
 
-  void onDeleteSkuFromPending(PendingProduct value){
+  Future<void> onDeleteSkuFromPending(PendingProduct value) async {
     quote.pendingProducts!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.requestedProduct, reason: "No lo quiero.", position: value.position));
-    saveQuote();
-    Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
+    await _saveQuote(quote);
+    return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
         countProductsSuggested: 0);
   }
-
 
   Future<void> _saveOrder(OrderModel.OrderModel orderModel) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_quoteId);
@@ -206,9 +294,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     });
   }
 
-
   OrderModel.OrderModel _generateOrder(){
-
     List<OrderModel.OrderDetail> orderDetailList = [];
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
       OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();

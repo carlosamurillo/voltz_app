@@ -320,3 +320,24 @@ class _InputTextV2 extends State<InputTextV2>{
     );
   }
 }
+
+class FormatterIfZeroEmptyReplaceByOne extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue
+      ) {
+    final int newTextLength = newValue.text.length;
+    int selectionIndex = newValue.selection.end;
+    int usedSubstringIndex = 0;
+    final StringBuffer newText = StringBuffer();
+    if (newValue.text.isEmpty) {
+      newText.write('1');
+    }
+    // Dump the rest.
+    return TextEditingValue(
+      text: newText.toString(),
+      selection: TextSelection.collapsed(offset: newValue.selection.end + 1),
+    );
+  }
+}

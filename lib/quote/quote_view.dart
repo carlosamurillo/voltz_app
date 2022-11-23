@@ -778,8 +778,8 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                               fillColor: MaterialStateProperty.resolveWith(getColor),
                               value: model.quote.detail![widget.i].productsSuggested![b].selected,
                               onChanged: (bool? value) async {
-                                setState(() {
-                                  model.onSelectedSku(value!, widget.i, b);
+                                return setState(() async {
+                                  await model.onSelectedSku(value!, widget.i, b);
                                   _updateTotals();
                                 });
                               },
@@ -943,8 +943,8 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     textEditingController.text = _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
     textEditingController.addListener(() {
       if(indicator == true) {
-        _model.onUpdateQuantity(
-          widget.i, widget.b, double.parse(textEditingController.text),);
+        _model.setQuantity(widget.i, widget.b, double.parse(textEditingController.text),);
+        _model.onUpdateQuote();
         widget.listenerUpdateTotals();
       }
       indicator = true;
@@ -962,7 +962,8 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         controller: textEditingController,
         textAlign: TextAlign.center,
         onChanged: (value) {
-          _model.onUpdateQuantity(widget.i, widget.b, double.parse(value), );
+          _model.setQuantity(widget.i, widget.b, double.parse(value),);
+          _model.onUpdateQuote();
         },
 
       ) : SelectableText(

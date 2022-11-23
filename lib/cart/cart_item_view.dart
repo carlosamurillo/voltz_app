@@ -3,14 +3,15 @@ import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:provider/provider.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../quote/quote_model.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/custom_colors.dart';
 import '../utils/inputText.dart';
+import '../utils/shimmer.dart';
 import '../utils/style.dart';
 import 'cart_view.dart';
 class CartList extends HookViewModelWidget<QuoteViewModel> {
@@ -29,7 +30,7 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
                 Container(
                   color: Colors.white,
                   child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
                     reverse: false,
                     controller: viewModel.scrollController,
                     itemCount: viewModel.quote.detail!.length + 1,
@@ -43,32 +44,18 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
                   ),
                 );
             } else {
-              return true ?
-              const Center(
+              return const Center(
                 child: SizedBox(
                   width: 30,
                   height: 30,
                   child: CircularProgressIndicator(),
                 ),
-              ) : Container(
-                  padding: EdgeInsets.all(80),
-                  color: CustomColors.backgroundCanvas,
-                  alignment: Alignment.center,
-                  child: Container(
-                    color: Colors.white,
-                    child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                      overflow: TextOverflow.clip,
-                      textAlign: TextAlign.center,
-                      style: CustomStyles.styleVolcanicUno,
-                    ),
-                  ));
+              );
             }
           },
     );
   }
 }
-
-
 
 class CartItemView extends StatefulWidget {
   CartItemView({Key? key, required this.i, required this.viewModel,}) : super(key: key);
@@ -181,7 +168,6 @@ class _CartItemState extends State<CartItemView>  {
   }
 }
 
-
 class _QuantityCalculatorWidget extends StatefulWidget {
   const _QuantityCalculatorWidget({Key? key, required this.i, required this.b,
     required this.viewModel,}) : super(key: key);
@@ -193,23 +179,35 @@ class _QuantityCalculatorWidget extends StatefulWidget {
 
 class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  late QuoteViewModel _model;
-
   TextEditingController textEditingController = TextEditingController();
-  bool indicator = false;
 
   @override
   void initState() {
     super.initState();
-    _model = context.read<QuoteViewModel>();
-    textEditingController.text = _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
-    /*textEditingController.addListener(() async {
-      if(indicator == true) {
-        _model.onUpdateQuantity(
-          widget.i, widget.b, double.parse(textEditingController.text),);
-      }
-      indicator = true;
-    });*/
+    textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  /// Estos proceso de poner en Cola los Future debe ir por el hilo principal para evitar que
+  /// se desordenen, y se ejecuten en orden inesperado **/
+  ///
+
+  Future<double> _onTextQtyChanged(String value) async {
+    widget.viewModel.loading();
+    double qty = double.tryParse(value) ?? 1;
+    if(value.isEmpty){
+      textEditingController.text = qty.toString();
+      textEditingController.selection =
+          TextSelection.collapsed(offset: textEditingController.text.length);
+    }
+    widget.viewModel.setQuantity(widget.i, widget.b, qty);
+    return qty;
   }
 
   @override
@@ -225,11 +223,21 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
           InputTextV2(
             margin: const EdgeInsets.all(0),
             textStyle: CustomStyles.styleWhite26x400,
-            controller: textEditingController,
             textAlign: TextAlign.center,
-            onChanged: (value) {
-              _model.onUpdateQuantity(widget.i, widget.b, double.parse(value), );
+            controller: textEditingController,
+            onChanged: (value) async {
+              await _onTextQtyChanged(value);
+              widget.viewModel.onUpdateQuote();
             },
+            keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+            inputFormatters: <TextInputFormatter>[
+              // for below version 2 use this
+              //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+              FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
+              // for version 2 and greater youcan also use this
+              FilteringTextInputFormatter.digitsOnly
+            ],
           ),
           const SizedBox(height: 20,),
           Row(
@@ -241,11 +249,18 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                 //overflow: TextOverflow.clip,
               ),
               const Spacer(),
-              SelectableText(
-                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.discount),
-                style: CustomStyles.styleWhite14x400,
-                textAlign: TextAlign.left,
-                //overflow: TextOverflow.clip,
+              Shimmer(
+                linearGradient: widget.viewModel.shimmerGradient2,
+                child: ShimmerLoading(
+                  isLoading: widget.viewModel.isLoading,
+                  shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
+                  child: widget.viewModel.isLoading ? Container() :  SelectableText(
+                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.discount),
+                    style: CustomStyles.styleWhite14x400,
+                    textAlign: TextAlign.left,
+                    //overflow: TextOverflow.clip,
+                  ),
+                ),
               ),
             ],
           ),
@@ -259,11 +274,18 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                 //overflow: TextOverflow.clip,
               ),
               const Spacer(),
-              SelectableText(
-                currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.afterDiscount!),
-                style: CustomStyles.styleWhite14x400,
-                textAlign: TextAlign.left,
-                //overflow: TextOverflow.clip,
+              Shimmer(
+                linearGradient: widget.viewModel.shimmerGradient2,
+                child: ShimmerLoading(
+                  isLoading: widget.viewModel.isLoading,
+                  shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
+                  child: widget.viewModel.isLoading ? Container() :  SelectableText(
+                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.afterDiscount!),
+                    style: CustomStyles.styleWhite14x400,
+                    textAlign: TextAlign.left,
+                    //overflow: TextOverflow.clip,
+                  ),
+                ),
               ),
             ],
           ),
@@ -279,9 +301,9 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(6)),
                   hoverColor: CustomColors.muggleGray,
-                  onTap: (){
-                    widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
-                    widget.viewModel.notifyListeners();
+                  onTap: () async {
+                    await widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
+                    return widget.viewModel.notifyListeners();
                   },
                   child: Container(
                     width: 232,
