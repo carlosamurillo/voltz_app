@@ -61,9 +61,9 @@ class _OrderViewState extends State<OrderView> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if(showPaymentView)...[
-                      _OrderHeader(total: viewModel.order!.total!,),
+                      _OrderHeader(total: viewModel.order!.totals!.total!,),
                       Expanded(
-                        child: PaymentInstructions(total: viewModel.order!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
+                        child: PaymentInstructions(total: viewModel.order!.totals!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
                       ),
                     ] else...[
                       Expanded(
@@ -71,7 +71,7 @@ class _OrderViewState extends State<OrderView> {
                           controller: _scrollController,
                           child: Column(
                             children: [
-                              _OrderHeader(total: viewModel.order!.total!,),
+                              _OrderHeader(total: viewModel.order!.totals!.total!,),
                               const Divider(
                                 height: 1,
                                 color: CustomColors.grayBackground,
@@ -92,8 +92,8 @@ class _OrderViewState extends State<OrderView> {
                           ),
                         ),
                       ),
-                      _OrderTotals(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                        subTotal: viewModel.order!.subTotal!, shippingTotal: (viewModel.order!.shipping != null ? viewModel.order!.shipping!.total! : null) ,),
+                      _OrderTotals(tax: viewModel.order!.totals!.tax!, total: viewModel.order!.totals!.total!,
+                        subTotal: viewModel.order!.totals!.subTotal!, shippingTotal: (viewModel.order!.shipping != null ? viewModel.order!.shipping!.total! : null) ,),
                     ],
                   ],
                 ),
@@ -103,18 +103,18 @@ class _OrderViewState extends State<OrderView> {
                 child: Column(
                   children: [
                     if(showPaymentView) ...[
-                      OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
+                      OrderHeaderMobile(total: viewModel.order!.totals!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
                       Expanded(
-                        child: PaymentInstructionsMobile(total: viewModel.order!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
+                        child: PaymentInstructionsMobile(total: viewModel.order!.totals!.total!, order_consecutive: viewModel.order!.consecutive!.toString(), showOrderListener: showOrder,),
                       ),
                     ] else...[
-                      OrderHeaderMobile(total: viewModel.order!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
+                      OrderHeaderMobile(total: viewModel.order!.totals!.total!, consecutive: viewModel.order!.consecutive.toString(), ),
                       const Divider(
                         height: 1,
                         color: CustomColors.grayBackground,
                       ),
-                      OrderTotalsMobile(tax: viewModel.order!.tax!, total: viewModel.order!.total!,
-                        subTotal: viewModel.order!.subTotal!, shippingTotal: viewModel.order!.shipping == null ? null : viewModel.order!.shipping!.total,
+                      OrderTotalsMobile(tax: viewModel.order!.totals!.tax!, total: viewModel.order!.totals!.total!,
+                        subTotal: viewModel.order!.totals!.subTotal!, shippingTotal: viewModel.order!.shipping == null ? null : viewModel.order!.shipping!.total,
                         quoteId: viewModel.order!.id!, totalProducts: viewModel.order!.detail!.length,
                       ),
                       const SizedBox(height: 24,),
@@ -558,6 +558,8 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
     super.initState();
     print(widget.i);
     model = context.read<OrderViewModel>();
+    print('esta es la orden ... ');
+    print(model.order!.id);
   }
 
   @override
@@ -689,17 +691,9 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                           textAlign: TextAlign.left,
                                           //overflow: TextOverflow.clip,
                                         ),
-                                        if (model.order!.detail![widget.i].productsOrdered![b].subBrand != null ) ...[
-                                          SelectableText(  model.order!.detail![widget.i].productsOrdered![b].subBrand!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                                            style: CustomStyles.styleVolcanicBlueDos,
-                                            textAlign: TextAlign.left,
-                                            //overflow: TextOverflow.clip,
-                                          ),
-                                        ]
                                       ],
                                     ),
                                   ),
-
                                 ],
                               ),
                             ),
@@ -714,7 +708,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                     textAlign: TextAlign.left,
                                   ),
                                   SelectableText(
-                                    model.order!.detail![widget.i].productsOrdered![b].saleUnit!,
+                                    model.order!.detail![widget.i].productsOrdered![b].saleUnit ?? '',
                                     style: CustomStyles.styleVolcanicBlueDos,
                                     textAlign: TextAlign.left,
                                   ),
@@ -731,12 +725,12 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         SelectableText(
-                                          (currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice! * model.order!.detail![widget.i].productsOrdered![b].quantity!)),
+                                          (currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].total!.afterDiscount!)),
                                           style: CustomStyles.styleVolcanicBlueTres,
                                           textAlign: TextAlign.right,
                                         ),
                                         SelectableText(
-                                          "${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u",
+                                          "${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].price!.price2!)} c/u",
                                           style: CustomStyles.styleVolcanicUno,
                                           textAlign: TextAlign.right,
                                         ),

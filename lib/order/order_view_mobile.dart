@@ -106,11 +106,7 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                                   TextSpan(text: " - ${model.order!.detail![widget.i].productsOrdered![b].brand!}",
                                     style: CustomStyles.styleMobileVolcanic700,
                                   ),
-                                  if(model.order!.detail![widget.i].productsOrdered![b].subBrand != null) ...[
-                                    TextSpan(text: ", ${model.order!.detail![widget.i].productsOrdered![b].subBrand!}",
-                                      style: CustomStyles.styleMobileVolcanic700,
-                                    ),
-                                  ]
+
                                 ],
                               ),
                               textAlign: TextAlign.start,
@@ -119,10 +115,10 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                               TextSpan(
                                 children: [
 
-                                  TextSpan(text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice! * model.order!.detail![widget.i].productsOrdered![b].quantity!),
+                                  TextSpan(text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].total!.afterDiscount!),
                                     style: CustomStyles.styleMobileBlue700,
                                   ),
-                                  TextSpan(text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].salePrice!)} c/u)",
+                                  TextSpan(text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].price!.price2!)} c/u)",
                                     style: CustomStyles.styleMobileBlue400,
                                   ),
                                 ],

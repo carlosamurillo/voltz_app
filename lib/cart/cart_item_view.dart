@@ -109,57 +109,48 @@ class _CartItemState extends State<CartItemView>  {
               ],
             ),
             const SizedBox(width: 20,),
-            Padding(
-              padding: EdgeInsets.only(top: 35, bottom: 35, right: 35,),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SelectableText(
-                            product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                            style: CustomStyles.styleVolcanicBlueUno,
-                            textAlign: TextAlign.left,
-                            //overflow: TextOverflow.clip,
-                          ),
-                          SelectableText.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: product.brand,
-                                  style: CustomStyles.styleVolcanicBlueUno,),
-                                TextSpan(text: " | ${product.sku!}",
-                                  style: CustomStyles.styleVolcanic14x400,)
-                              ],
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
-                      )
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: SelectableText.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(text: "${currencyFormat.format(product.price!.pricePublic!)}",
-                              style: CustomStyles.styleMuggleGray_416x600Tachado,),
-                            TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
-                              style: CustomStyles.styleSafeBlue16x600,),
-                          ],
-                        ),
-                        textAlign: TextAlign.left,
-                      ),
+            Expanded(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SelectableText(
+                      product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                      style: CustomStyles.styleVolcanicBlueUno,
+                      textAlign: TextAlign.left,
+                      //overflow: TextOverflow.clip,
                     ),
-                  ),
-                ],
-              ),
+                    const SizedBox(height: 15,),
+                    SelectableText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: product.brand,
+                            style: CustomStyles.styleVolcanicBlueUno,),
+                          TextSpan(text: " | ${product.sku!}",
+                            style: CustomStyles.styleVolcanic14x400,)
+                        ],
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                    const SizedBox(height: 40,),
+                    SelectableText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: "${currencyFormat.format(product.pricePublic!)}",
+                            style: CustomStyles.styleMuggleGray_416x600Tachado,),
+                          TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
+                            style: CustomStyles.styleSafeBlue16x600,),
+                        ],
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+              )
             ),
-            Spacer(),
+            const Spacer(),
             const SizedBox(width: 50,),
             _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
           ],
@@ -180,10 +171,16 @@ class _QuantityCalculatorWidget extends StatefulWidget {
 class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   TextEditingController textEditingController = TextEditingController();
+  bool _isModifyVisible = false;
+  double lastValue = 0;
+  ValueNotifier<bool> _notifier = ValueNotifier(true);
+  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    // listen to focus changes
+    _focusNode.addListener(() => _onFocusChange());
     textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
   }
 
@@ -191,6 +188,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     textEditingController.dispose();
+    _notifier.dispose();
     super.dispose();
   }
 
@@ -199,15 +197,40 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   ///
 
   Future<double> _onTextQtyChanged(String value) async {
-    widget.viewModel.loading();
-    double qty = double.tryParse(value) ?? 1;
+    double qty = double.tryParse(value) ?? 0;
     if(value.isEmpty){
-      textEditingController.text = qty.toString();
-      textEditingController.selection =
-          TextSelection.collapsed(offset: textEditingController.text.length);
+      changeStatusModify(false);
+    } else {
+      changeStatusModify(true);
     }
-    widget.viewModel.setQuantity(widget.i, widget.b, qty);
     return qty;
+  }
+
+  _onFocusChange() {
+    print('Has Focus:  ${_focusNode.hasFocus}');
+    if (_focusNode.hasFocus){
+      changeStatusModify(true);
+    } else {
+      areaLostFocus();
+      //await showModifyLabel(false);
+    }
+  }
+
+  areaLostFocus() async {
+    //lastValue =  widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!;
+    await changeStatusModify(false);
+    if (!widget.viewModel.isLoading){
+      textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
+    }
+  }
+
+  changeStatusModify(bool value) async {
+    _isModifyVisible = value;
+    _notifier.value = !_notifier.value;
+  }
+
+  void setFocus() {
+    FocusScope.of(context).requestFocus(_focusNode);
   }
 
   @override
@@ -220,30 +243,68 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
         width: 272,
         child: Column(
         children: [
-          InputTextV2(
-            margin: const EdgeInsets.all(0),
-            textStyle: CustomStyles.styleWhite26x400,
-            textAlign: TextAlign.center,
-            controller: textEditingController,
-            onChanged: (value) async {
-              await _onTextQtyChanged(value);
-              widget.viewModel.onUpdateQuote();
-            },
-            keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
-            inputFormatters: <TextInputFormatter>[
-              // for below version 2 use this
-              //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
-              FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
-              // for version 2 and greater youcan also use this
-              FilteringTextInputFormatter.digitsOnly
+          Row(
+            children: [
+              Expanded(
+                child: InputTextV2(
+                  focusNode: _focusNode,
+                  paddingContent: const EdgeInsets.only(bottom: 5, top: 10, left: 15),
+                  margin: const EdgeInsets.all(0),
+                  textStyle: CustomStyles.styleWhite26x400,
+                  textAlign: TextAlign.start,
+                  controller: textEditingController,
+                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(6), topLeft: Radius.circular(6)),
+                  onTap: () {
+                    lastValue = double.tryParse(textEditingController.text)!;
+                  },
+                  onChanged: (value) async {
+                    await _onTextQtyChanged(value);
+                  },
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                  inputFormatters: <TextInputFormatter>[
+                    // for below version 2 use this
+                    //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+                    FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
+                    // for version 2 and greater youcan also use this
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                ),
+              ),
+              ValueListenableBuilder(
+                valueListenable: _notifier,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(topRight: Radius.circular(6), bottomRight:Radius.circular(6) ),
+                      color: CustomColors.muggleGray_3,
+                    ),
+                    width: 100,
+                    height: 38,
+                    child: TextButton(
+                      focusNode: _focusNode,
+                      onPressed: _isModifyVisible ? () async {
+                        print('recalculando totales...');
+                        widget.viewModel.loading();
+                        widget.viewModel.setQuantity(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
+                        await widget.viewModel.onUpdateQuote();
+                      } : () async {print('no tiene el metodo para recualcular totales.');},
+                      child: Text(
+                        'modificar',
+                        style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleMuggleGray14x500Underline,
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
           const SizedBox(height: 20,),
           Row(
             children: [
               SelectableText(
-                'Dcto.',
+                'Nuevo precio.',
                 style: CustomStyles.styleWhite14x400,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
@@ -255,7 +316,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                   isLoading: widget.viewModel.isLoading,
                   shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
                   child: widget.viewModel.isLoading ? Container() :  SelectableText(
-                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.discount),
+                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ?? ''),
                     style: CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
                     //overflow: TextOverflow.clip,

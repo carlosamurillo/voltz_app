@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html' as html;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +34,7 @@ class BacklogView extends HookViewModelWidget<QuoteViewModel> {
                     itemCount: viewModel.quote.pendingProducts!.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
-                        return WeAreWorking(createdAt: viewModel.quote.createdAt!,);
+                        return const WeAreWorking();
                       } else {
                         return BacklogItemView(viewModel: viewModel, i: index,);
                       }
@@ -41,31 +42,20 @@ class BacklogView extends HookViewModelWidget<QuoteViewModel> {
                   ),
                 );
             } else {
-              return true ?
-              const CircularProgressIndicator(): Container(
-                  padding: EdgeInsets.all(80),
-                  color: CustomColors.backgroundCanvas,
-                  alignment: Alignment.center,
-                  child: Container(
-                    color: Colors.white,
-                    child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                      overflow: TextOverflow.clip,
-                      textAlign: TextAlign.center,
-                      style: CustomStyles.styleVolcanicUno,
-                    ),
-                  ));
+              return const CircularProgressIndicator();
             }
           },
         );
   }
 }
-
-class WeAreWorking extends StatelessWidget {
-  const WeAreWorking({required this.createdAt });
-  final Timestamp createdAt;
+class WeAreWorking extends HookViewModelWidget<QuoteViewModel> {
+  const WeAreWorking({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
     return Container(
         margin: const EdgeInsets.only(top: 30, bottom: 30),
         padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
@@ -86,26 +76,71 @@ class WeAreWorking extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SelectableText(
-                  'Estamos trabajando para tí.+',
+                  'Estamos trabajando para tí.',
                   style: CustomStyles.styleMuggleGray_416x700,
                   textAlign: TextAlign.left,
                   //overflow: TextOverflow.clip,
                 ),
-                SelectableText.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: 'Nuestros expertos están buscando los mejores precios e inventario de tus productos.',
-                        style: CustomStyles.styleMuggleGray_414x400,),
-                      TextSpan(text: "\nTiempo trasncurrido: 00:10:59",
-                        style: CustomStyles.styleSafeBlue14x400,)
-                    ],
-                  ),
-                  textAlign: TextAlign.left,
-                ),
+                _ClockTimeElapsed(dateTime: viewModel.quote.createdAt!.toDate()),
               ],
             )
           ],
         )
+    );
+  }
+}
+
+class _ClockTimeElapsed extends StatefulWidget {
+  _ClockTimeElapsed({Key? key, required this.dateTime,}) : super(key: key);
+  DateTime dateTime;
+
+  @override
+  _ClockTimeElapsedState createState() => _ClockTimeElapsedState();
+}
+class _ClockTimeElapsedState extends State<_ClockTimeElapsed> {
+  late Duration difference;
+  String differenceStr = '';
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateDifference();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        calculateDifference();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the widget tree.
+    _timer.cancel();
+    super.dispose();
+  }
+
+
+  calculateDifference() {
+    difference = DateTime.now().difference(widget.dateTime);
+    differenceStr = difference.toString();
+    if (differenceStr != null && differenceStr.length >= 7) {
+      differenceStr = differenceStr.substring(0, differenceStr.length - 7);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SelectableText.rich(
+      TextSpan(
+        children: [
+          TextSpan(text: 'Nuestros expertos están buscando los mejores precios e inventario de tus productos.',
+            style: CustomStyles.styleMuggleGray_414x400,),
+          TextSpan(text: "\nTiempo transcurrido: $differenceStr",
+            style: CustomStyles.styleSafeBlue14x400,)
+        ],
+      ),
+      textAlign: TextAlign.left,
     );
   }
 }

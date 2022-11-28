@@ -1,7 +1,7 @@
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../quote/quote_viewmodel.dart';
 
 class ClockTimeElapsed extends StatefulWidget {
   ClockTimeElapsed({Key? key, required this.dateTime, this.textStyle}) : super(key: key);
@@ -13,18 +13,24 @@ class ClockTimeElapsed extends StatefulWidget {
 }
 class _ClockTimeElapsedState extends State<ClockTimeElapsed> {
   Duration difference = const Duration();
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        calculateDifference();
+      });
+    });
   }
 
-  void calculateDifference(){
+  calculateDifference() async {
     difference = widget.dateTime.difference(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text(difference.toString());
+    return Text(difference.toString(), style: widget.textStyle,);
   }
 }

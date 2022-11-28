@@ -36,7 +36,7 @@ class _CartViewState extends State<CartView> {
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
         return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: CustomColors.grayBackground_2,
             body: Container(
               padding: EdgeInsets.all(0),
               child: Column(
@@ -63,11 +63,12 @@ class _Container extends StatelessWidget {
       ) {
     return Expanded(
       child: Container(
+          constraints: const BoxConstraints(minWidth: 860, maxWidth: 1260),
           decoration: BoxDecoration(
             border: Border.all(color: CustomColors.muggleGray, width: 1),
             color: Colors.white,
           ),
-          margin: const EdgeInsets.only(bottom: 0, top: 30, left: 90, right: 90),
+          margin: const EdgeInsets.only(bottom: 0, top: 30, left: 24, right: 24),
           width: double.infinity,
           child: Column(
             children: [
@@ -108,7 +109,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
     return  Container(
 
       //padding: EdgeInsets.only(top: 20, left: 30, right: 30),
-      margin: EdgeInsets.only(top: 20, left: 50, right: 50),
+      margin: const EdgeInsets.only(top: 20, left: 50, right: 50),
       child: Column(
         children: [
           Tabs(tabController: _tabController,),

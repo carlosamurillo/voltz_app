@@ -70,7 +70,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     this.version = version;
     initReference();
     await _listenChanges();
-    _initStreamQuote();
   }
 
   initConfirmation(String quoteId, String? version) async {
@@ -200,7 +199,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
       },
     ));
-    await _saveOrder(_generateOrder());
+    await _saveOrder(_generateOrderV2()); //se cambio a V2
     Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
@@ -209,31 +208,9 @@ class QuoteViewModel  extends ReactiveViewModel  {
     quote.detail![i].productsSuggested![b].quantity = quantity;
   }
 
-  Future<bool> onUpdateQuote() async {
+  Future<void> onUpdateQuote() async {
     calculateTotals();
-    addQuoteToStream();
-    return true;
-  }
-
-  final QuoteStream quoteStream = QuoteStream();
-  addQuoteToStream () {
-    quoteStream.add(quote);
-  }
-
-  _initStreamQuote(){
-    final subscription = quoteStream.stream.listen(
-          (data) {
-            _saveQuote(quote);
-            print('ultimo en el stream ' + data.detail![0].productsSuggested![0].quantity.toString());
-          },
-          onError: (err) {
-            print('Error!');
-          },
-          cancelOnError: false,
-          onDone: () {
-            print('Done!');
-          },
-    );
+    await _saveQuote(quote);
   }
 
   Future<bool> _saveQuote(QuoteModel quote) async {
@@ -294,6 +271,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     });
   }
 
+  @deprecated
   OrderModel.OrderModel _generateOrder(){
     List<OrderModel.OrderDetail> orderDetailList = [];
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
@@ -308,11 +286,11 @@ class QuoteViewModel  extends ReactiveViewModel  {
             supplier: quote.detail![i].productsSuggested![b].supplier,
             skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
             brand: quote.detail![i].productsSuggested![b].brand,
-            subBrand: quote.detail![i].productsSuggested![b].subBrand,
+            //subBrand: quote.detail![i].productsSuggested![b].subBrand,
             quantity: quote.detail![i].productsSuggested![b].quantity,
             saleValue: quote.detail![i].productsSuggested![b].saleValue,
             saleUnit: quote.detail![i].productsSuggested![b].saleUnit,
-            salePrice: quote.detail![i].productsSuggested![b].salePrice,
+            //salePrice: quote.detail![i].productsSuggested![b].salePrice,
           ));
         }
       }
@@ -328,12 +306,45 @@ class QuoteViewModel  extends ReactiveViewModel  {
       customerId: quote.customerId,
       consecutive: 0,
       alias: quote.alias,
-      subTotal: quote.totals!.subTotal,
-      discount: quote.totals!.discount,
-      tax: quote.totals!.tax,
-      total: quote.totals!.total,
       detail: orderDetailList,
       shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
+    );
+    return orderModel;
+  }
+
+  OrderModel.OrderModel _generateOrderV2(){
+    List<OrderModel.OrderDetail> orderDetailList = [];
+    for(int i = 0; i <= quote.detail!.length - 1; i++) {
+      OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();
+      orderDetail.productRequested =  quote.detail![i].productRequested!;
+      orderDetail.productsOrdered = [];
+      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
+        if(quote.detail![i].productsSuggested![b].selected == true) {
+          orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
+            productId: quote.detail![i].productsSuggested![b].productId,
+            sku: quote.detail![i].productsSuggested![b].sku,
+            supplier: quote.detail![i].productsSuggested![b].supplier,
+            skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
+            brand: quote.detail![i].productsSuggested![b].brand,
+            coverImage: quote.detail![i].productsSuggested![b].coverImage,
+            quantity: quote.detail![i].productsSuggested![b].quantity,
+            price: quote.detail![i].productsSuggested![b].price != null ? OrderModel.Price.fromJson(quote.detail![i].productsSuggested![b].price!.toMap()) : null,
+            total: quote.detail![i].productsSuggested![b].total != null ? OrderModel.Total.fromJson(quote.detail![i].productsSuggested![b].total!.toMap()) : null,
+          ));
+        }
+      }
+      if(orderDetail.productsOrdered!.isNotEmpty){
+        orderDetailList.add(orderDetail);
+      }
+    }
+
+    OrderModel.OrderModel orderModel = OrderModel.OrderModel(
+      consecutive: 0,
+      alias: quote.alias,
+      totals: quote.totals != null ? OrderModel.Totals.fromJson(quote.totals!.toMap()) : null,
+      shipping: quote.shipping != null ? OrderModel.Shipping.fromJson(quote.shipping!.toMap()) : null,
+      detail: orderDetailList,
+      customer: quote.customer != null ? OrderModel.Customer.fromJson(quote.customer!.toMap()) : null,
     );
     return orderModel;
   }

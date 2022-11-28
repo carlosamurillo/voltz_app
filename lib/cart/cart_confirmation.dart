@@ -14,16 +14,16 @@ import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-class QuoteConfirmation extends StatefulWidget {
-  const QuoteConfirmation({Key? key, required this.quoteId, required this.version}) : super(key: key);
+class CartConfirmation extends StatefulWidget {
+  const CartConfirmation({Key? key, required this.quoteId, required this.version}) : super(key: key);
   final String quoteId;
   final String? version;
 
   @override
-  _QuoteConfirmationState createState() => _QuoteConfirmationState();
+  _CartConfirmationState createState() => _CartConfirmationState();
 }
 
-class _QuoteConfirmationState extends State<QuoteConfirmation> {
+class _CartConfirmationState extends State<CartConfirmation> {
   late QuoteViewModel model;
   @override
   void initState() {
@@ -195,8 +195,14 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
                           hoverColor: CustomColors.energyYellowHover,
-                          onTap: () async {
-
+                          onTap: (){
+                            _Dialogs dialog = _Dialogs();
+                            dialog.showAlertDialog(
+                                context,
+                                  () async {viewModel.onGenerateOrder(context);},
+                                viewModel.createConfirmMessage(),
+                                viewModel.quote.id!,
+                            );
                           },
                           child: Container(
                             width: double.infinity,
@@ -236,6 +242,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
       },
     );
   }
+
 }
 
 class _CartContent extends StatefulWidget {
@@ -469,6 +476,42 @@ class _CartItemState extends State<_CartItemView>  {
             ),
           ],
         )
+    );
+  }
+}
+
+
+class _Dialogs {
+
+  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const SelectableText("Hacer pedido"),
+          titleTextStyle:
+          TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,fontSize: 20),
+          actionsOverflowButtonSpacing: 20,
+          actions: [
+            ElevatedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancelar")
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  onConfirm();
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Confirmar")),
+          ],
+          content: SelectableText(message),
+        );
+      },
     );
   }
 }

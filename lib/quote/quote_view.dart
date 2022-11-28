@@ -883,12 +883,12 @@ class _QuoteTableDetailState extends State<_QuoteTableDetail> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       SelectableText(
-                                        (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
+                                        (currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].pricePublic! * model.quote.detail![widget.i].productsSuggested![b].quantity!)),
                                         style: CustomStyles.styleVolcanicBlueTres,
                                         textAlign: TextAlign.right,
                                       ),
                                       SelectableText(
-                                        "${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u",
+                                        "${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].pricePublic!)} c/u",
                                         style: CustomStyles.styleVolcanicUno,
                                         textAlign: TextAlign.right,
                                       ),

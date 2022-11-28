@@ -165,10 +165,10 @@ class _QuoteTableDetailMobileState extends State<QuoteTableDetailMobile> {
                               SelectableText.rich(
                                   TextSpan(
                                     children: [
-                                      TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
+                                      TextSpan(text: currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].pricePublic! * model.quote.detail![widget.i].productsSuggested![b].quantity!),
                                         style: CustomStyles.styleMobileBlue700,
                                       ),
-                                      TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].salePrice!)} c/u)",
+                                      TextSpan(text: " (${currencyFormat.format(model.quote.detail![widget.i].productsSuggested![b].pricePublic!)} c/u)",
                                         style: CustomStyles.styleMobileBlue400,
                                       ),
                                     ],

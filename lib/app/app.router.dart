@@ -12,7 +12,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../order/oder_view.dart';
-import '../quote/quote_confirmation.dart';
+import '../cart/cart_confirmation.dart';
 import '../quote/quote_view.dart';
 
 class Routes {
@@ -32,7 +32,7 @@ class StackedRouter extends RouterBase {
   final _routes = <RouteDef>[
     RouteDef(Routes.quoteView, page: QuoteView),
     RouteDef(Routes.orderView, page: OrderView),
-    RouteDef(Routes.quoteConfirmation, page: QuoteConfirmation),
+    RouteDef(Routes.quoteConfirmation, page: CartConfirmation),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -58,10 +58,10 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
-    QuoteConfirmation: (data) {
+    CartConfirmation: (data) {
       var args = data.getArgs<QuoteConfirmationArguments>(nullOk: false);
       return CupertinoPageRoute<dynamic>(
-        builder: (context) => QuoteConfirmation(
+        builder: (context) => CartConfirmation(
           key: args.key,
           quoteId: args.quoteId,
           version: args.version,

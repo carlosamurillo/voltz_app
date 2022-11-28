@@ -169,6 +169,7 @@ class InputTextV2 extends StatefulWidget {
     this.validator,
     this.keyboardType,
     this.onChanged,
+    this.onEditingComplete,
     this.enabled = true,
     this.readOnly = false,
     this.margin = const EdgeInsets.symmetric(vertical: 12),
@@ -188,6 +189,8 @@ class InputTextV2 extends StatefulWidget {
     this.helperFontSize = 12,
     this.scrollController,
     this.paddingContent = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+    this.borderRadius = const BorderRadius.all(Radius.circular(6)),
+    this.focusNode,
   }) : super(key: key);
 
   final TextEditingController? controller;
@@ -200,6 +203,7 @@ class InputTextV2 extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
   final bool enabled;
   final bool readOnly;
   final EdgeInsetsGeometry margin;
@@ -219,6 +223,8 @@ class InputTextV2 extends StatefulWidget {
   final double helperFontSize;
   final ScrollController? scrollController;
   final EdgeInsets? paddingContent;
+  final BorderRadius borderRadius;
+  final FocusNode? focusNode;
 
   @override
   _InputTextV2 createState() => _InputTextV2();
@@ -245,6 +251,7 @@ class _InputTextV2 extends State<InputTextV2>{
             elevation: 0.0,
             color: Colors.transparent,
             child: TextFormField(
+              focusNode: widget.focusNode,
               scrollController: widget.scrollController != null ? widget.scrollController : null,
               onChanged: (value) {
                 if(widget.activateCounter) {
@@ -263,6 +270,7 @@ class _InputTextV2 extends State<InputTextV2>{
               readOnly: widget.readOnly,
               controller: widget.controller,
               onTap: widget.onTap,
+              onEditingComplete: widget.onEditingComplete,
               inputFormatters: widget.inputFormatters,
               enabled: widget.enabled,
               style: widget.textStyle,
@@ -290,21 +298,21 @@ class _InputTextV2 extends State<InputTextV2>{
                 focusColor: CustomColors.muggleGray_3,
                 hoverColor: CustomColors.muggleGray_3,
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: widget.borderRadius,
                   borderSide: BorderSide(
                       width: 0,
                       color: Color(0x26395629).withOpacity(0.16)
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: widget.borderRadius,
                   borderSide: BorderSide(
                       width: 1,
                       color: Color(0x26395629).withOpacity(0.16)
                   ),
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: widget.borderRadius,
                   borderSide: BorderSide.none,
                 ),
                 prefixIcon: widget.prefixIcon,

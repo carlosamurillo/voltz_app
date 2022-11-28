@@ -55,283 +55,285 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
-      width: 666,
-      alignment: Alignment.center,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            child: Text("Realiza tu pago", style: CustomStyles.styleVolcanic32x700),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 15, bottom: 34),
-            child: Text("Verifica los siguientes datos y realiza la transferencia a la siguiente cuenta", style: CustomStyles.styleVolcanic14x500),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 30, bottom: 20, left: 30, right: 30),
-            margin: const EdgeInsets.all(0),
-            width: 666,
-            color: Colors.white,
-            child: Text("Transferencia electrónica", style: CustomStyles.styleVolcanicBlueTres),
-          ),
-          Container(
-            margin: const EdgeInsets.all(0),
-            padding: const EdgeInsets.all(0),
-            width: 666,
-            height: 19,
-            child: SvgPicture.asset(
-              'assets/svg/lines_icon.svg',
+    return SingleChildScrollView(
+      child:  Container(
+        padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
+        width: 666,
+        alignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: Text("Realiza tu pago", style: CustomStyles.styleVolcanic32x700),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 15, bottom: 34),
+              child: Text("Verifica los siguientes datos y realiza la transferencia a la siguiente cuenta", style: CustomStyles.styleVolcanic14x500),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 30, bottom: 20, left: 30, right: 30),
+              margin: const EdgeInsets.all(0),
               width: 666,
-              height: 24,
-              fit: BoxFit.fitWidth,
+              color: Colors.white,
+              child: Text("Transferencia electrónica", style: CustomStyles.styleVolcanicBlueTres),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
-            width: 666,
-            color: Colors.white,
-            child: Row(
-              children: [
-                Container(
-                  child: SelectableText("Banco destino", style: CustomStyles.styleVolcanic14x500),
-                ),
-                const Spacer(),
-                Container(
-                  child: SelectableText("BBVA", style: CustomStyles.styleBlue14x500),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
-            width: 666,
-            color: Colors.white,
-            child: Row(
-              children: [
-                Container(
-                  child: SelectableText("CLABE", style: CustomStyles.styleVolcanic14x500),
-                ),
-                const Spacer(),
-                Container(
-                  child: SelectableText("012180001169055285", style: CustomStyles.styleVolcanic14x500),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
-            width: 666,
-            color: Colors.white,
-            child: Row(
-              children: [
-                Container(
-                  child: SelectableText("Cuenta", style: CustomStyles.styleVolcanic14x500),
-                ),
-                const Spacer(),
-                Container(
-                  child: SelectableText("0116905528", style: CustomStyles.styleVolcanic14x500),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
-            width: 666,
-            color: Colors.white,
-            child: Row(
-              children: [
-                Container(
-                  child: SelectableText("Concepto de pago", style: CustomStyles.styleVolcanic14x500),
-                ),
-                const Spacer(),
-                Container(
-                  child: SelectableText(widget.order_consecutive, style: CustomStyles.styleVolcanic14x500),
-                )
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
-            width: 666,
-            color: Colors.white,
-            child:  Row(
-              children: [
-                Container(
-                  child: SelectableText("Importe", style: CustomStyles.styleVolcanic14x500),
-                ),
-                const Spacer(),
-                Container(
-                  child: SelectableText(currencyFormat.format(widget.total), style: CustomStyles.styleVolcanic14x500),
-                )
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(0),
-            padding: const EdgeInsets.all(0),
-            width: 666,
-            height: 20,
-            child: SvgPicture.asset(
-              'assets/svg/union_icon.svg',
+            Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               width: 666,
-              height: 24,
-              fit: BoxFit.fitWidth,
-            ),
-          ),
-          Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: CustomColors.volcanicGrey),
-                borderRadius: const BorderRadius.all(
-                    Radius.circular(5.0) //                 <--- border radius here
-                ),
+              height: 19,
+              child: SvgPicture.asset(
+                'assets/svg/lines_icon.svg',
+                width: 666,
+                height: 24,
+                fit: BoxFit.fitWidth,
               ),
-              padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
-              margin: const EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
-              width: 666,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: SvgPicture.asset(
-                      'assets/svg/admiration_icon.svg',
-                      width: 24,
-                      height: 24,
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  SelectableText.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(text: '* En el titular de cuenta poner: ',
-                          style: CustomStyles.styleVolcanic14x500,
-                        ),
-                        TextSpan(text: "COCOCO VENTURES",
-                          style: CustomStyles.styleVolcanicBlueDos,
-                        ),
-                        TextSpan(text: "\n* RFC: ",
-                          style: CustomStyles.styleVolcanic14x500,
-                        ),
-                        TextSpan(text: "COCOCO VENTURES",
-                          style: CustomStyles.styleVolcanicBlueDos,
-                        ),
-                      ],
-                    ),
-                    //En titular de cuenta poner: COCOCO VENTURES
-                    // RFC: CVE210326KL1
-                    textAlign: TextAlign.start,
-                  ),
-                ],
-              )
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
-            width: 666,
-            child: GestureDetector(
-              onTap: () {
-                html.window.open(fiscalUrl, "_blank");
-              },
-              child: Text("Descargar comprobante situación fiscal", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.right,),
             ),
-          ),
-          const SizedBox(width: 16,),
-          Container(
-              margin: const EdgeInsets.symmetric(vertical: 30),
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
+              width: 666,
+              color: Colors.white,
               child: Row(
                 children: [
                   Container(
-                      width: 250,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(26),),
-                          color: Color(0xFFFFFDFB),
-                          border: Border.all(width: 2, color: CustomColors.safeBlue)
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(26)),
-                          hoverColor: CustomColors.blueBackground,
-                          onTap: () async {
-                            widget.showOrderListener();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                            alignment: Alignment.center,
-                            child:  Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      new TextSpan(text: 'Ver Pedido',
-                                          style: CustomStyles.styleBlue14x700
-                                      ),
-                                    ],
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
+                    child: SelectableText("Banco destino", style: CustomStyles.styleVolcanic14x500),
                   ),
                   const Spacer(),
                   Container(
-                      width: 250,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(26),),
-                        color: _buttonColor,
+                    child: SelectableText("BBVA", style: CustomStyles.styleBlue14x500),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
+              width: 666,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Container(
+                    child: SelectableText("CLABE", style: CustomStyles.styleVolcanic14x500),
+                  ),
+                  const Spacer(),
+                  Container(
+                    child: SelectableText("012180001169055285", style: CustomStyles.styleVolcanic14x500),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
+              width: 666,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Container(
+                    child: SelectableText("Cuenta", style: CustomStyles.styleVolcanic14x500),
+                  ),
+                  const Spacer(),
+                  Container(
+                    child: SelectableText("0116905528", style: CustomStyles.styleVolcanic14x500),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 0, left: 30, right: 30),
+              width: 666,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Container(
+                    child: SelectableText("Concepto de pago", style: CustomStyles.styleVolcanic14x500),
+                  ),
+                  const Spacer(),
+                  Container(
+                    child: SelectableText(widget.order_consecutive, style: CustomStyles.styleVolcanic14x500),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
+              width: 666,
+              color: Colors.white,
+              child:  Row(
+                children: [
+                  Container(
+                    child: SelectableText("Importe", style: CustomStyles.styleVolcanic14x500),
+                  ),
+                  const Spacer(),
+                  Container(
+                    child: SelectableText(currencyFormat.format(widget.total), style: CustomStyles.styleVolcanic14x500),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
+              width: 666,
+              height: 20,
+              child: SvgPicture.asset(
+                'assets/svg/union_icon.svg',
+                width: 666,
+                height: 24,
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+            Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: CustomColors.volcanicGrey),
+                  borderRadius: const BorderRadius.all(
+                      Radius.circular(5.0) //                 <--- border radius here
+                  ),
+                ),
+                padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
+                margin: const EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
+                width: 666,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: SvgPicture.asset(
+                        'assets/svg/admiration_icon.svg',
+                        width: 24,
+                        height: 24,
+                        fit: BoxFit.fitWidth,
                       ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          borderRadius: const BorderRadius.all(Radius.circular(26)),
-                          hoverColor: _buttonHoverColor,
-                          onTap: (){
-                            context.read<OrderViewModel>().changePaymentStatus();
-                            setState(() {
-                              setupVariables();
-                            });
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                            alignment: Alignment.center,
-                            child:  Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text(_actionTitle , style: CustomStyles.styleWhiteDos,)
-                              ],
+                    ),
+                    const SizedBox(width: 12),
+                    SelectableText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: '* En el titular de cuenta poner: ',
+                            style: CustomStyles.styleVolcanic14x500,
+                          ),
+                          TextSpan(text: "COCOCO VENTURES",
+                            style: CustomStyles.styleVolcanicBlueDos,
+                          ),
+                          TextSpan(text: "\n* RFC: ",
+                            style: CustomStyles.styleVolcanic14x500,
+                          ),
+                          TextSpan(text: "COCOCO VENTURES",
+                            style: CustomStyles.styleVolcanicBlueDos,
+                          ),
+                        ],
+                      ),
+                      //En titular de cuenta poner: COCOCO VENTURES
+                      // RFC: CVE210326KL1
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                )
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
+              width: 666,
+              child: GestureDetector(
+                onTap: () {
+                  html.window.open(fiscalUrl, "_blank");
+                },
+                child: Text("Descargar comprobante situación fiscal", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.right,),
+              ),
+            ),
+            const SizedBox(width: 16,),
+            Container(
+                margin: const EdgeInsets.symmetric(vertical: 30),
+                child: Row(
+                  children: [
+                    Container(
+                        width: 250,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(26),),
+                            color: Color(0xFFFFFDFB),
+                            border: Border.all(width: 2, color: CustomColors.safeBlue)
+                        ),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.all(Radius.circular(26)),
+                            hoverColor: CustomColors.blueBackground,
+                            onTap: () async {
+                              widget.showOrderListener();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                              alignment: Alignment.center,
+                              child:  Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        new TextSpan(text: 'Ver Pedido',
+                                            style: CustomStyles.styleBlue14x700
+                                        ),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                        )
+                    ),
+                    const Spacer(),
+                    Container(
+                        width: 250,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(Radius.circular(26),),
+                          color: _buttonColor,
                         ),
-                      )
-                  ),
-                ],
-              )
-          ),
-          Container(
-            padding: const EdgeInsets.only(top: 20, bottom: 0, left: 0, right: 0),
-            width: 666,
-            child: GestureDetector(
-              onTap: () {
-                html.window.open('https://walink.co/d9aef3', "_blank");
-              },
-              child: Text("¿Pago en efectivo? Contácta un agente Voltz", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.center,),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: const BorderRadius.all(Radius.circular(26)),
+                            hoverColor: _buttonHoverColor,
+                            onTap: (){
+                              context.read<OrderViewModel>().changePaymentStatus();
+                              setState(() {
+                                setupVariables();
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                              alignment: Alignment.center,
+                              child:  Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text(_actionTitle , style: CustomStyles.styleWhiteDos,)
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                    ),
+                  ],
+                )
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.only(top: 20, bottom: 0, left: 0, right: 0),
+              width: 666,
+              child: GestureDetector(
+                onTap: () {
+                  html.window.open('https://walink.co/d9aef3', "_blank");
+                },
+                child: Text("¿Pago en efectivo? Contácta un agente Voltz", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.center,),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

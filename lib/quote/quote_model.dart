@@ -16,6 +16,7 @@ class QuoteModel {
   Record? record = Record();
   String? quoteCategory;
   Totals? totals = Totals();
+  Customer? customer = Customer();
 
   QuoteModel(
       {this.version,
@@ -32,7 +33,8 @@ class QuoteModel {
       this.pendingProducts,
       this.record,
       this.quoteCategory,
-      this.totals});
+      this.totals,
+      this.customer});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     version = json['version'];
@@ -76,6 +78,9 @@ class QuoteModel {
     if (json.containsKey('totals') && json['totals'] != null) {
       totals = Totals.fromJson(json['totals']);
     }
+    if (json.containsKey('customer') && json['customer'] != null) {
+      customer = Customer.fromJson(json['customer']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -107,11 +112,11 @@ class QuoteModel {
       data['record'] = this.record!.toMap();
     }
     data['quote_category'] = this.quoteCategory;
-    if (this.record != null) {
-      data['record'] = this.record!.toMap();
-    }
     if (this.totals != null) {
       data['totals'] = this.totals!.toMap();
+    }
+    if (this.customer != null) {
+      data['customer'] = this.customer!.toMap();
     }
     return data;
   }
@@ -252,7 +257,7 @@ class ProductsSuggested {
   double? quantity;
   double? saleValue;
   String? saleUnit;
-  double? salePrice;
+  double? pricePublic;
   bool? selected;
   String? coverImage;
   Price? price = Price();
@@ -268,7 +273,7 @@ class ProductsSuggested {
         this.quantity = 0,
         this.saleValue,
         this.saleUnit,
-        this.salePrice = 0.0,
+        this.pricePublic = 0.0,
         this.selected,
         this.coverImage,
       this.price,
@@ -285,13 +290,14 @@ class ProductsSuggested {
     quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
     saleUnit = json['sale_unit'];
-    salePrice = double.tryParse(json['sale_price'].toString());
+    pricePublic = double.tryParse(json['price_public'].toString());
     selected = json['selected'];
     coverImage = json['image_cover'];
     if (json.containsKey('price')){
       price = Price.fromJson(json['price']);
     }
-    if (json.containsKey('total')){
+    print(json['total']);
+    if (json.containsKey('total') && json['total'] != null){
       total = Total.fromJson(json['total']);
     }
   }
@@ -308,7 +314,7 @@ class ProductsSuggested {
     data['quantity'] = this.quantity;
     data['sale_value'] = this.saleValue;
     data['sale_unit'] = this.saleUnit;
-    data['sale_price'] = this.salePrice;
+    data['price_public'] = this.pricePublic;
     data['selected'] = this.selected;
     data['image_cover'] = this.coverImage;
     if (this.price != null) {
@@ -380,6 +386,26 @@ class Shipping {
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['total'] = this.total;
+    return data;
+  }
+}
+
+
+class Customer {
+  String? id;
+  String? category;
+
+  Customer({this.id, this.category,});
+
+  Customer.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    category = json['category'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['category'] = this.category;
     return data;
   }
 }
