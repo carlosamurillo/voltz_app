@@ -66,22 +66,18 @@ class _Container extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
                       margin: EdgeInsets.only(top: 40, bottom: 40),
-                      child: Text('Confirma tu pedido', style: CustomStyles.styleVolcanic24700),),
+                      child: Text('Tu cotización', style: CustomStyles.styleSafeBlue24700),),
                     Expanded(child: _CartContent(),),
                   ],
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: _Resume(),
-              )
+              _Resume(),
             ],
           )
       ),
@@ -104,6 +100,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
           return Container(
               padding: const EdgeInsets.only(top: 100, right: 80, left: 80),
               color: CustomColors.safeBlue,
+              width: 410,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -120,7 +117,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SelectableText(
-                        'Productos', style: CustomStyles.styleWhite16400,),
+                        'Productos (${viewModel.quote.detail!.length.toString()})', style: CustomStyles.styleWhite16400,),
                       const Spacer(),
                       SelectableText(
                         currencyFormat.format(viewModel.quote.totals!.subTotal),
@@ -133,7 +130,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SelectableText(
-                        'IVA 16%', style: CustomStyles.styleWhite16400,),
+                        'IVA (16%)', style: CustomStyles.styleWhite16400,),
                       const Spacer(),
                       SelectableText(
                         currencyFormat.format(viewModel.quote.totals!.tax),
@@ -151,7 +148,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SelectableText(
-                        'Envío', style: CustomStyles.styleWhite16400,),
+                        'Envio', style: CustomStyles.styleWhite16400,),
                       const Spacer(),
                       if (viewModel.quote.shipping == null ||
                           viewModel.quote.shipping!.total == 0)...[
@@ -176,10 +173,10 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SelectableText(
-                        'Total', style: CustomStyles.styleWhite16400,),
+                        'Total pedido', style: CustomStyles.styleWhite16400,),
                       const Spacer(),
                       SelectableText(
-                        currencyFormat.format(viewModel.quote.totals!.total),
+                        '${currencyFormat.format(viewModel.quote.totals!.total)} MXN',
                         style: CustomStyles.styleWhite16400,),
                     ],
                   ),
@@ -213,7 +210,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text('Confirmar pedido', textAlign: TextAlign.center , style: CustomStyles.styleVolcanic16600,),
+                                Text('Hacer pedido', textAlign: TextAlign.center , style: CustomStyles.styleVolcanic16600,),
                               ],
                             ),
                           ),
@@ -245,15 +242,14 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
 
 }
 
-class _CartContent extends StatefulWidget {
+class _CartContent extends HookViewModelWidget<QuoteViewModel> {
+  _CartContent({Key? key,}) : super(key: key, reactive: true);
 
   @override
-  _CartContentState createState() => _CartContentState();
-}
-class _CartContentState extends State<_CartContent> with SingleTickerProviderStateMixin {
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
     return  Container(
       margin: const EdgeInsets.only(top: 10, bottom: 10, right: 50),
       child: Column(
@@ -262,7 +258,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
           Container(
             color: Colors.white,
             width: double.infinity,
-            child: Text('Productos', style: CustomStyles.styleVolcanic20700 ),
+            child: Text('Productos incluidos (${viewModel.quote.detail!.length})', style: CustomStyles.styleVolcanic20700 ),
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
           ),
           Expanded(child: CartList(), ),
@@ -270,16 +266,21 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
             width: double.infinity,
             alignment: Alignment.centerRight,
-            child: SelectableText(
-              "PRECIOS SUJETOS A CAMBIO SIN PREVIO AVISO",
-              style: CustomStyles.styleMuggleGray_414x400,
+            child: SelectableText.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: "Los precios pueden cambiar, sin previo aviso.",
+                    style: CustomStyles.styleMuggleGray_414x400,),
+                  TextSpan(text: " ¡Haz tu pedido ya!",
+                    style: CustomStyles.styleSafeBlue14x600,),
+                ],
+              ),
               textAlign: TextAlign.left,
-              //overflow: TextOverflow.clip,
             ),
           ),
           Container(
             padding: const EdgeInsets.all(20),
-            color: Colors.white,
+            color: CustomColors.energyYellow_20,
             margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 0),
             width: double.infinity,
             alignment: Alignment.centerRight,
@@ -298,8 +299,8 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
                 ),
                 SizedBox(width: 5,),
                 Text(
-                  "Beneficio Voltz",
-                  style: CustomStyles.styleMuggleGray_414x400,
+                  "Total ahorro",
+                  style: CustomStyles.styleMuggleGray_418x400,
                   textAlign: TextAlign.left,
                   //overflow: TextOverflow.clip,
                 ),
@@ -327,17 +328,15 @@ class _LabelSavings extends HookViewModelWidget<QuoteViewModel> {
             return SelectableText.rich(
               TextSpan(
                 children: [
-                  TextSpan(text: "Ahorro total del pedido ",
-                    style: CustomStyles.styleMuggleGray_416x400,),
                   TextSpan(text: "   -${currencyFormat.format(viewModel.quote.totals!.saving!)} ",
-                    style: CustomStyles.styleSafeBlue16x600,),
+                    style: CustomStyles.styleMuggleGray_418x400,),
                 ],
               ),
               textAlign: TextAlign.left,
             );
           } else {
             return Text("Calculando... ",
-              style: CustomStyles.styleMuggleGray_416x400,);
+              style: CustomStyles.styleMuggleGray_418x400,);
           }
         }
     );
@@ -440,32 +439,32 @@ class _CartItemState extends State<_CartItemView>  {
                   children: [
                     SelectableText(
                       widget.product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                      style: CustomStyles.styleMuggleGray_416x600,
+                      style: CustomStyles.styleMuggleGray_414x600,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
                     SelectableText(
-                      widget.product.sku!,
-                      style: CustomStyles.styleMuggleGray_416x400,
+                      '${widget.product.brand ?? ''} (${widget.product.sku!})',
+                      style: CustomStyles.styleMuggleGray_414x400,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
                     Row(
                       children: [
                         SelectableText(
-                          'Cantidad: ${widget.product.quantity!}',
-                          style: CustomStyles.styleMuggleGray_416x400,
+                          '${widget.product.quantity!} ${widget.product.saleUnit!}',
+                          style: CustomStyles.styleSafeBlue14x400,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
                         ),
                         SelectableText(
-                          '   ${currencyFormat.format(widget.product.price!.price2!)} ${widget.product.saleUnit}',
-                          style: CustomStyles.styleMuggleGray_416x600,
+                          '  x  ${currencyFormat.format(widget.product.price!.price2!)} c/u  =  ',
+                          style: CustomStyles.styleSafeBlue14x400,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
                         ),
-                        SelectableText('    Total: ${currencyFormat.format(widget.product.total!.afterDiscount!)}',
-                          style: CustomStyles.styleMuggleGray_416x600,
+                        SelectableText('${currencyFormat.format(widget.product.total!.afterDiscount!)} total',
+                          style: CustomStyles.styleSafeBlue14x600,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
                         ),
