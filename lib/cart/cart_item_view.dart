@@ -304,7 +304,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
           Row(
             children: [
               SelectableText(
-                'Nuevo precio.',
+                'Precio x cantidad',
                 style: CustomStyles.styleWhite14x400,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
@@ -329,7 +329,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
           Row(
             children: [
               SelectableText(
-                'Subtotal.',
+                'Total',
                 style: CustomStyles.styleWhite14x400,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
