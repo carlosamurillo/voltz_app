@@ -256,12 +256,20 @@ class _CartContent extends HookViewModelWidget<QuoteViewModel> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: Colors.white,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide( //
+                  color: CustomColors.grayBackground_2,
+                  width: 1.0,
+                ),
+              ),
+              color: Colors.white,
+            ),
             width: double.infinity,
-            child: Text('Productos incluidos (${viewModel.quote.detail!.length})', style: CustomStyles.styleVolcanic20700 ),
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+            child: Text('Productos incluidos (${viewModel.quote.detail!.length})', style: CustomStyles.styleVolcanic20700 ),
           ),
-          Expanded(child: CartList(), ),
+          const Expanded(child: CartList(), ),
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
             width: double.infinity,
@@ -362,7 +370,7 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
               child: Container(
                 color: Colors.white,
                 child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
                   reverse: false,
                   controller: viewModel.scrollController,
                   itemCount: viewModel.selectedProducts.length,
@@ -408,7 +416,7 @@ class _CartItemState extends State<_CartItemView>  {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row (
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -443,12 +451,14 @@ class _CartItemState extends State<_CartItemView>  {
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
+                    const SizedBox(height: 3,),
                     SelectableText(
                       '${widget.product.brand ?? ''} (${widget.product.sku!})',
                       style: CustomStyles.styleMuggleGray_414x400,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
+                    const SizedBox(height: 3,),
                     Row(
                       children: [
                         SelectableText(

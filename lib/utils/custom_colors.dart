@@ -29,7 +29,6 @@ class CustomColors {
 
   static const Color energyGreen = Color(0xFF00AC1C);
 
-
   static const Color grayBackground_2 = Color(0xFFF9FAFF);
   static const Color superVolcanic = Color(0xFF1F232F);
   static const Color muggleGray = Color(0xFFE2E2E2);

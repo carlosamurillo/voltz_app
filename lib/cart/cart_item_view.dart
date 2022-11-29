@@ -118,7 +118,7 @@ class _CartItemState extends State<CartItemView>  {
                   children: [
                     SelectableText(
                       product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                      style: CustomStyles.styleVolcanicBlueUno,
+                      style: CustomStyles.styleVolcanic16600,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
@@ -150,7 +150,6 @@ class _CartItemState extends State<CartItemView>  {
                 ),
               )
             ),
-            const Spacer(),
             const SizedBox(width: 50,),
             _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
           ],
@@ -200,8 +199,10 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
     double qty = double.tryParse(value) ?? 0;
     if(value.isEmpty){
       changeStatusModify(false);
-    } else {
+    } else if (lastValue != qty) {
       changeStatusModify(true);
+    } else {
+      changeStatusModify(false);
     }
     return qty;
   }
@@ -209,7 +210,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   _onFocusChange() {
     print('Has Focus:  ${_focusNode.hasFocus}');
     if (_focusNode.hasFocus){
-      changeStatusModify(true);
+      //changeStatusModify(true);
     } else {
       areaLostFocus();
       //await showModifyLabel(false);
@@ -283,15 +284,29 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                     height: 38,
                     child: TextButton(
                       focusNode: _focusNode,
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                                return CustomColors.muggleGray_3;
+                          },
+                        ),
+                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                              (Set<MaterialState> states) {
+                                return CustomColors.muggleGray_3;
+                          },
+                        ),
+                      ),
                       onPressed: _isModifyVisible ? () async {
                         print('recalculando totales...');
+                        lastValue = double.tryParse(textEditingController.text) ?? 0;
+                        changeStatusModify(false);
                         widget.viewModel.loading();
                         widget.viewModel.setQuantity(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
                         await widget.viewModel.onUpdateQuote();
                       } : () async {print('no tiene el metodo para recualcular totales.');},
                       child: Text(
                         'modificar',
-                        style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleMuggleGray14x500Underline,
+                        style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleTransparent,
                         textAlign: TextAlign.right,
                       ),
                     ),
@@ -317,7 +332,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                   shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
                   child: widget.viewModel.isLoading ? Container() :  SelectableText(
                     currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ?? ''),
-                    style: CustomStyles.styleWhite14x400,
+                    style: widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price1 != widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ? CustomStyles.styleEnergyYellow14x400 :  CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
                     //overflow: TextOverflow.clip,
                   ),
@@ -381,7 +396,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                           height: 24.0,
                         ),
                         const SizedBox(width: 15),
-                        const Text('Descartar',)
+                        const Text('No lo quiero',)
                       ],
                     ),
                   ),

@@ -70,5 +70,8 @@ abstract class CustomStyles {
 
   static TextStyle styleSafeBlue14x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 14, height: 1.2, overflow: TextOverflow.clip),);
   static TextStyle styleMuggleGray_418x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.muggleGray_4, fontWeight: FontWeight.w400, fontSize: 18, height: 1.2, overflow: TextOverflow.clip),);
+  static TextStyle styleTransparent = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: Colors.transparent, fontWeight: FontWeight.w500, fontSize: 14, height: 1.0, overflow: TextOverflow.clip, decoration: TextDecoration.underline),);
+
+  static TextStyle styleEnergyYellow14x400 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: CustomColors.energyYellow, fontWeight: FontWeight.w400, fontSize: 14, height: 1.0, overflow: TextOverflow.clip,),);
 
 }
