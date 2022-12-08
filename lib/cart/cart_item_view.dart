@@ -37,8 +37,10 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
                     itemBuilder: (context, index) {
                       if (index < viewModel.quote.detail!.length) {
                         return CartItemView(viewModel: viewModel, i: index,);
-                      } else {
+                      } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
                         return ComebackLater(totalProducts: viewModel.quote.pendingProducts!.length,);
+                      } else {
+                        return Container();
                       }
                     },
                   ),
@@ -86,74 +88,88 @@ class _CartItemState extends State<CartItemView>  {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(top: 30,),
-        height: 221,
-        child:  Row (
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return Column(
+      children: [
+        Container(
+            margin: const EdgeInsets.only(top: 30,),
+            height: 198,
+            child:  Row (
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if(product.coverImage == null) ...[
-                  SvgPicture.asset(
-                    'assets/svg/no_image_ico.svg',
-                    width: 150,
-                    height: 150,
-                  ),
-                ] else ...[
-                  Image.network(product.coverImage!)
-                ]
-              ],
-            ),
-            const SizedBox(width: 20,),
-            Expanded(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    SelectableText(
-                      product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                      style: CustomStyles.styleVolcanic16600,
-                      textAlign: TextAlign.left,
-                      //overflow: TextOverflow.clip,
-                    ),
-                    const SizedBox(height: 15,),
-                    SelectableText.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: product.brand,
-                            style: CustomStyles.styleVolcanicBlueUno,),
-                          TextSpan(text: " | ${product.sku!}",
-                            style: CustomStyles.styleVolcanic14x400,)
-                        ],
+                    if(product.coverImage == null) ...[
+                      SvgPicture.asset(
+                        'assets/svg/no_image.svg',
+                        width: 150,
+                        height: 150,
                       ),
-                      textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(height: 40,),
-                    SelectableText.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text: "${currencyFormat.format(product.pricePublic!)}",
-                            style: CustomStyles.styleMuggleGray_416x600Tachado,),
-                          TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
-                            style: CustomStyles.styleSafeBlue16x600,),
-                        ],
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                    ] else ...[
+                      Container(
+                          width: 150,
+                          height: 150,
+                          child: Image.network(product.coverImage!, height: 150, width: 150,)
+                      )
+                    ]
                   ],
                 ),
-              )
-            ),
-            const SizedBox(width: 50,),
-            _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
-          ],
-        )
+                const SizedBox(width: 20,),
+                Expanded(
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SelectableText(
+                            product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                            style: CustomStyles.styleVolcanic16600,
+                            textAlign: TextAlign.left,
+                            //overflow: TextOverflow.clip,
+                          ),
+                          const SizedBox(height: 15,),
+                          SelectableText.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: product.brand,
+                                  style: CustomStyles.styleVolcanicBlueUno,),
+                                TextSpan(text: " | ${product.sku!}",
+                                  style: CustomStyles.styleVolcanic14x400,)
+                              ],
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(height: 40,),
+                          SelectableText.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(text: "${currencyFormat.format(product.pricePublic!)}",
+                                  style: CustomStyles.styleMuggleGray_416x600Tachado,),
+                                TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
+                                  style: CustomStyles.styleSafeBlue16x600,),
+                              ],
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+
+                        ],
+                      ),
+                    )
+                ),
+                const SizedBox(width: 50,),
+                _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
+              ],
+            )
+        ),
+        const SizedBox(height: 30,),
+        const Divider(
+          height: 1,
+          thickness: 1,
+        ),
+      ],
     );
   }
 }
@@ -220,7 +236,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   areaLostFocus() async {
     //lastValue =  widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!;
     await changeStatusModify(false);
-    if (!widget.viewModel.isLoading){
+    if (!widget.viewModel.isCalculatingProductTotal){
       textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
     }
   }
@@ -300,12 +316,12 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                         print('recalculando totales...');
                         lastValue = double.tryParse(textEditingController.text) ?? 0;
                         changeStatusModify(false);
-                        widget.viewModel.loading();
+                        widget.viewModel.loadingAll();
                         widget.viewModel.setQuantity(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
                         await widget.viewModel.onUpdateQuote();
                       } : () async {print('no tiene el metodo para recualcular totales.');},
                       child: Text(
-                        'modificar',
+                        'calcular',
                         style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleTransparent,
                         textAlign: TextAlign.right,
                       ),
@@ -328,9 +344,9 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               Shimmer(
                 linearGradient: widget.viewModel.shimmerGradient2,
                 child: ShimmerLoading(
-                  isLoading: widget.viewModel.isLoading,
+                  isLoading: widget.viewModel.isCalculatingProductTotal,
                   shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
-                  child: widget.viewModel.isLoading ? Container() :  SelectableText(
+                  child: widget.viewModel.isCalculatingProductTotal ? Container() :  SelectableText(
                     currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ?? ''),
                     style: widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price1 != widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ? CustomStyles.styleEnergyYellow14x400 :  CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
@@ -353,9 +369,9 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               Shimmer(
                 linearGradient: widget.viewModel.shimmerGradient2,
                 child: ShimmerLoading(
-                  isLoading: widget.viewModel.isLoading,
+                  isLoading: widget.viewModel.isCalculatingProductTotal,
                   shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
-                  child: widget.viewModel.isLoading ? Container() :  SelectableText(
+                  child: widget.viewModel.isCalculatingProductTotal ? Container() :  SelectableText(
                     currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.afterDiscount!),
                     style: CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
@@ -366,7 +382,20 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
             ],
           ),
           const SizedBox(height: 25),
-          Container(
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () async {
+                await widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
+                return widget.viewModel.notifyListeners();
+              },
+              child: SizedBox(
+                width: double.infinity,
+                child: Text('Quitar este producto', style: CustomStyles.styleMuggleGray_214x400Underline, textAlign: TextAlign.center,),
+              ),
+            ),
+          ),
+          /*Container(
               width: 300,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6),),
@@ -402,7 +431,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                   ),
                 ),
               )
-          ),
+          ),*/
         ]
       )
     );

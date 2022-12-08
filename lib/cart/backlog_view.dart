@@ -36,7 +36,7 @@ class BacklogView extends HookViewModelWidget<QuoteViewModel> {
                       if (index == 0) {
                         return const WeAreWorking();
                       } else {
-                        return BacklogItemView(viewModel: viewModel, i: index,);
+                        return _BacklogItemView(product: viewModel.quote.pendingProducts![index]);
                       }
                     },
                   ),
@@ -146,31 +146,18 @@ class _ClockTimeElapsedState extends State<_ClockTimeElapsed> {
 }
 
 
-class BacklogItemView extends StatefulWidget {
-  BacklogItemView({Key? key, required this.i, required this.viewModel}) : super(key: key);
-  int i;
-  QuoteViewModel viewModel;
+
+class _BacklogItemView extends HookViewModelWidget<QuoteViewModel> {
+  const _BacklogItemView({Key? key, required this.product }) : super(key: key, reactive: true);
+
+  final PendingProduct product;
 
   @override
-  _BacklogItemViewState createState() => _BacklogItemViewState();
-}
-class _BacklogItemViewState extends State<BacklogItemView>  {
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-  late PendingProduct product;
-  @override
-  void initState() {
-    super.initState();
-    product = widget.viewModel.quote.pendingProducts![widget.i -1];
-  }
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
 
-  _discardProduct() async {
-    widget.viewModel.onDeleteSkuFromPending(product);
-    widget.viewModel.notifyListeners();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Container(
         margin: const EdgeInsets.only(top: 0,),
         decoration: BoxDecoration(
@@ -203,7 +190,10 @@ class _BacklogItemViewState extends State<BacklogItemView>  {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
               child: TextButton(
-                  onPressed: _discardProduct,
+                  onPressed: () async {
+                    viewModel.onDeleteSkuFromPending(product);
+                    viewModel.notifyListeners();
+                  },
                   child: Text(
                     'Descartar',
                     style: CustomStyles.styleRedAlert16x400Underline,
@@ -214,4 +204,5 @@ class _BacklogItemViewState extends State<BacklogItemView>  {
         )
     );
   }
+
 }

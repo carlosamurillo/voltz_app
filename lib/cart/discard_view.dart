@@ -1,14 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import '../utils/custom_colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class DiscardView extends HookViewModelWidget<QuoteViewModel> {
@@ -34,7 +31,7 @@ class DiscardView extends HookViewModelWidget<QuoteViewModel> {
                   if (index == 0) {
                     return NoIncludeSign();
                   } else {
-                    return _BacklogItemView(viewModel: viewModel, i: index,);
+                    return _BacklogItemView(product: viewModel.quote.discardedProducts![index -1]);
                   }
                 },
               ),
@@ -85,31 +82,16 @@ class NoIncludeSign extends StatelessWidget {
   }
 }
 
+class _BacklogItemView extends HookViewModelWidget<QuoteViewModel> {
+  const _BacklogItemView({Key? key, required this.product }) : super(key: key, reactive: true);
 
-class _BacklogItemView extends StatefulWidget {
-  _BacklogItemView({Key? key, required this.i, required this.viewModel}) : super(key: key);
-  int i;
-  QuoteViewModel viewModel;
-
-  @override
-  _BacklogItemViewState createState() => _BacklogItemViewState();
-}
-class _BacklogItemViewState extends State<_BacklogItemView>  {
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-  late DiscardedProducts product;
-  @override
-  void initState() {
-    super.initState();
-    product = widget.viewModel.quote.discardedProducts![widget.i -1];
-  }
-
-  _discardProduct() async {
-
-  }
+  final DiscardedProducts product;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildViewModelWidget(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
     return Container(
         margin: const EdgeInsets.only(top: 0,),
         decoration: BoxDecoration(
@@ -149,3 +131,4 @@ class _BacklogItemViewState extends State<_BacklogItemView>  {
     );
   }
 }
+

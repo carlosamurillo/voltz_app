@@ -145,22 +145,26 @@ class ComebackLater extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SelectableText(
-                totalProducts.toString() + ' productos en proceso de cotización...',
+              SelectableText('Estamos cotizando tus productos restantes ($totalProducts)',
                 style: CustomStyles.styleMuggleGray_416x700,
                 textAlign: TextAlign.left,
                 //overflow: TextOverflow.clip,
               ),
+              const SizedBox(height: 10,),
               SelectableText.rich(
                 TextSpan(
                   children: [
-                    TextSpan(text: 'Estamos trabajando para encontrarte la mejor opción, en cientos de proveedores. \nIrán apareciendo arriba en la lista.',
+                    TextSpan(text: 'Te los iremos agregando a esta lista. ¡Estate atento!\nNuestros expertos están buscando el mejor precio, en cientos de proveedores.',
                       style: CustomStyles.styleMuggleGray_414x400,),
-                    TextSpan(text: " ¡Regresa pronto!",
-                      style: CustomStyles.styleSafeBlue14x400,)
                   ],
                 ),
                 textAlign: TextAlign.left,
+              ),
+              const SizedBox(height: 10,),
+              SelectableText('Ver productos pendientes',
+                style: CustomStyles.styleSafeBlue14x400,
+                textAlign: TextAlign.left,
+                //overflow: TextOverflow.clip,
               ),
             ],
           )
@@ -250,9 +254,9 @@ class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
       Shimmer(
         linearGradient: model.shimmerGradient,
         child: ShimmerLoading(
-          isLoading: model.isLoading,
+          isLoading: model.isCalculatingQuoteTotals,
           shimmerEmptyBox: const ShimmerEmptyBox(width: 500, height: 21,),
-          child: model.isLoading ? Container() :
+          child: model.isCalculatingQuoteTotals ? Container() :
           SelectableText.rich(TextSpan(
             children: [
               TextSpan(text: 'Subtotal',

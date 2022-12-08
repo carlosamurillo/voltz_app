@@ -78,11 +78,12 @@ class QuoteViewModel  extends ReactiveViewModel  {
     initReference();
     await _getQuote();
     await _fillSelectedProductsList();
-    stopLoading();
+    setLoading();
     return notifyListeners();
   }
 
-  bool isLoading = true;
+  bool isCalculatingProductTotal = true;
+  bool isCalculatingQuoteTotals = true;
   bool viewRecorded = false;
 
   late DocumentReference reference;
@@ -107,22 +108,32 @@ class QuoteViewModel  extends ReactiveViewModel  {
   Future<void> _listenChanges() async {
     reference.snapshots().listen(
           (documentSnapshot) async {
+            print("Llego data nueva...1");
             if (documentSnapshot.exists) {
-              quote = await processQuote(documentSnapshot);
+              QuoteModel data = await processQuote(documentSnapshot);
+              print("Llego data nueva...");
+              if (data.record != null && data.record!.nextAction == null) {
+                quote = data;
+                notifyListeners();
+                print("se actualiza la pantalla");
+              }
               print('Ult. cantidad recibida fue: ' + quote.detail![0].productsSuggested![0].quantity.toString());
             } else {
               quote = QuoteModel();
             }
-            stopLoading();
-            notifyListeners();
+            setLoading();
           },
       onError: (error) => print("Listen failed: $error"),
     );
   }
 
-  stopLoading() {
+  setLoading() {
     if (quote.record != null && quote.record!.nextAction == null) {
-      isLoading = false;
+      isCalculatingProductTotal = false;
+      isCalculatingQuoteTotals = false;
+    } else {
+      isCalculatingProductTotal = true;
+      isCalculatingQuoteTotals = true;
     }
   }
 
@@ -224,8 +235,14 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return true;
   }
 
-  void loading () {
-    isLoading = true;
+  void loadingAll () {
+    isCalculatingProductTotal = true;
+    isCalculatingQuoteTotals = true;
+    notifyListeners();
+  }
+
+  void loadingQuoteTotals () {
+    isCalculatingQuoteTotals = true;
     notifyListeners();
   }
 
@@ -235,7 +252,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> onSelectedSku(bool value, int i, int b) async {
-    loading();
+    loadingAll();
     quote.detail![i].productsSuggested![b].selected = value;
     calculateTotals();
     await _saveQuote(quote);
@@ -245,7 +262,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> onDeleteSku(Detail value) async {
-    loading();
+    loadingQuoteTotals();
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();

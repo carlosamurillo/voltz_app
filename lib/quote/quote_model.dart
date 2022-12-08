@@ -155,13 +155,15 @@ class Totals {
 
 class Detail {
   String? productRequested;
+  String? id;
   List<ProductsSuggested>? productsSuggested;
   int? position;
 
-  Detail({this.productRequested, this.productsSuggested, this.position});
+  Detail({this.productRequested, this.id, this.productsSuggested, this.position});
 
   Detail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
+    id = json['id'];
     position = json['position'];
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
@@ -174,6 +176,9 @@ class Detail {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['product_requested'] = this.productRequested;
+    if (this.id != null) {
+      data['id'] = this.id!;
+    }
     if (this.productsSuggested != null) {
       data['products_suggested'] =
           this.productsSuggested!.map((v) => v.toJson()).toList();
@@ -333,13 +338,15 @@ class DiscardedProducts {
   String? requestedProducts;
   String? reason;
   int? position;
+  String? id;
 
-  DiscardedProducts({this.requestedProducts, this.reason, this.position});
+  DiscardedProducts({this.requestedProducts, this.reason, this.position, this.id});
 
   DiscardedProducts.fromJson(Map<String, dynamic> json) {
     requestedProducts = json['requested_products'];
     reason = json['reason'];
     position = json['position'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -347,6 +354,7 @@ class DiscardedProducts {
     data['requested_products'] = this.requestedProducts;
     data['reason'] = this.reason;
     data['position'] = this.position;
+    data['id'] = this.id;
     return data;
   }
 }
@@ -356,13 +364,15 @@ class PendingProduct {
   String? requestedProduct;
   int? position;
   double? quantity;
+  String? id;
 
-  PendingProduct({this.requestedProduct, this.position, this.quantity = 0});
+  PendingProduct({this.requestedProduct, this.position, this.quantity = 0, this.id});
 
   PendingProduct.fromJson(Map<String, dynamic> json) {
     requestedProduct = json['requested_products'];
     position = json['position'];
     quantity = double.tryParse(json['quantity'].toString());
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -370,6 +380,7 @@ class PendingProduct {
     data['requested_products'] = this.requestedProduct;
     data['position'] = this.position;
     data['quantity'] = this.quantity;
+    data['id'] = this.id;
     return data;
   }
 }

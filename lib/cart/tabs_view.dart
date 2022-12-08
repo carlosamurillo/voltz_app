@@ -185,7 +185,7 @@ class __TabsState extends State<Tabs>  {
           ),
           const Divider(
             height: 1,
-            thickness: 2,
+            thickness: 1,
           ),
         ],
       ),
@@ -202,9 +202,9 @@ const _textTab1({Key? key}) : super(key: key, reactive: true);
       QuoteViewModel model,
       ) {
     if (model.quote.detail != null) {
-      return Text("Cotizados (${model.quote.detail!.length})");
+      return Text("Productos cotizados (${model.quote.detail!.length})");
     } else {
-      return Text("Cotizados");
+      return Text("Productos cotizados");
     }
   }
 }
@@ -217,9 +217,9 @@ class _textTab2 extends HookViewModelWidget<QuoteViewModel> {
       QuoteViewModel model,
       ) {
     if (model.quote.detail != null) {
-      return Text("En Proceso (${model.quote.pendingProducts!.length})");
+      return Text("En proceso de cotización (${model.quote.pendingProducts!.length})");
     } else {
-      return Text("En Proceso");
+      return Text("En proceso de cotización");
     }
   }
 }
@@ -232,9 +232,9 @@ class _textTab3 extends HookViewModelWidget<QuoteViewModel> {
       QuoteViewModel model,
       ) {
     if (model.quote.detail != null) {
-      return Text("Descartados (${model.quote.discardedProducts!.length})");
+      return Text("No incluidos (${model.quote.discardedProducts!.length})");
     } else {
-      return Text("Descartados");
+      return Text("No incluidos");
     }
   }
 }
