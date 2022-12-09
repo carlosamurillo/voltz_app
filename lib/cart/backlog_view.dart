@@ -36,7 +36,7 @@ class BacklogView extends HookViewModelWidget<QuoteViewModel> {
                       if (index == 0) {
                         return const WeAreWorking();
                       } else {
-                        return _BacklogItemView(product: viewModel.quote.pendingProducts![index]);
+                        return _BacklogItemView(product: viewModel.quote.pendingProducts![index - 1]);
                       }
                     },
                   ),
