@@ -19,10 +19,10 @@ import '../utils/style.dart';
 import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
-  QueueService queueService = QueueService();
+  final _queueService = locator<QuoteService>();
   final NavigationService _navigationService = locator<NavigationService>();
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [QuoteService(),];
+  List<ReactiveServiceMixin> get reactiveServices => [_queueService,];
 
   QuoteModel quote = QuoteModel();
   String _quoteId = "";
@@ -72,6 +72,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     await _getQuote();
     setLoading();
     _listenChanges();
+
     return notifyListeners();
   }
 
