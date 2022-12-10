@@ -186,16 +186,17 @@ class _QuantityCalculatorWidget extends StatefulWidget {
 class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   TextEditingController textEditingController = TextEditingController();
-  bool _isModifyVisible = false;
   double lastValue = 0;
-  ValueNotifier<bool> _notifier = ValueNotifier(true);
-  FocusNode _focusNode = FocusNode();
+  ValueNotifier<bool> _notifier = ValueNotifier(false);
+  FocusNode _focusNodeInput = FocusNode();
+  FocusNode _focusNodeButton = FocusNode();
 
   @override
   void initState() {
     super.initState();
     // listen to focus changes
-    _focusNode.addListener(() => _onFocusChange());
+    _focusNodeInput.addListener(() => _onFocusInputChange());
+    _focusNodeButton.addListener(() => _onFocusButtonChange());
     textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
   }
 
@@ -223,9 +224,19 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
     return qty;
   }
 
-  _onFocusChange() {
-    print('Has Focus:  ${_focusNode.hasFocus}');
-    if (_focusNode.hasFocus){
+  _onFocusInputChange() async {
+    print('Input Has Focus:  ${_focusNodeInput.hasFocus}');
+    if (_focusNodeInput.hasFocus){
+      //changeStatusModify(true);
+    } else {
+      areaLostFocus();
+      //await showModifyLabel(false);
+    }
+  }
+
+  _onFocusButtonChange() async {
+    print('Button Has Focus:  ${_focusNodeButton.hasFocus}');
+    if (_focusNodeButton.hasFocus){
       //changeStatusModify(true);
     } else {
       areaLostFocus();
@@ -235,24 +246,31 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
 
   areaLostFocus() async {
     //lastValue =  widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!;
-    await changeStatusModify(false);
-    if (!widget.viewModel.isCalculatingProductTotal){
+    if (!widget.viewModel.isCalculatingProductTotal && !_focusNodeButton.hasFocus ){
       textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
+      await changeStatusModify(false);
     }
+
+
   }
 
   changeStatusModify(bool value) async {
-    _isModifyVisible = value;
-    _notifier.value = !_notifier.value;
+    _notifier.value = value;
   }
 
-  void setFocus() {
-    FocusScope.of(context).requestFocus(_focusNode);
+  void setFocusInput() {
+    FocusScope.of(context).requestFocus(_focusNodeInput);
+  }
+
+  void setFocusButton() {
+    FocusScope.of(context).requestFocus(_focusNodeButton);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return FocusScope(
+
+        child: Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
           color: CustomColors.muggleGray_4,
@@ -260,77 +278,92 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
         width: 272,
         child: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: InputTextV2(
-                  focusNode: _focusNode,
-                  paddingContent: const EdgeInsets.only(bottom: 5, top: 10, left: 15),
-                  margin: const EdgeInsets.all(0),
-                  textStyle: CustomStyles.styleWhite26x400,
-                  textAlign: TextAlign.start,
-                  controller: textEditingController,
-                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(6), topLeft: Radius.circular(6)),
-                  onTap: () {
-                    lastValue = double.tryParse(textEditingController.text)!;
-                  },
-                  onChanged: (value) async {
-                    await _onTextQtyChanged(value);
-                  },
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
-                  inputFormatters: <TextInputFormatter>[
-                    // for below version 2 use this
-                    //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
-                    FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
-                    // for version 2 and greater youcan also use this
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+          FocusableActionDetector(
+            onFocusChange: (focused) {
+              if (!focused) {
+                print('Have left focus group');
+              } else {
+                print('Enter focus group');
+              }
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  child: InputTextV2(
+                    focusNode: _focusNodeInput,
+                    paddingContent: const EdgeInsets.only(bottom: 5, top: 10, left: 15),
+                    margin: const EdgeInsets.all(0),
+                    textStyle: CustomStyles.styleWhite26x400,
+                    textAlign: TextAlign.start,
+                    controller: textEditingController,
+                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(6), topLeft: Radius.circular(6)),
+                    onTap: () {
+                      lastValue = double.tryParse(textEditingController.text)!;
+                    },
+                    onChanged: (value) async {
+                      await _onTextQtyChanged(value);
+                    },
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                    inputFormatters: <TextInputFormatter>[
+                      // for below version 2 use this
+                      //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+                      FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
+                      // for version 2 and greater youcan also use this
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  ),
                 ),
-              ),
-              ValueListenableBuilder(
-                valueListenable: _notifier,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(6), bottomRight:Radius.circular(6) ),
-                      color: CustomColors.muggleGray_3,
-                    ),
-                    width: 100,
-                    height: 38,
-                    child: TextButton(
-                      focusNode: _focusNode,
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                return CustomColors.muggleGray_3;
-                          },
+                ValueListenableBuilder(
+                  valueListenable: _notifier,
+                  builder: (BuildContext context, bool value, Widget? child) {
+                    return Focus(
+                        focusNode: _focusNodeButton,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(topRight: Radius.circular(6), bottomRight:Radius.circular(6) ),
+                            color: CustomColors.muggleGray_3,
+                          ),
+                          width: 100,
+                          height: 38,
+                          child: _notifier.value ? TextButton(
+
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                    (Set<MaterialState> states) {
+                                  return CustomColors.muggleGray_3;
+                                },
+                              ),
+                              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                    (Set<MaterialState> states) {
+                                  return CustomColors.muggleGray_3;
+                                },
+                              ),
+                            ),
+                            onPressed: () async {
+                              setFocusButton();
+                              print('recalculando totales...');
+                              lastValue = double.tryParse(textEditingController.text) ?? 0;
+                              await widget.viewModel.onUpdateQuote(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
+                              return changeStatusModify(false);
+                            },
+                            child: Focus(
+                                descendantsAreFocusable: false,
+                                canRequestFocus: false,
+                                child: Text(
+                              'calcular',
+                              style: CustomStyles.styleEnergyYellow14x500Underline,
+                              textAlign: TextAlign.right,
+                            )),
+                          ) : Container(),
                         ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                return CustomColors.muggleGray_3;
-                          },
-                        ),
-                      ),
-                      onPressed: _isModifyVisible ? () async {
-                        print('recalculando totales...');
-                        lastValue = double.tryParse(textEditingController.text) ?? 0;
-                        changeStatusModify(false);
-                        widget.viewModel.loadingAll();
-                        widget.viewModel.setQuantity(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
-                        await widget.viewModel.onUpdateQuote();
-                      } : () async {print('no tiene el metodo para recualcular totales.');},
-                      child: Text(
-                        'calcular',
-                        style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleTransparent,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
+
           const SizedBox(height: 20,),
           Row(
             children: [
@@ -434,6 +467,7 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
           ),*/
         ]
       )
+    )
     );
   }
 }

@@ -170,8 +170,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     _model = context.read<QuoteViewModel>();
     textEditingController.addListener(() {
       if(indicator == true) {
-        _model.setQuantity(widget.i, widget.b, double.parse(textEditingController.text),);
-        _model.onUpdateQuote();
+        _model.onUpdateQuote(widget.i, widget.b, double.parse(textEditingController.text),);
         widget.listenerUpdateTotals();
       }
       indicator = true;
@@ -190,15 +189,13 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         onIncrement: (num newlyIncrementedValue) {
           print('Newly incremented value is $newlyIncrementedValue');
           //model.saveNewQuantity(widget.i, b, newlyIncrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.setQuantity(widget.i, widget.b, double.parse(newlyIncrementedValue.toString()),);
-          _model.onUpdateQuote();
+          _model.onUpdateQuote(widget.i, widget.b, double.parse(textEditingController.text),);
           widget.listenerUpdateTotals();
         },
         onDecrement: (num newlyDecrementedValue) {
           print('Newly decremented value is $newlyDecrementedValue');
           //model.saveNewQuantity(widget.i, b, newlyDecrementedValue.toInt(), model.quote.detail![widget.i]);
-          _model.setQuantity(widget.i, widget.b, double.parse(newlyDecrementedValue.toString()),);
-          _model.onUpdateQuote();
+          _model.onUpdateQuote(widget.i, widget.b, double.parse(textEditingController.text),);
           widget.listenerUpdateTotals();
         },
         numberFieldDecoration: InputDecoration(

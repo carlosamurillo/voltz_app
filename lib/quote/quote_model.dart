@@ -52,14 +52,12 @@ class QuoteModel {
       json['detail'].forEach((v) {
         detail!.add(new Detail.fromJson(v));
       });
-      detail!.sort((a, b) => a.position!.compareTo(b.position!));
     }
     if (json['discarded_products'] != null) {
       discardedProducts = <DiscardedProducts>[];
       json['discarded_products'].forEach((v) {
         discardedProducts!.add(new DiscardedProducts.fromJson(v));
       });
-      discardedProducts!.sort((a, b) => a.position!.compareTo(b.position!));
     }
     if (json.containsKey('shipping') && json['shipping'] != null) {
       shipping = new Shipping.fromJson(json['shipping']);
@@ -69,7 +67,6 @@ class QuoteModel {
       json['arr_not_result'].forEach((v) {
         pendingProducts!.add(new PendingProduct.fromJson(v));
       });
-      pendingProducts!.sort((a, b) => a.position!.compareTo(b.position!));
     }
     if (json.containsKey('record') && json['record'] != null) {
       record = Record.fromJson(json['record']);
@@ -205,15 +202,13 @@ class Record {
 
 class Price {
   double? priceBest;
-  double? pricePublic;
   double? price1;
   double? price2;
 
-  Price({this.priceBest = 0, this.pricePublic = 0, this.price1, this.price2 = 0});
+  Price({this.priceBest = 0, this.price1, this.price2 = 0});
 
   Price.fromJson(Map<String, dynamic> json) {
     priceBest = json['price_best'];
-    pricePublic = json['price_public'];
     price1 = json['price_1'];
     price2 = json['price_2'];
   }
@@ -221,7 +216,6 @@ class Price {
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['price_best'] = this.priceBest;
-    data['price_public'] = this.pricePublic;
     data['price_1'] = this.price1;
     data['price_2'] = this.price2;
     return data;
@@ -290,7 +284,7 @@ class ProductsSuggested {
     supplier = json['supplier'];
     skuDescription = json['sku_description'];
     brand = json['brand'];
-    subBrand = json['sub_brand'];
+    subBrand = null;
     techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
     quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());

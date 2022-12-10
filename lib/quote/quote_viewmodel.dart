@@ -69,7 +69,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
     _quoteId = quoteId;
     this.version = version;
     initReference();
-    await _listenChanges();
+    await _getQuote();
+    setLoading();
+    _listenChanges();
+    return notifyListeners();
   }
 
   initConfirmation(String quoteId, String? version) async {
@@ -99,6 +102,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   Future<void> _getQuote() async {
     DocumentSnapshot documentSnapshot = await reference.get();
     if (documentSnapshot.exists) {
+      print('si existe data de quote, se guarda en primera consulta individual');
       quote = await processQuote(documentSnapshot);
     } else {
       quote = QuoteModel();
@@ -219,9 +223,15 @@ class QuoteViewModel  extends ReactiveViewModel  {
     quote.detail![i].productsSuggested![b].quantity = quantity;
   }
 
-  Future<void> onUpdateQuote() async {
+  Future<void> onUpdateQuote(int i, int b, double quantity) async {
+    loadingAll();
+    notifyListeners();
+    setQuantity(i, b, quantity);
     calculateTotals();
-    await _saveQuote(quote);
+    Future.delayed(const Duration(milliseconds: 0), () async {
+      await _saveQuote(quote);
+    });
+
   }
 
   Future<bool> _saveQuote(QuoteModel quote) async {
@@ -238,12 +248,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
   void loadingAll () {
     isCalculatingProductTotal = true;
     isCalculatingQuoteTotals = true;
-    notifyListeners();
   }
 
   void loadingQuoteTotals () {
     isCalculatingQuoteTotals = true;
-    notifyListeners();
   }
 
   // instruccion para que el backend calcule totales
@@ -253,6 +261,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   Future<void> onSelectedSku(bool value, int i, int b) async {
     loadingAll();
+    notifyListeners();
     quote.detail![i].productsSuggested![b].selected = value;
     calculateTotals();
     await _saveQuote(quote);
@@ -263,6 +272,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   Future<void> onDeleteSku(Detail value) async {
     loadingQuoteTotals();
+    notifyListeners();
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();

@@ -943,8 +943,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
     textEditingController.text = _model.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
     textEditingController.addListener(() {
       if(indicator == true) {
-        _model.setQuantity(widget.i, widget.b, double.parse(textEditingController.text),);
-        _model.onUpdateQuote();
+        _model.onUpdateQuote(widget.i, widget.b, double.parse(textEditingController.text),);
         widget.listenerUpdateTotals();
       }
       indicator = true;
@@ -962,8 +961,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
         controller: textEditingController,
         textAlign: TextAlign.center,
         onChanged: (value) {
-          _model.setQuantity(widget.i, widget.b, double.parse(value),);
-          _model.onUpdateQuote();
+          _model.onUpdateQuote(widget.i, widget.b, double.parse(textEditingController.text),);
         },
 
       ) : SelectableText(
