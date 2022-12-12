@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/quote/quote_view.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -67,9 +66,9 @@ class MyApp extends StatelessWidget {
       ),
       //home: QuoteView(quoteId: quoteId, version: version,),
       home: CartView(quoteId: quoteId, version: version,),
-      navigatorKey: StackedService.navigatorKey,
+      //navigatorKey: StackedService.navigatorKey,
       // home: AddCardView(), // Used when testing a view
-      initialRoute: Routes.quoteView,
+      //initialRoute: Routes.cartView,
       onGenerateRoute: StackedRouter().onGenerateRoute,
     );
   }

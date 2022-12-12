@@ -1,4 +1,3 @@
-
 import 'dart:html' as html;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../quote/quote_model.dart';
 import '../quote/quote_viewmodel.dart';
@@ -13,325 +13,326 @@ import '../utils/custom_colors.dart';
 import '../utils/inputText.dart';
 import '../utils/shimmer.dart';
 import '../utils/style.dart';
+import 'cart_item_viewmodel.dart';
 import 'cart_view.dart';
+
 class CartList extends HookViewModelWidget<QuoteViewModel> {
   const CartList({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget buildViewModelWidget(
-      BuildContext context,
-      QuoteViewModel viewModel,
-      ) {
+    BuildContext context,
+    QuoteViewModel viewModel,
+  ) {
     return Builder(
-          builder: (BuildContext context) {
-            if (viewModel.quote.detail != null) {
-              html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
-              return
-                Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-                    reverse: false,
-                    controller: viewModel.scrollController,
-                    itemCount: viewModel.quote.detail!.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index < viewModel.quote.detail!.length) {
-                        return CartItemView(viewModel: viewModel, i: index,);
-                      } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
-                        return ComebackLater(totalProducts: viewModel.quote.pendingProducts!.length,);
-                      } else {
-                        return Container();
-                      }
-                    },
-                  ),
-                );
-            } else {
-              return const Center(
-                child: SizedBox(
-                  width: 30,
-                  height: 30,
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          },
+      builder: (BuildContext context) {
+        if (viewModel.quote.detail != null) {
+          html.window.history.pushState(
+              null,
+              'Voltz - Cotización ${viewModel.quote.consecutive}',
+              '?cotz=${viewModel.quote.id!}');
+          return Container(
+            color: Colors.white,
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+              reverse: false,
+              controller: viewModel.scrollController,
+              itemCount: viewModel.quote.detail!.length + 1,
+              itemBuilder: (context, index) {
+                if (index < viewModel.quote.detail!.length) {
+                  return CartItemView(
+                    i: index,
+                  );
+                } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
+                  return ComebackLater(
+                    totalProducts: viewModel.quote.pendingProducts!.length,
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          );
+        } else {
+          return const Center(
+            child: SizedBox(
+              width: 30,
+              height: 30,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }
 
 class CartItemView extends StatefulWidget {
-  CartItemView({Key? key, required this.i, required this.viewModel,}) : super(key: key);
+  CartItemView({
+    Key? key,
+    required this.i,
+  }) : super(key: key);
   int i;
-  QuoteViewModel viewModel;
 
   @override
   _CartItemState createState() => _CartItemState();
 }
-class _CartItemState extends State<CartItemView>  {
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-  late ProductsSuggested product;
-  late int b;
-  @override
-  void initState() {
-    super.initState();
-    int i = 0;
-    widget.viewModel.quote.detail![widget.i].productsSuggested?.forEach((element) {
-      if(element.selected == true) {
-        product = element;
-        b = i;
-        return;
-      }
-      i = i +1;
-    });
-  }
+
+class _CartItemState extends State<CartItemView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-            margin: const EdgeInsets.only(top: 30,),
-            height: 198,
-            child:  Row (
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if(product.coverImage == null) ...[
-                      SvgPicture.asset(
-                        'assets/svg/no_image.svg',
-                        width: 150,
-                        height: 150,
-                      ),
-                    ] else ...[
-                      Container(
-                          width: 150,
-                          height: 150,
-                          child: Image.network(product.coverImage!, height: 150, width: 150,)
-                      )
-                    ]
-                  ],
-                ),
-                const SizedBox(width: 20,),
-                Expanded(
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SelectableText(
-                            product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                            style: CustomStyles.styleVolcanic16600,
-                            textAlign: TextAlign.left,
-                            //overflow: TextOverflow.clip,
-                          ),
-                          const SizedBox(height: 15,),
-                          SelectableText.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: product.brand,
-                                  style: CustomStyles.styleVolcanicBlueUno,),
-                                TextSpan(text: " | ${product.sku!}",
-                                  style: CustomStyles.styleVolcanic14x400,)
-                              ],
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          const SizedBox(height: 40,),
-                          SelectableText.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: "${currencyFormat.format(product.pricePublic!)}",
-                                  style: CustomStyles.styleMuggleGray_416x600Tachado,),
-                                TextSpan(text: "   ${currencyFormat.format(product.price!.price1!)} ${product.saleUnit}",
-                                  style: CustomStyles.styleSafeBlue16x600,),
-                              ],
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
+    return ViewModelBuilder<CartItemViewModel>.nonReactive(
+        viewModelBuilder: () => CartItemViewModel(),
+        onModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i),
+        fireOnModelReadyOnce: false,
+        disposeViewModel: true,
+        builder: (context, viewModel, child) {
+          return Column(
+            children: [
+              Container(
+                  margin: const EdgeInsets.only(
+                    top: 30,
+                  ),
+                  height: 198,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      _CartItemDetail(),
+                      _QuantityCalculatorWidget()
+                    ],
+                  )),
+              const SizedBox(
+                height: 30,
+              ),
+              const Divider(
+                height: 1,
+                thickness: 1,
+              ),
+            ],
+          );
+        });
+  }
+}
 
+class _CartItemDetail extends HookViewModelWidget<CartItemViewModel> {
+  const _CartItemDetail({Key? key,})
+      : super(key: key, reactive: true);
+
+  @override
+  Widget buildViewModelWidget(BuildContext context,
+      CartItemViewModel viewModel,) {
+    return Expanded(
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (viewModel.product.coverImage == null) ...[
+                SvgPicture.asset(
+                  'assets/svg/no_image.svg',
+                  width: 150,
+                  height: 150,
+                ),
+              ] else ...[
+                Container(
+                    width: 150,
+                    height: 150,
+                    child: Image.network(
+                      viewModel.product.coverImage!,
+                      height: 150,
+                      width: 150,
+                    ))
+              ]
+            ],
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Expanded(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SelectableText(
+                      viewModel.product.skuDescription!
+                          .replaceAll("<em>", "")
+                          .replaceAll("<\/em>", ""),
+                      style: CustomStyles.styleVolcanic16600,
+                      textAlign: TextAlign.left,
+                      //overflow: TextOverflow.clip,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    SelectableText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: viewModel.product.brand,
+                            style: CustomStyles.styleVolcanicBlueUno,
+                          ),
+                          TextSpan(
+                            text: " | ${viewModel.product.sku!}",
+                            style: CustomStyles.styleVolcanic14x400,
+                          )
                         ],
                       ),
-                    )
+                      textAlign: TextAlign.left,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    SelectableText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                            "${viewModel.currencyFormat.format(viewModel.product.pricePublic!)}",
+                            style:
+                            CustomStyles.styleMuggleGray_416x600Tachado,
+                          ),
+                          TextSpan(
+                            text:
+                            "   ${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
+                            style: CustomStyles.styleSafeBlue16x600,
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 50,),
-                _QuantityCalculatorWidget(i: widget.i, b: b, viewModel: widget.viewModel,)
-              ],
-            )
-        ),
-        const SizedBox(height: 30,),
-        const Divider(
-          height: 1,
-          thickness: 1,
-        ),
-      ],
+              )),
+          const SizedBox(
+            width: 50,
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _QuantityCalculatorWidget extends StatefulWidget {
-  const _QuantityCalculatorWidget({Key? key, required this.i, required this.b,
-    required this.viewModel,}) : super(key: key);
-  final int i; final int b;
-  final QuoteViewModel viewModel;
-  @override
-  _QuantityCalculatorWidgetState createState() => _QuantityCalculatorWidgetState();
-}
-
-class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-  bool _isModifyVisible = false;
-  double lastValue = 0;
-  ValueNotifier<bool> _notifier = ValueNotifier(true);
-  FocusNode _focusNode = FocusNode();
+class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
+  const _QuantityCalculatorWidget({Key? key,}) : super(key: key, reactive: true);
 
   @override
-  void initState() {
-    super.initState();
-    // listen to focus changes
-    _focusNode.addListener(() => _onFocusChange());
-    textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the widget tree.
-    textEditingController.dispose();
-    _notifier.dispose();
-    super.dispose();
-  }
-
-  /// Estos proceso de poner en Cola los Future debe ir por el hilo principal para evitar que
-  /// se desordenen, y se ejecuten en orden inesperado **/
-  ///
-
-  Future<double> _onTextQtyChanged(String value) async {
-    double qty = double.tryParse(value) ?? 0;
-    if(value.isEmpty){
-      changeStatusModify(false);
-    } else if (lastValue != qty) {
-      changeStatusModify(true);
-    } else {
-      changeStatusModify(false);
-    }
-    return qty;
-  }
-
-  _onFocusChange() {
-    print('Has Focus:  ${_focusNode.hasFocus}');
-    if (_focusNode.hasFocus){
-      //changeStatusModify(true);
-    } else {
-      areaLostFocus();
-      //await showModifyLabel(false);
-    }
-  }
-
-  areaLostFocus() async {
-    //lastValue =  widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!;
-    await changeStatusModify(false);
-    if (!widget.viewModel.isCalculatingProductTotal){
-      textEditingController.text = widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].quantity!.toString();
-    }
-  }
-
-  changeStatusModify(bool value) async {
-    _isModifyVisible = value;
-    _notifier.value = !_notifier.value;
-  }
-
-  void setFocus() {
-    FocusScope.of(context).requestFocus(_focusNode);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget buildViewModelWidget(
+      BuildContext context,
+      CartItemViewModel viewModel,
+      ) {
     return Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
           color: CustomColors.muggleGray_4,
-        ), padding: const EdgeInsets.all(20),
+        ),
+        padding: const EdgeInsets.all(20),
         width: 272,
-        child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: InputTextV2(
-                  focusNode: _focusNode,
-                  paddingContent: const EdgeInsets.only(bottom: 5, top: 10, left: 15),
-                  margin: const EdgeInsets.all(0),
-                  textStyle: CustomStyles.styleWhite26x400,
-                  textAlign: TextAlign.start,
-                  controller: textEditingController,
-                  borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(6), topLeft: Radius.circular(6)),
-                  onTap: () {
-                    lastValue = double.tryParse(textEditingController.text)!;
-                  },
-                  onChanged: (value) async {
-                    await _onTextQtyChanged(value);
-                  },
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
-                  inputFormatters: <TextInputFormatter>[
-                    // for below version 2 use this
-                    //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
-                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
-                    FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
-                    // for version 2 and greater youcan also use this
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
+        child: Column(children: [
+          FocusScope(
+            onFocusChange: (focused) {
+              print('FocusScope: Input Has Focus:  ${viewModel.focusNodeInput.hasFocus}');
+              print('FocusScope: Button has Focus:  ${viewModel.focusNodeButton.hasFocus}');
+              print('FocusScope: Input has Primary Focus:  ${viewModel.focusNodeInput.hasPrimaryFocus}');
+              print('FocusScope: Button has Primary Focus:  ${viewModel.focusNodeButton.hasPrimaryFocus}');
+              print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
+              print('--------------------------------------');
+            },
+            child: Row(
+              children: [
+                Expanded(
+                  child: InputTextV2(
+                    focusNode: viewModel.focusNodeInput,
+                    paddingContent: const EdgeInsets.only(
+                        bottom: 5, top: 10, left: 15),
+                    margin: const EdgeInsets.all(0),
+                    textStyle: CustomStyles.styleWhite26x400,
+                    textAlign: TextAlign.start,
+                    controller: viewModel.textEditingController,
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(6),
+                        topLeft: Radius.circular(6)),
+                    onTap: () {
+                      viewModel.lastValue = double.tryParse(
+                          viewModel.textEditingController.text)!;
+                    },
+                    onChanged: (value) async {
+                      await viewModel.onTextQtyChanged(value);
+                    },
+                    keyboardType:
+                    const TextInputType.numberWithOptions(
+                        decimal: true, signed: false),
+                    inputFormatters: <TextInputFormatter>[
+                      // for below version 2 use this
+                      //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'[0-9]+')),
+                      FilteringTextInputFormatter.deny(RegExp(
+                          r'^0+')), //users can't type 0 at 1st position),
+                      // for version 2 and greater youcan also use this
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  ),
                 ),
-              ),
-              ValueListenableBuilder(
-                valueListenable: _notifier,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(6), bottomRight:Radius.circular(6) ),
-                      color: CustomColors.muggleGray_3,
-                    ),
-                    width: 100,
-                    height: 38,
-                    child: TextButton(
-                      focusNode: _focusNode,
-                      style: ButtonStyle(
-                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                return CustomColors.muggleGray_3;
-                          },
-                        ),
-                        backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                              (Set<MaterialState> states) {
-                                return CustomColors.muggleGray_3;
-                          },
-                        ),
+                ValueListenableBuilder(
+                  valueListenable: viewModel.notifier,
+                  builder: (BuildContext context, bool value,
+                      Widget? child) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(6),
+                            bottomRight: Radius.circular(6)),
+                        color: CustomColors.muggleGray_3,
                       ),
-                      onPressed: _isModifyVisible ? () async {
-                        print('recalculando totales...');
-                        lastValue = double.tryParse(textEditingController.text) ?? 0;
-                        changeStatusModify(false);
-                        widget.viewModel.loadingAll();
-                        widget.viewModel.setQuantity(widget.i, widget.b, double.tryParse(textEditingController.text) ?? 0);
-                        await widget.viewModel.onUpdateQuote();
-                      } : () async {print('no tiene el metodo para recualcular totales.');},
-                      child: Text(
-                        'calcular',
-                        style: _isModifyVisible ? CustomStyles.styleEnergyYellow14x500Underline : CustomStyles.styleTransparent,
-                        textAlign: TextAlign.right,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                      width: 100,
+                      height: 38,
+                      child: viewModel.notifier.value
+                          ? TextFieldTapRegion(
+                          child: TextButton(
+                            focusNode: viewModel.focusNodeButton,
+                            style: ButtonStyle(
+                              overlayColor: MaterialStateProperty
+                                  .resolveWith<Color?>(
+                                    (Set<MaterialState> states) {
+                                  return CustomColors
+                                      .muggleGray_3;
+                                },
+                              ),
+                              backgroundColor:
+                              MaterialStateProperty
+                                  .resolveWith<Color?>(
+                                    (Set<MaterialState> states) {
+                                  return CustomColors
+                                      .muggleGray_3;
+                                },
+                              ),
+                            ),
+                            onPressed: () {
+                              print('Se dio clic en Button');
+                              viewModel.onPressCalculate(context);
+                            },
+                            child: Text(
+                              'calcular',
+                              style: CustomStyles
+                                  .styleEnergyYellow14x500Underline,
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                      ) : Container(),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           Row(
             children: [
               SelectableText(
@@ -342,13 +343,38 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               ),
               const Spacer(),
               Shimmer(
-                linearGradient: widget.viewModel.shimmerGradient2,
+                linearGradient: viewModel.shimmerGradientDarkBackground,
                 child: ShimmerLoading(
-                  isLoading: widget.viewModel.isCalculatingProductTotal,
-                  shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
-                  child: widget.viewModel.isCalculatingProductTotal ? Container() :  SelectableText(
-                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ?? ''),
-                    style: widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price1 != widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].price!.price2 ? CustomStyles.styleEnergyYellow14x400 :  CustomStyles.styleWhite14x400,
+                  isLoading:
+                  viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals,
+                  shimmerEmptyBox: const ShimmerEmptyBox(
+                    width: 100,
+                    height: 15,
+                  ),
+                  child: viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals
+                      ? Container()
+                      : SelectableText(
+                    viewModel.currencyFormat.format(viewModel
+                        .quote
+                        .detail![viewModel.cartIndex]
+                        .productsSuggested![viewModel.suggestedIndex]
+                        .price!
+                        .price2 ??
+                        ''),
+                    style: viewModel
+                        .quote
+                        .detail![viewModel.cartIndex]
+                        .productsSuggested![viewModel.suggestedIndex]
+                        .price!
+                        .price1 !=
+                        viewModel
+                            .quote
+                            .detail![viewModel.cartIndex]
+                            .productsSuggested![viewModel.suggestedIndex]
+                            .price!
+                            .price2
+                        ? CustomStyles.styleEnergyYellow14x400
+                        : CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
                     //overflow: TextOverflow.clip,
                   ),
@@ -356,7 +382,9 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               ),
             ],
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
               SelectableText(
@@ -367,12 +395,23 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
               ),
               const Spacer(),
               Shimmer(
-                linearGradient: widget.viewModel.shimmerGradient2,
+                linearGradient: viewModel.shimmerGradientDarkBackground,
                 child: ShimmerLoading(
-                  isLoading: widget.viewModel.isCalculatingProductTotal,
-                  shimmerEmptyBox: const ShimmerEmptyBox(width: 100, height: 15,),
-                  child: widget.viewModel.isCalculatingProductTotal ? Container() :  SelectableText(
-                    currencyFormat.format(widget.viewModel.quote.detail![widget.i].productsSuggested![widget.b].total!.afterDiscount!),
+                  isLoading:
+                  viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals,
+                  shimmerEmptyBox: const ShimmerEmptyBox(
+                    width: 100,
+                    height: 15,
+                  ),
+                  child: viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals
+                      ? Container()
+                      : SelectableText(
+                    viewModel.currencyFormat.format(viewModel
+                        .quote
+                        .detail![viewModel.cartIndex]
+                        .productsSuggested![viewModel.suggestedIndex]
+                        .total!
+                        .afterDiscount!),
                     style: CustomStyles.styleWhite14x400,
                     textAlign: TextAlign.left,
                     //overflow: TextOverflow.clip,
@@ -386,12 +425,18 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () async {
-                await widget.viewModel.onDeleteSku(widget.viewModel.quote.detail![widget.i]);
-                return widget.viewModel.notifyListeners();
+                await viewModel.onDeleteSku(
+                    viewModel.quote.detail![viewModel.cartIndex]);
+                return viewModel.notifyListeners();
               },
               child: SizedBox(
                 width: double.infinity,
-                child: Text('Quitar este producto', style: CustomStyles.styleMuggleGray_214x400Underline, textAlign: TextAlign.center,),
+                child: Text(
+                  'Quitar este producto',
+                  style:
+                  CustomStyles.styleMuggleGray_214x400Underline,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ),
@@ -432,8 +477,6 @@ class _QuantityCalculatorWidgetState extends State<_QuantityCalculatorWidget> {
                 ),
               )
           ),*/
-        ]
-      )
-    );
+        ]));
   }
 }

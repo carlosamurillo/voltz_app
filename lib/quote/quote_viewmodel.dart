@@ -19,12 +19,12 @@ import '../utils/style.dart';
 import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
-  QueueService queueService = QueueService();
+  final _quoteService = locator<QuoteService>();
   final NavigationService _navigationService = locator<NavigationService>();
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [QuoteService(),];
+  List<ReactiveServiceMixin> get reactiveServices => [_quoteService,];
 
-  QuoteModel quote = QuoteModel();
+  QuoteModel get quote => _quoteService.quote;
   String _quoteId = "";
   String? version;
   bool isSaveActive = false;
@@ -34,57 +34,21 @@ class QuoteViewModel  extends ReactiveViewModel  {
   ScrollController scrollController = ScrollController();
   late DocumentSnapshot postByUser;
 
-  final shimmerGradient = const LinearGradient(
-    colors: [
-      Color(0xFFEBEBF4),
-      Color(0xFFF4F4F4),
-      Color(0xFFEBEBF4),
-    ],
-    stops: [
-      0.1,
-      0.3,
-      0.4,
-    ],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
-    tileMode: TileMode.clamp,
-  );
-  final shimmerGradient2 = const LinearGradient(
-    colors: [
-      Color(0xFF4C5365),
-      Color(0xFF4C5367),
-      Color(0xFF4C5370),
-    ],
-    stops: [
-      0.1,
-      0.3,
-      0.4,
-    ],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
-    tileMode: TileMode.clamp,
-  );
-
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     initReference();
-    await _listenChanges();
+    _quoteService.init(quoteId, version);
+    return notifyListeners();
   }
 
   initConfirmation(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     initReference();
-    await _getQuote();
     await _fillSelectedProductsList();
-    setLoading();
     return notifyListeners();
   }
-
-  bool isCalculatingProductTotal = true;
-  bool isCalculatingQuoteTotals = true;
-  bool viewRecorded = false;
 
   late DocumentReference reference;
 
@@ -94,61 +58,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
-  }
-
-  Future<void> _getQuote() async {
-    DocumentSnapshot documentSnapshot = await reference.get();
-    if (documentSnapshot.exists) {
-      quote = await processQuote(documentSnapshot);
-    } else {
-      quote = QuoteModel();
-    }
-  }
-
-  Future<void> _listenChanges() async {
-    reference.snapshots().listen(
-          (documentSnapshot) async {
-            print("Llego data nueva...1");
-            if (documentSnapshot.exists) {
-              QuoteModel data = await processQuote(documentSnapshot);
-              print("Llego data nueva...");
-              if (data.record != null && data.record!.nextAction == null) {
-                quote = data;
-                notifyListeners();
-                print("se actualiza la pantalla");
-              }
-              print('Ult. cantidad recibida fue: ' + quote.detail![0].productsSuggested![0].quantity.toString());
-            } else {
-              quote = QuoteModel();
-            }
-            setLoading();
-          },
-      onError: (error) => print("Listen failed: $error"),
-    );
-  }
-
-  setLoading() {
-    if (quote.record != null && quote.record!.nextAction == null) {
-      isCalculatingProductTotal = false;
-      isCalculatingQuoteTotals = false;
-    } else {
-      isCalculatingProductTotal = true;
-      isCalculatingQuoteTotals = true;
-    }
-  }
-
-  //factory Future.delayed(Duration duration, [FutureOr<QuoteModel> computation()?]) {
-  Future<QuoteModel> processQuote(DocumentSnapshot documentSnapshot) async {
-    quote = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
-    if(version == null && quote.accepted){
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        _navigationService.navigateToOrderView(orderId: quote.id!);
-      });
-    } else if(!viewRecorded) {
-      Stats.QuoteViewed(_quoteId);
-      viewRecorded = true;
-    }
-    return quote;
   }
 
   List<ProductsSuggested> selectedProducts = [];
@@ -164,11 +73,11 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> navigateToQuoteConfirmation() async {
-    return _navigationService.navigateToQuoteConfirmation(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartConfirmation(quoteId: quote.id!, version: version);
   }
 
   Future<void> navigateToQuoteView() async {
-    return _navigationService.navigateToQuoteView(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
   }
 /*
   Future<bool> updateDetail(int i, int b, double newQuantity) async {
@@ -184,15 +93,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return true;
   }*/
 
-  @deprecated
-  Future<bool> saveQuote() async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    await reference.set(quote.toJson());
-    return true;
-  }
-
   void onGenerateOrder(BuildContext context) async {
-    _saveQuote(quote).then((value) async {
+    saveQuote(quote).then((value) async {
         DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
         await reference.update({'accepted': true});
     });
@@ -219,12 +121,9 @@ class QuoteViewModel  extends ReactiveViewModel  {
     quote.detail![i].productsSuggested![b].quantity = quantity;
   }
 
-  Future<void> onUpdateQuote() async {
-    calculateTotals();
-    await _saveQuote(quote);
-  }
 
-  Future<bool> _saveQuote(QuoteModel quote) async {
+
+  Future<bool> saveQuote(QuoteModel quote) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.set(reference, quote.toJson());
@@ -235,47 +134,24 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return true;
   }
 
-  void loadingAll () {
-    isCalculatingProductTotal = true;
-    isCalculatingQuoteTotals = true;
-    notifyListeners();
-  }
-
-  void loadingQuoteTotals () {
-    isCalculatingQuoteTotals = true;
-    notifyListeners();
-  }
 
   // instruccion para que el backend calcule totales
   void calculateTotals(){
     quote.record!.nextAction = 'calculate_totals';
   }
 
-  Future<void> onSelectedSku(bool value, int i, int b) async {
-    loadingAll();
-    quote.detail![i].productsSuggested![b].selected = value;
-    calculateTotals();
-    await _saveQuote(quote);
-    return Stats.SkuSeleccionado(quoteId: _quoteId, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
-        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
-        countProductsSuggested: quote.detail![i].productsSuggested!.length);
+  void loadingAll (int productIndex) {
+    _quoteService.loadingAll(productIndex);
   }
 
-  Future<void> onDeleteSku(Detail value) async {
-    loadingQuoteTotals();
-    quote.detail!.remove(value);
-    quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
-    calculateTotals();
-    await _saveQuote(quote);
-    return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
-        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
-        countProductsSuggested: value.productsSuggested!.length);
+  void loadingTotals () {
+    _quoteService.loadingQuoteTotals();
   }
 
   Future<void> onDeleteSkuFromPending(PendingProduct value) async {
     quote.pendingProducts!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.requestedProduct, reason: "No lo quiero.", position: value.position));
-    await _saveQuote(quote);
+    await saveQuote(quote);
     return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
         countProductsSuggested: 0);
   }
@@ -401,5 +277,21 @@ class QuoteViewModel  extends ReactiveViewModel  {
   trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
   }
+
+  final shimmerGradientWhiteBackground = const LinearGradient(
+    colors: [
+      Color(0xFFEBEBF4),
+      Color(0xFFF4F4F4),
+      Color(0xFFEBEBF4),
+    ],
+    stops: [
+      0.1,
+      0.3,
+      0.4,
+    ],
+    begin: Alignment(-1.0, -0.3),
+    end: Alignment(1.0, 0.3),
+    tileMode: TileMode.clamp,
+  );
 
 }

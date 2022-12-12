@@ -252,11 +252,11 @@ class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
       ) {
     return
       Shimmer(
-        linearGradient: model.shimmerGradient,
+        linearGradient: model.shimmerGradientWhiteBackground,
         child: ShimmerLoading(
-          isLoading: model.isCalculatingQuoteTotals,
+          isLoading: model.quote.totals == null || model.quote.isCalculatingTotals,
           shimmerEmptyBox: const ShimmerEmptyBox(width: 500, height: 21,),
-          child: model.isCalculatingQuoteTotals ? Container() :
+          child:  model.quote.totals == null || model.quote.isCalculatingTotals ? Container() :
           SelectableText.rich(TextSpan(
             children: [
               TextSpan(text: 'Subtotal',
