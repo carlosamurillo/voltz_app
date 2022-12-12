@@ -191,6 +191,7 @@ class InputTextV2 extends StatefulWidget {
     this.paddingContent = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
     this.borderRadius = const BorderRadius.all(Radius.circular(6)),
     this.focusNode,
+    this.onFieldSubmitted,
   }) : super(key: key);
 
   final TextEditingController? controller;
@@ -225,6 +226,7 @@ class InputTextV2 extends StatefulWidget {
   final EdgeInsets? paddingContent;
   final BorderRadius borderRadius;
   final FocusNode? focusNode;
+  final void Function(dynamic)? onFieldSubmitted;
 
   @override
   _InputTextV2 createState() => _InputTextV2();
@@ -252,6 +254,7 @@ class _InputTextV2 extends State<InputTextV2>{
             color: Colors.transparent,
             child: TextFormField(
               focusNode: widget.focusNode,
+              textInputAction: TextInputAction.next,
               scrollController: widget.scrollController != null ? widget.scrollController : null,
               onChanged: (value) {
                 if(widget.activateCounter) {
@@ -277,6 +280,7 @@ class _InputTextV2 extends State<InputTextV2>{
               textAlign: widget.textAlign,
               textAlignVertical: TextAlignVertical.center,
               autofocus: widget.autoFocus,
+              onFieldSubmitted:  widget.onFieldSubmitted,
               decoration: InputDecoration(
                 helperText: widget.helperText,
                 helperStyle: GoogleFonts.montserrat(color:  Colors.white, fontSize: widget.helperFontSize, fontWeight: FontWeight.w400 ,

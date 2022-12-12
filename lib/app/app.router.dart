@@ -11,18 +11,18 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import '../order/oder_view.dart';
 import '../cart/cart_confirmation.dart';
-import '../quote/quote_view.dart';
+import '../cart/cart_view.dart';
+import '../order/oder_view.dart';
 
 class Routes {
-  static const String quoteView = '/';
+  static const String cartView = '/cart-view';
   static const String orderView = '/order-view';
-  static const String quoteConfirmation = '/quote-confirmation';
+  static const String cartConfirmation = '/cart-confirmation';
   static const all = <String>{
-    quoteView,
+    cartView,
     orderView,
-    quoteConfirmation,
+    cartConfirmation,
   };
 }
 
@@ -30,17 +30,17 @@ class StackedRouter extends RouterBase {
   @override
   List<RouteDef> get routes => _routes;
   final _routes = <RouteDef>[
-    RouteDef(Routes.quoteView, page: QuoteView),
+    RouteDef(Routes.cartView, page: CartView),
     RouteDef(Routes.orderView, page: OrderView),
-    RouteDef(Routes.quoteConfirmation, page: CartConfirmation),
+    RouteDef(Routes.cartConfirmation, page: CartConfirmation),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
   final _pagesMap = <Type, StackedRouteFactory>{
-    QuoteView: (data) {
-      var args = data.getArgs<QuoteViewArguments>(nullOk: false);
+    CartView: (data) {
+      var args = data.getArgs<CartViewArguments>(nullOk: false);
       return CupertinoPageRoute<dynamic>(
-        builder: (context) => QuoteView(
+        builder: (context) => CartView(
           key: args.key,
           quoteId: args.quoteId,
           version: args.version,
@@ -59,7 +59,7 @@ class StackedRouter extends RouterBase {
       );
     },
     CartConfirmation: (data) {
-      var args = data.getArgs<QuoteConfirmationArguments>(nullOk: false);
+      var args = data.getArgs<CartConfirmationArguments>(nullOk: false);
       return CupertinoPageRoute<dynamic>(
         builder: (context) => CartConfirmation(
           key: args.key,
@@ -76,12 +76,12 @@ class StackedRouter extends RouterBase {
 /// Arguments holder classes
 /// *************************************************************************
 
-/// QuoteView arguments holder class
-class QuoteViewArguments {
+/// CartView arguments holder class
+class CartViewArguments {
   final Key? key;
   final String quoteId;
   final String? version;
-  QuoteViewArguments({this.key, required this.quoteId, required this.version});
+  CartViewArguments({this.key, required this.quoteId, required this.version});
 }
 
 /// OrderView arguments holder class
@@ -91,12 +91,12 @@ class OrderViewArguments {
   OrderViewArguments({this.key, required this.orderId});
 }
 
-/// QuoteConfirmation arguments holder class
-class QuoteConfirmationArguments {
+/// CartConfirmation arguments holder class
+class CartConfirmationArguments {
   final Key? key;
   final String quoteId;
   final String? version;
-  QuoteConfirmationArguments(
+  CartConfirmationArguments(
       {this.key, required this.quoteId, required this.version});
 }
 
@@ -105,7 +105,7 @@ class QuoteConfirmationArguments {
 /// *************************************************************************
 
 extension NavigatorStateExtension on NavigationService {
-  Future<dynamic> navigateToQuoteView({
+  Future<dynamic> navigateToCartView({
     Key? key,
     required String quoteId,
     required String? version,
@@ -116,9 +116,9 @@ extension NavigatorStateExtension on NavigationService {
         transition,
   }) async {
     return navigateTo(
-      Routes.quoteView,
+      Routes.cartView,
       arguments:
-          QuoteViewArguments(key: key, quoteId: quoteId, version: version),
+          CartViewArguments(key: key, quoteId: quoteId, version: version),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,
@@ -145,7 +145,7 @@ extension NavigatorStateExtension on NavigationService {
     );
   }
 
-  Future<dynamic> navigateToQuoteConfirmation({
+  Future<dynamic> navigateToCartConfirmation({
     Key? key,
     required String quoteId,
     required String? version,
@@ -156,8 +156,8 @@ extension NavigatorStateExtension on NavigationService {
         transition,
   }) async {
     return navigateTo(
-      Routes.quoteConfirmation,
-      arguments: QuoteConfirmationArguments(
+      Routes.cartConfirmation,
+      arguments: CartConfirmationArguments(
           key: key, quoteId: quoteId, version: version),
       id: routerId,
       preventDuplicates: preventDuplicates,

@@ -17,6 +17,8 @@ class QuoteModel {
   String? quoteCategory;
   Totals? totals = Totals();
   Customer? customer = Customer();
+  //this is only for local proposes
+  bool isCalculatingTotals = false;
 
   QuoteModel(
       {this.version,
@@ -155,8 +157,10 @@ class Detail {
   String? id;
   List<ProductsSuggested>? productsSuggested;
   int? position;
+  //this is only for local proposes
+  bool isCalculatingProductTotals = false;
 
-  Detail({this.productRequested, this.id, this.productsSuggested, this.position});
+  Detail({this.productRequested, this.id, this.productsSuggested, this.position,});
 
   Detail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
