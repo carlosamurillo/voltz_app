@@ -12,7 +12,8 @@ void main() async {
       algoliaAppId: 'N2BMFF9FQC', // Voltz id
       algoliaApiKey: 'a40f00c73cca354f32ceae2aadcf769e', // Voltz id
       firebaseOptions: DefaultFirebaseOptionsProduction.currentPlatform,
-      segmentWriteKey: 'kjvSHxgKXqtlLdxHf92dv5Jrf8hWl0B9'
+      segmentWriteKey: 'kjvSHxgKXqtlLdxHf92dv5Jrf8hWl0B9',
+      appUrl: 'https://app.voltz.mx/',
   );
 
   mainCommon();

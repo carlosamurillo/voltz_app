@@ -40,6 +40,7 @@ dependencies:
   flutter_svg: ^1.1.1+1
   firebase_core: ^2.4.0
   cloud_firestore: ^4.2.0
+  firebase_storage: ^11.0.7
 
   stacked: ^3.0.1 # ViewModelBuilder
   stacked_services: ^0.9.3
@@ -51,6 +52,9 @@ dependencies:
   url_launcher: ^6.1.5
   google_fonts: ^3.0.1
   flutter_segment: ^3.12.1
+  pdf: ^3.8.4 # Para crear pdfs
+  path_provider: ^2.0.11
+  printing: ^5.9.3
 
 dev_dependencies:
   build_runner: ^2.1.11

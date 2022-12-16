@@ -9,6 +9,7 @@ import 'package:maketplace/order/order_model.dart' as OrderModel;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/quote/quote_stream.dart';
+import 'package:maketplace/quote/quote_to_pdf.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -276,6 +277,12 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
+  }
+
+  Future<void> generatePdf() async {
+    await _fillSelectedProductsList();
+    QuotePdf quotePdf = QuotePdf(quote: quote, selectedProducts: selectedProducts);
+    quotePdf.generatePdf();
   }
 
   final shimmerGradientWhiteBackground = const LinearGradient(

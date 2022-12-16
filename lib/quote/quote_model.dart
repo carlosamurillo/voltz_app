@@ -36,7 +36,7 @@ class QuoteModel {
       this.record,
       this.quoteCategory,
       this.totals,
-      this.customer});
+      this.customer,});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     version = json['version'];
@@ -265,6 +265,7 @@ class ProductsSuggested {
   String? coverImage;
   Price? price = Price();
   Total? total = Total();
+  String? source;
 
   ProductsSuggested(
       {this.productId,
@@ -280,7 +281,8 @@ class ProductsSuggested {
         this.selected,
         this.coverImage,
       this.price,
-      this.total});
+      this.total,
+      this.source});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -302,6 +304,9 @@ class ProductsSuggested {
     print(json['total']);
     if (json.containsKey('total') && json['total'] != null){
       total = Total.fromJson(json['total']);
+    }
+    if (json.containsKey('source')){
+      source = json['source'];
     }
   }
 
@@ -327,6 +332,10 @@ class ProductsSuggested {
     if (this.price != null) {
       data['total'] =
           this.total!.toMap();
+    }
+    if (this.source != null) {
+      data['source'] =
+          this.source!;
     }
     return data;
   }

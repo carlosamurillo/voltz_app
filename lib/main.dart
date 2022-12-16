@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
       ),
       //home: QuoteView(quoteId: quoteId, version: version,),
       home: CartView(quoteId: quoteId, version: version,),
-      //navigatorKey: StackedService.navigatorKey,
+      navigatorKey: StackedService.navigatorKey,
       // home: AddCardView(), // Used when testing a view
       //initialRoute: Routes.cartView,
       onGenerateRoute: StackedRouter().onGenerateRoute,

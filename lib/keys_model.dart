@@ -7,6 +7,7 @@ class VoltzKeys {
   final String? algoliaApiKey;
   final FirebaseOptions? firebaseOptions;
   final String? segmentWriteKey;
+  final String? appUrl;
 
   static VoltzKeys? _instance;
 
@@ -16,6 +17,7 @@ class VoltzKeys {
     String? algoliaApiKey,
     FirebaseOptions? firebaseOptions,
     String? segmentWriteKey,
+    String? appUrl,
   }) =>
       _instance ??= VoltzKeys._(
         cloudFunctionsUrl: cloudFunctionsUrl,
@@ -23,6 +25,7 @@ class VoltzKeys {
         algoliaApiKey: algoliaApiKey,
         firebaseOptions: firebaseOptions,
         segmentWriteKey: segmentWriteKey,
+        appUrl: appUrl,
       );
 
   VoltzKeys._({
@@ -31,5 +34,6 @@ class VoltzKeys {
     this.algoliaApiKey,
     this.firebaseOptions,
     this.segmentWriteKey,
+    this.appUrl,
   });
 }

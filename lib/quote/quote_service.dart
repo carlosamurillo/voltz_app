@@ -1,13 +1,16 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
+import '../app/app.locator.dart';
 import '../utils/stats.dart';
 
 class QuoteService with ReactiveServiceMixin {
-
+  final NavigationService _navigationService = locator<NavigationService>();
   final RxValue<QuoteModel> _rxQuote = RxValue<QuoteModel>(QuoteModel());
   QuoteModel get quote => _rxQuote.value;
 
@@ -49,7 +52,7 @@ class QuoteService with ReactiveServiceMixin {
 
           if(version == null && quote.accepted){
             Future.delayed(const Duration(milliseconds: 1500), () {
-              //_navigationService.navigateToOrderView(orderId: quote.id!);
+              _navigationService.navigateToOrderView(orderId: quote.id!);
             });
           } else if(!viewRecorded) {
             Stats.QuoteViewed(_rxQuote.value.id!);
@@ -73,8 +76,7 @@ class QuoteService with ReactiveServiceMixin {
 
   bool viewRecorded = false;
   Future<QuoteModel> _processQuote(DocumentSnapshot documentSnapshot) async {
-    _rxQuote.value = QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
-    return quote;
+    return QuoteModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
   }
 
   void loadingQuoteTotals () {

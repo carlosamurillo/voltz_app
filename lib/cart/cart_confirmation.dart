@@ -230,6 +230,19 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 30,),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () async {
+                        return viewModel.generatePdf();
+                      },
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: Text('Descargar cotizacion en pdf', style: CustomStyles.styleWhite16x600Underline, textAlign: TextAlign.center,),
+                      ),
+                    ),
+                  ),
                 ],
               )
           );
