@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://voltz-develop.web.app", "http://localhost:8080"],
+    "origin": ["https://app.voltz.mx", "http://localhost:8080"],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }

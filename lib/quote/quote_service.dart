@@ -14,6 +14,9 @@ class QuoteService with ReactiveServiceMixin {
   final RxValue<QuoteModel> _rxQuote = RxValue<QuoteModel>(QuoteModel());
   QuoteModel get quote => _rxQuote.value;
 
+  final RxValue<List<ProductsSuggested>> _rxSelectedProducts = RxValue<List<ProductsSuggested>>([]);
+  List<ProductsSuggested> get selectedProducts => _rxSelectedProducts.value;
+
   QuoteService() {
     listenToReactiveValues([_rxQuote,]);
   }
@@ -33,11 +36,25 @@ class QuoteService with ReactiveServiceMixin {
     }
   }
 
+  Future<void> _fillSelectedProductsList() async {
+    _rxSelectedProducts.value = [];
+    return quote.detail?.forEach((element) {
+      bool firstAdded = false;
+      element.productsSuggested?.forEach((element2) {
+        if (element2.selected == true && !firstAdded){
+          _rxSelectedProducts.value.add(element2);
+          firstAdded = true;
+        }
+      });
+    });
+  }
+
   Future<void> _getQuote() async {
     DocumentSnapshot documentSnapshot = await reference.get();
     if (documentSnapshot.exists) {
       print('si existe data de quote, se guarda en primera consulta individual');
       _rxQuote.value = await _processQuote(documentSnapshot);
+      await _fillSelectedProductsList();
     } else {
       _rxQuote.value = QuoteModel();
     }
@@ -62,6 +79,7 @@ class QuoteService with ReactiveServiceMixin {
           print("Llego data nueva...");
           if (data.record != null && data.record!.nextAction == null) {
             _rxQuote.value = data;
+            await _fillSelectedProductsList();
             notifyListeners();
             print("se actualiza la pantalla");
           }

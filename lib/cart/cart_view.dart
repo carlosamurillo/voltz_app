@@ -12,6 +12,7 @@ import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../utils/shimmer.dart';
+import 'cart_view_mobile.dart';
 
 class CartView extends StatefulWidget {
   const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
@@ -35,7 +36,7 @@ class _CartViewState extends State<CartView> {
     return ViewModelBuilder<QuoteViewModel>.nonReactive(
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
-        return Scaffold(
+        return MediaQuery.of(context).size.width >= 480 ? Scaffold(
             backgroundColor: CustomColors.grayBackground_2,
             body: Container(
               padding: EdgeInsets.all(0),
@@ -46,7 +47,7 @@ class _CartViewState extends State<CartView> {
                 ],
               ),
             )
-        );
+        ) : MobileView();
       },
       onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
       fireOnModelReadyOnce: true,
@@ -202,6 +203,36 @@ class _CartTotals extends HookViewModelWidget<QuoteViewModel> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          Container(
+              width: 210,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(6),),
+                color: CustomColors.energyYellow,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  hoverColor: CustomColors.energyYellowHover,
+                  onTap: () async {
+                    return model.generatePdf();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    alignment: Alignment.center,
+                    child:  Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text('Descargar cotización', textAlign: TextAlign.center , style: CustomStyles.styleVolcanic16600,),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+          ),
           Spacer(),
           _labelSubTotales(currencyFormat: currencyFormat,),
           SizedBox(width: 40,),

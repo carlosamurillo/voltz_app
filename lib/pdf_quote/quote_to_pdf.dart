@@ -34,10 +34,14 @@ class QuotePdf {
   final PdfColor _energyYellow_20 = const PdfColor.fromInt(0xFFFDF5D5);
  /* final Uint8List fontData = File('fonts/Hellix-Black.ttf').readAsBytesSync();
   late var _font;*/
+  late var _visa_image;
+  late var _amex_image;
+  late var _paypal_image;
 
   void generatePdf() async {
 
-    await Future.wait([_loadFonts(), _loadFiles(),]);
+    await Future.wait([_loadFonts(), _loadAssistant(),
+      _loadAmex(), _loadPaypal(), _loadVisa()]);
 
     _pdf = Document();
 
@@ -48,15 +52,25 @@ class QuotePdf {
   }
 
   Future<void> _loadFonts() async {
-    _fontRegular = await PdfGoogleFonts.montserratRegular();
+     _fontRegular = await PdfGoogleFonts.montserratRegular();
     _fontSemiBold = await PdfGoogleFonts.montserratSemiBold();
   }
 
   // ignore: prefer_typing_uninitialized_variables
   late var _assistantIcon;
-  Future<void> _loadFiles() async {
-    _assistantIcon = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-develop.appspot.com/o/public%2Fquote_pdf_files%2Fassistant_icon.png?alt=media&token=d3e63fed-a2d6-43b3-b638-53192b922428');
+  Future<void> _loadAssistant() async {
+    _assistantIcon = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fassistant_icon.png?alt=media&token=a38ac3f8-0ab3-4558-a77d-831ea14852fb');
   }
+  Future<void> _loadAmex() async {
+    _amex_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FAmex.png?alt=media&token=d997de8b-412d-429f-9086-aa0f66335285');
+  }
+  Future<void> _loadPaypal() async {
+    _paypal_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FPaypal.png?alt=media&token=02dfcd64-7467-4b1a-b437-427f5b091590');
+  }
+  Future<void> _loadVisa() async {
+    _visa_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FVisamaster.png?alt=media&token=32df52e8-9c33-4b3c-af4f-c36887d5c3de');
+  }
+
   
   void _page1(){
     _pdf.addPage(Page(
@@ -351,9 +365,12 @@ class QuotePdf {
                         "Descarga este listado en Excel y las fichas técnicas en la ",
                         style: TextStyle(color: _volcanic, fontSize: fontSizeParagraph, font: _fontRegular,),
                       ),
-                      Text(
-                        "versión digital de este pedido.",
-                        style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                      UrlLink(
+                          child: Text(
+                            "versión digital de este pedido.",
+                            style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                          ),
+                          destination: "${_config.appUrl}?cotz=${quote.id!}"
                       ),
                     ],
                   ),
@@ -521,20 +538,20 @@ class QuotePdf {
                           ),
                           Row(
                               children: [
-                                SvgImage(
-                                  svg: SVGIcons.icon_visa,
+                                Image(
+                                  _visa_image,
                                   height: 20,
                                   width: 60,
                                 ),
                                 SizedBox(width: 6.67),
-                                SvgImage(
-                                  svg: SVGIcons.icon_american,
+                                Image(
+                                  _amex_image,
                                   height: 20,
                                   width: 60,
                                 ),
                                 SizedBox(width: 6.67),
-                                SvgImage(
-                                  svg: SVGIcons.icon_paypal,
+                                Image(
+                                  _paypal_image,
                                   height: 20,
                                   width: 60,
                                 ),
@@ -552,93 +569,97 @@ class QuotePdf {
                   ),
                 ),
                 Expanded(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 20, bottom: 10, left: 30, right: 30),
-                            margin: const EdgeInsets.all(0),
-                            width: ticket_width,
-                            color:  _white,
-                            child:  Text("Transferencia electrónica",
-                              style: TextStyle(color: _volcanic, fontSize: 14, font: _fontSemiBold,),
+                    child: Container(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(top: 20, bottom: 10, left: 30, right: 30),
+                              margin: const EdgeInsets.all(0),
+                              width: ticket_width,
+                              color:  _white,
+                              child:  Text("Transferencia electrónica",
+                                style: TextStyle(color: _volcanic, fontSize: 14, font: _fontSemiBold,),
+                              ),
                             ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(0),
-                            padding: const EdgeInsets.all(0),
-                            width: ticket_width,
-                            height: 16,
-                            child: SvgImage(
-                              svg: SVGIcons.icon_lines,
+                            Container(
+                              margin: const EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               width: ticket_width,
                               height: 16,
-                              fit: BoxFit.fitWidth,
+                              child: SvgImage(
+                                svg: SVGIcons.icon_lines,
+                                width: ticket_width,
+                                height: 16,
+                                fit: BoxFit.fitWidth,
+                              ),
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10, bottom: 0, left: 20, right: 20),
-                            width: ticket_width,
-                            color: _white,
-                            child:  Row(
-                              children: [
-                                Container(
-                                  child: Text("Banco destino",
-                                    style: TextStyle(color: _volcanic, fontSize: fontSizeParagraph, font: _fontRegular,),
+                            Container(
+                              margin: const EdgeInsets.all(0),
+                              padding: const EdgeInsets.only(top: 10, bottom: 0, left: 20, right: 20),
+                              width: ticket_width,
+                              color: _white,
+                              child:  Row(
+                                children: [
+                                  Container(
+                                    child: Text("Banco destino",
+                                      style: TextStyle(color: _volcanic, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  child: Text("BBVA",
-                                    style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                  Spacer(),
+                                  Container(
+                                    child: Text("BBVA",
+                                      style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Container(
-                            padding: const  EdgeInsets.only(top: 10, bottom: 0, left: 20, right: 20),
-                            width: ticket_width,
-                            color: _white,
-                            child:  Row(
-                              children: [
-                                Container(
-                                  child: Text("No. Cuenta",
-                                    style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                            Container(
+                              margin: const EdgeInsets.all(0),
+                              padding: const  EdgeInsets.only(top: 10, bottom: 0, left: 20, right: 20),
+                              width: ticket_width,
+                              color: _white,
+                              child:  Row(
+                                children: [
+                                  Container(
+                                    child: Text("No. Cuenta",
+                                      style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  child: Text("0119621431",
-                                    style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                  Spacer(),
+                                  Container(
+                                    child: Text("0119621431",
+                                      style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Container(
-                            padding: const  EdgeInsets.only(top: 10, bottom: 0, left: 20, right: 20),
-                            width: ticket_width,
-                            color: _white,
-                            child:  Row(
-                              children: [
-                                Container(
-                                  child: Text("CLABE",
-                                    style: TextStyle(color: _volcanic, fontSize: fontSizeParagraph, font: _fontRegular,),
+                            Container(
+                              margin: const EdgeInsets.all(0),
+                              padding: const  EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+                              width: ticket_width,
+                              color: _white,
+                              child:  Row(
+                                children: [
+                                  Container(
+                                    child: Text("CLABE",
+                                      style: TextStyle(color: _volcanic, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
                                   ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  child: Text("012320001196214312",
-                                    style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
-                                  ),
-                                )
-                              ],
+                                  Spacer(),
+                                  Container(
+                                    child: Text("012320001196214312",
+                                      style: TextStyle(color: _blue, fontSize: fontSizeParagraph, font: _fontRegular,),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Container(
+                            /*Container(
                             padding: const  EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
                             width: ticket_width,
                             color:  _white,
@@ -657,21 +678,21 @@ class QuotePdf {
                                 )
                               ],
                             ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.all(0),
-                            padding: const  EdgeInsets.all(0),
-                            width: ticket_width,
-                            height: 16,
-                            child: SvgImage(
-                              svg: SVGIcons.icon_union,
+                          ),*/
+                            Container(
+                              margin: const EdgeInsets.all(0),
                               width: ticket_width,
                               height: 16,
-                              fit:  BoxFit.fitWidth,
+                              child: SvgImage(
+                                svg: SVGIcons.icon_union,
+                                width: ticket_width,
+                                height: 16,
+                                fit:  BoxFit.fitWidth,
+                              ),
                             ),
-                          ),
-                        ]
-                    )
+                          ]
+                      ),
+                    ),
                 ),
               ],
             ),

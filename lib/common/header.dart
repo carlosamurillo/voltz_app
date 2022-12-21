@@ -5,10 +5,13 @@ import 'package:flutter_svg/svg.dart';
 import '../utils/custom_colors.dart';
 
 class Header extends StatelessWidget {
+  Header ({ this.paddingVertical = 20, this.paddingHorizontal = 20});
+  double paddingVertical;
+  double paddingHorizontal;
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
+      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
       color: CustomColors.superVolcanic,
       child: Row(
         children: [
@@ -23,6 +26,29 @@ class Header extends StatelessWidget {
             width: 74,
             height: 39,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class HeaderMobile extends StatelessWidget {
+  HeaderMobile ({ this.paddingVertical = 15, this.paddingHorizontal = 15});
+  double paddingVertical;
+  double paddingHorizontal;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
+      color: Colors.white,
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            'assets/svg/logo_mobile.svg',
+            width: 97,
+            height: 18,
+          ),
+          const Spacer(),
         ],
       ),
     );

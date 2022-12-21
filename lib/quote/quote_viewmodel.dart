@@ -1,20 +1,16 @@
 
-
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
-import 'package:maketplace/quote/quote_stream.dart';
-import 'package:maketplace/quote/quote_to_pdf.dart';
+import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
-
+import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
-import '../cart/socket_futures.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
@@ -34,6 +30,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   QueryDocumentSnapshot? lastDocument = null;
   ScrollController scrollController = ScrollController();
   late DocumentSnapshot postByUser;
+  final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
@@ -47,7 +44,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     _quoteId = quoteId;
     this.version = version;
     initReference();
-    await _fillSelectedProductsList();
     return notifyListeners();
   }
 
@@ -61,17 +57,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
   }
 
-  List<ProductsSuggested> selectedProducts = [];
-  Future<void> _fillSelectedProductsList() async {
-    selectedProducts = [];
-    quote.detail?.forEach((element) {
-      element.productsSuggested?.forEach((element2) {
-        if (element2.selected == true){
-          selectedProducts.add(element2);
-        }
-      });
-    });
-  }
+  List<ProductsSuggested> get selectedProducts => _quoteService.selectedProducts;
 
   Future<void> navigateToQuoteConfirmation() async {
     return _navigationService.navigateToCartConfirmation(quoteId: quote.id!, version: version);
@@ -122,8 +108,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     quote.detail![i].productsSuggested![b].quantity = quantity;
   }
 
-
-
   Future<bool> saveQuote(QuoteModel quote) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
     await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -134,7 +118,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     );
     return true;
   }
-
 
   // instruccion para que el backend calcule totales
   void calculateTotals(){
@@ -280,7 +263,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> generatePdf() async {
-    await _fillSelectedProductsList();
     QuotePdf quotePdf = QuotePdf(quote: quote, selectedProducts: selectedProducts);
     quotePdf.generatePdf();
   }
