@@ -120,7 +120,7 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
                         'Productos (${viewModel.quote.detail!.length.toString()})', style: CustomStyles.styleWhite16400,),
                       const Spacer(),
                       SelectableText(
-                        currencyFormat.format(viewModel.quote.totals!.subTotal),
+                        currencyFormat.format(viewModel.quote.totals!.subTotal! - viewModel.quote.totals!.discount!),
                         style: CustomStyles.styleWhite16400,),
                     ],
                   ),
@@ -320,7 +320,7 @@ class _CartContent extends HookViewModelWidget<QuoteViewModel> {
                 ),
                 SizedBox(width: 5,),
                 Text(
-                  "Total ahorro",
+                  "Descuento adicional Voltz",
                   style: CustomStyles.styleMuggleGray_418x400,
                   textAlign: TextAlign.left,
                   //overflow: TextOverflow.clip,
@@ -349,7 +349,7 @@ class _LabelSavings extends HookViewModelWidget<QuoteViewModel> {
             return SelectableText.rich(
               TextSpan(
                 children: [
-                  TextSpan(text: "   -${currencyFormat.format(viewModel.quote.totals!.saving!)} ",
+                  TextSpan(text: "   -${currencyFormat.format(viewModel.quote.totals!.discount!)} ",
                     style: CustomStyles.styleMuggleGray_418x400,),
                 ],
               ),
