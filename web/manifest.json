@@ -1,11 +1,11 @@
 {
-    "name": "marketplace",
-    "short_name": "marketplace",
+    "name": "voltz_web",
+    "short_name": "voltz_web",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Tu asistente para comprar material",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

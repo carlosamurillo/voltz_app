@@ -3,20 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/extensions.dart';
-import 'package:maketplace/utils/style.dart';
-import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../common/header.dart';
-import '../utils/custom_colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import '../utils/shimmer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:html' as html;
 
-const double fontSizeParagraph = 11;
+const double fontSizeParagraph = 12;
 const Color _white = Color(0xFFFFFFFF);
 const Color _yellow = Color(0xFFF7CB2F);
 const Color _blue = Color(0xFF2E5CFF);
@@ -56,8 +50,7 @@ class MobileView extends StatelessWidget {
           color: _blue,
         ),
         width: double.infinity,
-        height: 92,
-        constraints: const BoxConstraints(minHeight: 92, maxHeight: 120),
+        height: 110,
         child: Row(
           children: [
             Image.network (
