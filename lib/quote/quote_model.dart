@@ -329,7 +329,7 @@ class ProductsSuggested {
       data['price'] =
           this.price!.toMap();
     }
-    if (this.price != null) {
+    if (this.total != null) {
       data['total'] =
           this.total!.toMap();
     }

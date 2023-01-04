@@ -27,7 +27,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
   String _actionTitle = '';
   Color _buttonColor = CustomColors.safeBlue;
   Color _buttonHoverColor = CustomColors.safeBlueHover;
-  String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Ffiscal_cococo.pdf?alt=media&token=adeae2b9-711a-47c5-8d5b-9bee971e2f56';
+  String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
 
   @override
   void initState() {
@@ -117,7 +117,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                   ),
                   const Spacer(),
                   Container(
-                    child: SelectableText("012180001169055285", style: CustomStyles.styleVolcanic14x500),
+                    child: SelectableText("012320001196214312", style: CustomStyles.styleVolcanic14x500),
                   )
                 ],
               ),
@@ -133,7 +133,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                   ),
                   const Spacer(),
                   Container(
-                    child: SelectableText("0116905528", style: CustomStyles.styleVolcanic14x500),
+                    child: SelectableText("0119621431", style: CustomStyles.styleVolcanic14x500),
                   )
                 ],
               ),
@@ -213,19 +213,17 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                           TextSpan(text: '* En el titular de cuenta poner: ',
                             style: CustomStyles.styleVolcanic14x500,
                           ),
-                          TextSpan(text: "COCOCO VENTURES",
+                          TextSpan(text: "VOLTZ MEXICO SAPI DE CV",
                             style: CustomStyles.styleVolcanicBlueDos,
                           ),
                           TextSpan(text: "\n* RFC: ",
                             style: CustomStyles.styleVolcanic14x500,
                           ),
-                          TextSpan(text: "COCOCO VENTURES",
+                          TextSpan(text: "VME221026G21",
                             style: CustomStyles.styleVolcanicBlueDos,
                           ),
                         ],
                       ),
-                      //En titular de cuenta poner: COCOCO VENTURES
-                      // RFC: CVE210326KL1
                       textAlign: TextAlign.start,
                     ),
                   ],
@@ -354,7 +352,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
   String _actionTitle = '';
   Color _buttonColor = CustomColors.safeBlue;
   Color _buttonHoverColor = CustomColors.safeBlueHover;
-  String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Ffiscal_cococo.pdf?alt=media&token=adeae2b9-711a-47c5-8d5b-9bee971e2f56';
+  String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
 
   @override
   void initState() {
@@ -439,7 +437,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
               width: double.infinity,
               color: Colors.white,
               padding: const EdgeInsets.only(top: 5, bottom: 0, left: 30, right: 30),
-              child: SelectableText("012180001169055285", style: CustomStyles.styleVolcanic14x500),
+              child: SelectableText("012320001196214312", style: CustomStyles.styleVolcanic14x500),
             ),
             Container(
               width: double.infinity,
@@ -451,7 +449,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
               width: double.infinity,
               color: Colors.white,
               padding: const EdgeInsets.only(top: 5, bottom: 0, left: 30, right: 30),
-              child: SelectableText("0116905528", style: CustomStyles.styleVolcanic14x500),
+              child: SelectableText("0119621431", style: CustomStyles.styleVolcanic14x500),
             ),
             Container(
               width: double.infinity,
@@ -521,19 +519,17 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                             TextSpan(text: '* En el titular de cuenta poner: ',
                               style: CustomStyles.styleVolcanic14x500,
                             ),
-                            TextSpan(text: "COCOCO VENTURES",
+                            TextSpan(text: "VOLTZ MEXICO SAPI DE CV",
                               style: CustomStyles.styleVolcanicBlueDos,
                             ),
                             TextSpan(text: "\n* RFC: ",
                               style: CustomStyles.styleVolcanic14x500,
                             ),
-                            TextSpan(text: "COCOCO VENTURES",
+                            TextSpan(text: "VME221026G21",
                               style: CustomStyles.styleVolcanicBlueDos,
                             ),
                           ],
                         ),
-                        //En titular de cuenta poner: COCOCO VENTURES
-                        // RFC: CVE210326KL1
                         textAlign: TextAlign.start,
                       ),
                     ),

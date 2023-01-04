@@ -35,5 +35,5 @@ class CustomColors {
   static const Color muggleGray_2 = Color(0xFFA8A8A8);
   static const Color muggleGray_3 = Color(0xFF4C5366);
   static const Color muggleGray_4 = Color(0xFF394055);
-
+  static const Color muggleGray_5 = Color(0xFFEFF2FD);
 }
