@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/cart/product_detail_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 import '../quote/quote_model.dart';
@@ -124,95 +125,125 @@ class _CartItemDetail extends HookViewModelWidget<CartItemViewModel> {
   Widget buildViewModelWidget(BuildContext context,
       CartItemViewModel viewModel,) {
     return Expanded(
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (viewModel.product.coverImage == null) ...[
-                SvgPicture.asset(
-                  'assets/svg/no_image.svg',
-                  width: 150,
-                  height: 150,
-                ),
-              ] else ...[
-                Container(
-                    width: 150,
-                    height: 150,
-                    child: Image.network(
-                      viewModel.product.coverImage!,
-                      height: 150,
-                      width: 150,
-                    ))
-              ]
-            ],
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Expanded(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: MouseRegion(
+        cursor: viewModel.product.source != "manual" ? SystemMouseCursors.click : MouseCursor.defer,
+        child: GestureDetector(
+          onTap: viewModel.product.source != "manual" ? () {
+            openProductDetail(context, viewModel.product.productId!, viewModel);
+          } : null,
+          child: Container(
+            color: Colors.white,
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    SelectableText(
-                      viewModel.product.skuDescription!
-                          .replaceAll("<em>", "")
-                          .replaceAll("<\/em>", ""),
-                      style: CustomStyles.styleVolcanic16600,
-                      textAlign: TextAlign.left,
-                      //overflow: TextOverflow.clip,
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    SelectableText.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: viewModel.product.brand,
-                            style: CustomStyles.styleVolcanicBlueUno,
-                          ),
-                          TextSpan(
-                            text: " | ${viewModel.product.sku!}",
-                            style: CustomStyles.styleVolcanic14x400,
-                          )
-                        ],
+                    if (viewModel.product.coverImage == null) ...[
+                      SvgPicture.asset(
+                        'assets/svg/no_image.svg',
+                        width: 150,
+                        height: 150,
                       ),
-                      textAlign: TextAlign.left,
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    SelectableText.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text:
-                            "${viewModel.currencyFormat.format(viewModel.product.pricePublic!)}",
-                            style:
-                            CustomStyles.styleMuggleGray_416x600Tachado,
-                          ),
-                          TextSpan(
-                            text:
-                            "   ${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
-                            style: CustomStyles.styleSafeBlue16x600,
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                    ] else ...[
+                      Container(
+                          width: 150,
+                          height: 150,
+                          child: Image.network(
+                            viewModel.product.coverImage!,
+                            height: 150,
+                            width: 150,
+                          ))
+                    ]
                   ],
                 ),
-              )),
-          const SizedBox(
-            width: 50,
-          ),
-        ],
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SelectableText(
+                            viewModel.product.skuDescription!
+                                .replaceAll("<em>", "")
+                                .replaceAll("<\/em>", ""),
+                            style: CustomStyles.styleVolcanic16600,
+                            textAlign: TextAlign.left,
+                            //overflow: TextOverflow.clip,
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          SelectableText.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: viewModel.product.brand,
+                                  style: CustomStyles.styleVolcanicBlueUno,
+                                ),
+                                TextSpan(
+                                  text: " | ${viewModel.product.sku!}",
+                                  style: CustomStyles.styleVolcanic14x400,
+                                )
+                              ],
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          SelectableText.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text:
+                                  "${viewModel.currencyFormat.format(viewModel.product.pricePublic!)}",
+                                  style:
+                                  CustomStyles.styleMuggleGray_416x600Tachado,
+                                ),
+                                TextSpan(
+                                  text:
+                                  "   ${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
+                                  style: CustomStyles.styleSafeBlue16x600,
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                    )),
+                const SizedBox(
+                  width: 50,
+                ),
+              ],
+            ),
+          )
+        ),
       ),
+    );
+  }
+
+  openProductDetail(BuildContext context, String productId, QuoteViewModel viewModel){
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return getDialogDetailProduct(productId);
+        });
+  }
+
+  Dialog getDialogDetailProduct(String productId){
+    return Dialog(
+      elevation: 0,
+      backgroundColor: Colors.limeAccent,
+      //insetPadding: const EdgeInsets.symmetric(horizontal: 330, vertical: 100),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0)),
+      child: ProductView(productId: productId,),
     );
   }
 }

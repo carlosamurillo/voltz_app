@@ -540,94 +540,99 @@ class _cartItemView extends HookViewModelWidget<QuoteViewModel> {
       BuildContext context,
       QuoteViewModel model,
       ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      color: _white,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            model.selectedProducts[productIndex].skuDescription!.capitalize(),
-            style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
-            maxLines: 2,
-            overflow: TextOverflow.clip,
-          ),
-          const SizedBox(height: 5),
-          Row(
+    return GestureDetector(
+      onTap: model.selectedProducts[productIndex].source != "manual" ? () {
+        model.navigateToProductDetailMobile( model.selectedProducts[productIndex].productId!);
+      } : null,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        color: _white,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              model.selectedProducts[productIndex].skuDescription!.capitalize(),
+              style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
+              maxLines: 2,
+              overflow: TextOverflow.clip,
+            ),
+            const SizedBox(height: 5),
+            Row(
+                children: [
+                  Text(
+                    model.selectedProducts[productIndex].brand!.capitalize(),
+                    style: GoogleFonts.montserrat(color: _volcanic, fontSize: 12, fontWeight: FontWeight.w600,),
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                  ),
+                  const SizedBox(width: 11),
+                  Text(
+                    model.selectedProducts[productIndex].sku!,
+                    style: GoogleFonts.montserrat(color: _volcanic, fontSize: 12, fontWeight: FontWeight.w600,),
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                  ),
+                ]
+            ),
+            const SizedBox(height: 5),
+            Row(
               children: [
+                SvgPicture.asset(
+                  'assets/svg/icon_price.svg',
+                  width: 16,
+                  height: 16,
+                ),
+                const SizedBox(width: 5),
                 Text(
-                  model.selectedProducts[productIndex].brand!.capitalize(),
-                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: 12, fontWeight: FontWeight.w600,),
+                  model.currencyFormat.format(model.selectedProducts[productIndex].pricePublic!),
+                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,
+                      decoration: TextDecoration.lineThrough),
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
-                const SizedBox(width: 11),
+                const SizedBox(width: 5),
                 Text(
-                  model.selectedProducts[productIndex].sku!,
-                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: 12, fontWeight: FontWeight.w600,),
+                  model.currencyFormat.format(model.selectedProducts[productIndex].price!.price2!),
+                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
-              ]
-          ),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/svg/icon_price.svg',
-                width: 16,
-                height: 16,
-              ),
-              const SizedBox(width: 5),
-              Text(
-                model.currencyFormat.format(model.selectedProducts[productIndex].pricePublic!),
-                style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,
-                    decoration: TextDecoration.lineThrough),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-              const SizedBox(width: 5),
-              Text(
-                model.currencyFormat.format(model.selectedProducts[productIndex].price!.price2!),
-                style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-              const SizedBox(width: 2),
-              Text(
-                model.selectedProducts[productIndex].saleUnit!.capitalize(),
-                style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-              const Spacer(),
+                const SizedBox(width: 2),
+                Text(
+                  model.selectedProducts[productIndex].saleUnit!.capitalize(),
+                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+                const Spacer(),
 
-            ],
-          ),
-          const SizedBox(width: 10),
-          Row(
-            children: [
-              SvgPicture.asset( 'assets/svg/icon_cart.svg', width: 16, height: 16 ),
-              const SizedBox(width: 5),
-              Text(
-                '${model.selectedProducts[productIndex].quantity} ${model.selectedProducts[productIndex].saleUnit!.capitalize()}(s)',
-                style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-              const SizedBox(width: 5),
-              SvgPicture.asset('assets/svg/icon_total.svg', width: 16, height: 16 ),
-              const SizedBox(width: 5),
-              Text(
-                model.currencyFormat.format(model.selectedProducts[productIndex].total!.afterDiscount!),
-                style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-            ],
-          )
-        ],
+              ],
+            ),
+            const SizedBox(width: 10),
+            Row(
+              children: [
+                SvgPicture.asset( 'assets/svg/icon_cart.svg', width: 16, height: 16 ),
+                const SizedBox(width: 5),
+                Text(
+                  '${model.selectedProducts[productIndex].quantity} ${model.selectedProducts[productIndex].saleUnit!.capitalize()}(s)',
+                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+                const SizedBox(width: 5),
+                SvgPicture.asset('assets/svg/icon_total.svg', width: 16, height: 16 ),
+                const SizedBox(width: 5),
+                Text(
+                  model.currencyFormat.format(model.selectedProducts[productIndex].total!.afterDiscount!),
+                  style: GoogleFonts.montserrat(color: _volcanic, fontSize: fontSizeParagraph, fontWeight: FontWeight.w400,),
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
+import 'package:maketplace/products/products_service.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
@@ -11,6 +12,7 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
+import '../cart/product_model.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
@@ -65,6 +67,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   Future<void> navigateToQuoteView() async {
     return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
+  }
+
+  Future<void> navigateToProductDetailMobile(String productId) async {
+    return _navigationService.navigateToProductViewMobile(productId: productId );
   }
 /*
   Future<bool> updateDetail(int i, int b, double newQuantity) async {

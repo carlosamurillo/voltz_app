@@ -13,16 +13,19 @@ import 'package:stacked_services/stacked_services.dart';
 
 import '../cart/cart_confirmation.dart';
 import '../cart/cart_view.dart';
+import '../cart/product_detail_view.dart';
 import '../order/oder_view.dart';
 
 class Routes {
   static const String cartView = '/cart-view';
   static const String orderView = '/order-view';
   static const String cartConfirmation = '/cart-confirmation';
+  static const String productViewMobile = '/product-view-mobile';
   static const all = <String>{
     cartView,
     orderView,
     cartConfirmation,
+    productViewMobile,
   };
 }
 
@@ -33,6 +36,7 @@ class StackedRouter extends RouterBase {
     RouteDef(Routes.cartView, page: CartView),
     RouteDef(Routes.orderView, page: OrderView),
     RouteDef(Routes.cartConfirmation, page: CartConfirmation),
+    RouteDef(Routes.productViewMobile, page: ProductViewMobile),
   ];
   @override
   Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
@@ -69,6 +73,16 @@ class StackedRouter extends RouterBase {
         settings: data,
       );
     },
+    ProductViewMobile: (data) {
+      var args = data.getArgs<ProductViewMobileArguments>(nullOk: false);
+      return CupertinoPageRoute<dynamic>(
+        builder: (context) => ProductViewMobile(
+          key: args.key,
+          productId: args.productId,
+        ),
+        settings: data,
+      );
+    },
   };
 }
 
@@ -98,6 +112,13 @@ class CartConfirmationArguments {
   final String? version;
   CartConfirmationArguments(
       {this.key, required this.quoteId, required this.version});
+}
+
+/// ProductViewMobile arguments holder class
+class ProductViewMobileArguments {
+  final Key? key;
+  final String productId;
+  ProductViewMobileArguments({this.key, required this.productId});
 }
 
 /// ************************************************************************
@@ -159,6 +180,25 @@ extension NavigatorStateExtension on NavigationService {
       Routes.cartConfirmation,
       arguments: CartConfirmationArguments(
           key: key, quoteId: quoteId, version: version),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
+  }
+
+  Future<dynamic> navigateToProductViewMobile({
+    Key? key,
+    required String productId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo(
+      Routes.productViewMobile,
+      arguments: ProductViewMobileArguments(key: key, productId: productId),
       id: routerId,
       preventDuplicates: preventDuplicates,
       parameters: parameters,
