@@ -24,7 +24,8 @@ class QuoteService with ReactiveServiceMixin {
   void init(String quoteId, String? version) async {
     _initReference(quoteId, version);
     _getQuote();
-    _listenChanges(version);
+    await _listenChanges(version);
+    _updateTotals();
   }
 
   late DocumentReference reference;
@@ -59,6 +60,11 @@ class QuoteService with ReactiveServiceMixin {
       _rxQuote.value = QuoteModel();
     }
   }
+
+  Future<void> _updateTotals() async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
+    await reference.update({'record.next_action': 'calculate_totals'});
+  }
   
   Future<void> _listenChanges(String? version) async {
     reference.snapshots().listen(
@@ -83,7 +89,6 @@ class QuoteService with ReactiveServiceMixin {
             notifyListeners();
             print("se actualiza la pantalla");
           }
-          print('Ult. cantidad recibida fue: ' + quote.detail![0].productsSuggested![0].quantity.toString());
         } else {
           _rxQuote.value = QuoteModel();
         }

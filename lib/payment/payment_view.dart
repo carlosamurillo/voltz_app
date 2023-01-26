@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 import '../utils/custom_colors.dart';
 import '../order/order_viewmodel.dart';
 
-
-
 class PaymentInstructions extends StatefulWidget {
   PaymentInstructions({required this.total, required this.order_consecutive, required this.showOrderListener});
   final double total;

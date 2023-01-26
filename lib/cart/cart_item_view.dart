@@ -196,23 +196,28 @@ class _CartItemDetail extends HookViewModelWidget<CartItemViewModel> {
                           const SizedBox(
                             height: 40,
                           ),
-                          SelectableText.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                  "${viewModel.currencyFormat.format(viewModel.product.pricePublic!)}",
-                                  style:
-                                  CustomStyles.styleMuggleGray_416x600Tachado,
+                          Row(
+                            children: [
+                              SelectableText(
+                                "${viewModel.currencyFormat.format(viewModel.product.pricePublic!)}   ",
+                                style:
+                                CustomStyles.styleMuggleGray_416x600Tachado,
+                              ),
+                              if(viewModel.product.price!.dollarConversion != null && viewModel.product.price!.dollarConversion!.date != null) ...[
+                                Tooltip(
+                                  message: 'Precio originalmente en USD. Actualizado el ${viewModel.product.price!.dollarConversion!.date!.toDate()}',
+                                  child: SelectableText(
+                                    "${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
+                                    style: CustomStyles.styleSafeBlue16x600Underline,
+                                  ),
                                 ),
-                                TextSpan(
-                                  text:
-                                  "   ${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
+                              ] else ... [
+                                SelectableText(
+                                  "${viewModel.currencyFormat.format(viewModel.product.price!.price1!)} ${viewModel.product.saleUnit}",
                                   style: CustomStyles.styleSafeBlue16x600,
                                 ),
                               ],
-                            ),
-                            textAlign: TextAlign.left,
+                            ],
                           ),
                         ],
                       ),

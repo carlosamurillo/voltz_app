@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Product {
   String? id;
   String? sku;
@@ -125,13 +127,39 @@ class Price {
   double? priceBest;
   double? price1;
   double? price2;
+  String? currency;
+  double? stock;
+  String? supplierCode;
+  String? supplierName;
+  DollarConversion? dollarConversion;
 
-  Price({this.priceBest = 0, this.price1, this.price2 = 0});
+  Price({this.priceBest = 0, this.price1 = 0, this.price2 = 0, this.currency, this.stock = 0, this.supplierCode, this.supplierName, this.dollarConversion});
 
   Price.fromJson(Map<String, dynamic> json) {
-    priceBest = json['price_best'];
-    price1 = json['price_1'];
-    price2 = json['price_2'];
+    if(json.containsKey('price_best')) {
+      priceBest = json['price_best'];
+    }
+    if(json.containsKey('price_1')) {
+      price1 = json['price_1'];
+    }
+    if(json.containsKey('price_2')) {
+      price2 = json['price_2'];
+    }
+    if(json.containsKey('currency')) {
+      currency = json['currency'];
+    }
+    if(json.containsKey('stock')) {
+      stock = json['stock'];
+    }
+    if(json.containsKey('supplier_code')) {
+      supplierCode = json['supplier_code'];
+    }
+    if(json.containsKey('supplier_name')) {
+      supplierName = json['supplier_name'];
+    }
+    if(json.containsKey('dollar_conversion')) {
+      dollarConversion = DollarConversion.fromJson(json['dollar_conversion']);
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -139,7 +167,39 @@ class Price {
     data['price_best'] = this.priceBest;
     data['price_1'] = this.price1;
     data['price_2'] = this.price2;
+    data['currency'] = this.currency;
+    data['stock'] = this.stock;
+    data['supplier_code'] = this.supplierCode;
+    data['supplier_name'] = this.supplierName;
+    if(this.dollarConversion != null){
+      data['dollar_conversion'] = this.dollarConversion!.toMap();
+    }
     return data;
   }
 
+}
+
+class DollarConversion {
+  String? currency;
+  double? value;
+  String? source;
+  Timestamp? date;
+
+  DollarConversion({this.currency, this.value, this.source, this.date});
+
+  DollarConversion.fromJson(Map<String, dynamic> json) {
+    currency = json['currency'];
+    value = json['value'];
+    source = json['source'];
+    date = json['date'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['currency'] = this.currency;
+    data['value'] = this.value;
+    data['source'] = this.source;
+    data['date'] = this.date;
+    return data;
+  }
 }
