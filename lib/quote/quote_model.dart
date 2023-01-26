@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../cart/product_model.dart';
 
 class QuoteModel {
   int? version = 2;
@@ -204,29 +205,6 @@ class Record {
   }
 }
 
-class Price {
-  double? priceBest;
-  double? price1;
-  double? price2;
-
-  Price({this.priceBest = 0, this.price1, this.price2 = 0});
-
-  Price.fromJson(Map<String, dynamic> json) {
-    priceBest = json['price_best'];
-    price1 = json['price_1'];
-    price2 = json['price_2'];
-  }
-
-  Map<String, dynamic> toMap() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['price_best'] = this.priceBest;
-    data['price_1'] = this.price1;
-    data['price_2'] = this.price2;
-    return data;
-  }
-
-}
-
 class Total {
   double? beforeDiscount;
   double? afterDiscount;
@@ -407,7 +385,6 @@ class Shipping {
     return data;
   }
 }
-
 
 class Customer {
   String? id;

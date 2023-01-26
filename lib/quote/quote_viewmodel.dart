@@ -87,7 +87,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }*/
 
   void onGenerateOrder(BuildContext context) async {
-    saveQuote(quote).then((value) async {
+    updateQuote(quote).then((value) async {
         DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
         await reference.update({'accepted': true});
     });
@@ -125,6 +125,17 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return true;
   }
 
+  Future<bool> updateQuote(QuoteModel quote) async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(reference, quote.toJson());
+    }).then(
+          (value) => print("DocumentSnapshot successfully updated!" + quote.id! ),
+      onError: (e) => print("Error updating document $e"),
+    );
+    return true;
+  }
+
   // instruccion para que el backend calcule totales
   void calculateTotals(){
     quote.record!.nextAction = 'calculate_totals';
@@ -141,7 +152,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   Future<void> onDeleteSkuFromPending(PendingProduct value) async {
     quote.pendingProducts!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.requestedProduct, reason: "No lo quiero.", position: value.position));
-    await saveQuote(quote);
+    await updateQuote(quote);
     return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
         countProductsSuggested: 0);
   }

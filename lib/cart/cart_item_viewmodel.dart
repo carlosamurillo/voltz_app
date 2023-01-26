@@ -149,7 +149,7 @@ class CartItemViewModel extends QuoteViewModel {
     setQuantity(i, b, quantity);
     calculateTotals();
     Future.delayed(const Duration(milliseconds: 0), () async {
-      await saveQuote(quote);
+      await updateQuote(quote);
     });
   }
 
@@ -157,7 +157,7 @@ class CartItemViewModel extends QuoteViewModel {
     loadingAll(i);
     quote.detail![i].productsSuggested![b].selected = value;
     calculateTotals();
-    await saveQuote(quote);
+    await updateQuote(quote);
     return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
@@ -168,7 +168,7 @@ class CartItemViewModel extends QuoteViewModel {
     quote.detail!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();
-    await saveQuote(quote);
+    await updateQuote(quote);
     return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);

@@ -85,4 +85,5 @@ abstract class CustomStyles {
   static TextStyle styleWhite22x700 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle : FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w700, fontSize: 22, height: 1.2, overflow: TextOverflow.clip),);
   static TextStyle styleVolcanicBlue18x600 = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.volcanicBlue, fontWeight: FontWeight.w600, fontSize: 18,));
 
+  static TextStyle styleSafeBlue16x600Underline = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w600, fontSize: 16, overflow: TextOverflow.clip, decoration: TextDecoration.underline));
 }
