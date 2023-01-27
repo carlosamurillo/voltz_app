@@ -70,6 +70,10 @@ class CartItemViewModel extends QuoteViewModel {
     notifyListeners();
   }
 
+  void initExpandableCard({required int cartIndex}){
+
+  }
+
   @override
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.

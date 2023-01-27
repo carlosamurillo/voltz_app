@@ -9,6 +9,7 @@ import 'package:maketplace/quote/quote_viewmodel.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import 'backlog_view.dart';
+import 'cart_expandable_view.dart';
 import 'cart_item_view.dart';
 import 'discard_view.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -264,7 +265,7 @@ class __TabsContentState extends State<TabsContent> {
         controller: widget.tabController,
         dragStartBehavior: DragStartBehavior.start,
         children: [
-          CartList(),
+          CartGrid(),
           BacklogView(),
           DiscardView(),
         ]);

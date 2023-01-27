@@ -64,7 +64,7 @@ class _Container extends StatelessWidget {
       ) {
     return Expanded(
       child: Container(
-          constraints: const BoxConstraints(minWidth: 860, maxWidth: 1260),
+          constraints: const BoxConstraints(minWidth: 860, maxWidth: 1800),
           decoration: BoxDecoration(
             border: Border.all(color: CustomColors.muggleGray, width: 1),
             color: Colors.white,

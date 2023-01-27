@@ -20,6 +20,7 @@ class Product {
   String? warranty;
   List<String>? features;
   String? featuresString;
+  String? makerWeb;
 
   Product(
       {this.id,
@@ -38,7 +39,8 @@ class Product {
       this.status,
       this.warranty,
       this.features,
-      this.featuresString});
+      this.featuresString,
+      this.makerWeb});
 
   Product.fromJson(Map<String, dynamic> json, String id) {
     this.id = id;
@@ -81,6 +83,9 @@ class Product {
         }
       }
     }
+    if (json.containsKey('maker_web')){
+      makerWeb = json['maker_web'];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -117,6 +122,10 @@ class Product {
     if (this.features != null) {
       data['features'] =
           this.features!.map((v) => v).toList();
+    }
+    if (this.makerWeb != null) {
+      data['maker_web'] =
+          this.makerWeb;
     }
     return data;
   }

@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/cart/cart_expandable_view.dart';
 import 'package:maketplace/cart/product_detail_view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -41,7 +42,10 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
               itemCount: viewModel.quote.detail!.length + 1,
               itemBuilder: (context, index) {
                 if (index < viewModel.quote.detail!.length) {
-                  return CartItemView(
+                 /* return CartItemView(
+                    i: index,
+                  );*/
+                  return ProductCard(
                     i: index,
                   );
                 } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
