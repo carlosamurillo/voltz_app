@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -7,12 +9,17 @@ import '../utils/stats.dart';
 
 class CartItemViewModel extends QuoteViewModel {
 
+  bool isCardExpanded = false;
+
   var currencyFormat =
   intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   TextEditingController textEditingController = TextEditingController();
   double lastValue = 0;
   final ValueNotifier<bool> _notifier = ValueNotifier(false);
   ValueNotifier<bool> get notifier => _notifier;
+
+  bool isQtyControlOpen = false;
+  bool isQtyLabelElevated = false;
 
   final shimmerGradientDarkBackground = const LinearGradient(
     colors: [
@@ -30,11 +37,18 @@ class CartItemViewModel extends QuoteViewModel {
     tileMode: TileMode.clamp,
   );
 
+
   /**Variables para manejar el foco de los imput y botones*/
   final FocusNode _focusNodeInput = FocusNode();
   final FocusNode _focusNodeButton = FocusNode();
   FocusNode get focusNodeInput => _focusNodeInput;
   FocusNode get focusNodeButton => _focusNodeButton;
+
+  final FocusNode _focusAdd = FocusNode();
+  FocusNode get focusAdd => _focusAdd;
+
+  final FocusNode _focusRemove = FocusNode();
+  FocusNode get focusRemove => _focusRemove;
 
   /**Producto sugerido seleccionado, es decir selected = true*/
   late ProductsSuggested product;
@@ -58,6 +72,8 @@ class CartItemViewModel extends QuoteViewModel {
     print('line 2');
     _focusNodeInput.addListener(() => _onFocusInputChange());
     _focusNodeButton.addListener(() => _onFocusButtonChange());
+    _focusAdd.addListener(() => _onFocusAddChange());
+    _focusRemove.addListener(() => _onFocusRemoveChange());
     print('line 3');
     textEditingController.text = quote.detail![cartIndex]
         .productsSuggested![suggestedIndex].quantity!
@@ -67,11 +83,36 @@ class CartItemViewModel extends QuoteViewModel {
         .productsSuggested![suggestedIndex].quantity!
         .toString();
     print('line 5');
-    notifyListeners();
+    return notifyListeners();
   }
 
   void initExpandableCard({required int cartIndex}){
 
+  }
+
+  Future<void> activateCalculator() async {
+    product.isCalculatorActive = true;
+    _focusNodeInput.requestFocus();
+    notifyListeners();
+  }
+
+  Future<void> deactivateCalculator() async {
+    product.isCalculatorActive = false;
+    return notifyListeners();
+  }
+
+  Future<void> expandOrCollapseCard() async {
+    print('expandida...' + isCardExpanded.toString());
+    print(cartIndex);
+    print(suggestedIndex);
+    print(quote.detail.toString());
+    await resetCards();
+    isCardExpanded = !isCardExpanded;
+    print('toma 1');
+    quote.detail![cartIndex]
+        .productsSuggested![suggestedIndex].isCardExpanded = isCardExpanded;
+    print('toma 2');
+    return notifyListeners();
   }
 
   @override
@@ -111,12 +152,30 @@ class CartItemViewModel extends QuoteViewModel {
     }
   }
 
+  _onFocusAddChange() async {
+    print('From viemodel focusAdd Has Focus:  ${_focusAdd.hasFocus}');
+    if (!_focusAdd.hasFocus && !_focusRemove.hasFocus) {
+      saveQty();
+      deElevateQty();
+    }
+  }
+
+  _onFocusRemoveChange() async {
+    print('From viemodel focusRemove Has Focus:  ${_focusRemove.hasFocus}');
+    if (!_focusRemove.hasFocus && !_focusAdd.hasFocus) {
+      saveQty();
+      deElevateQty();
+    }
+  }
+
   onPressCalculate(BuildContext context) async {
-    print('recalculando totales...');
+    deactivateCalculator();
+    await setCalculateVisibility(false);
     lastValue = double.tryParse(
         textEditingController
             .text) ??
         0;
+
     await onUpdateQuote(
         cartIndex,
         suggestedIndex,
@@ -124,11 +183,12 @@ class CartItemViewModel extends QuoteViewModel {
             textEditingController
                 .text) ??
             0);
-    return setCalculateVisibility(false);
+
   }
 
   areaLostFocus() async {
     if (!quote.isCalculatingTotals) {
+      deactivateCalculator();
       textEditingController.text = quote.detail![cartIndex]
           .productsSuggested![suggestedIndex].quantity!
           .toString();
@@ -137,7 +197,8 @@ class CartItemViewModel extends QuoteViewModel {
   }
 
   setCalculateVisibility(bool isVisible) async {
-    _notifier.value = isVisible;
+    isQtyControlOpen = isVisible;
+    return notifyListeners();
   }
 
   void requestFocusInput(BuildContext context) {
@@ -152,7 +213,7 @@ class CartItemViewModel extends QuoteViewModel {
     loadingAll(i);
     setQuantity(i, b, quantity);
     calculateTotals();
-    Future.delayed(const Duration(milliseconds: 0), () async {
+    return Future.delayed(const Duration(milliseconds: 0), () async {
       await updateQuote(quote);
     });
   }
@@ -178,6 +239,41 @@ class CartItemViewModel extends QuoteViewModel {
         countProductsSuggested: value.productsSuggested!.length);
   }
 
+  Future<void> addOne() async {
+    elevateQty();
+    textEditingController.text = (double.parse(textEditingController.text) + 1).toString();
+    return notifyListeners();
+  }
+
+  Future<void> removeOne() async {
+    if(quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity! > 1) {
+      elevateQty();
+      textEditingController.text = (double.parse(textEditingController.text) - 1).toString();
+      return notifyListeners();
+    }
+  }
+
+  Future<void> saveQty () async {
+    if(quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity != double.parse(textEditingController.text)) {
+      loadingAll(cartIndex);
+      quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity =
+          double.parse(textEditingController.text);
+      calculateTotals();
+      return Future.delayed(const Duration(milliseconds: 0), () async {
+        await updateQuote(quote);
+      });
+    }
+  }
+
+  Future<void> elevateQty() async {
+    isQtyLabelElevated = true;
+    return notifyListeners();
+  }
+
+  Future<void> deElevateQty() async {
+    isQtyLabelElevated = false;
+    return notifyListeners();
+  }
 
 
 

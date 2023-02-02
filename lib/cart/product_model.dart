@@ -40,7 +40,7 @@ class Product {
       this.warranty,
       this.features,
       this.featuresString,
-      this.makerWeb});
+      this.makerWeb,});
 
   Product.fromJson(Map<String, dynamic> json, String id) {
     this.id = id;

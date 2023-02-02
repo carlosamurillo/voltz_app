@@ -26,6 +26,7 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
     BuildContext context,
     QuoteViewModel viewModel,
   ) {
+
     return Builder(
       builder: (BuildContext context) {
         if (viewModel.quote.detail != null) {

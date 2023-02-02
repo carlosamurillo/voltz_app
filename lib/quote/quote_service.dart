@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
@@ -16,6 +18,9 @@ class QuoteService with ReactiveServiceMixin {
 
   final RxValue<List<ProductsSuggested>> _rxSelectedProducts = RxValue<List<ProductsSuggested>>([]);
   List<ProductsSuggested> get selectedProducts => _rxSelectedProducts.value;
+
+  StreamController<List<ProductsSuggested>> controllerStream = StreamController<List<ProductsSuggested>>();
+  Stream<List<ProductsSuggested>> get stream => controllerStream.stream;
 
   QuoteService() {
     listenToReactiveValues([_rxQuote,]);
@@ -39,7 +44,8 @@ class QuoteService with ReactiveServiceMixin {
 
   Future<void> _fillSelectedProductsList() async {
     _rxSelectedProducts.value = [];
-    return quote.detail?.forEach((element) {
+    controllerStream.add([]);
+    quote.detail?.forEach((element) {
       bool firstAdded = false;
       element.productsSuggested?.forEach((element2) {
         if (element2.selected == true && !firstAdded){
@@ -48,6 +54,7 @@ class QuoteService with ReactiveServiceMixin {
         }
       });
     });
+    controllerStream.add(selectedProducts);
   }
 
   Future<void> _getQuote() async {
@@ -111,6 +118,21 @@ class QuoteService with ReactiveServiceMixin {
     quote.isCalculatingTotals = true;
     quote.detail![productIndex].isCalculatingProductTotals = true;
     notifyListeners();
+  }
+
+  Future<void> resetCards() async {
+    print('reset card');
+    quote.detail!.forEach((element) {
+      element.productsSuggested!.forEach((element) {
+        element.isCardExpanded = false;
+      });
+    });
+    quote.detail!.forEach((element) {
+      element.productsSuggested!.forEach((element) {
+        print(element.isCardExpanded);
+      });
+    });
+    return notifyListeners();
   }
 
 }

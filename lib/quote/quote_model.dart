@@ -244,6 +244,9 @@ class ProductsSuggested {
   Price? price = Price();
   Total? total = Total();
   String? source;
+  bool isCardExpanded = false;
+  bool isCalculatorActive = false;
+  double? discountRate;
 
   ProductsSuggested(
       {this.productId,
@@ -260,7 +263,9 @@ class ProductsSuggested {
         this.coverImage,
       this.price,
       this.total,
-      this.source});
+      this.source, this.isCardExpanded = false,
+        this.isCalculatorActive = false,
+      this.discountRate});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -285,6 +290,9 @@ class ProductsSuggested {
     }
     if (json.containsKey('source')){
       source = json['source'];
+    }
+    if(price != null && price!.price2 != null && pricePublic != null){
+      discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
     }
   }
 

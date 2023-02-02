@@ -23,6 +23,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
   @override
   List<ReactiveServiceMixin> get reactiveServices => [_quoteService,];
 
+  bool updateGrid = true;
+
   QuoteModel get quote => _quoteService.quote;
   String _quoteId = "";
   String? version;
@@ -34,12 +36,27 @@ class QuoteViewModel  extends ReactiveViewModel  {
   late DocumentSnapshot postByUser;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
+  Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
+
+  @override
+  void dispose() {
+    // Optional teardown:
+    _quoteService.controllerStream.close();
+    super.dispose();
+  }
+
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     initReference();
     _quoteService.init(quoteId, version);
+
     return notifyListeners();
+  }
+
+  resetCards() async {
+    updateGrid = !updateGrid;
+    await _quoteService.resetCards();
   }
 
   initConfirmation(String quoteId, String? version) async {
@@ -126,6 +143,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<bool> updateQuote(QuoteModel quote) async {
+    print(quote.toJson());
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.update(reference, quote.toJson());

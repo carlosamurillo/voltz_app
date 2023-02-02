@@ -12,6 +12,7 @@ import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../utils/shimmer.dart';
+import 'cart_expandable_view.dart';
 import 'cart_view_mobile.dart';
 
 class CartView extends StatefulWidget {
@@ -73,7 +74,7 @@ class _Container extends StatelessWidget {
           width: double.infinity,
           child: Column(
             children: [
-              Expanded(child: _CartContent(),),
+              Expanded(child: CartGrid(),),
               // Spacer(),
               _CartTotals(),
             ],
@@ -114,6 +115,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
       child: Column(
         children: [
           Tabs(tabController: _tabController,),
+          SizedBox(width: 200, height: 25,),
           Expanded(child: TabsContent(tabController: _tabController,), ),
         ],
       ),

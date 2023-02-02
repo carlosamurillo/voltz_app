@@ -8,7 +8,7 @@ import '../cart/product_model.dart';
 import 'dart:js' as js;
 
 class ProductViewModel  extends ReactiveViewModel  {
-  final _productsService = locator<ProductsService>();
+  final _productsService = ProductsService();
   final NavigationService _navigationService = locator<NavigationService>();
   @override
   List<ReactiveServiceMixin> get reactiveServices => [_productsService];
@@ -22,6 +22,10 @@ class ProductViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> openTechFile(String url) async {
+    js.context.callMethod('open', [url]);
+  }
+
+  Future<void> openWebPage(String url) async {
     js.context.callMethod('open', [url]);
   }
 
