@@ -47,6 +47,7 @@ class CustomColors {
   static const Color graySoft = Color(0xFFEFF2FD);
   static const Color yellowLight = Color(0xFFFEF7E0);
   static const Color yellowmid = Color(0xFFFBE597);
+  static const Color WBY = Color(0xFFE4E9FC);
 
 
 

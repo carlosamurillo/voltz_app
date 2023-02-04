@@ -4,7 +4,7 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import '../cart/product_model.dart';
 
-class ProductsService with ReactiveServiceMixin {
+class ProductsService with ListenableServiceMixin {
   final RxValue<Product> _rxProduct = RxValue<Product>(Product());
   Product get product => _rxProduct.value;
 

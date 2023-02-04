@@ -42,12 +42,12 @@ dependencies:
   cloud_firestore: ^4.2.0
   firebase_storage: ^11.0.7
 
-  stacked: ^3.0.1 # ViewModelBuilder
-  stacked_services: ^0.9.3
-  stacked_hooks: ^0.2.2
+  stacked: ^3.1.0+3 # ViewModelBuilder
+  stacked_services: ^0.9.9
+  stacked_hooks: ^0.2.3
   number_inc_dec: ^0.8.0
   observable_ish: ^4.0.6
-  stacked_generator: ^0.7.13
+  stacked_generator: ^0.8.5
   provider: ^6.0.3
   url_launcher: ^6.1.5
   google_fonts: ^3.0.1

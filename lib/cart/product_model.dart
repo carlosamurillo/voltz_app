@@ -21,6 +21,7 @@ class Product {
   List<String>? features;
   String? featuresString;
   String? makerWeb;
+  bool isWidgetQtyElevated = false;
 
   Product(
       {this.id,
@@ -40,7 +41,8 @@ class Product {
       this.warranty,
       this.features,
       this.featuresString,
-      this.makerWeb,});
+      this.makerWeb,
+      this.isWidgetQtyElevated = false});
 
   Product.fromJson(Map<String, dynamic> json, String id) {
     this.id = id;

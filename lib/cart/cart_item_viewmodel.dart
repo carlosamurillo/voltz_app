@@ -3,23 +3,22 @@ import 'dart:async';
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:stacked/stacked.dart';
 
+import '../app/app.locator.dart';
 import '../quote/quote_model.dart';
+import '../quote/quote_service.dart';
 import '../utils/stats.dart';
 
-class CartItemViewModel extends QuoteViewModel {
-
-  bool isCardExpanded = false;
+class CardItemViewModel extends QuoteViewModel {
 
   var currencyFormat =
   intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingController = TextEditingController();
   double lastValue = 0;
-  final ValueNotifier<bool> _notifier = ValueNotifier(false);
-  ValueNotifier<bool> get notifier => _notifier;
 
   bool isQtyControlOpen = false;
-  bool isQtyLabelElevated = false;
+  bool isCalculatorActive = false;
 
   final shimmerGradientDarkBackground = const LinearGradient(
     colors: [
@@ -37,51 +36,48 @@ class CartItemViewModel extends QuoteViewModel {
     tileMode: TileMode.clamp,
   );
 
+  final _quoteService = locator<QuoteService>();
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
 
   /**Variables para manejar el foco de los imput y botones*/
   final FocusNode _focusNodeInput = FocusNode();
   final FocusNode _focusNodeButton = FocusNode();
   FocusNode get focusNodeInput => _focusNodeInput;
   FocusNode get focusNodeButton => _focusNodeButton;
-
-  final FocusNode _focusAdd = FocusNode();
-  FocusNode get focusAdd => _focusAdd;
-
-  final FocusNode _focusRemove = FocusNode();
-  FocusNode get focusRemove => _focusRemove;
+  
+  void requestFocusAdd(){
+    product.focusAdd.requestFocus();
+  }
+  void unFocusAdd(){
+    product.focusAdd.unfocus();
+  }
+  void requestFocusRemove(){
+    product.focusRemove.requestFocus();
+  }
+  void unFocusRemove(){
+    product.focusRemove.unfocus();
+  }
 
   /**Producto sugerido seleccionado, es decir selected = true*/
   late ProductsSuggested product;
   /**Pocision del producto seleccionado, es decir selected = true*/
-  late int suggestedIndex;
-  late int cartIndex;
+  late int cardIndex;
   
-  void initCartView({required int cartIndex}) {
-    this.cartIndex = cartIndex;
-    int count = 0;
+  void initCartView({required int cartIndex, required productSuggested}) {
+    cardIndex = cartIndex;
     print('line 1');
-    quote.detail![this.cartIndex].productsSuggested
-        ?.forEach((element) {
-      if (element.selected == true) {
-        product = element;
-        suggestedIndex = count;
-        return;
-      }
-      count = count + 1;
-    });
+    product = productSuggested;
+
     print('line 2');
     _focusNodeInput.addListener(() => _onFocusInputChange());
     _focusNodeButton.addListener(() => _onFocusButtonChange());
-    _focusAdd.addListener(() => _onFocusAddChange());
-    _focusRemove.addListener(() => _onFocusRemoveChange());
+    product.focusAdd.addListener(() => _onFocusAddChange());
+    product.focusRemove.addListener(() => _onFocusRemoveChange());
+
     print('line 3');
-    textEditingController.text = quote.detail![cartIndex]
-        .productsSuggested![suggestedIndex].quantity!
-        .toString();
-    print('line 4');
-    textEditingController.text = quote.detail![cartIndex]
-        .productsSuggested![suggestedIndex].quantity!
-        .toString();
+    textEditingController.text = productSuggested.quantity!.toString();
+
     print('line 5');
     return notifyListeners();
   }
@@ -91,27 +87,20 @@ class CartItemViewModel extends QuoteViewModel {
   }
 
   Future<void> activateCalculator() async {
-    product.isCalculatorActive = true;
+    isCalculatorActive = true;
     _focusNodeInput.requestFocus();
     notifyListeners();
   }
 
   Future<void> deactivateCalculator() async {
-    product.isCalculatorActive = false;
+    isCalculatorActive = false;
     return notifyListeners();
   }
 
   Future<void> expandOrCollapseCard() async {
-    print('expandida...' + isCardExpanded.toString());
-    print(cartIndex);
-    print(suggestedIndex);
-    print(quote.detail.toString());
+    print(cardIndex);
     await resetCards();
-    isCardExpanded = !isCardExpanded;
-    print('toma 1');
-    quote.detail![cartIndex]
-        .productsSuggested![suggestedIndex].isCardExpanded = isCardExpanded;
-    print('toma 2');
+    product.isCardExpanded = !product.isCardExpanded;
     return notifyListeners();
   }
 
@@ -119,7 +108,6 @@ class CartItemViewModel extends QuoteViewModel {
   void dispose() {
     // Clean up the controller when the widget is removed from the widget tree.
     textEditingController.dispose();
-    _notifier.dispose();
     super.dispose();
   }
 
@@ -152,19 +140,21 @@ class CartItemViewModel extends QuoteViewModel {
     }
   }
 
-  _onFocusAddChange() async {
-    print('From viemodel focusAdd Has Focus:  ${_focusAdd.hasFocus}');
-    if (!_focusAdd.hasFocus && !_focusRemove.hasFocus) {
+  Future<void> _onFocusAddChange() async {
+    print('From viemodel focusAdd Has Focus:  ${product.focusAdd.hasFocus}');
+    if (!product.focusAdd.hasFocus && !product.focusRemove.hasFocus) {
+      print('xxxxxx');
       saveQty();
-      deElevateQty();
+      return highlightQtyLabel(false);
     }
   }
 
-  _onFocusRemoveChange() async {
-    print('From viemodel focusRemove Has Focus:  ${_focusRemove.hasFocus}');
-    if (!_focusRemove.hasFocus && !_focusAdd.hasFocus) {
+  Future<void> _onFocusRemoveChange() async {
+    print('From viemodel focusRemove Has Focus:  ${product.focusRemove.hasFocus}');
+    if (!product.focusRemove.hasFocus && !product.focusAdd.hasFocus) {
+      print('bbbbbb');
       saveQty();
-      deElevateQty();
+      highlightQtyLabel(false);
     }
   }
 
@@ -177,8 +167,8 @@ class CartItemViewModel extends QuoteViewModel {
         0;
 
     await onUpdateQuote(
-        cartIndex,
-        suggestedIndex,
+        cardIndex,
+        0,
         double.tryParse(
             textEditingController
                 .text) ??
@@ -187,13 +177,12 @@ class CartItemViewModel extends QuoteViewModel {
   }
 
   areaLostFocus() async {
+    print('areaLostFocus metodo...');
     if (!quote.isCalculatingTotals) {
-      deactivateCalculator();
-      textEditingController.text = quote.detail![cartIndex]
-          .productsSuggested![suggestedIndex].quantity!
-          .toString();
-      await setCalculateVisibility(false);
+      textEditingController.text = product.quantity!.toString();
     }
+    deactivateCalculator();
+    await setCalculateVisibility(false);
   }
 
   setCalculateVisibility(bool isVisible) async {
@@ -209,20 +198,29 @@ class CartItemViewModel extends QuoteViewModel {
     _focusNodeButton.requestFocus();
   }
 
+  Future<void> loadingProductTotals() async {
+    product.isCalculatingProductTotals = !product.isCalculatingProductTotals;
+    return notifyListeners();
+  }
+
   Future<void> onUpdateQuote(int i, int b, double quantity) async {
-    loadingAll(i);
-    setQuantity(i, b, quantity);
+    loadingProductTotals();
+    loadingTotals();
+    //setQuantity(i, b, quantity);
     calculateTotals();
     return Future.delayed(const Duration(milliseconds: 0), () async {
       await updateQuote(quote);
+      return loadingProductTotals();
     });
   }
 
   Future<void> onSelectedSku(bool value, int i, int b) async {
-    loadingAll(i);
-    quote.detail![i].productsSuggested![b].selected = value;
+    loadingProductTotals();
+    product.selected = value;
+    loadingTotals();
     calculateTotals();
     await updateQuote(quote);
+    loadingProductTotals();
     return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
         productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
@@ -240,41 +238,34 @@ class CartItemViewModel extends QuoteViewModel {
   }
 
   Future<void> addOne() async {
-    elevateQty();
-    textEditingController.text = (double.parse(textEditingController.text) + 1).toString();
+    highlightQtyLabel(true);
+    product.quantity = product.quantity! + 1;
+    textEditingController.text = product.quantity!.toString();
     return notifyListeners();
   }
 
   Future<void> removeOne() async {
-    if(quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity! > 1) {
-      elevateQty();
-      textEditingController.text = (double.parse(textEditingController.text) - 1).toString();
+    if(product.quantity! > 1) {
+      highlightQtyLabel(true);
+      product.quantity = product.quantity! - 1;
+      textEditingController.text = product.quantity!.toString();
       return notifyListeners();
     }
   }
 
   Future<void> saveQty () async {
-    if(quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity != double.parse(textEditingController.text)) {
-      loadingAll(cartIndex);
-      quote.detail![cartIndex].productsSuggested![suggestedIndex].quantity =
-          double.parse(textEditingController.text);
-      calculateTotals();
-      return Future.delayed(const Duration(milliseconds: 0), () async {
-        await updateQuote(quote);
-      });
-    }
+    await loadingProductTotals();
+    loadingTotals();
+    calculateTotals();
+    return Future.delayed(const Duration(milliseconds: 0), () async {
+      await updateQuote(quote);
+      return loadingProductTotals();
+    });
   }
 
-  Future<void> elevateQty() async {
-    isQtyLabelElevated = true;
+  Future<void> highlightQtyLabel(bool value) async {
+    product.isQtyLabelHighlight = value;
     return notifyListeners();
   }
-
-  Future<void> deElevateQty() async {
-    isQtyLabelElevated = false;
-    return notifyListeners();
-  }
-
-
 
 }

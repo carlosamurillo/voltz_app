@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../cart/product_model.dart';
 
 class QuoteModel {
   int? version = 2;
   String? id;
   int? consecutive;
-  String? customerId;
   String? alias;
   Timestamp? createdAt;
   Timestamp? publishedAt;
@@ -25,7 +25,6 @@ class QuoteModel {
       {this.version,
         this.id,
         this.consecutive,
-        this.customerId,
         this.alias,
         this.createdAt,
         this.publishedAt,
@@ -43,7 +42,6 @@ class QuoteModel {
     version = json['version'];
     id = docId;
     consecutive = json['consecutive'];
-    customerId = json['customer_id'];
     alias = json['alias'];
     createdAt = json['created_at'];
     if (json.containsKey('published_at')) {
@@ -87,7 +85,6 @@ class QuoteModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['version'] = this.version;
     data['consecutive'] = this.consecutive;
-    data['customer_id'] = this.customerId;
     data['alias'] = this.alias;
     data['created_at'] = this.createdAt;
     if (this.publishedAt != null) {
@@ -230,10 +227,8 @@ class Total {
 class ProductsSuggested {
   String? productId;
   String? sku;
-  String? supplier;
   String? skuDescription;
   String? brand;
-  String? subBrand;
   String? techFile;
   double? quantity;
   double? saleValue;
@@ -244,17 +239,21 @@ class ProductsSuggested {
   Price? price = Price();
   Total? total = Total();
   String? source;
+
+  /** these are for local propose **/
   bool isCardExpanded = false;
-  bool isCalculatorActive = false;
+  bool isCalculatingProductTotals = false;
+  bool isQtyLabelHighlight = false;
   double? discountRate;
+
+  final FocusNode focusAdd = FocusNode();
+  final FocusNode focusRemove = FocusNode();
 
   ProductsSuggested(
       {this.productId,
         this.sku,
-        this.supplier,
         this.skuDescription,
         this.brand,
-        this.subBrand,
         this.quantity = 0,
         this.saleValue,
         this.saleUnit,
@@ -264,16 +263,14 @@ class ProductsSuggested {
       this.price,
       this.total,
       this.source, this.isCardExpanded = false,
-        this.isCalculatorActive = false,
+        this.isCalculatingProductTotals = false,
       this.discountRate});
 
   ProductsSuggested.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'];
     sku = json['sku'];
-    supplier = json['supplier'];
     skuDescription = json['sku_description'];
     brand = json['brand'];
-    subBrand = null;
     techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
     quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
@@ -284,7 +281,6 @@ class ProductsSuggested {
     if (json.containsKey('price')){
       price = Price.fromJson(json['price']);
     }
-    print(json['total']);
     if (json.containsKey('total') && json['total'] != null){
       total = Total.fromJson(json['total']);
     }
@@ -300,10 +296,8 @@ class ProductsSuggested {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['product_id'] = this.productId;
     data['sku'] = this.sku;
-    data['supplier'] = this.supplier;
     data['sku_description'] = this.skuDescription;
     data['brand'] = this.brand;
-    data['sub_brand'] = this.subBrand;
     data['tech_file'] = this.techFile;
     data['quantity'] = this.quantity;
     data['sale_value'] = this.saleValue;
@@ -397,8 +391,10 @@ class Shipping {
 class Customer {
   String? id;
   String? category;
+  String? full_name;
+  String? company_name;
 
-  Customer({this.id, this.category,});
+  Customer({this.id, this.category, this.full_name, this.company_name});
 
   Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];

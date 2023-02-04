@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -25,7 +26,6 @@ class CartView extends StatefulWidget {
 }
 
 class _CartViewState extends State<CartView> {
-  late QuoteViewModel model;
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,8 @@ class _CartViewState extends State<CartView> {
         return MediaQuery.of(context).size.width >= 480 ? Scaffold(
             backgroundColor: CustomColors.grayBackground_2,
             body: Container(
-              padding: EdgeInsets.all(0),
+              color: CustomColors.WBY,
+              padding: const EdgeInsets.all(0),
               child: Column(
                 children: [
                   Header(),
@@ -50,8 +51,311 @@ class _CartViewState extends State<CartView> {
             )
         ) : MobileView();
       },
-      onModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
-      fireOnModelReadyOnce: true,
+      onViewModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
+      fireOnViewModelReadyOnce: true,
+    );
+  }
+}
+
+
+class Resume extends StackedHookView<QuoteViewModel> {
+  Resume({Key? key}) : super(key: key, reactive: true);
+  final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+
+  @override
+  Widget builder(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
+    return Builder(
+      builder: (BuildContext context) {
+        if ( viewModel.quote.detail != null) {
+          return Container(
+              color: CustomColors.safeBlue,
+              width: 310,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: 310.0,
+                          padding: const EdgeInsets.only(top: 25.0, right: 35.0, bottom: 25.0, left: 35.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Realiza tu pedido ya',
+                                style: GoogleFonts.inter(
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 42.0,
+                                  color: CustomColors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 35,),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'Productos',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SelectableText(
+                                    viewModel.selectedProducts.length.toString(),
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18,),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'Subtotal',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SelectableText(
+                                    currencyFormat.format(viewModel.quote.totals!.subTotal! - viewModel.quote.totals!.discount!),
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18,),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'Dcto. adicional',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14.0,
+                                      color: CustomColors.yellowVoltz,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SelectableText(
+                                    '-${currencyFormat.format(viewModel.quote.totals!.discount!)}',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.yellowVoltz,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18,),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'IVA (16%)',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  SelectableText(
+                                    currencyFormat.format(viewModel.quote.totals!.tax),
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 18,),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    'Envio',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 14.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  if (viewModel.quote.shipping == null ||
+                                      viewModel.quote.shipping!.total == 0)...[
+                                    SelectableText('Gratis',
+                                      style: GoogleFonts.inter(
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16.0,
+                                        color: CustomColors.white,
+                                      ),
+                                    ),
+                                  ] else
+                                    ...[
+                                      SelectableText(currencyFormat.format(
+                                          viewModel.quote.shipping!.total),
+                                        style: GoogleFonts.inter(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16.0,
+                                          color: CustomColors.white,
+                                        ),
+                                      ),
+                                    ]
+                                ],
+                              ),
+                              const SizedBox(height: 8,),
+                            ],
+                          )
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 310,
+                        padding: const EdgeInsets.all(25),
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SelectableText(
+                                  '${currencyFormat.format(viewModel.quote.totals!.total)} MXN',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 5,),
+                                Text(
+                                  'total',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                Container(
+                                    width: 250,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(200),),
+                                      color: CustomColors.energyYellow,
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: const BorderRadius.all(Radius.circular(200)),
+                                        hoverColor: CustomColors.energyYellowHover,
+                                        onTap: (){
+                                          _Dialogs dialog = _Dialogs();
+                                          dialog.showAlertDialog(
+                                            context,
+                                                () async {viewModel.onGenerateOrder(context);},
+                                            viewModel.createConfirmMessage(),
+                                            viewModel.quote.id!,
+                                          );
+                                        },
+                                        child: Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                          alignment: Alignment.center,
+                                          child:  Row(
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text('Hacer pedido', textAlign: TextAlign.center , style: CustomStyles.styleVolcanic16600,),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.lock,
+                                  size: 16,
+                                  color: CustomColors.white,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Transacción segura',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ),
+                    ],
+                  ),
+                ],
+              )
+          );
+        } else {
+          return Container(color: CustomColors.safeBlue);
+        }
+      },
     );
   }
 
@@ -65,22 +369,107 @@ class _Container extends StatelessWidget {
       ) {
     return Expanded(
       child: Container(
-          constraints: const BoxConstraints(minWidth: 860, maxWidth: 1800),
-          decoration: BoxDecoration(
-            border: Border.all(color: CustomColors.muggleGray, width: 1),
-            color: Colors.white,
-          ),
-          margin: const EdgeInsets.only(bottom: 0, top: 30, left: 24, right: 24),
+          constraints: const BoxConstraints(minWidth: 412,),
           width: double.infinity,
-          child: Column(
+          color: CustomColors.WBY,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(child: CartGrid(),),
+              const Spacer(),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 25,),
+                  const CustomerInfo(),
+                  const SizedBox(height: 25,),
+                  const CardGrid(),
+                ],
+              ),
+              const Spacer(),
+
+              Resume(),
+
               // Spacer(),
-              _CartTotals(),
+              //_CartTotals(),
             ],
           ),
       ),
     );
+  }
+}
+
+class CustomerInfo extends StackedHookView<QuoteViewModel> {
+  const CustomerInfo({Key? key,}) : super(key: key, reactive: true);
+
+  @override
+  Widget builder(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
+    if(model.quote.customer != null){
+      return Container(
+          padding: const EdgeInsets.all(25),
+          child: Row (
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Row(
+                    children: [
+                      SelectableText(
+                        model.quote.alias!,
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 42.0,
+                          color: CustomColors.darkVoltz,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.perm_identity, size: 24),
+                      const SizedBox(width: 9,),
+                      SelectableText(
+                        "NOMBRE DE LA PERSONA",
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.0,
+                          color: CustomColors.darkVoltz,
+                        ),
+                      ),
+                      const SizedBox(width: 18,),
+                      const Icon(Icons.business, size: 24),
+                      const SizedBox(width: 9,),
+                      SelectableText(
+                        "NOMBRE DE LA EMPRESA",
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14.0,
+                          color: CustomColors.darkVoltz,
+                        ),
+                      ),
+                    ],
+                  )
+
+                ],
+              )
+            ],
+          )
+      );
+    }
+    else {
+      return Container();
+    }
   }
 }
 
@@ -130,13 +519,12 @@ class ComebackLater extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 40),
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 50),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         color: const Color(0xFFFBE597).withOpacity(0.5),
       ),
-      width: double.infinity,
+      width: 362,
       child: Row(
         children: [
           Image.asset(
@@ -177,12 +565,12 @@ class ComebackLater extends StatelessWidget {
   }
 }
 
-class _CartTotals extends HookViewModelWidget<QuoteViewModel> {
+class _CartTotals extends StackedHookView<QuoteViewModel> {
   _CartTotals({Key? key,}) : super(key: key, reactive: true);
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -310,5 +698,41 @@ class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
           ),
         ),
       );
+  }
+}
+
+
+class _Dialogs {
+
+  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const SelectableText("Hacer pedido"),
+          titleTextStyle:
+          TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,fontSize: 20),
+          actionsOverflowButtonSpacing: 20,
+          actions: [
+            ElevatedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancelar")
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  onConfirm();
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Confirmar")),
+          ],
+          content: SelectableText(message),
+        );
+      },
+    );
   }
 }

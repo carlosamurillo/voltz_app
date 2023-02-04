@@ -17,6 +17,7 @@ import '../utils/shimmer.dart';
 import '../utils/style.dart';
 import 'cart_item_viewmodel.dart';
 import 'cart_view.dart';
+/*
 
 class CartList extends HookViewModelWidget<QuoteViewModel> {
   const CartList({Key? key}) : super(key: key, reactive: true);
@@ -43,9 +44,11 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
               itemCount: viewModel.quote.detail!.length + 1,
               itemBuilder: (context, index) {
                 if (index < viewModel.quote.detail!.length) {
-                 /* return CartItemView(
+                 */
+/* return CartItemView(
                     i: index,
-                  );*/
+                  );*//*
+
                   return ProductCard(
                     i: index,
                   );
@@ -90,7 +93,7 @@ class _CartItemState extends State<CartItemView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CartItemViewModel>.nonReactive(
         viewModelBuilder: () => CartItemViewModel(),
-        onModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i),
+        //onModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i, productSuggested: ),
         fireOnModelReadyOnce: false,
         disposeViewModel: true,
         builder: (context, viewModel, child) {
@@ -481,7 +484,8 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
               ),
             ),
           ),
-          /*Container(
+          */
+/*Container(
               width: 300,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6),),
@@ -517,7 +521,9 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                   ),
                 ),
               )
-          ),*/
+          ),*//*
+
         ]));
   }
 }
+*/

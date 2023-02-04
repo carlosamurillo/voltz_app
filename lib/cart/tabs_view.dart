@@ -265,7 +265,7 @@ class __TabsContentState extends State<TabsContent> {
         controller: widget.tabController,
         dragStartBehavior: DragStartBehavior.start,
         children: [
-          CartGrid(),
+          CardGrid(),
           BacklogView(),
           DiscardView(),
         ]);

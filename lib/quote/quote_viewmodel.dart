@@ -13,6 +13,7 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
 import '../cart/product_model.dart';
+import '../products/product_viewmodel.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
@@ -20,8 +21,9 @@ import '../utils/stats.dart';
 class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();
   final NavigationService _navigationService = locator<NavigationService>();
+
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_quoteService,];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
 
   bool updateGrid = true;
 
@@ -36,12 +38,12 @@ class QuoteViewModel  extends ReactiveViewModel  {
   late DocumentSnapshot postByUser;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
-  Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
+  //Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
+  //Stream<ProductsSuggested> get productsSuggestedStream => _quoteService.stream;
 
   @override
   void dispose() {
     // Optional teardown:
-    _quoteService.controllerStream.close();
     super.dispose();
   }
 
@@ -160,7 +162,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   void loadingAll (int productIndex) {
-    _quoteService.loadingAll(productIndex);
+    _quoteService.loadingAll();
   }
 
   void loadingTotals () {
@@ -183,47 +185,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     });
   }
 
-  @deprecated
-  OrderModel.OrderModel _generateOrder(){
-    List<OrderModel.OrderDetail> orderDetailList = [];
-    for(int i = 0; i <= quote.detail!.length - 1; i++) {
-      OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();
-      orderDetail.productRequested =  quote.detail![i].productRequested!;
-      orderDetail.productsOrdered = [];
-      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
-        if(quote.detail![i].productsSuggested![b].selected == true) {
-          orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
-            productId: quote.detail![i].productsSuggested![b].productId,
-            sku: quote.detail![i].productsSuggested![b].sku,
-            supplier: quote.detail![i].productsSuggested![b].supplier,
-            skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
-            brand: quote.detail![i].productsSuggested![b].brand,
-            //subBrand: quote.detail![i].productsSuggested![b].subBrand,
-            quantity: quote.detail![i].productsSuggested![b].quantity,
-            saleValue: quote.detail![i].productsSuggested![b].saleValue,
-            saleUnit: quote.detail![i].productsSuggested![b].saleUnit,
-            //salePrice: quote.detail![i].productsSuggested![b].salePrice,
-          ));
-        }
-      }
-      if(orderDetail.productsOrdered!.isNotEmpty){
-        orderDetailList.add(orderDetail);
-      }
-    }
-    if(quote.shipping != null){
-
-    }
-
-    OrderModel.OrderModel orderModel = OrderModel.OrderModel(
-      customerId: quote.customerId,
-      consecutive: 0,
-      alias: quote.alias,
-      detail: orderDetailList,
-      shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
-    );
-    return orderModel;
-  }
-
   OrderModel.OrderModel _generateOrderV2(){
     List<OrderModel.OrderDetail> orderDetailList = [];
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
@@ -235,7 +196,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
           orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
             productId: quote.detail![i].productsSuggested![b].productId,
             sku: quote.detail![i].productsSuggested![b].sku,
-            supplier: quote.detail![i].productsSuggested![b].supplier,
             skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
             brand: quote.detail![i].productsSuggested![b].brand,
             coverImage: quote.detail![i].productsSuggested![b].coverImage,

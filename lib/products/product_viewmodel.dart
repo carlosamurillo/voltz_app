@@ -10,8 +10,9 @@ import 'dart:js' as js;
 class ProductViewModel  extends ReactiveViewModel  {
   final _productsService = ProductsService();
   final NavigationService _navigationService = locator<NavigationService>();
+
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_productsService];
+  List<ListenableServiceMixin> get listenableServices => [_productsService];
 
   Product get product => _productsService.product;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");

@@ -7,32 +7,33 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-
 import '../products/product_viewmodel.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/inputText.dart';
 import '../utils/shimmer.dart';
+import 'cart_expandible_viewmodel.dart';
 import 'cart_item_viewmodel.dart';
-import 'cart_view.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter/material.dart';
 
-
-class CartGrid extends HookViewModelWidget<QuoteViewModel> {
-  const CartGrid({Key? key}) : super(key: key, reactive: false);
-
+class CardGrid extends StatelessWidget {
+  const CardGrid({Key? key}) : super(key: key,);
+/*
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
-      QuoteViewModel viewModel,
+      CardViewModel viewModel,
       ) {
     var media = MediaQuery.of(context).size;
-    return StreamBuilder<List<ProductsSuggested>>(
-        stream: viewModel.productsSuggestedStream,
-        builder: (BuildContext context, AsyncSnapshot<List<ProductsSuggested>> snapshot) {
+    print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+    return StreamBuilder<ProductsSuggested>(
+        stream: viewModel.stream,
+        builder: (BuildContext context, AsyncSnapshot<ProductsSuggested> snapshot) {
           if(!snapshot.hasData) {
             return const Center(
               child: SizedBox(
@@ -51,46 +52,126 @@ class CartGrid extends HookViewModelWidget<QuoteViewModel> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
+                padding: const EdgeInsets.only(right: 25, left: 25),
                 height: double.infinity,
-                width: media.width > 900 && media.width <= 1300 ? 749 : (media.width > 1300 ? 1136 : 362),
-                child: MasonryGridView.count(
+                width: ((media.width - 310 - 25) / 387).truncateToDouble() * (387) + 25,
+                //width: media.width > 900 && media.width <= 1300 ? 799 : (media.width > 1300 && media.width <= 1800 ? 1186 : media.width > 1800 ? 1573 : 412),
+                *//*child: MasonryGridView.count(
                     physics: const BouncingScrollPhysics(),
                     //itemCount: viewModel.updateGrid ?(viewModel.quote.detail!.length > 3 ? 3 : viewModel.quote.detail!.length + 1): viewModel.quote.detail!.length,
                     //viewModel.quote.detail!.length + 1,
-                    itemCount: snapshot.data!.length +1,
+                    itemCount: viewModel.countProducts,
                     mainAxisSpacing: 25,
                     crossAxisSpacing: 25,
                     itemBuilder: (context, index) {
-                      if (index < snapshot.data!.length) {
+                      if (index < viewModel.countProducts) {
                         return ProductCard(
-                          i: index,
+                          i: index, productSuggested: snapshot.data!,
                         );
-                      } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
-                        return ComebackLater(
-                          totalProducts: viewModel.quote.pendingProducts!.length,
-                        );
+                      } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
+                        return const PendingCard();
                       } else {
                         return Container();
                       }
-                    }, crossAxisCount: media.width > 900 && media.width <= 1300 ? 2 : (media.width > 1300 ? 3 : 1)
+                    },
+                  crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
+                  //crossAxisCount: media.width > 900 && media.width <= 1300 ? 2 : media.width > 1300 && media.width <= 1800 ? 3 : media.width > 1800 ? 4  : 1,
+                ),*//*
+                child: CustomScrollView(
+                  slivers: [
+                    SliverMasonryGrid.extent(
+                      maxCrossAxisExtent: 362,
+                      mainAxisSpacing: 25,
+                      crossAxisSpacing: 25,
+                      itemBuilder: (context, index) {
+                        if (index < viewModel.productList.length) {
+                          return ProductCard(
+                            i: index, productSuggested: viewModel.productList.elementAt(index),
+                          );
+                        } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
+                          return const PendingCard();
+                        } else {
+                          return Container();
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ],
           );
         });
+  }*/
+  
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<GridViewModel>.reactive(
+      builder: (context, viewModel, child) {
+        if(viewModel.productList.isEmpty) {
+          return const Center(
+            child: SizedBox(
+              width: 30,
+              height: 30,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+        html.window.history.pushState(
+            null,
+            'Voltz - Cotización ${viewModel.quote.consecutive}',
+            '?cotz=${viewModel.quote.id!}');
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize:  MainAxisSize.min,
+          children: [
+            Flexible(
+              fit: FlexFit.loose,
+              child: Container(
+                padding: const EdgeInsets.only(right: 25, left: 25),
+                //height: double.infinity,
+                //width: double.infinity,
+                child: CustomScrollView(
+                  slivers: <Widget> [
+                    SilverPadding(
+                      padding: const EdgeInsets.only(right: 25, left: 25),
+                      silver: SliverMasonryGrid.extent(
+                        maxCrossAxisExtent: 362,
+                        mainAxisSpacing: 25,
+                        crossAxisSpacing: 25,
+                        itemBuilder: (context, index) {
+                          if (index < viewModel.productList.length) {
+                            return ProductCard(
+                              i: index, productSuggested: viewModel.productList.elementAt(index),
+                            );
+                          } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
+                            return const PendingCard();
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        );
+      },
+      viewModelBuilder: () => GridViewModel(),
+    );
   }
 }
 
-
-
-
 class ProductCard extends StatefulWidget {
-  ProductCard({
+  const ProductCard({
     Key? key,
-    required this.i,
+    required this.i, required this.productSuggested
   }) : super(key: key);
-  int i;
-
+  final int i;
+  final ProductsSuggested productSuggested;
   @override
   _ProductCard createState() => _ProductCard();
 }
@@ -99,11 +180,12 @@ class _ProductCard extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CartItemViewModel>.reactive(
-        viewModelBuilder: () => CartItemViewModel(),
-        onModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i),
-        fireOnModelReadyOnce: true,
+    return ViewModelBuilder<CardItemViewModel>.reactive(
+        viewModelBuilder: () => CardItemViewModel(),
+        onViewModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i, productSuggested: widget.productSuggested),
+        fireOnViewModelReadyOnce: false,
         disposeViewModel: true,
+        createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,12 +239,14 @@ class _ProductCard extends State<ProductCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
                                     const SizedBox(width: 5,),
                                     SelectableText(
                                       viewModel.product.brand!,
+                                      maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w700,
@@ -175,10 +259,12 @@ class _ProductCard extends State<ProductCard> {
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SelectableText(
                                       viewModel.product.sku!,
+                                      maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
@@ -191,10 +277,12 @@ class _ProductCard extends State<ProductCard> {
                                 ),
                                 const Spacer(),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SelectableText(
                                       viewModel.currencyFormat.format(viewModel.product.pricePublic!),
+                                      maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
@@ -210,6 +298,8 @@ class _ProductCard extends State<ProductCard> {
                                       color: CustomColors.yellowVoltz,
                                       child: SelectableText(
                                         "${(viewModel.product.discountRate!).toStringAsFixed(2)}%" ,
+                                        enableInteractiveSelection: false,
+                                        maxLines: 1,
                                         style: GoogleFonts.inter(
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w500,
@@ -223,13 +313,14 @@ class _ProductCard extends State<ProductCard> {
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Shimmer(
                                       linearGradient: viewModel.shimmerGradientWhiteBackground,
                                       child: ShimmerLoading(
                                         isLoading:
-                                        viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals,
+                                        viewModel.product.isCalculatingProductTotals,
                                         shimmerEmptyBox: const ShimmerEmptyBox(
                                           width: 160,
                                           height: 21,
@@ -237,7 +328,8 @@ class _ProductCard extends State<ProductCard> {
                                         child: Row(
                                           children: [
                                             SelectableText(
-                                              viewModel.currencyFormat.format(viewModel.quote.detail![viewModel.cartIndex].productsSuggested![viewModel.suggestedIndex].price!.price2!),
+                                              viewModel.currencyFormat.format(viewModel.product.price!.price2!),
+                                              maxLines: 1,
                                               style: GoogleFonts.inter(
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w500,
@@ -249,6 +341,7 @@ class _ProductCard extends State<ProductCard> {
                                             const SizedBox(width: 5,),
                                             SelectableText(
                                               viewModel.product.saleUnit!,
+                                              maxLines: 1,
                                               style: GoogleFonts.inter(
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w400,
@@ -265,7 +358,8 @@ class _ProductCard extends State<ProductCard> {
                                 ),
                                 const SizedBox(height: 5,),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SvgPicture.asset(
                                       'assets/svg/copa_icon.svg',
@@ -275,11 +369,13 @@ class _ProductCard extends State<ProductCard> {
                                     const SizedBox(width: 5,),
                                     SelectableText(
                                       "Precio según cantidad",
+                                      maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12.0,
                                         color: CustomColors.darkVoltz,
+                                        height: 1.1,
                                       ),
                                     ),
                                   ],
@@ -311,10 +407,10 @@ class _ProductCard extends State<ProductCard> {
                     color: Color(0xFFD9E0FC),
                   ),
                 ],
-                if(viewModel.isCardExpanded)...[
+                if(viewModel.product.isCardExpanded)...[
                   ProductDetail(productId: viewModel.product.productId!),
                 ],
-                const _QuantityCalculatorWidget(),
+                 _QuantityCalculatorWidget(viewModel: viewModel,),
               ],
             ),
         ),
@@ -323,7 +419,7 @@ class _ProductCard extends State<ProductCard> {
         });
   }
 
-  Widget getHeader(BuildContext context, CartItemViewModel viewModel){
+  Widget getHeader(BuildContext context, CardItemViewModel viewModel){
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -372,7 +468,7 @@ class _ProductCard extends State<ProductCard> {
                     ),
                     const Spacer(),
                     Container(
-                      child: viewModel.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: viewModel.product.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
                 )
@@ -402,15 +498,29 @@ class _ProductDetail extends State<ProductDetail> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(),
-        onModelReady: (viewModel) => viewModel.init(widget.productId),
-        fireOnModelReadyOnce: true,
+        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
+        fireOnViewModelReadyOnce: true,
         disposeViewModel: true,
+        createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
     if(viewModel.product.techFile!=null || viewModel.product.imageUrls != null || viewModel.product.features != null ||
     viewModel.product.makerWeb != null) {
       return getExpandedContent(context, viewModel);
     } else {
-      return Container();
+      return Container(
+        width: 362.0,
+        padding: const EdgeInsets.all(25.0),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF8FAFF),
+        ),
+        child: const Center(
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: CircularProgressIndicator(),
+          ),
+        )
+      );
     }
         });
   }
@@ -698,13 +808,13 @@ class _ProductDetail extends State<ProductDetail> {
 }
 
 
-class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
-  const _QuantityCalculatorWidget({Key? key,}) : super(key: key, reactive: true);
+class _QuantityCalculatorWidget extends StatelessWidget{
+  final CardItemViewModel viewModel;
+  const _QuantityCalculatorWidget({Key? key, required this.viewModel }) : super(key: key,);
 
   @override
-  Widget buildViewModelWidget(
-      BuildContext context,
-      CartItemViewModel viewModel,
+  Widget build(
+      BuildContext context
       ) {
     return Container(
         decoration: const BoxDecoration(
@@ -723,8 +833,8 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
               //print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
               print('--------------------------------------');
               //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.parent!.hasPrimaryFocus}');
-              print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
-              print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
+              print('FocusScope: Add has Focus:  ${viewModel.product.focusAdd.hasFocus}');
+              print('FocusScope: Add has Primary Focus:  ${viewModel.product.focusAdd.hasPrimaryFocus}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -738,7 +848,7 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                   ),
                   child: Row(
                     children: [
-                      if(!viewModel.product.isCalculatorActive)...[
+                      if(!viewModel.isCalculatorActive)...[
                         Container(
                             height: 60,
                             width: 50,
@@ -750,23 +860,23 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                             ),
                             alignment: Alignment.center,
                             child: TextFieldTapRegion(
-                              onTapOutside: (value) => viewModel.focusRemove.unfocus(),
-                              onTapInside: (value) => viewModel.focusRemove.requestFocus(),
+                              onTapOutside: (value) => viewModel.unFocusRemove(),
+                              onTapInside: (value) => viewModel.requestFocusRemove(),
                               child: IconButton(
-                                focusNode: viewModel.focusRemove,
+                                focusNode: viewModel.product.focusRemove,
                                 mouseCursor: SystemMouseCursors.click,
                                 style: null,
                                 icon: const Icon(Icons.remove, size: 24,),
                                 onPressed: () => viewModel.removeOne(),
                               ),
-                            )
+                            ),
                         ),
                         MouseRegion(
                           cursor: SystemMouseCursors.text,
                           child: GestureDetector(
                               onTap: () => viewModel.activateCalculator(),
                               child: Material(
-                                elevation: viewModel.isQtyLabelElevated ? 2 : 0,
+                                elevation: viewModel.product.isQtyLabelHighlight ? 2 : 0,
                                 color: Color(0xFFE4E9FC),
                                 child: Container(
                                   height: 60,
@@ -782,7 +892,8 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 22.0,
-                                            color: CustomColors.darkVoltz
+                                            color: CustomColors.darkVoltz,
+                                          height: 1.2,
                                         ),
                                       ),
                                       Text(
@@ -791,7 +902,8 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w400,
                                             fontSize: 12.0,
-                                            color: CustomColors.darkVoltz
+                                            color: CustomColors.darkVoltz,
+                                          height: 1.2,
                                         ),
                                       ),
                                     ],
@@ -811,10 +923,10 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                           ),
                           alignment: Alignment.center,
                           child: TextFieldTapRegion(
-                            onTapOutside: (value) => viewModel.focusAdd.unfocus(),
-                            onTapInside: (value) => viewModel.focusAdd.requestFocus(),
+                            onTapOutside: (value) => viewModel.unFocusAdd(),
+                            onTapInside: (value) => viewModel.requestFocusAdd(),
                             child: IconButton(
-                              focusNode: viewModel.focusAdd,
+                              focusNode: viewModel.product.focusAdd,
                               mouseCursor: SystemMouseCursors.click,
                               style: null,
                               icon: const Icon(Icons.add, size: 24,),
@@ -956,20 +1068,18 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                 linearGradient: viewModel.shimmerGradientWhiteBackground,
                 child: ShimmerLoading(
                   isLoading:
-                  viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals,
+                  viewModel.product.isCalculatingProductTotals,
                   shimmerEmptyBox: const ShimmerEmptyBox(
                     width: 180,
                     height: 28,
                   ),
                   child: Row(
                     children: [
-                      viewModel.quote.detail![viewModel.cartIndex].isCalculatingProductTotals
+                      viewModel.product.isCalculatingProductTotals
                           ? Container()
                           : SelectableText(
                         viewModel.currencyFormat.format(viewModel
-                            .quote
-                            .detail![viewModel.cartIndex]
-                            .productsSuggested![viewModel.suggestedIndex]
+                            .product
                             .total!
                             .afterDiscount ??
                             ''),
@@ -978,6 +1088,7 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                           fontWeight: FontWeight.w700,
                           fontSize: 22.0,
                           color: CustomColors.darkVoltz,
+                          height: 1.2,
                         ),
                         textAlign: TextAlign.left,
                         //overflow: TextOverflow.clip,
@@ -989,6 +1100,7 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,
                           color: CustomColors.darkVoltz,
+                          height: 1.2,
                         ),
                       ),
                     ],
@@ -1057,7 +1169,7 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                     child: GestureDetector(
                       onTap: () async {
                         await viewModel.onDeleteSku(
-                            viewModel.quote.detail![viewModel.cartIndex]);
+                            viewModel.quote.detail![viewModel.cardIndex]);
                         return viewModel.notifyListeners();
                       },
                       child: Text(
@@ -1079,5 +1191,120 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
   }
 }
 
+class PendingCard extends StackedHookView<QuoteViewModel> {
+  const PendingCard({Key? key}) : super(key: key, reactive: false);
 
-
+  @override
+  Widget builder(
+      BuildContext context,
+      QuoteViewModel viewModel,
+      ) {
+    var media = MediaQuery.of(context).size;
+    return Container(
+        decoration: const BoxDecoration(
+          color: CustomColors.darkVoltz,
+          borderRadius: BorderRadius.all(Radius.circular(6.0)),
+        ),
+        width: 362.0,
+       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 362.0,
+            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/assistant_icon.png',
+                  width: 62.0,
+                  height: 62.0,
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 32.0,
+                          color: Colors.white,
+                          height: 1.1,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child:Text(
+                        "Estamos buscando el mejor precio y disponibilidad en cientos de proveedores",
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.0,
+                          color: Colors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 362.0,
+            padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
+            decoration: const BoxDecoration(
+              color: CustomColors.darkVoltz,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "¡Pronto los agregaremos a tu cotización!",
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14.0,
+                    color: CustomColors.yellowVoltz,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text(
+                    "${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12.0,
+                    color: CustomColors.white,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ],
+      )
+    );
+  }
+}

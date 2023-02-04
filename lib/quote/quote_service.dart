@@ -9,9 +9,11 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../app/app.locator.dart';
+import '../products/product_viewmodel.dart';
 import '../utils/stats.dart';
 
-class QuoteService with ReactiveServiceMixin {
+class QuoteService with ListenableServiceMixin {
+
   final NavigationService _navigationService = locator<NavigationService>();
   final RxValue<QuoteModel> _rxQuote = RxValue<QuoteModel>(QuoteModel());
   QuoteModel get quote => _rxQuote.value;
@@ -19,18 +21,15 @@ class QuoteService with ReactiveServiceMixin {
   final RxValue<List<ProductsSuggested>> _rxSelectedProducts = RxValue<List<ProductsSuggested>>([]);
   List<ProductsSuggested> get selectedProducts => _rxSelectedProducts.value;
 
-  StreamController<List<ProductsSuggested>> controllerStream = StreamController<List<ProductsSuggested>>();
-  Stream<List<ProductsSuggested>> get stream => controllerStream.stream;
-
   QuoteService() {
-    listenToReactiveValues([_rxQuote,]);
+    listenToReactiveValues([_rxQuote, _rxSelectedProducts]);
   }
   
   void init(String quoteId, String? version) async {
     _initReference(quoteId, version);
     _getQuote();
     await _listenChanges(version);
-    _updateTotals();
+    //_updateTotals();
   }
 
   late DocumentReference reference;
@@ -42,27 +41,66 @@ class QuoteService with ReactiveServiceMixin {
     }
   }
 
-  Future<void> _fillSelectedProductsList() async {
-    _rxSelectedProducts.value = [];
-    controllerStream.add([]);
-    quote.detail?.forEach((element) {
-      bool firstAdded = false;
-      element.productsSuggested?.forEach((element2) {
-        if (element2.selected == true && !firstAdded){
-          _rxSelectedProducts.value.add(element2);
-          firstAdded = true;
+  final StreamController<ProductsSuggested> _streamController = StreamController<ProductsSuggested>();
+// Creating a new stream through the controller
+  Stream<ProductsSuggested> get getStream => _streamController.stream;
+
+  streamProducts() async {
+    print('se llamo el servicio streamProducts');
+    //_rxSelectedProducts.value = [];
+    if(_rxQuote.value.detail != null && _rxQuote.value.detail!.isNotEmpty){
+      print('se llamo el servicio streamProducts .............. 2');
+      for(int i = 0; i < _rxQuote.value.detail!.length; i++){
+        print('se llamo el servicio streamProducts .............. 3');
+        bool firstAdded = false;
+        for(int e = 0; _rxQuote.value.detail![i].productsSuggested!.length > e; e++){
+          print('se llamo el servicio streamProducts .............. 4');
+          if (_rxQuote.value.detail![i].productsSuggested![e].selected == true && !firstAdded){
+            print('Se va a agregar prodcuto ..............>>>>>');
+            _rxSelectedProducts.value.add(_rxQuote.value.detail![i].productsSuggested![e]);
+            print('se anadira un producto desde el servicio');
+             _streamController.add(_rxQuote.value.detail![i].productsSuggested![e]);
+            print('se anadio un producto desde el servicio');
+            firstAdded = true;
+          }
         }
-      });
-    });
-    controllerStream.add(selectedProducts);
+      }
+    } else {
+      print('NEGATIVA servicio streamProducts .............. 2');
+    }
   }
+
+  /*Stream<ProductsSuggested> streamProducts() async* {
+    print('se llamo el servicio streamProducts');
+    //_rxSelectedProducts.value = [];
+    if(_rxQuote.value.detail != null && _rxQuote.value.detail!.isNotEmpty){
+      print('se llamo el servicio streamProducts .............. 2');
+      for(int i = 0; i < _rxQuote.value.detail!.length; i++){
+        print('se llamo el servicio streamProducts .............. 3');
+        bool firstAdded = false;
+        for(int e = 0; _rxQuote.value.detail![i].productsSuggested!.length > e; e++){
+          print('se llamo el servicio streamProducts .............. 4');
+          if (_rxQuote.value.detail![i].productsSuggested![e].selected == true && !firstAdded){
+            print('Se va a agregar prodcuto ..............>>>>>');
+            _rxSelectedProducts.value.add(_rxQuote.value.detail![i].productsSuggested![e]);
+            print('se anadira un producto desde el servicio');
+            yield _rxQuote.value.detail![i].productsSuggested![e];
+            print('se anadio un producto desde el servicio');
+            firstAdded = true;
+          }
+        }
+      }
+    } else {
+      print('NEGATIVA servicio streamProducts .............. 2');
+    }
+  }*/
 
   Future<void> _getQuote() async {
     DocumentSnapshot documentSnapshot = await reference.get();
     if (documentSnapshot.exists) {
       print('si existe data de quote, se guarda en primera consulta individual');
       _rxQuote.value = await _processQuote(documentSnapshot);
-      await _fillSelectedProductsList();
+      streamProducts();
     } else {
       _rxQuote.value = QuoteModel();
     }
@@ -71,6 +109,22 @@ class QuoteService with ReactiveServiceMixin {
   Future<void> _updateTotals() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
     await reference.update({'record.next_action': 'calculate_totals'});
+  }
+
+  _getCustomerDetail({required customerId}){
+
+  }
+
+  Future<Map<String, dynamic>> _getCustomerName({required id}) async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('profile-user').doc(id);
+    DocumentSnapshot res = await reference.get();
+    return res.data() as Map<String, dynamic>;
+  }
+
+  Future<Map<String, dynamic>> _getCompanyName({required id}) async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('company').doc(id);
+    DocumentSnapshot res = await reference.get();
+    return res.data() as Map<String, dynamic>;
   }
   
   Future<void> _listenChanges(String? version) async {
@@ -92,7 +146,7 @@ class QuoteService with ReactiveServiceMixin {
           print("Llego data nueva...");
           if (data.record != null && data.record!.nextAction == null) {
             _rxQuote.value = data;
-            await _fillSelectedProductsList();
+            streamProducts();
             notifyListeners();
             print("se actualiza la pantalla");
           }
@@ -114,22 +168,16 @@ class QuoteService with ReactiveServiceMixin {
     notifyListeners();
   }
 
-  void loadingAll(int productIndex){
+  void loadingAll(){
     quote.isCalculatingTotals = true;
-    quote.detail![productIndex].isCalculatingProductTotals = true;
     notifyListeners();
   }
 
   Future<void> resetCards() async {
     print('reset card');
     quote.detail!.forEach((element) {
-      element.productsSuggested!.forEach((element) {
-        element.isCardExpanded = false;
-      });
-    });
-    quote.detail!.forEach((element) {
-      element.productsSuggested!.forEach((element) {
-        print(element.isCardExpanded);
+      element.productsSuggested!.forEach((element2) {
+        element2.isCardExpanded = false;
       });
     });
     return notifyListeners();
