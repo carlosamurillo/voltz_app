@@ -51,12 +51,12 @@ class CardItemViewModel extends ReactiveViewModel {
   FocusNode get focusNodeInput => _focusNodeInput;
   FocusNode get focusNodeButton => _focusNodeButton;
 
-  final FocusNode _focusAdd = FocusNode();
+  /*final FocusNode _focusAdd = FocusNode();
   final FocusNode _focusRemove = FocusNode();
   FocusNode get focusAdd => _focusAdd;
-  FocusNode get focusRemove => _focusRemove;
+  FocusNode get focusRemove => _focusRemove;*/
   
-  void requestFocusAdd(int cardIndex){
+  /*void requestFocusAdd(int cardIndex){
     _focusAdd.requestFocus();
   }
   void unFocusAdd(int cardIndex){
@@ -85,7 +85,7 @@ class CardItemViewModel extends ReactiveViewModel {
       saveQty(cardIndex);
       await highlightQtyLabel(false, cardIndex);
     }
-  }
+  }*/
 
   void initCartView({required int cardIndex,}) {
     print('Se ejecuta initCardView de cart_item_viewmodel');
@@ -93,8 +93,8 @@ class CardItemViewModel extends ReactiveViewModel {
     selectedProducts[cardIndex].cardIndex = cardIndex;
     _focusNodeInput.addListener(() => _onFocusInputChange(cardIndex));
     _focusNodeButton.addListener(() => _onFocusButtonChange());
-    _focusAdd.addListener(() => _onFocusAddChange(cardIndex));
-    _focusRemove.addListener(() => _onFocusRemoveChange(cardIndex));
+    /*_focusAdd.addListener(() => _onFocusAddChange(cardIndex));
+    _focusRemove.addListener(() => _onFocusRemoveChange(cardIndex));*/
     textEditingController.text = selectedProducts[cardIndex].quantity!.toString();
 
     return notifyListeners();
@@ -198,7 +198,7 @@ class CardItemViewModel extends ReactiveViewModel {
     calculateTotals();
     return Future.delayed(const Duration(milliseconds: 0), () async {
       await _quoteService.updateQuote(quote);
-      return loadingProductTotals(cardIndex);
+      //return loadingProductTotals(cardIndex);
     });
   }
 

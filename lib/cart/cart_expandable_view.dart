@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
@@ -19,7 +18,8 @@ import '../utils/shimmer.dart';
 import 'cart_expandible_viewmodel.dart';
 import 'cart_item_viewmodel.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter/material.dart';
+
+import 'cart_view.dart';
 
 class CardGrid extends StatelessWidget {
   const CardGrid({Key? key}) : super(key: key,);
@@ -129,10 +129,19 @@ class CardGrid extends StatelessWidget {
           mainAxisSize:  MainAxisSize.min,
           children: [
             Container(
-              height: media.height - 80 - 182,
+              height: media.height - 80,
               width: (media.width - 310),
               child: CustomScrollView(
                 slivers: <Widget> [
+                  const SliverPadding(
+                    padding: EdgeInsets.only(top: 25, bottom: 25),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: CustomerInfo(),
+                  ),
+                  const SliverPadding(
+                    padding: EdgeInsets.only(top: 25, bottom: 25),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.only(right: 25, left: 25),
                     sliver: SliverMasonryGrid.count(
@@ -152,6 +161,9 @@ class CardGrid extends StatelessWidget {
                         }
                       }, crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
                     ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 25,),
                   ),
                 ],
               ),
@@ -179,13 +191,14 @@ class _ProductCard extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CardItemViewModel>.reactive(
+    return ViewModelBuilder<CardItemViewModel>.nonReactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(cardIndex: widget.i,),
         fireOnViewModelReadyOnce: false,
         //disposeViewModel: true,
         //createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
+          print('_ProductCard ... Se actualiza la vista ');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -879,8 +892,8 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
               //print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
               print('--------------------------------------');
               //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.parent!.hasPrimaryFocus}');
-              print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
-              print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
+              //print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
+              //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -905,16 +918,11 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               color: Colors.transparent,
                             ),
                             alignment: Alignment.center,
-                            child: TextFieldTapRegion(
-                              onTapOutside: (value) => viewModel.unFocusRemove(index),
-                              onTapInside: (value) => viewModel.requestFocusRemove(index),
-                              child: IconButton(
-                                focusNode: viewModel.focusRemove,
-                                mouseCursor: SystemMouseCursors.click,
-                                style: null,
-                                icon: const Icon(Icons.remove, size: 24,),
-                                onPressed: () => viewModel.activateCalculator(),
-                              ),
+                            child: IconButton(
+                              mouseCursor: SystemMouseCursors.click,
+                              style: null,
+                              icon: const Icon(Icons.remove, size: 24,),
+                              onPressed: () => viewModel.activateCalculator(),
                             ),
                         ),
                         if(viewModel.isQtyLabelHighlight)...[
@@ -973,17 +981,12 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             color: Colors.transparent,
                           ),
                           alignment: Alignment.center,
-                          child: TextFieldTapRegion(
-                            onTapOutside: (value) => viewModel.unFocusAdd(index),
-                            onTapInside: (value) => viewModel.requestFocusAdd(index),
-                            child: IconButton(
-                              focusNode: viewModel.focusAdd,
-                              mouseCursor: SystemMouseCursors.click,
-                              style: null,
-                              icon: const Icon(Icons.add, size: 24,),
-                              onPressed: () => viewModel.activateCalculator(),
-                            ),
-                          )
+                          child:  IconButton(
+                            mouseCursor: SystemMouseCursors.click,
+                            style: null,
+                            icon: const Icon(Icons.add, size: 24,),
+                            onPressed: () => viewModel.activateCalculator(),
+                          ),
                         ),
                       ] else ... [
                         Container(

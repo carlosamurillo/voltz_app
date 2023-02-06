@@ -380,9 +380,9 @@ class _Container extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 25,),
+                  /*const SizedBox(height: 25,),
                   const CustomerInfo(),
-                  const SizedBox(height: 25,),
+                  const SizedBox(height: 25,),*/
                   const CardGrid(),
                 ],
               ),
