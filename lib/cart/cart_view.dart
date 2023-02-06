@@ -8,7 +8,7 @@ import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -662,12 +662,12 @@ class _CartTotals extends StackedHookView<QuoteViewModel> {
   }
 }
 
-class _labelSubTotales extends HookViewModelWidget<QuoteViewModel> {
+class _labelSubTotales extends StackedHookView<QuoteViewModel> {
   _labelSubTotales({Key? key, required this.currencyFormat}) : super(key: key, reactive: true);
   var currencyFormat;
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {

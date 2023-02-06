@@ -1,6 +1,6 @@
 
 import 'package:maketplace/products/products_service.dart';
-import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';

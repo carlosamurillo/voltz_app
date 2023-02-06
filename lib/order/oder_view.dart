@@ -38,8 +38,8 @@ class _OrderViewState extends State<OrderView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<OrderViewModel>.reactive(
         viewModelBuilder: () => OrderViewModel(),
-        onModelReady: (viewModel) => viewModel.init(widget.orderId),
-        fireOnModelReadyOnce: false,
+        onViewModelReady: (viewModel) => viewModel.init(widget.orderId),
+        fireOnViewModelReadyOnce: false,
         disposeViewModel: false,
         builder: (context, viewModel, child) {
           if(viewModel.order == null){

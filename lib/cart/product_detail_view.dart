@@ -22,7 +22,7 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(),
-        onModelReady: (viewModel) => viewModel.init(widget.productId),
+        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
         builder: (context, viewModel, child) {
           print("se imprime pantalla");
           if(viewModel.product.id != null){
@@ -383,7 +383,7 @@ class _ProductViewMobileState extends State<ProductViewMobile> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(),
-        onModelReady: (viewModel) => viewModel.init(widget.productId),
+        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
         builder: (context, viewModel, child) {
           print("se imprime pantalla");
           if(viewModel.product.id != null){

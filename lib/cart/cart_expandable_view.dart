@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../products/product_viewmodel.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/inputText.dart';
@@ -106,8 +106,10 @@ class CardGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GridViewModel>.reactive(
+      fireOnViewModelReadyOnce: true,
       builder: (context, viewModel, child) {
-        if(viewModel.productList.isEmpty) {
+        var media = MediaQuery.of(context).size;
+        if(viewModel.selectedProducts.isEmpty) {
           return const Center(
             child: SizedBox(
               width: 30,
@@ -116,7 +118,7 @@ class CardGrid extends StatelessWidget {
             ),
           );
         }
-        print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
+        print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
         html.window.history.pushState(
             null,
             'Voltz - Cotización ${viewModel.quote.consecutive}',
@@ -126,35 +128,32 @@ class CardGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize:  MainAxisSize.min,
           children: [
-            Flexible(
-              fit: FlexFit.loose,
-              child: Container(
-                padding: const EdgeInsets.only(right: 25, left: 25),
-                //height: double.infinity,
-                //width: double.infinity,
-                child: CustomScrollView(
-                  slivers: <Widget> [
-                    SilverPadding(
-                      padding: const EdgeInsets.only(right: 25, left: 25),
-                      silver: SliverMasonryGrid.extent(
-                        maxCrossAxisExtent: 362,
-                        mainAxisSpacing: 25,
-                        crossAxisSpacing: 25,
-                        itemBuilder: (context, index) {
-                          if (index < viewModel.productList.length) {
-                            return ProductCard(
-                              i: index, productSuggested: viewModel.productList.elementAt(index),
-                            );
-                          } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                            return const PendingCard();
-                          } else {
-                            return Container();
-                          }
-                        },
-                      ),
+            Container(
+              height: media.height - 80 - 182,
+              width: (media.width - 310),
+              child: CustomScrollView(
+                slivers: <Widget> [
+                  SliverPadding(
+                    padding: const EdgeInsets.only(right: 25, left: 25),
+                    sliver: SliverMasonryGrid.count(
+                      //maxCrossAxisExtent: 362,
+                      childCount: viewModel.selectedProducts.length,
+                      mainAxisSpacing: 25,
+                      crossAxisSpacing: 25,
+                      itemBuilder: (context, index) {
+                        if (index < viewModel.selectedProducts.length) {
+                          return ProductCard(
+                            i: index,
+                          );
+                        } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
+                          return const PendingCard();
+                        } else {
+                          return Container();
+                        }
+                      }, crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             )
           ],
@@ -168,10 +167,10 @@ class CardGrid extends StatelessWidget {
 class ProductCard extends StatefulWidget {
   const ProductCard({
     Key? key,
-    required this.i, required this.productSuggested
+    required this.i,
   }) : super(key: key);
   final int i;
-  final ProductsSuggested productSuggested;
+
   @override
   _ProductCard createState() => _ProductCard();
 }
@@ -182,10 +181,10 @@ class _ProductCard extends State<ProductCard> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
-        onViewModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i, productSuggested: widget.productSuggested),
+        onViewModelReady: (viewModel) => viewModel.initCartView(cardIndex: widget.i,),
         fireOnViewModelReadyOnce: false,
-        disposeViewModel: true,
-        createNewViewModelOnInsert: true,
+        //disposeViewModel: true,
+        //createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -214,7 +213,7 @@ class _ProductCard extends State<ProductCard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if (viewModel.product.coverImage == null) ...[
+                          if (viewModel.selectedProducts[widget.i].coverImage == null) ...[
                             SvgPicture.asset(
                               'assets/svg/no_image.svg',
                               width: 120,
@@ -225,7 +224,7 @@ class _ProductCard extends State<ProductCard> {
                                 width: 120,
                                 height: 120,
                                 child: Image.network(
-                                  viewModel.product.coverImage!,
+                                  viewModel.selectedProducts[widget.i].coverImage!,
                                   height: 120,
                                   width: 120,
                                 )),
@@ -245,7 +244,7 @@ class _ProductCard extends State<ProductCard> {
                                     Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
                                     const SizedBox(width: 5,),
                                     SelectableText(
-                                      viewModel.product.brand!,
+                                      viewModel.selectedProducts[widget.i].brand!,
                                       maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
@@ -263,7 +262,7 @@ class _ProductCard extends State<ProductCard> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SelectableText(
-                                      viewModel.product.sku!,
+                                      viewModel.selectedProducts[widget.i].sku!,
                                       maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
@@ -281,7 +280,7 @@ class _ProductCard extends State<ProductCard> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     SelectableText(
-                                      viewModel.currencyFormat.format(viewModel.product.pricePublic!),
+                                      viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].pricePublic!),
                                       maxLines: 1,
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
@@ -297,7 +296,7 @@ class _ProductCard extends State<ProductCard> {
                                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                       color: CustomColors.yellowVoltz,
                                       child: SelectableText(
-                                        "${(viewModel.product.discountRate!).toStringAsFixed(2)}%" ,
+                                        "${(viewModel.selectedProducts[widget.i].discountRate!).toStringAsFixed(2)}%" ,
                                         enableInteractiveSelection: false,
                                         maxLines: 1,
                                         style: GoogleFonts.inter(
@@ -320,7 +319,7 @@ class _ProductCard extends State<ProductCard> {
                                       linearGradient: viewModel.shimmerGradientWhiteBackground,
                                       child: ShimmerLoading(
                                         isLoading:
-                                        viewModel.product.isCalculatingProductTotals,
+                                        viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
                                         shimmerEmptyBox: const ShimmerEmptyBox(
                                           width: 160,
                                           height: 21,
@@ -328,7 +327,7 @@ class _ProductCard extends State<ProductCard> {
                                         child: Row(
                                           children: [
                                             SelectableText(
-                                              viewModel.currencyFormat.format(viewModel.product.price!.price2!),
+                                              viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
                                               maxLines: 1,
                                               style: GoogleFonts.inter(
                                                 fontStyle: FontStyle.normal,
@@ -340,7 +339,7 @@ class _ProductCard extends State<ProductCard> {
                                             ),
                                             const SizedBox(width: 5,),
                                             SelectableText(
-                                              viewModel.product.saleUnit!,
+                                              viewModel.selectedProducts[widget.i].saleUnit!,
                                               maxLines: 1,
                                               style: GoogleFonts.inter(
                                                 fontStyle: FontStyle.normal,
@@ -386,7 +385,7 @@ class _ProductCard extends State<ProductCard> {
                         ],
                       ),
                       const SizedBox(height: 25,),
-                      SelectableText(viewModel.product.skuDescription!
+                      SelectableText(viewModel.selectedProducts[widget.i].skuDescription!
                           .replaceAll("<em>", "")
                           .replaceAll("<\/em>", ""),
                         style: GoogleFonts.inter(
@@ -399,7 +398,7 @@ class _ProductCard extends State<ProductCard> {
                     ],
                   ),
                 ),
-                if(viewModel.product.techFile!=null) ...[
+                if(viewModel.selectedProducts[widget.i].techFile!=null) ...[
                   getHeader(context, viewModel),
                 ] else ...[
                   const Divider(
@@ -407,10 +406,10 @@ class _ProductCard extends State<ProductCard> {
                     color: Color(0xFFD9E0FC),
                   ),
                 ],
-                if(viewModel.product.isCardExpanded)...[
-                  ProductDetail(productId: viewModel.product.productId!),
+                if(viewModel.selectedProducts[widget.i].isCardExpanded)...[
+                  ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!),
                 ],
-                 _QuantityCalculatorWidget(viewModel: viewModel,),
+                 _QuantityCalculatorWidget(index: widget.i),
               ],
             ),
         ),
@@ -425,7 +424,7 @@ class _ProductCard extends State<ProductCard> {
       child: GestureDetector(
         onTap: () async {
           print('dio clic ....');
-            viewModel.expandOrCollapseCard();
+            viewModel.expandOrCollapseCard(widget.i);
           },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -468,7 +467,7 @@ class _ProductCard extends State<ProductCard> {
                     ),
                     const Spacer(),
                     Container(
-                      child: viewModel.product.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: viewModel.selectedProducts[widget.i].isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
                 )
@@ -798,9 +797,7 @@ class _ProductDetail extends State<ProductDetail> {
                   ),
                 ],
               ),
-
             ],
-
           ],
         ),
     );
@@ -808,14 +805,63 @@ class _ProductDetail extends State<ProductDetail> {
 }
 
 
-class _QuantityCalculatorWidget extends StatelessWidget{
-  final CardItemViewModel viewModel;
-  const _QuantityCalculatorWidget({Key? key, required this.viewModel }) : super(key: key,);
+
+class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
+  const _QuantityCalculatorWidget({Key? key, required this.index}) : super(key: key, reactive: true);
+  final int index;
+
+  Widget getQtyLabel(CardItemViewModel viewModel, double elevation) {
+    print('getQytLabel con elevation $elevation');
+    return MouseRegion(
+      cursor: SystemMouseCursors.text,
+      child: GestureDetector(
+          onTap: () => viewModel.activateCalculator(),
+          child: Material(
+            elevation: elevation,
+            color: Color(0xFFE4E9FC),
+            child: Container(
+              height: 60,
+              width: 188,
+              color: Colors.transparent,
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '${viewModel.textEditingController.text}',
+                    style: GoogleFonts.inter(
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 22.0,
+                      color: CustomColors.darkVoltz,
+                      height: 1.2,
+                    ),
+                  ),
+                  Text(
+                    ' ${viewModel.selectedProducts[index].saleUnit}',
+                    style: GoogleFonts.inter(
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12.0,
+                      color: CustomColors.darkVoltz,
+                      height: 1.2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+      ),
+    );
+  }
 
   @override
-  Widget build(
-      BuildContext context
+  Widget builder(
+      BuildContext context,
+      CardItemViewModel viewModel,
       ) {
+    return Builder(
+        builder: (BuildContext context) {
     return Container(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -833,8 +879,8 @@ class _QuantityCalculatorWidget extends StatelessWidget{
               //print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
               print('--------------------------------------');
               //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.parent!.hasPrimaryFocus}');
-              print('FocusScope: Add has Focus:  ${viewModel.product.focusAdd.hasFocus}');
-              print('FocusScope: Add has Primary Focus:  ${viewModel.product.focusAdd.hasPrimaryFocus}');
+              print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
+              print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -860,23 +906,28 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                             ),
                             alignment: Alignment.center,
                             child: TextFieldTapRegion(
-                              onTapOutside: (value) => viewModel.unFocusRemove(),
-                              onTapInside: (value) => viewModel.requestFocusRemove(),
+                              onTapOutside: (value) => viewModel.unFocusRemove(index),
+                              onTapInside: (value) => viewModel.requestFocusRemove(index),
                               child: IconButton(
-                                focusNode: viewModel.product.focusRemove,
+                                focusNode: viewModel.focusRemove,
                                 mouseCursor: SystemMouseCursors.click,
                                 style: null,
                                 icon: const Icon(Icons.remove, size: 24,),
-                                onPressed: () => viewModel.removeOne(),
+                                onPressed: () => viewModel.activateCalculator(),
                               ),
                             ),
                         ),
-                        MouseRegion(
+                        if(viewModel.isQtyLabelHighlight)...[
+                          getQtyLabel(viewModel, 2),
+                        ] else ... [
+                          getQtyLabel(viewModel, 0),
+                        ],
+                        /*MouseRegion(
                           cursor: SystemMouseCursors.text,
                           child: GestureDetector(
                               onTap: () => viewModel.activateCalculator(),
                               child: Material(
-                                elevation: viewModel.product.isQtyLabelHighlight ? 2 : 0,
+                                elevation: viewModel.isQtyLabelHighlight ? 2 : 0,
                                 color: Color(0xFFE4E9FC),
                                 child: Container(
                                   height: 60,
@@ -897,7 +948,7 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                                         ),
                                       ),
                                       Text(
-                                        ' ${viewModel.product.saleUnit}',
+                                        ' ${viewModel.selectedProducts[index].saleUnit}',
                                         style: GoogleFonts.inter(
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w400,
@@ -911,7 +962,7 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                                 ),
                               )
                           ),
-                        ),
+                        ),*/
                         Container(
                           height: 60,
                           width: 50,
@@ -923,14 +974,14 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                           ),
                           alignment: Alignment.center,
                           child: TextFieldTapRegion(
-                            onTapOutside: (value) => viewModel.unFocusAdd(),
-                            onTapInside: (value) => viewModel.requestFocusAdd(),
+                            onTapOutside: (value) => viewModel.unFocusAdd(index),
+                            onTapInside: (value) => viewModel.requestFocusAdd(index),
                             child: IconButton(
-                              focusNode: viewModel.product.focusAdd,
+                              focusNode: viewModel.focusAdd,
                               mouseCursor: SystemMouseCursors.click,
                               style: null,
                               icon: const Icon(Icons.add, size: 24,),
-                              onPressed: () => viewModel.addOne(),
+                              onPressed: () => viewModel.activateCalculator(),
                             ),
                           )
                         ),
@@ -1020,8 +1071,8 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                                         ),
                                       ),
                                       onPressed: () {
-                                        print('Se dio clic en Button');
-                                        viewModel.onPressCalculate(context);
+                                        print('Se dio clic en Button onPressCalculate');
+                                        viewModel.onPressCalculate(context, index);
                                       },
                                       child: Row(
                                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1068,18 +1119,18 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                 linearGradient: viewModel.shimmerGradientWhiteBackground,
                 child: ShimmerLoading(
                   isLoading:
-                  viewModel.product.isCalculatingProductTotals,
+                  viewModel.selectedProducts[index].isCalculatingProductTotals,
                   shimmerEmptyBox: const ShimmerEmptyBox(
                     width: 180,
                     height: 28,
                   ),
                   child: Row(
                     children: [
-                      viewModel.product.isCalculatingProductTotals
+                      viewModel.selectedProducts[index].isCalculatingProductTotals
                           ? Container()
                           : SelectableText(
                         viewModel.currencyFormat.format(viewModel
-                            .product
+                            .selectedProducts[index]
                             .total!
                             .afterDiscount ??
                             ''),
@@ -1169,7 +1220,7 @@ class _QuantityCalculatorWidget extends StatelessWidget{
                     child: GestureDetector(
                       onTap: () async {
                         await viewModel.onDeleteSku(
-                            viewModel.quote.detail![viewModel.cardIndex]);
+                            viewModel.quote.detail![index]);
                         return viewModel.notifyListeners();
                       },
                       child: Text(
@@ -1188,6 +1239,7 @@ class _QuantityCalculatorWidget extends StatelessWidget{
             ],
           ),
         ]));
+    });
   }
 }
 

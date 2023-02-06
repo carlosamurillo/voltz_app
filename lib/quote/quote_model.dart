@@ -167,7 +167,7 @@ class Detail {
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
       for(int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(new ProductsSuggested.fromJson(json['products_suggested'][a]));
+        productsSuggested!.add(ProductsSuggested.fromJson(json['id'], json['products_suggested'][a]));
       }
     }
   }
@@ -225,6 +225,7 @@ class Total {
 }
 
 class ProductsSuggested {
+
   String? productId;
   String? sku;
   String? skuDescription;
@@ -241,16 +242,15 @@ class ProductsSuggested {
   String? source;
 
   /** these are for local propose **/
+  int? cardIndex;
+  String? productRequestedId;
   bool isCardExpanded = false;
   bool isCalculatingProductTotals = false;
-  bool isQtyLabelHighlight = false;
   double? discountRate;
 
-  final FocusNode focusAdd = FocusNode();
-  final FocusNode focusRemove = FocusNode();
-
   ProductsSuggested(
-      {this.productId,
+      {this.productRequestedId,
+        this.productId,
         this.sku,
         this.skuDescription,
         this.brand,
@@ -266,7 +266,7 @@ class ProductsSuggested {
         this.isCalculatingProductTotals = false,
       this.discountRate});
 
-  ProductsSuggested.fromJson(Map<String, dynamic> json) {
+  ProductsSuggested.fromJson(String this.productRequestedId, Map<String, dynamic> json) {
     productId = json['product_id'];
     sku = json['sku'];
     skuDescription = json['sku_description'];

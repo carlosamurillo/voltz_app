@@ -8,7 +8,7 @@ import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/extensions.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:printing/printing.dart';
+import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
 import 'package:maketplace/pdf_quote/svg_icons.dart';
 
 import '../keys_model.dart';
@@ -52,23 +52,23 @@ class QuotePdf {
   }
 
   Future<void> _loadFonts() async {
-     _fontRegular = await PdfGoogleFonts.montserratRegular();
-    _fontSemiBold = await PdfGoogleFonts.montserratSemiBold();
+     _fontRegular = await p.PdfGoogleFonts.montserratRegular();
+    _fontSemiBold = await p.PdfGoogleFonts.montserratSemiBold();
   }
 
   // ignore: prefer_typing_uninitialized_variables
   late var _assistantIcon;
   Future<void> _loadAssistant() async {
-    _assistantIcon = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fassistant_icon.png?alt=media&token=a38ac3f8-0ab3-4558-a77d-831ea14852fb');
+    _assistantIcon = await p.networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fassistant_icon.png?alt=media&token=a38ac3f8-0ab3-4558-a77d-831ea14852fb');
   }
   Future<void> _loadAmex() async {
-    _amex_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FAmex.png?alt=media&token=d997de8b-412d-429f-9086-aa0f66335285');
+    _amex_image = await p.networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FAmex.png?alt=media&token=d997de8b-412d-429f-9086-aa0f66335285');
   }
   Future<void> _loadPaypal() async {
-    _paypal_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FPaypal.png?alt=media&token=02dfcd64-7467-4b1a-b437-427f5b091590');
+    _paypal_image = await p.networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FPaypal.png?alt=media&token=02dfcd64-7467-4b1a-b437-427f5b091590');
   }
   Future<void> _loadVisa() async {
-    _visa_image = await networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FVisamaster.png?alt=media&token=32df52e8-9c33-4b3c-af4f-c36887d5c3de');
+    _visa_image = await p.networkImage('https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2FVisamaster.png?alt=media&token=32df52e8-9c33-4b3c-af4f-c36887d5c3de');
   }
 
   

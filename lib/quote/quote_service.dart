@@ -5,11 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:observable_ish/observable_ish.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
+import 'package:stacked/stacked.dart' show ListenableServiceMixin;
+import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
 import '../app/app.locator.dart';
-import '../products/product_viewmodel.dart';
 import '../utils/stats.dart';
 
 class QuoteService with ListenableServiceMixin {
@@ -41,30 +40,28 @@ class QuoteService with ListenableServiceMixin {
     }
   }
 
-  final StreamController<ProductsSuggested> _streamController = StreamController<ProductsSuggested>();
+  final StreamController<List<ProductsSuggested>> _streamController = StreamController<List<ProductsSuggested>>();
 // Creating a new stream through the controller
-  Stream<ProductsSuggested> get getStream => _streamController.stream;
+  Stream<List<ProductsSuggested>> get getStream => _streamController.stream;
 
   streamProducts() async {
     print('se llamo el servicio streamProducts');
-    //_rxSelectedProducts.value = [];
+    _rxSelectedProducts.value = [];
+    //List<ProductsSuggested> filtered = [];
     if(_rxQuote.value.detail != null && _rxQuote.value.detail!.isNotEmpty){
-      print('se llamo el servicio streamProducts .............. 2');
       for(int i = 0; i < _rxQuote.value.detail!.length; i++){
-        print('se llamo el servicio streamProducts .............. 3');
         bool firstAdded = false;
         for(int e = 0; _rxQuote.value.detail![i].productsSuggested!.length > e; e++){
-          print('se llamo el servicio streamProducts .............. 4');
           if (_rxQuote.value.detail![i].productsSuggested![e].selected == true && !firstAdded){
-            print('Se va a agregar prodcuto ..............>>>>>');
             _rxSelectedProducts.value.add(_rxQuote.value.detail![i].productsSuggested![e]);
-            print('se anadira un producto desde el servicio');
-             _streamController.add(_rxQuote.value.detail![i].productsSuggested![e]);
+            // _streamController.add(_rxQuote.value.detail![i].productsSuggested![e]);
+            //filtered.add(_rxQuote.value.detail![i].productsSuggested![e]);
             print('se anadio un producto desde el servicio');
             firstAdded = true;
           }
         }
       }
+      _streamController.add(_rxSelectedProducts.value);
     } else {
       print('NEGATIVA servicio streamProducts .............. 2');
     }
@@ -106,6 +103,18 @@ class QuoteService with ListenableServiceMixin {
     }
   }
 
+  Future<bool> updateQuote(QuoteModel quote) async {
+    print('ejecutando updateQuote en servicio quote_service');
+    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.update(reference, quote.toJson());
+    }).then(
+          (value) => print("DocumentSnapshot successfully updated!" + quote.id! ),
+      onError: (e) => print("Error updating document $e"),
+    );
+    return true;
+  }
+
   Future<void> _updateTotals() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
     await reference.update({'record.next_action': 'calculate_totals'});
@@ -130,7 +139,7 @@ class QuoteService with ListenableServiceMixin {
   Future<void> _listenChanges(String? version) async {
     reference.snapshots().listen(
           (documentSnapshot) async {
-        print("Llego data nueva...1");
+        print("Se recibe data nueva desde el servidor");
         if (documentSnapshot.exists) {
           QuoteModel data = await _processQuote(documentSnapshot);
 
@@ -143,12 +152,11 @@ class QuoteService with ListenableServiceMixin {
             viewRecorded = true;
           }
 
-          print("Llego data nueva...");
           if (data.record != null && data.record!.nextAction == null) {
             _rxQuote.value = data;
-            streamProducts();
+            await streamProducts();
             notifyListeners();
-            print("se actualiza la pantalla");
+            print("Se llamo notifyListeners desde Servicio QuoteService");
           }
         } else {
           _rxQuote.value = QuoteModel();
@@ -164,18 +172,18 @@ class QuoteService with ListenableServiceMixin {
   }
 
   void loadingQuoteTotals () {
-    quote.isCalculatingTotals = true;
+    _rxQuote.value.isCalculatingTotals = true;
     notifyListeners();
   }
 
   void loadingAll(){
-    quote.isCalculatingTotals = true;
+    _rxQuote.value.isCalculatingTotals = true;
     notifyListeners();
   }
 
   Future<void> resetCards() async {
     print('reset card');
-    quote.detail!.forEach((element) {
+    _rxQuote.value.detail!.forEach((element) {
       element.productsSuggested!.forEach((element2) {
         element2.isCardExpanded = false;
       });
