@@ -146,7 +146,7 @@ class CardGrid extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 25, left: 25),
                     sliver: SliverMasonryGrid.count(
                       //maxCrossAxisExtent: 362,
-                      childCount: viewModel.selectedProducts.length,
+                      childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty ? viewModel.selectedProducts.length + 1 : viewModel.selectedProducts.length,
                       mainAxisSpacing: 25,
                       crossAxisSpacing: 25,
                       itemBuilder: (context, index) {
@@ -1255,111 +1255,116 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
       QuoteViewModel viewModel,
       ) {
     var media = MediaQuery.of(context).size;
-    return Container(
-        decoration: const BoxDecoration(
-          color: CustomColors.darkVoltz,
-          borderRadius: BorderRadius.all(Radius.circular(6.0)),
-        ),
-        width: 362.0,
-       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+            decoration: const BoxDecoration(
+              color: CustomColors.darkVoltz,
+              borderRadius: BorderRadius.all(Radius.circular(6.0)),
+            ),
             width: 362.0,
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
-                  'assets/images/assistant_icon.png',
-                  width: 62.0,
-                  height: 62.0,
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 32.0,
-                          color: Colors.white,
-                          height: 1.1,
-                        ),
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.clip,
+                Container(
+                  width: 362.0,
+                  padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 25),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/assistant_icon.png',
+                        width: 62.0,
+                        height: 62.0,
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 32.0,
+                                color: Colors.white,
+                                height: 1.1,
+                              ),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.clip,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child:Text(
+                              "Estamos buscando el mejor precio y disponibilidad en cientos de proveedores",
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16.0,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.clip,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child:Text(
-                        "Estamos buscando el mejor precio y disponibilidad en cientos de proveedores",
+                Container(
+                  width: 362.0,
+                  padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
+                  decoration: const BoxDecoration(
+                    color: CustomColors.darkVoltz,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "¡Pronto los agregaremos a tu cotización!",
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: Colors.white,
+                          fontSize: 14.0,
+                          color: CustomColors.yellowVoltz,
                         ),
                         textAlign: TextAlign.center,
-                        overflow: TextOverflow.clip,
                       ),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                        style: GoogleFonts.inter(
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12.0,
+                          color: CustomColors.white,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ),
-          Container(
-            width: 362.0,
-            padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
-            decoration: const BoxDecoration(
-              color: CustomColors.darkVoltz,
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "¡Pronto los agregaremos a tu cotización!",
-                  style: GoogleFonts.inter(
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14.0,
-                    color: CustomColors.yellowVoltz,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Text(
-                    "${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
-                  style: GoogleFonts.inter(
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12.0,
-                    color: CustomColors.white,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
-        ],
-      )
+            )
+        ),
+      ],
     );
   }
 }
