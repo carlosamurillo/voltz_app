@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import '../cart/product_model.dart';
 
 class QuoteModel {
@@ -20,6 +21,11 @@ class QuoteModel {
   Customer? customer = Customer();
   //this is only for local proposes
   bool isCalculatingTotals = false;
+
+  convertTimestampToLocal(Timestamp date){
+    var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
+    return dateTime.toLocal();
+  }
 
   QuoteModel(
       {this.version,

@@ -237,11 +237,14 @@ class _ProductCard extends State<ProductCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (viewModel.selectedProducts[widget.i].coverImage == null) ...[
-                            SvgPicture.asset(
-                              'assets/svg/no_image.svg',
-                              width: 120,
-                              height: 120,
-                            ),
+                            SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: Image.asset(
+                                  'assets/images/no_photo.png',
+                                  height: 120,
+                                  width: 120,
+                                )),
                           ] else ...[
                             SizedBox(
                                 width: 120,
@@ -264,8 +267,11 @@ class _ProductCard extends State<ProductCard> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
-                                    const SizedBox(width: 5,),
+                                    //Esto es temporal mientras se programa en el backend todas las marcas para la bd
+                                    if(viewModel.selectedProducts[widget.i].brand!.toLowerCase() == 'tecnolite')...[
+                                      Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
+                                      const SizedBox(width: 5,),
+                                    ],
                                     SelectableText(
                                       viewModel.selectedProducts[widget.i].brand!,
                                       maxLines: 1,
@@ -940,47 +946,6 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                         ] else ... [
                           getQtyLabel(viewModel, 0),
                         ],
-                        /*MouseRegion(
-                          cursor: SystemMouseCursors.text,
-                          child: GestureDetector(
-                              onTap: () => viewModel.activateCalculator(),
-                              child: Material(
-                                elevation: viewModel.isQtyLabelHighlight ? 2 : 0,
-                                color: Color(0xFFE4E9FC),
-                                child: Container(
-                                  height: 60,
-                                  width: 188,
-                                  color: Colors.transparent,
-                                  child:  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${viewModel.textEditingController.text}',
-                                        style: GoogleFonts.inter(
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 22.0,
-                                            color: CustomColors.darkVoltz,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                      Text(
-                                        ' ${viewModel.selectedProducts[index].saleUnit}',
-                                        style: GoogleFonts.inter(
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 12.0,
-                                            color: CustomColors.darkVoltz,
-                                          height: 1.2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                          ),
-                        ),*/
                         Container(
                           height: 60,
                           width: 50,
@@ -1087,15 +1052,21 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                         print('Se dio clic en Button onPressCalculate');
                                         viewModel.onPressCalculate(context, index);
                                       },
-                                      child: Text(
-                                        'Actualizar',
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13.0,
-                                          color: const Color(0xFF9C9FAA),
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        constraints: const BoxConstraints(
+                                          minHeight: 30.0,
                                         ),
-                                        textAlign: TextAlign.center,
+                                        child: Text(
+                                          'Actualizar',
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 13.0,
+                                            color: const Color(0xFF9C9FAA),
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1353,7 +1324,8 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                         height: 5,
                       ),
                       Text(
-                        "${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                        "${DateFormat.yMMMd().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} ${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                        //viewModel.quote.convertTimestampToLocal(viewModel.quote.createdAt!).toString(),
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
