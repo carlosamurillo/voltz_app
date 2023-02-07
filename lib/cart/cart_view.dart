@@ -140,7 +140,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    currencyFormat.format(viewModel.quote.totals!.subTotal! - viewModel.quote.totals!.discount!),
+                                    currencyFormat.format(viewModel.quote.totals!.subTotal!),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
