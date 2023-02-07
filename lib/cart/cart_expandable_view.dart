@@ -15,6 +15,7 @@ import '../products/product_viewmodel.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/inputText.dart';
 import '../utils/shimmer.dart';
+import '../utils/style.dart';
 import 'cart_expandible_viewmodel.dart';
 import 'cart_item_viewmodel.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -129,21 +130,25 @@ class CardGrid extends StatelessWidget {
           mainAxisSize:  MainAxisSize.min,
           children: [
             Container(
-              height: media.height - 80,
-              width: (media.width - 310),
+              height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+              width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
                 slivers: <Widget> [
-                  const SliverPadding(
-                    padding: EdgeInsets.only(top: 25, bottom: 25),
-                  ),
+                  if(media.width >= CustomStyles.desktopBreak) ...[
+                    const SliverPadding(
+                      padding: EdgeInsets.only(top: 25, bottom: 25),
+                    ),
+                  ],
                   const SliverToBoxAdapter(
                     child: CustomerInfo(),
                   ),
-                  const SliverPadding(
-                    padding: EdgeInsets.only(top: 25, bottom: 25),
-                  ),
+                  if(media.width >= CustomStyles.desktopBreak) ...[
+                    const SliverPadding(
+                      padding: EdgeInsets.only(top: 25, bottom: 25),
+                    ),
+                  ],
                   SliverPadding(
-                    padding: const EdgeInsets.only(right: 25, left: 25),
+                    padding: media.width >= CustomStyles.mobileBreak ? const EdgeInsets.only(right: 25, left: 25) : const EdgeInsets.only(right: 0, left: 0),
                     sliver: SliverMasonryGrid.count(
                       //maxCrossAxisExtent: 362,
                       childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty ? viewModel.selectedProducts.length + 1 : viewModel.selectedProducts.length,
@@ -159,12 +164,17 @@ class CardGrid extends StatelessWidget {
                         } else {
                           return Container();
                         }
-                      }, crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
+                      }, crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
                     ),
                   ),
                   const SliverToBoxAdapter(
                     child: SizedBox(height: 25,),
                   ),
+                  if(media.width < CustomStyles.mobileBreak)...[
+                    SliverToBoxAdapter(
+                      child: Resume(),
+                    ),
+                  ]
                 ],
               ),
             )
@@ -191,7 +201,7 @@ class _ProductCard extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<CardItemViewModel>.nonReactive(
+    return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(cardIndex: widget.i,),
         fireOnViewModelReadyOnce: false,
@@ -259,7 +269,7 @@ class _ProductCard extends State<ProductCard> {
                                     SelectableText(
                                       viewModel.selectedProducts[widget.i].brand!,
                                       maxLines: 1,
-                                      style: GoogleFonts.inter(
+                                      style: GoogleFonts.roboto(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 14.0,
@@ -277,7 +287,7 @@ class _ProductCard extends State<ProductCard> {
                                     SelectableText(
                                       viewModel.selectedProducts[widget.i].sku!,
                                       maxLines: 1,
-                                      style: GoogleFonts.inter(
+                                      style: GoogleFonts.roboto(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 14.0,
@@ -295,7 +305,7 @@ class _ProductCard extends State<ProductCard> {
                                     SelectableText(
                                       viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].pricePublic!),
                                       maxLines: 1,
-                                      style: GoogleFonts.inter(
+                                      style: GoogleFonts.roboto(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 14.0,
@@ -312,7 +322,7 @@ class _ProductCard extends State<ProductCard> {
                                         "${(viewModel.selectedProducts[widget.i].discountRate!).toStringAsFixed(2)}%" ,
                                         enableInteractiveSelection: false,
                                         maxLines: 1,
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.roboto(
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 12.0,
@@ -342,7 +352,7 @@ class _ProductCard extends State<ProductCard> {
                                             SelectableText(
                                               viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
                                               maxLines: 1,
-                                              style: GoogleFonts.inter(
+                                              style: GoogleFonts.roboto(
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 18.0,
@@ -354,7 +364,7 @@ class _ProductCard extends State<ProductCard> {
                                             SelectableText(
                                               viewModel.selectedProducts[widget.i].saleUnit!,
                                               maxLines: 1,
-                                              style: GoogleFonts.inter(
+                                              style: GoogleFonts.roboto(
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12.0,
@@ -382,7 +392,7 @@ class _ProductCard extends State<ProductCard> {
                                     SelectableText(
                                       "Precio según cantidad",
                                       maxLines: 1,
-                                      style: GoogleFonts.inter(
+                                      style: GoogleFonts.roboto(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12.0,
@@ -401,7 +411,7 @@ class _ProductCard extends State<ProductCard> {
                       SelectableText(viewModel.selectedProducts[widget.i].skuDescription!
                           .replaceAll("<em>", "")
                           .replaceAll("<\/em>", ""),
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 16.0,
@@ -469,9 +479,9 @@ class _ProductCard extends State<ProductCard> {
                     Container(
                       child: Text(
                         'Detalles del producto',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w600,
                           fontSize: 16.0,
                           color: CustomColors.darkVoltz,
                         ),
@@ -561,7 +571,7 @@ class _ProductDetail extends State<ProductDetail> {
                       children: [
                           Text(
                             'Ficha técnica',
-                            style: GoogleFonts.inter(
+                            style: GoogleFonts.roboto(
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w500,
                               fontSize: 16.0,
@@ -584,7 +594,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 ),
                                 child: Text(
                                   "Descargar",
-                                  style: GoogleFonts.inter(
+                                  style: GoogleFonts.roboto(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 13.0,
@@ -629,7 +639,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
                                 child: Text(
                                   'Galería del producto',
-                                  style: GoogleFonts.inter(
+                                  style: GoogleFonts.roboto(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
@@ -704,7 +714,7 @@ class _ProductDetail extends State<ProductDetail> {
                               padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
                               child: Text(
                                 'Especificaciones',
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.roboto(
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16.0,
@@ -720,7 +730,7 @@ class _ProductDetail extends State<ProductDetail> {
                               padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
                               child: SelectableText(
                                 viewModel.product.featuresString!,
-                                style: GoogleFonts.inter(
+                                style: GoogleFonts.roboto(
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14.0,
@@ -760,7 +770,7 @@ class _ProductDetail extends State<ProductDetail> {
                         children: [
                           Text(
                             'Web del fabricante',
-                            style: GoogleFonts.inter(
+                            style: GoogleFonts.roboto(
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w500,
                               fontSize: 16.0,
@@ -783,7 +793,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   ),
                                   child: Text(
                                     "Visitar",
-                                    style: GoogleFonts.inter(
+                                    style: GoogleFonts.roboto(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13.0,
@@ -842,7 +852,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                 children: [
                   Text(
                     '${viewModel.textEditingController.text}',
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.roboto(
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
                       fontSize: 22.0,
@@ -852,7 +862,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                   ),
                   Text(
                     ' ${viewModel.selectedProducts[index].saleUnit}',
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.roboto(
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0,
@@ -947,7 +957,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                     children: [
                                       Text(
                                         '${viewModel.textEditingController.text}',
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.roboto(
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 22.0,
@@ -957,7 +967,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                       ),
                                       Text(
                                         ' ${viewModel.selectedProducts[index].saleUnit}',
-                                        style: GoogleFonts.inter(
+                                        style: GoogleFonts.roboto(
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w400,
                                             fontSize: 12.0,
@@ -1008,7 +1018,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   paddingContent: const EdgeInsets.only(
                                       bottom: 14, top: 19, left: 15),
                                   margin: const EdgeInsets.all(0),
-                                  textStyle: GoogleFonts.inter(
+                                  textStyle: GoogleFonts.roboto(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 22.0,
@@ -1077,21 +1087,15 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                         print('Se dio clic en Button onPressCalculate');
                                         viewModel.onPressCalculate(context, index);
                                       },
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Actualizar',
-                                            style: GoogleFonts.inter(
-                                              fontStyle: FontStyle.normal,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13.0,
-                                              color: const Color(0xFF9C9FAA),
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
+                                      child: Text(
+                                        'Actualizar',
+                                        style: GoogleFonts.roboto(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 13.0,
+                                          color: const Color(0xFF9C9FAA),
+                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
@@ -1137,7 +1141,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             .total!
                             .afterDiscount ??
                             ''),
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
                           fontSize: 22.0,
@@ -1149,7 +1153,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       ),
                       Text(
                         ' +iva',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,
@@ -1176,7 +1180,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
             children: [
               Text(
                 '¡Disponibilidad inmediata!',
-                style: GoogleFonts.inter(
+                style: GoogleFonts.roboto(
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,
                   fontSize: 12.0,
@@ -1204,7 +1208,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       },
                       child: Text(
                         '¡Agregado!',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
                           fontSize: 16.0,
@@ -1228,7 +1232,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       },
                       child: Text(
                         'Quitar',
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
                           fontSize: 16.0,
@@ -1288,7 +1292,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                           Expanded(
                             child: Text(
                               "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.roboto(
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 32.0,
@@ -1309,7 +1313,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                           Expanded(
                             child:Text(
                               "Estamos buscando el mejor precio y disponibilidad en cientos de proveedores",
-                              style: GoogleFonts.inter(
+                              style: GoogleFonts.roboto(
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16.0,
@@ -1337,7 +1341,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                     children: [
                       Text(
                         "¡Pronto los agregaremos a tu cotización!",
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 14.0,
@@ -1350,7 +1354,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                       ),
                       Text(
                         "${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
-                        style: GoogleFonts.inter(
+                        style: GoogleFonts.roboto(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,

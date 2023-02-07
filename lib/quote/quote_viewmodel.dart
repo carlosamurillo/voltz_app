@@ -25,6 +25,9 @@ class QuoteViewModel  extends ReactiveViewModel  {
   bool updateGrid = true;
 
   QuoteModel get quote => _quoteService.quote;
+  String? get customerName => _quoteService.customerName;
+  String? get companyName => _quoteService.companyName;
+
   String _quoteId = "";
   String? version;
   bool isSaveActive = false;
@@ -53,9 +56,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return notifyListeners();
   }
 
+  //Desactivado mientras se optimiza
   resetCards() async {
-    updateGrid = !updateGrid;
-    await _quoteService.resetCards();
+    /*updateGrid = !updateGrid;
+    await _quoteService.resetCards();*/
   }
 
   initConfirmation(String quoteId, String? version) async {

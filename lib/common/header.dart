@@ -4,18 +4,22 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import '../pdf_quote/download_button.dart';
 import '../utils/custom_colors.dart';
+import '../utils/style.dart';
 
 class Header extends StatelessWidget {
-  const Header ({super.key,  this.paddingVertical = 14, this.paddingHorizontal = 25});
+  const Header ({super.key,  this.paddingVertical =  14, this.paddingHorizontal = 25});
   final double paddingVertical;
   final double paddingHorizontal;
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
+      padding: media.width >= CustomStyles.desktopBreak ?
+        EdgeInsets.symmetric(vertical: 14, horizontal: 25):
+        EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       color: CustomColors.white,
       width: double.infinity,
-      height: 80,
+      height: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
       child: Row(
         children: [
           SvgPicture.asset(
@@ -24,7 +28,11 @@ class Header extends StatelessWidget {
             height: 52,
           ),
           const Spacer(),
-          const PDFDownloadButton(),
+          if(media.width >= CustomStyles.desktopBreak) ...[
+            const PDFDownloadButton(),
+          ] else ... [
+            const PDFDownloadButtonMobile(),
+          ],
         ],
       ),
     );

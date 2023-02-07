@@ -14,7 +14,6 @@ import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../utils/shimmer.dart';
 import 'cart_expandable_view.dart';
-import 'cart_view_mobile.dart';
 
 class CartView extends StatefulWidget {
   const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
@@ -37,7 +36,7 @@ class _CartViewState extends State<CartView> {
     return ViewModelBuilder<QuoteViewModel>.nonReactive(
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
-        return MediaQuery.of(context).size.width >= 480 ? Scaffold(
+        return Scaffold(
             backgroundColor: CustomColors.grayBackground_2,
             body: Container(
               color: CustomColors.WBY,
@@ -49,7 +48,7 @@ class _CartViewState extends State<CartView> {
                 ],
               ),
             )
-        ) : MobileView();
+        );
       },
       onViewModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
       fireOnViewModelReadyOnce: true,
@@ -69,6 +68,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
       ) {
     return Builder(
       builder: (BuildContext context) {
+        var media = MediaQuery.of(context).size;
         if ( viewModel.quote.detail != null) {
           return Container(
               color: CustomColors.safeBlue,
@@ -248,11 +248,15 @@ class Resume extends StackedHookView<QuoteViewModel> {
                     ],
                   ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         width: 310,
                         padding: const EdgeInsets.all(25),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -367,9 +371,10 @@ class _Container extends StatelessWidget {
   Widget build(
       BuildContext context,
       ) {
+    var media = MediaQuery.of(context).size;
     return Expanded(
       child: Container(
-          constraints: const BoxConstraints(minWidth: 412,),
+          constraints: BoxConstraints(minWidth: CustomStyles.mobileBreak,),
           width: double.infinity,
           color: CustomColors.WBY,
           child: Row(
@@ -380,18 +385,13 @@ class _Container extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  /*const SizedBox(height: 25,),
-                  const CustomerInfo(),
-                  const SizedBox(height: 25,),*/
                   const CardGrid(),
                 ],
               ),
               const Spacer(),
-
-              Resume(),
-
-              // Spacer(),
-              //_CartTotals(),
+              if(media.width >= CustomStyles.mobileBreak)...[
+                Resume(),
+              ]
             ],
           ),
       ),
@@ -408,37 +408,49 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
       QuoteViewModel model,
       ) {
     if(model.quote.customer != null){
+      var media = MediaQuery.of(context).size;
       return Container(
           padding: const EdgeInsets.all(25),
-          child: Row (
-            crossAxisAlignment: CrossAxisAlignment.start,
+          width: media.width >= CustomStyles.mobileBreak ? (media.width - 310 - 50) : media.width - 50,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Column(
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    children: [
-                      SelectableText(
-                        model.quote.alias!,
-                        style: GoogleFonts.inter(
+                  SizedBox(
+                    width: media.width >= CustomStyles.mobileBreak ? (media.width - 310 - 50) : media.width - 50,
+                    child: Text(
+                      model.quote.alias!,
+                      style: GoogleFonts.inter(
+                        textStyle: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
-                          fontSize: 42.0,
+                          fontSize: media.width  >= CustomStyles.desktopBreak ? 42.0 : 32,
                           color: CustomColors.darkVoltz,
+                          overflow: TextOverflow.clip,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ],
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                      maxLines: 4,
+                    ),
                   ),
-                  const SizedBox(height: 10,),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                ],
+              ),
+              if(media.width >= CustomStyles.desktopBreak) ...[
+                const SizedBox(height: 10,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if(model.customerName != null) ... [
                       const Icon(Icons.perm_identity, size: 24),
                       const SizedBox(width: 9,),
                       SelectableText(
-                        "NOMBRE DE LA PERSONA",
+                        model.customerName!,
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
@@ -446,11 +458,13 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                           color: CustomColors.darkVoltz,
                         ),
                       ),
+                    ],
+                    if(model.companyName != null) ... [
                       const SizedBox(width: 18,),
                       const Icon(Icons.business, size: 24),
                       const SizedBox(width: 9,),
                       SelectableText(
-                        "NOMBRE DE LA EMPRESA",
+                        model.companyName!,
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
@@ -459,12 +473,11 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         ),
                       ),
                     ],
-                  )
-
-                ],
-              )
+                  ],
+                )
+              ],
             ],
-          )
+          ),
       );
     }
     else {

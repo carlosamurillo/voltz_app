@@ -19,6 +19,7 @@ class CardItemViewModel extends ReactiveViewModel {
 
   bool isQtyControlOpen = false;
   bool isCalculatorActive = false;
+  bool isCardExpanded = false;
  
   bool get isQtyLabelHighlight => _isQtyLabelHighlight;
   bool _isQtyLabelHighlight = false;
@@ -111,9 +112,11 @@ class CardItemViewModel extends ReactiveViewModel {
     return notifyListeners();
   }
 
+  //desactivada la linea mientras se optimiza para
   Future<void> expandOrCollapseCard(int cardIndex) async {
-    await _quoteService.resetCards();
+    //await _quoteService.resetCards();
     selectedProducts[cardIndex].isCardExpanded = !selectedProducts[cardIndex].isCardExpanded;
+    //isCardExpanded = !isCardExpanded;
     return notifyListeners();
   }
 

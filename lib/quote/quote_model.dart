@@ -391,10 +391,8 @@ class Shipping {
 class Customer {
   String? id;
   String? category;
-  String? full_name;
-  String? company_name;
 
-  Customer({this.id, this.category, this.full_name, this.company_name});
+  Customer({this.id, this.category,});
 
   Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
