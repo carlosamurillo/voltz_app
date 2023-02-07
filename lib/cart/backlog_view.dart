@@ -1,23 +1,19 @@
 import 'dart:async';
-import 'dart:html' as html;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import '../utils/custom_colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
-class BacklogView extends HookViewModelWidget<QuoteViewModel> {
+class BacklogView extends StackedHookView<QuoteViewModel> {
   BacklogView({Key? key, }) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {
@@ -48,11 +44,11 @@ class BacklogView extends HookViewModelWidget<QuoteViewModel> {
         );
   }
 }
-class WeAreWorking extends HookViewModelWidget<QuoteViewModel> {
+class WeAreWorking extends StackedHookView<QuoteViewModel> {
   const WeAreWorking({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {
@@ -147,13 +143,13 @@ class _ClockTimeElapsedState extends State<_ClockTimeElapsed> {
 
 
 
-class _BacklogItemView extends HookViewModelWidget<QuoteViewModel> {
+class _BacklogItemView extends StackedHookView<QuoteViewModel> {
   const _BacklogItemView({Key? key, required this.product }) : super(key: key, reactive: true);
 
   final PendingProduct product;
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {

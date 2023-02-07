@@ -18,8 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  #sdk: '>=2.18.0-180.0.dev <3.0.0'
-  sdk: ">=2.17.0 <3.0.1"
+  sdk: ">=2.19.1 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,33 +31,35 @@ dependencies:
     sdk: flutter
 
   #format currency
-  intl: ^0.17.0
+  intl: ^0.18.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  flutter_svg: ^1.1.1+1
+  flutter_svg: ^2.0.0+1
   firebase_core: ^2.4.0
   cloud_firestore: ^4.2.0
   firebase_storage: ^11.0.7
 
-  stacked: ^3.0.1 # ViewModelBuilder
-  stacked_services: ^0.9.3
-  stacked_hooks: ^0.2.2
+  stacked: any # ViewModelBuilder
+  stacked_services: ^0.9.9
+  stacked_hooks: ^0.2.3
   number_inc_dec: ^0.8.0
   observable_ish: ^4.0.6
-  stacked_generator: ^0.7.13
+  stacked_generator: ^0.8.5
   provider: ^6.0.3
   url_launcher: ^6.1.5
-  google_fonts: ^3.0.1
+  google_fonts: ^4.0.1
   flutter_segment: ^3.12.1
-  pdf: ^3.8.4 # Para crear pdfs
+  pdf: ^3.9.0 # Para crear pdfs
   path_provider: ^2.0.11
   printing: ^5.9.3
   carousel_slider: ^4.2.1
+  expandable: ^5.0.1
+  flutter_staggered_grid_view: ^0.6.2
 
 dev_dependencies:
-  build_runner: ^2.1.11
+  build_runner: ^2.3.3
 
   flutter_test:
     sdk: flutter
@@ -97,23 +98,23 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Hellix
-      fonts:
-        - asset: fonts/Hellix-Black.ttf
-        - asset: fonts/Hellix-BlackItalic.ttf
-        - asset: fonts/Hellix-Bold.ttf
-        - asset: fonts/Hellix-BoldItalic.ttf
-        - asset: fonts/Hellix-ExtraBold.ttf
-        - asset: fonts/Hellix-ExtraBoldItalic.ttf
-        - asset: fonts/Hellix-Light.ttf
-        - asset: fonts/Hellix-LightItalic.ttf
-        - asset: fonts/Hellix-Medium.ttf
-        - asset: fonts/Hellix-MediumItalic.ttf
-        - asset: fonts/Hellix-Regular.ttf
-        - asset: fonts/Hellix-RegularItalic.ttf
-        - asset: fonts/Hellix-SemiBold.ttf
-        - asset: fonts/Hellix-SemiBoldItalic.ttf
-        - asset: fonts/Hellix-Thin.ttf
-        - asset: fonts/Hellix-ThinItalic.ttf
-
+#  fonts:
+#    - family: Hellix
+#      fonts:
+#        - asset: fonts/Hellix-Black.ttf
+#        - asset: fonts/Hellix-BlackItalic.ttf
+#        - asset: fonts/Hellix-Bold.ttf
+#        - asset: fonts/Hellix-BoldItalic.ttf
+#        - asset: fonts/Hellix-ExtraBold.ttf
+#        - asset: fonts/Hellix-ExtraBoldItalic.ttf
+#        - asset: fonts/Hellix-Light.ttf
+#        - asset: fonts/Hellix-LightItalic.ttf
+#        - asset: fonts/Hellix-Medium.ttf
+#        - asset: fonts/Hellix-MediumItalic.ttf
+#        - asset: fonts/Hellix-Regular.ttf
+#        - asset: fonts/Hellix-RegularItalic.ttf
+#        - asset: fonts/Hellix-SemiBold.ttf
+#        - asset: fonts/Hellix-SemiBoldItalic.ttf
+#        - asset: fonts/Hellix-Thin.ttf
+#        - asset: fonts/Hellix-ThinItalic.ttf
+#

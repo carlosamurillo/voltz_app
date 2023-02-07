@@ -9,7 +9,7 @@ import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -49,7 +49,7 @@ class _CartConfirmationState extends State<CartConfirmation> {
             )
         );
       },
-      onModelReady: (viewModel) => viewModel.initConfirmation(widget.quoteId, widget.version),
+      onViewModelReady: (viewModel) => viewModel.initConfirmation(widget.quoteId, widget.version),
     );
   }
 }
@@ -85,12 +85,12 @@ class _Container extends StatelessWidget {
   }
 }
 
-class _Resume extends HookViewModelWidget<QuoteViewModel> {
+class _Resume extends StackedHookView<QuoteViewModel> {
   _Resume({Key? key}) : super(key: key, reactive: true);
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {
@@ -255,11 +255,11 @@ class _Resume extends HookViewModelWidget<QuoteViewModel> {
 
 }
 
-class _CartContent extends HookViewModelWidget<QuoteViewModel> {
+class _CartContent extends StackedHookView<QuoteViewModel> {
   _CartContent({Key? key,}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {
@@ -336,12 +336,12 @@ class _CartContent extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-class _LabelSavings extends HookViewModelWidget<QuoteViewModel> {
+class _LabelSavings extends StackedHookView<QuoteViewModel> {
   _LabelSavings({Key? key}) : super(key: key, reactive: true);
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget buildViewModelWidget(BuildContext context,
+  Widget builder(BuildContext context,
       QuoteViewModel viewModel,) {
     return Builder(
         builder: (BuildContext context) {
@@ -365,11 +365,11 @@ class _LabelSavings extends HookViewModelWidget<QuoteViewModel> {
 }
 
 
-class CartList extends HookViewModelWidget<QuoteViewModel> {
+class CartList extends StackedHookView<QuoteViewModel> {
   const CartList({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {

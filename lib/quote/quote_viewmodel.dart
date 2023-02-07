@@ -4,15 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
-import 'package:maketplace/products/products_service.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
+import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
+import 'package:stacked_services/stacked_services.dart' show NavigationService;
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
-import '../cart/product_model.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
@@ -20,10 +18,16 @@ import '../utils/stats.dart';
 class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();
   final NavigationService _navigationService = locator<NavigationService>();
+
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_quoteService,];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
+
+  bool updateGrid = true;
 
   QuoteModel get quote => _quoteService.quote;
+  String? get customerName => _quoteService.customerName;
+  String? get companyName => _quoteService.companyName;
+
   String _quoteId = "";
   String? version;
   bool isSaveActive = false;
@@ -34,12 +38,28 @@ class QuoteViewModel  extends ReactiveViewModel  {
   late DocumentSnapshot postByUser;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
+  //Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
+  //Stream<ProductsSuggested> get productsSuggestedStream => _quoteService.stream;
+
+  @override
+  void dispose() {
+    // Optional teardown:
+    super.dispose();
+  }
+
   init(String quoteId, String? version) async {
     _quoteId = quoteId;
     this.version = version;
     initReference();
     _quoteService.init(quoteId, version);
+
     return notifyListeners();
+  }
+
+  //Desactivado mientras se optimiza
+  resetCards() async {
+    /*updateGrid = !updateGrid;
+    await _quoteService.resetCards();*/
   }
 
   initConfirmation(String quoteId, String? version) async {
@@ -126,6 +146,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   Future<bool> updateQuote(QuoteModel quote) async {
+    print(quote.toJson());
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(quote.id);
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.update(reference, quote.toJson());
@@ -142,7 +163,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
   }
 
   void loadingAll (int productIndex) {
-    _quoteService.loadingAll(productIndex);
+    _quoteService.loadingAll();
   }
 
   void loadingTotals () {
@@ -165,47 +186,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     });
   }
 
-  @deprecated
-  OrderModel.OrderModel _generateOrder(){
-    List<OrderModel.OrderDetail> orderDetailList = [];
-    for(int i = 0; i <= quote.detail!.length - 1; i++) {
-      OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();
-      orderDetail.productRequested =  quote.detail![i].productRequested!;
-      orderDetail.productsOrdered = [];
-      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
-        if(quote.detail![i].productsSuggested![b].selected == true) {
-          orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
-            productId: quote.detail![i].productsSuggested![b].productId,
-            sku: quote.detail![i].productsSuggested![b].sku,
-            supplier: quote.detail![i].productsSuggested![b].supplier,
-            skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
-            brand: quote.detail![i].productsSuggested![b].brand,
-            //subBrand: quote.detail![i].productsSuggested![b].subBrand,
-            quantity: quote.detail![i].productsSuggested![b].quantity,
-            saleValue: quote.detail![i].productsSuggested![b].saleValue,
-            saleUnit: quote.detail![i].productsSuggested![b].saleUnit,
-            //salePrice: quote.detail![i].productsSuggested![b].salePrice,
-          ));
-        }
-      }
-      if(orderDetail.productsOrdered!.isNotEmpty){
-        orderDetailList.add(orderDetail);
-      }
-    }
-    if(quote.shipping != null){
-
-    }
-
-    OrderModel.OrderModel orderModel = OrderModel.OrderModel(
-      customerId: quote.customerId,
-      consecutive: 0,
-      alias: quote.alias,
-      detail: orderDetailList,
-      shipping: quote.shipping != null ? OrderModel.Shipping(total: quote.shipping!.total) : null,
-    );
-    return orderModel;
-  }
-
   OrderModel.OrderModel _generateOrderV2(){
     List<OrderModel.OrderDetail> orderDetailList = [];
     for(int i = 0; i <= quote.detail!.length - 1; i++) {
@@ -217,7 +197,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
           orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
             productId: quote.detail![i].productsSuggested![b].productId,
             sku: quote.detail![i].productsSuggested![b].sku,
-            supplier: quote.detail![i].productsSuggested![b].supplier,
             skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
             brand: quote.detail![i].productsSuggested![b].brand,
             coverImage: quote.detail![i].productsSuggested![b].coverImage,

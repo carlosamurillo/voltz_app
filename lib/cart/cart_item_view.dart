@@ -5,9 +5,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/cart/cart_expandable_view.dart';
 import 'package:maketplace/cart/product_detail_view.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../quote/quote_model.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/custom_colors.dart';
@@ -16,15 +17,17 @@ import '../utils/shimmer.dart';
 import '../utils/style.dart';
 import 'cart_item_viewmodel.dart';
 import 'cart_view.dart';
+/*
 
-class CartList extends HookViewModelWidget<QuoteViewModel> {
+class CartList extends StackedHookView<QuoteViewModel> {
   const CartList({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
     BuildContext context,
     QuoteViewModel viewModel,
   ) {
+
     return Builder(
       builder: (BuildContext context) {
         if (viewModel.quote.detail != null) {
@@ -41,7 +44,12 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
               itemCount: viewModel.quote.detail!.length + 1,
               itemBuilder: (context, index) {
                 if (index < viewModel.quote.detail!.length) {
-                  return CartItemView(
+                 */
+/* return CartItemView(
+                    i: index,
+                  );*//*
+
+                  return ProductCard(
                     i: index,
                   );
                 } else if (viewModel.quote.pendingProducts!.isNotEmpty) {
@@ -85,8 +93,8 @@ class _CartItemState extends State<CartItemView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<CartItemViewModel>.nonReactive(
         viewModelBuilder: () => CartItemViewModel(),
-        onModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i),
-        fireOnModelReadyOnce: false,
+        //onViewModelReady: (viewModel) => viewModel.initCartView(cartIndex: widget.i, productSuggested: ),
+        fireOnViewModelReadyOnce: false,
         disposeViewModel: true,
         builder: (context, viewModel, child) {
           return Column(
@@ -117,12 +125,12 @@ class _CartItemState extends State<CartItemView> {
   }
 }
 
-class _CartItemDetail extends HookViewModelWidget<CartItemViewModel> {
+class _CartItemDetail extends StackedHookView<CartItemViewModel> {
   const _CartItemDetail({Key? key,})
       : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(BuildContext context,
+  Widget builder(BuildContext context,
       CartItemViewModel viewModel,) {
     return Expanded(
       child: MouseRegion(
@@ -253,11 +261,11 @@ class _CartItemDetail extends HookViewModelWidget<CartItemViewModel> {
   }
 }
 
-class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
+class _QuantityCalculatorWidget extends StackedHookView<CartItemViewModel> {
   const _QuantityCalculatorWidget({Key? key,}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       CartItemViewModel viewModel,
       ) {
@@ -476,7 +484,8 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
               ),
             ),
           ),
-          /*Container(
+          */
+/*Container(
               width: 300,
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6),),
@@ -512,7 +521,9 @@ class _QuantityCalculatorWidget extends HookViewModelWidget<CartItemViewModel> {
                   ),
                 ),
               )
-          ),*/
+          ),*//*
+
         ]));
   }
 }
+*/

@@ -4,7 +4,6 @@ class OrderModel {
   int? version = 2;
   String? id;
   int? consecutive;
-  String? customerId;
   String? alias;
   Timestamp? createdAt;
   List<OrderDetail>? detail;
@@ -16,7 +15,6 @@ class OrderModel {
 
   OrderModel({this.id,
     this.consecutive,
-    this.customerId,
     this.alias,
     this.createdAt,
     this.detail,
@@ -30,7 +28,6 @@ class OrderModel {
   OrderModel.fromJson(Map<String, dynamic> json, String docId) {
     id = docId;
     consecutive = json['consecutive'];
-    customerId = json['customer_id'];
     alias = json['alias'];
     createdAt = json['created_at'];
     if (json['detail'] != null) {
@@ -55,7 +52,6 @@ class OrderModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['consecutive'] = this.consecutive;
-    data['customer_id'] = this.customerId;
     data['alias'] = this.alias;
     data['created_at'] = this.createdAt;
     if (this.detail != null) {

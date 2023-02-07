@@ -353,3 +353,181 @@ class FormatterIfZeroEmptyReplaceByOne extends TextInputFormatter {
     );
   }
 }
+
+
+class InputTextV3 extends StatefulWidget {
+  InputTextV3({
+    Key? key,
+    this.controller,
+    this.minLines = 1,
+    this.maxLines = 1,
+    this.inputFormatters,
+    this.labelText = null,
+    this.hintText = null,
+    this.prefixIcon,
+    this.validator,
+    this.keyboardType,
+    this.onChanged,
+    this.onEditingComplete,
+    this.enabled = true,
+    this.readOnly = false,
+    this.margin = const EdgeInsets.symmetric(vertical: 12),
+    this.suffixIcon,
+    this.onTap,
+    this.textStyle,
+    this.title,
+    this.filled = false,
+    this.labelColor,
+    this.errorMaxLines,
+    this.textAlign = TextAlign.start,
+    this.activateCounter = false,
+    this.maxLength = null,
+    this.helperText = null,
+    this.autoFocus = false,
+    this.fontSize = 26,
+    this.helperFontSize = 12,
+    this.scrollController,
+    this.paddingContent = const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18.0),
+    this.borderRadius = const BorderRadius.all(Radius.circular(6)),
+    this.focusNode,
+    this.onFieldSubmitted,
+  }) : super(key: key);
+
+  final TextEditingController? controller;
+  final int? minLines;
+  final int? maxLines;
+  final List<TextInputFormatter>? inputFormatters;
+  final String? labelText;
+  final String? hintText;
+  final Widget? prefixIcon;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
+  final bool enabled;
+  final bool readOnly;
+  final EdgeInsetsGeometry margin;
+  final Widget? suffixIcon;
+  final void Function()? onTap;
+  final TextStyle? textStyle;
+  final String? title;
+  final bool filled;
+  final Color? labelColor;
+  final int? errorMaxLines;
+  final TextAlign textAlign;
+  final bool activateCounter;
+  final int? maxLength;
+  final String? helperText;
+  final bool autoFocus;
+  final double fontSize;
+  final double helperFontSize;
+  final ScrollController? scrollController;
+  final EdgeInsets? paddingContent;
+  final BorderRadius borderRadius;
+  final FocusNode? focusNode;
+  final void Function(dynamic)? onFieldSubmitted;
+
+  @override
+  _InputTextV3 createState() => _InputTextV3();
+}
+
+class _InputTextV3 extends State<InputTextV3>{
+
+  late String? counterTextString = null;
+
+  @override
+  void initState() {
+    super.initState();
+    counterTextString = '0/' + widget.maxLength.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      margin: widget.margin,
+      height: 60,
+      alignment: Alignment.centerLeft,
+      child: Column(
+        children: [
+          Material(
+            elevation: 0.0,
+            color: Colors.transparent,
+            child: TextFormField(
+              focusNode: widget.focusNode,
+              textInputAction: TextInputAction.next,
+              scrollController: widget.scrollController != null ? widget.scrollController : null,
+              onChanged: (value) {
+                if(widget.activateCounter) {
+                  setState(() {
+                    counterTextString = '${value.length.toString()}/${widget.maxLength.toString()}';
+                  });
+                }
+                if(widget.onChanged != null) {
+                  widget.onChanged!.call(value);
+                }
+              },
+              key: widget.key,
+              maxLength: widget.maxLength,
+              minLines: widget.minLines,
+              maxLines: widget.maxLines,
+              readOnly: widget.readOnly,
+              controller: widget.controller,
+              onTap: widget.onTap,
+              onEditingComplete: widget.onEditingComplete,
+              inputFormatters: widget.inputFormatters,
+              enabled: widget.enabled,
+              style: widget.textStyle,
+              textAlign: widget.textAlign,
+              textAlignVertical: TextAlignVertical.center,
+              autofocus: widget.autoFocus,
+              onFieldSubmitted:  widget.onFieldSubmitted,
+              decoration: InputDecoration(
+                helperText: widget.helperText,
+                helperStyle: GoogleFonts.inter(color:  Colors.white, fontSize: widget.helperFontSize, fontWeight: FontWeight.w500 ,
+                  fontStyle: FontStyle.normal,),
+                counterText: widget.activateCounter ? counterTextString : null,
+                contentPadding: widget.paddingContent,
+                errorMaxLines: widget.errorMaxLines,
+                isCollapsed: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                alignLabelWithHint: true,
+                hintStyle: GoogleFonts.inter(color: Colors.white, fontSize: widget.fontSize, fontWeight: FontWeight.w500 ,
+                  fontStyle: FontStyle.normal,),
+                labelStyle: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal, fontSize: 18,  ),
+                labelText: widget.labelText,
+                hintText: widget.hintText,
+                filled: false,
+                fillColor:  Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      width: 0,
+                      color: Colors.transparent,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 0,
+                    color: Colors.transparent,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: widget.borderRadius,
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: widget.prefixIcon,
+                suffixIcon: widget.suffixIcon,
+              ),
+              validator: widget.validator,
+              cursorColor: Theme.of(context).primaryColor,
+              keyboardType: widget.keyboardType,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

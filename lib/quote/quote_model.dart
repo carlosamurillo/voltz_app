@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 import '../cart/product_model.dart';
 
 class QuoteModel {
   int? version = 2;
   String? id;
   int? consecutive;
-  String? customerId;
   String? alias;
   Timestamp? createdAt;
   Timestamp? publishedAt;
@@ -21,11 +22,15 @@ class QuoteModel {
   //this is only for local proposes
   bool isCalculatingTotals = false;
 
+  convertTimestampToLocal(Timestamp date){
+    var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
+    return dateTime.toLocal();
+  }
+
   QuoteModel(
       {this.version,
         this.id,
         this.consecutive,
-        this.customerId,
         this.alias,
         this.createdAt,
         this.publishedAt,
@@ -43,7 +48,6 @@ class QuoteModel {
     version = json['version'];
     id = docId;
     consecutive = json['consecutive'];
-    customerId = json['customer_id'];
     alias = json['alias'];
     createdAt = json['created_at'];
     if (json.containsKey('published_at')) {
@@ -87,7 +91,6 @@ class QuoteModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['version'] = this.version;
     data['consecutive'] = this.consecutive;
-    data['customer_id'] = this.customerId;
     data['alias'] = this.alias;
     data['created_at'] = this.createdAt;
     if (this.publishedAt != null) {
@@ -170,7 +173,7 @@ class Detail {
     if (json['products_suggested'] != null) {
       productsSuggested = <ProductsSuggested>[];
       for(int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(new ProductsSuggested.fromJson(json['products_suggested'][a]));
+        productsSuggested!.add(ProductsSuggested.fromJson(json['id'], json['products_suggested'][a]));
       }
     }
   }
@@ -228,12 +231,11 @@ class Total {
 }
 
 class ProductsSuggested {
+
   String? productId;
   String? sku;
-  String? supplier;
   String? skuDescription;
   String? brand;
-  String? subBrand;
   String? techFile;
   double? quantity;
   double? saleValue;
@@ -245,13 +247,19 @@ class ProductsSuggested {
   Total? total = Total();
   String? source;
 
+  /** these are for local propose **/
+  int? cardIndex;
+  String? productRequestedId;
+  bool isCardExpanded = false;
+  bool isCalculatingProductTotals = false;
+  double? discountRate;
+
   ProductsSuggested(
-      {this.productId,
+      {this.productRequestedId,
+        this.productId,
         this.sku,
-        this.supplier,
         this.skuDescription,
         this.brand,
-        this.subBrand,
         this.quantity = 0,
         this.saleValue,
         this.saleUnit,
@@ -260,15 +268,15 @@ class ProductsSuggested {
         this.coverImage,
       this.price,
       this.total,
-      this.source});
+      this.source, this.isCardExpanded = false,
+        this.isCalculatingProductTotals = false,
+      this.discountRate});
 
-  ProductsSuggested.fromJson(Map<String, dynamic> json) {
+  ProductsSuggested.fromJson(String this.productRequestedId, Map<String, dynamic> json) {
     productId = json['product_id'];
     sku = json['sku'];
-    supplier = json['supplier'];
     skuDescription = json['sku_description'];
     brand = json['brand'];
-    subBrand = null;
     techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
     quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
@@ -279,12 +287,14 @@ class ProductsSuggested {
     if (json.containsKey('price')){
       price = Price.fromJson(json['price']);
     }
-    print(json['total']);
     if (json.containsKey('total') && json['total'] != null){
       total = Total.fromJson(json['total']);
     }
     if (json.containsKey('source')){
       source = json['source'];
+    }
+    if(price != null && price!.price2 != null && pricePublic != null){
+      discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
     }
   }
 
@@ -292,10 +302,8 @@ class ProductsSuggested {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['product_id'] = this.productId;
     data['sku'] = this.sku;
-    data['supplier'] = this.supplier;
     data['sku_description'] = this.skuDescription;
     data['brand'] = this.brand;
-    data['sub_brand'] = this.subBrand;
     data['tech_file'] = this.techFile;
     data['quantity'] = this.quantity;
     data['sale_value'] = this.saleValue;

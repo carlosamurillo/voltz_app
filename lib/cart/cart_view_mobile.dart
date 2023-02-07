@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/extensions.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../common/header.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:html' as html;
@@ -75,12 +75,12 @@ class MobileView extends StatelessWidget {
   }
 }
 
-class _summary extends HookViewModelWidget<QuoteViewModel> {
+class _summary extends StackedHookView<QuoteViewModel> {
   _summary({Key? key,}) : super(key: key, reactive: true);
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -190,12 +190,12 @@ class _summary extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-class _cartContent extends HookViewModelWidget<QuoteViewModel> {
+class _cartContent extends StackedHookView<QuoteViewModel> {
   _cartContent({Key? key,}) : super(key: key, reactive: true);
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -495,11 +495,11 @@ class _cartContent extends HookViewModelWidget<QuoteViewModel> {
 }
 
 
-class CartList extends HookViewModelWidget<QuoteViewModel> {
+class CartList extends StackedHookView<QuoteViewModel> {
   const CartList({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel viewModel,
       ) {
@@ -531,12 +531,12 @@ class CartList extends HookViewModelWidget<QuoteViewModel> {
   }
 }
 
-class _cartItemView extends HookViewModelWidget<QuoteViewModel> {
+class _cartItemView extends StackedHookView<QuoteViewModel> {
   const _cartItemView({Key? key, required this.productIndex}) : super(key: key, reactive: true);
   final int productIndex;
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {

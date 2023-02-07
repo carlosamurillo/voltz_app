@@ -4,6 +4,12 @@ import 'package:maketplace/utils/custom_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class CustomStyles {
+
+  static double mobileBreak = 722;
+  static double desktopBreak = 1109;
+  static double mobileHeaderHeight = 60;
+  static double desktopHeaderHeight = 80;
+
   static TextStyle styleBlueUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: CustomColors.safeBlue, fontWeight: FontWeight.w700, fontSize: 24,));
 
   static TextStyle styleWhiteUno = GoogleFonts.montserrat(textStyle: const TextStyle(fontStyle: FontStyle.normal, color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16,));

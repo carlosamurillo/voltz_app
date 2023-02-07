@@ -9,9 +9,10 @@ import 'package:maketplace/quote/quote_viewmodel.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import 'backlog_view.dart';
+import 'cart_expandable_view.dart';
 import 'cart_item_view.dart';
 import 'discard_view.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
+import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class Tabs extends StatefulWidget {
   Tabs({Key? key, required this.tabController }) : super(key: key);
@@ -193,11 +194,11 @@ class __TabsState extends State<Tabs>  {
   }
 }
 
-class _textTab1 extends HookViewModelWidget<QuoteViewModel> {
+class _textTab1 extends StackedHookView<QuoteViewModel> {
 const _textTab1({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -208,11 +209,11 @@ const _textTab1({Key? key}) : super(key: key, reactive: true);
     }
   }
 }
-class _textTab2 extends HookViewModelWidget<QuoteViewModel> {
+class _textTab2 extends StackedHookView<QuoteViewModel> {
   const _textTab2({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -223,11 +224,11 @@ class _textTab2 extends HookViewModelWidget<QuoteViewModel> {
     }
   }
 }
-class _textTab3 extends HookViewModelWidget<QuoteViewModel> {
+class _textTab3 extends StackedHookView<QuoteViewModel> {
   const _textTab3({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget buildViewModelWidget(
+  Widget builder(
       BuildContext context,
       QuoteViewModel model,
       ) {
@@ -264,7 +265,7 @@ class __TabsContentState extends State<TabsContent> {
         controller: widget.tabController,
         dragStartBehavior: DragStartBehavior.start,
         children: [
-          CartList(),
+          CardGrid(),
           BacklogView(),
           DiscardView(),
         ]);

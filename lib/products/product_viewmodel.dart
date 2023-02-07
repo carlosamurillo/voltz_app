@@ -1,6 +1,6 @@
 
 import 'package:maketplace/products/products_service.dart';
-import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
@@ -8,10 +8,11 @@ import '../cart/product_model.dart';
 import 'dart:js' as js;
 
 class ProductViewModel  extends ReactiveViewModel  {
-  final _productsService = locator<ProductsService>();
+  final _productsService = ProductsService();
   final NavigationService _navigationService = locator<NavigationService>();
+
   @override
-  List<ReactiveServiceMixin> get reactiveServices => [_productsService];
+  List<ListenableServiceMixin> get listenableServices => [_productsService];
 
   Product get product => _productsService.product;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
@@ -22,6 +23,10 @@ class ProductViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> openTechFile(String url) async {
+    js.context.callMethod('open', [url]);
+  }
+
+  Future<void> openWebPage(String url) async {
     js.context.callMethod('open', [url]);
   }
 

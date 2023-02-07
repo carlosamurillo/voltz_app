@@ -2,30 +2,37 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
+import '../pdf_quote/download_button.dart';
 import '../utils/custom_colors.dart';
+import '../utils/style.dart';
 
 class Header extends StatelessWidget {
-  Header ({ this.paddingVertical = 20, this.paddingHorizontal = 20});
-  double paddingVertical;
-  double paddingHorizontal;
+  const Header ({super.key,  this.paddingVertical =  14, this.paddingHorizontal = 25});
+  final double paddingVertical;
+  final double paddingHorizontal;
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.symmetric(vertical: paddingVertical, horizontal: paddingHorizontal),
-      color: CustomColors.superVolcanic,
+      padding: media.width >= CustomStyles.desktopBreak ?
+        EdgeInsets.symmetric(vertical: 14, horizontal: 25):
+        EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      color: CustomColors.white,
+      width: double.infinity,
+      height: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
       child: Row(
         children: [
           SvgPicture.asset(
-            'assets/svg/logo_dark_background.svg',
-            width: 122,
-            height: 24.5,
+            'assets/svg/logo_voltz_white_background.svg',
+            width: 120,
+            height: 52,
           ),
           const Spacer(),
-          SvgPicture.asset(
-            'assets/svg/help_button.svg',
-            width: 74,
-            height: 39,
-          ),
+          if(media.width >= CustomStyles.desktopBreak) ...[
+            const PDFDownloadButton(),
+          ] else ... [
+            const PDFDownloadButtonMobile(),
+          ],
         ],
       ),
     );
@@ -49,6 +56,7 @@ class HeaderMobile extends StatelessWidget {
             height: 18,
           ),
           const Spacer(),
+
         ],
       ),
     );

@@ -36,4 +36,19 @@ class CustomColors {
   static const Color muggleGray_3 = Color(0xFF4C5366);
   static const Color muggleGray_4 = Color(0xFF394055);
   static const Color muggleGray_5 = Color(0xFFEFF2FD);
+
+
+  static const Color blueVoltz = Color(0xFF2E5CFF);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color darkVoltz = Color(0xFF394055);
+  static const Color grayVoltz = Color(0xFFBDC3D8);
+  static const Color yellowVoltz = Color(0xFFF7CB2F);
+  static const Color blueSoft = Color(0xFF587DFF);
+  static const Color graySoft = Color(0xFFEFF2FD);
+  static const Color yellowLight = Color(0xFFFEF7E0);
+  static const Color yellowmid = Color(0xFFFBE597);
+  static const Color WBY = Color(0xFFE4E9FC);
+
+
+
 }

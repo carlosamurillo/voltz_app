@@ -4,23 +4,25 @@
 // StackedRouterGenerator
 // **************************************************************************
 
-// ignore_for_file: public_member_api_docs, unused_import, non_constant_identifier_names
-
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:flutter/cupertino.dart' as _i6;
 import 'package:flutter/material.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
-
-import '../cart/cart_confirmation.dart';
-import '../cart/cart_view.dart';
-import '../cart/product_detail_view.dart';
-import '../order/oder_view.dart';
+import 'package:maketplace/cart/cart_confirmation.dart' as _i4;
+import 'package:maketplace/cart/cart_view.dart' as _i2;
+import 'package:maketplace/cart/product_detail_view.dart' as _i5;
+import 'package:maketplace/order/oder_view.dart' as _i3;
+import 'package:stacked/stacked.dart' as _i1;
+import 'package:stacked_services/stacked_services.dart' as _i7;
 
 class Routes {
-  static const String cartView = '/cart-view';
-  static const String orderView = '/order-view';
-  static const String cartConfirmation = '/cart-confirmation';
-  static const String productViewMobile = '/product-view-mobile';
+  static const cartView = '/cart-view';
+
+  static const orderView = '/order-view';
+
+  static const cartConfirmation = '/cart-confirmation';
+
+  static const productViewMobile = '/product-view-mobile';
+
   static const all = <String>{
     cartView,
     orderView,
@@ -29,105 +31,120 @@ class Routes {
   };
 }
 
-class StackedRouter extends RouterBase {
-  @override
-  List<RouteDef> get routes => _routes;
-  final _routes = <RouteDef>[
-    RouteDef(Routes.cartView, page: CartView),
-    RouteDef(Routes.orderView, page: OrderView),
-    RouteDef(Routes.cartConfirmation, page: CartConfirmation),
-    RouteDef(Routes.productViewMobile, page: ProductViewMobile),
+class StackedRouter extends _i1.RouterBase {
+  final _routes = <_i1.RouteDef>[
+    _i1.RouteDef(
+      Routes.cartView,
+      page: _i2.CartView,
+    ),
+    _i1.RouteDef(
+      Routes.orderView,
+      page: _i3.OrderView,
+    ),
+    _i1.RouteDef(
+      Routes.cartConfirmation,
+      page: _i4.CartConfirmation,
+    ),
+    _i1.RouteDef(
+      Routes.productViewMobile,
+      page: _i5.ProductViewMobile,
+    ),
   ];
-  @override
-  Map<Type, StackedRouteFactory> get pagesMap => _pagesMap;
-  final _pagesMap = <Type, StackedRouteFactory>{
-    CartView: (data) {
-      var args = data.getArgs<CartViewArguments>(nullOk: false);
-      return CupertinoPageRoute<dynamic>(
-        builder: (context) => CartView(
-          key: args.key,
-          quoteId: args.quoteId,
-          version: args.version,
-        ),
+
+  final _pagesMap = <Type, _i1.StackedRouteFactory>{
+    _i2.CartView: (data) {
+      final args = data.getArgs<CartViewArguments>(nullOk: false);
+      return _i6.CupertinoPageRoute<dynamic>(
+        builder: (context) => _i2.CartView(
+            key: args.key, quoteId: args.quoteId, version: args.version),
         settings: data,
       );
     },
-    OrderView: (data) {
-      var args = data.getArgs<OrderViewArguments>(nullOk: false);
-      return CupertinoPageRoute<dynamic>(
-        builder: (context) => OrderView(
-          key: args.key,
-          orderId: args.orderId,
-        ),
+    _i3.OrderView: (data) {
+      final args = data.getArgs<OrderViewArguments>(nullOk: false);
+      return _i6.CupertinoPageRoute<dynamic>(
+        builder: (context) =>
+            _i3.OrderView(key: args.key, orderId: args.orderId),
         settings: data,
       );
     },
-    CartConfirmation: (data) {
-      var args = data.getArgs<CartConfirmationArguments>(nullOk: false);
-      return CupertinoPageRoute<dynamic>(
-        builder: (context) => CartConfirmation(
-          key: args.key,
-          quoteId: args.quoteId,
-          version: args.version,
-        ),
+    _i4.CartConfirmation: (data) {
+      final args = data.getArgs<CartConfirmationArguments>(nullOk: false);
+      return _i6.CupertinoPageRoute<dynamic>(
+        builder: (context) => _i4.CartConfirmation(
+            key: args.key, quoteId: args.quoteId, version: args.version),
         settings: data,
       );
     },
-    ProductViewMobile: (data) {
-      var args = data.getArgs<ProductViewMobileArguments>(nullOk: false);
-      return CupertinoPageRoute<dynamic>(
-        builder: (context) => ProductViewMobile(
-          key: args.key,
-          productId: args.productId,
-        ),
+    _i5.ProductViewMobile: (data) {
+      final args = data.getArgs<ProductViewMobileArguments>(nullOk: false);
+      return _i6.CupertinoPageRoute<dynamic>(
+        builder: (context) =>
+            _i5.ProductViewMobile(key: args.key, productId: args.productId),
         settings: data,
       );
     },
   };
+
+  @override
+  List<_i1.RouteDef> get routes => _routes;
+  @override
+  Map<Type, _i1.StackedRouteFactory> get pagesMap => _pagesMap;
 }
 
-/// ************************************************************************
-/// Arguments holder classes
-/// *************************************************************************
-
-/// CartView arguments holder class
 class CartViewArguments {
-  final Key? key;
+  const CartViewArguments({
+    this.key,
+    required this.quoteId,
+    required this.version,
+  });
+
+  final _i6.Key? key;
+
   final String quoteId;
+
   final String? version;
-  CartViewArguments({this.key, required this.quoteId, required this.version});
 }
 
-/// OrderView arguments holder class
 class OrderViewArguments {
-  final Key? key;
+  const OrderViewArguments({
+    this.key,
+    required this.orderId,
+  });
+
+  final _i6.Key? key;
+
   final String orderId;
-  OrderViewArguments({this.key, required this.orderId});
 }
 
-/// CartConfirmation arguments holder class
 class CartConfirmationArguments {
-  final Key? key;
+  const CartConfirmationArguments({
+    this.key,
+    required this.quoteId,
+    required this.version,
+  });
+
+  final _i6.Key? key;
+
   final String quoteId;
+
   final String? version;
-  CartConfirmationArguments(
-      {this.key, required this.quoteId, required this.version});
 }
 
-/// ProductViewMobile arguments holder class
 class ProductViewMobileArguments {
-  final Key? key;
+  const ProductViewMobileArguments({
+    this.key,
+    required this.productId,
+  });
+
+  final _i6.Key? key;
+
   final String productId;
-  ProductViewMobileArguments({this.key, required this.productId});
 }
 
-/// ************************************************************************
-/// Extension for strongly typed navigation
-/// *************************************************************************
-
-extension NavigatorStateExtension on NavigationService {
+extension NavigatorStateExtension on _i7.NavigationService {
   Future<dynamic> navigateToCartView({
-    Key? key,
+    _i6.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -136,19 +153,17 @@ extension NavigatorStateExtension on NavigationService {
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   }) async {
-    return navigateTo(
-      Routes.cartView,
-      arguments:
-          CartViewArguments(key: key, quoteId: quoteId, version: version),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.cartView,
+        arguments:
+            CartViewArguments(key: key, quoteId: quoteId, version: version),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> navigateToOrderView({
-    Key? key,
+    _i6.Key? key,
     required String orderId,
     int? routerId,
     bool preventDuplicates = true,
@@ -156,18 +171,16 @@ extension NavigatorStateExtension on NavigationService {
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   }) async {
-    return navigateTo(
-      Routes.orderView,
-      arguments: OrderViewArguments(key: key, orderId: orderId),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.orderView,
+        arguments: OrderViewArguments(key: key, orderId: orderId),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> navigateToCartConfirmation({
-    Key? key,
+    _i6.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -176,19 +189,17 @@ extension NavigatorStateExtension on NavigationService {
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   }) async {
-    return navigateTo(
-      Routes.cartConfirmation,
-      arguments: CartConfirmationArguments(
-          key: key, quoteId: quoteId, version: version),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.cartConfirmation,
+        arguments: CartConfirmationArguments(
+            key: key, quoteId: quoteId, version: version),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 
   Future<dynamic> navigateToProductViewMobile({
-    Key? key,
+    _i6.Key? key,
     required String productId,
     int? routerId,
     bool preventDuplicates = true,
@@ -196,13 +207,83 @@ extension NavigatorStateExtension on NavigationService {
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
   }) async {
-    return navigateTo(
-      Routes.productViewMobile,
-      arguments: ProductViewMobileArguments(key: key, productId: productId),
-      id: routerId,
-      preventDuplicates: preventDuplicates,
-      parameters: parameters,
-      transition: transition,
-    );
+    return navigateTo<dynamic>(Routes.productViewMobile,
+        arguments: ProductViewMobileArguments(key: key, productId: productId),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithCartView({
+    _i6.Key? key,
+    required String quoteId,
+    required String? version,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.cartView,
+        arguments:
+            CartViewArguments(key: key, quoteId: quoteId, version: version),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithOrderView({
+    _i6.Key? key,
+    required String orderId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.orderView,
+        arguments: OrderViewArguments(key: key, orderId: orderId),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithCartConfirmation({
+    _i6.Key? key,
+    required String quoteId,
+    required String? version,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.cartConfirmation,
+        arguments: CartConfirmationArguments(
+            key: key, quoteId: quoteId, version: version),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithProductViewMobile({
+    _i6.Key? key,
+    required String productId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.productViewMobile,
+        arguments: ProductViewMobileArguments(key: key, productId: productId),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
   }
 }
