@@ -279,7 +279,7 @@ class _ProductCard extends State<ProductCard> {
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 14.0,
-                                        color: CustomColors.darkVoltz,
+                                        color: CustomColors.dark,
                                         height: 1.1,
                                       ),
                                     ),
@@ -297,7 +297,7 @@ class _ProductCard extends State<ProductCard> {
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 14.0,
-                                        color: CustomColors.darkVoltz,
+                                        color: CustomColors.dark,
                                         height: 1.1,
                                       ),
                                     ),
@@ -362,7 +362,7 @@ class _ProductCard extends State<ProductCard> {
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w500,
                                                 fontSize: 18.0,
-                                                color: CustomColors.darkVoltz,
+                                                color: CustomColors.dark,
                                                 height: 1.1,
                                               ),
                                             ),
@@ -374,7 +374,7 @@ class _ProductCard extends State<ProductCard> {
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12.0,
-                                                color: CustomColors.darkVoltz,
+                                                color: CustomColors.dark,
                                                 height: 1.1,
                                               ),
                                             ),
@@ -402,7 +402,7 @@ class _ProductCard extends State<ProductCard> {
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w400,
                                         fontSize: 12.0,
-                                        color: CustomColors.darkVoltz,
+                                        color: CustomColors.dark,
                                         height: 1.1,
                                       ),
                                     ),
@@ -421,7 +421,7 @@ class _ProductCard extends State<ProductCard> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 16.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                         ),
                       ),
                     ],
@@ -489,7 +489,7 @@ class _ProductCard extends State<ProductCard> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
                           fontSize: 16.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                         ),
                       ),
                       width: 167.0,
@@ -581,7 +581,7 @@ class _ProductDetail extends State<ProductDetail> {
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w500,
                               fontSize: 16.0,
-                              color: CustomColors.darkVoltz,
+                              color: CustomColors.dark,
                             ),
                           ),
                           MouseRegion(
@@ -593,7 +593,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(const Radius.circular(200.0)),
                                   border: Border.all(
-                                      color: CustomColors.darkVoltz,
+                                      color: CustomColors.dark,
                                       width: 1,
                                       style: BorderStyle.solid
                                   ),
@@ -604,7 +604,7 @@ class _ProductDetail extends State<ProductDetail> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 13.0,
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -649,7 +649,7 @@ class _ProductDetail extends State<ProductDetail> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                   ),
                                 ),
                               ),
@@ -724,7 +724,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16.0,
-                                  color: CustomColors.darkVoltz,
+                                  color: CustomColors.dark,
                                 ),
                               ),
                             ),
@@ -740,7 +740,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14.0,
-                                  color: CustomColors.darkVoltz,
+                                  color: CustomColors.dark,
                                 ),
                               ),
                               width: 310.0,
@@ -780,7 +780,7 @@ class _ProductDetail extends State<ProductDetail> {
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w500,
                               fontSize: 16.0,
-                              color: CustomColors.darkVoltz,
+                              color: CustomColors.dark,
                             ),
                           ),
                           MouseRegion(
@@ -792,7 +792,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.all(const Radius.circular(200.0)),
                                     border: Border.all(
-                                        color: CustomColors.darkVoltz,
+                                        color: CustomColors.dark,
                                         width: 1,
                                         style: BorderStyle.solid
                                     ),
@@ -803,7 +803,7 @@ class _ProductDetail extends State<ProductDetail> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 13.0,
-                                      color: CustomColors.darkVoltz,
+                                      color: CustomColors.dark,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -833,8 +833,6 @@ class _ProductDetail extends State<ProductDetail> {
   }
 }
 
-
-
 class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
   const _QuantityCalculatorWidget({Key? key, required this.index}) : super(key: key, reactive: true);
   final int index;
@@ -862,7 +860,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
                       fontSize: 22.0,
-                      color: CustomColors.darkVoltz,
+                      color: CustomColors.dark,
                       height: 1.2,
                     ),
                   ),
@@ -872,7 +870,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0,
-                      color: CustomColors.darkVoltz,
+                      color: CustomColors.dark,
                       height: 1.2,
                     ),
                   ),
@@ -971,7 +969,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             borderRadius: BorderRadius.all(Radius.circular(6),),
                             color: Color(0xFFE4E9FC),
                             border: Border.all(
-                              color: CustomColors.darkVoltz, //                   <--- border color
+                              color: CustomColors.dark, //                   <--- border color
                               width: 1.0,
                             ),
                           ),
@@ -987,7 +985,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 22.0,
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                   ),
                                   textAlign: TextAlign.start,
                                   controller: viewModel.textEditingController,
@@ -1027,7 +1025,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   width: 141.0,
                                   height: 30,
                                   decoration: const BoxDecoration(
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                     borderRadius: BorderRadius.all(Radius.circular(200.0)),
                                   ),
                                   child: TextFieldTapRegion(
@@ -1116,7 +1114,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
                           fontSize: 22.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                           height: 1.2,
                         ),
                         textAlign: TextAlign.left,
@@ -1128,7 +1126,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                           height: 1.2,
                         ),
                       ),
@@ -1155,7 +1153,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,
                   fontSize: 12.0,
-                  color: CustomColors.darkVoltz,
+                  color: CustomColors.dark,
                 ),
               ),
             ],
@@ -1183,7 +1181,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
                           fontSize: 16.0,
-                          color: CustomColors.blueVoltz,
+                          color: CustomColors.blue,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -1235,7 +1233,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
       children: [
         Container(
             decoration: const BoxDecoration(
-              color: CustomColors.darkVoltz,
+              color: CustomColors.dark,
               borderRadius: BorderRadius.all(Radius.circular(6.0)),
             ),
             width: 362.0,
@@ -1303,7 +1301,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                   width: 362.0,
                   padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
                   decoration: const BoxDecoration(
-                    color: CustomColors.darkVoltz,
+                    color: CustomColors.dark,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
                   ),
                   child: Column(

@@ -429,7 +429,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
                           fontSize: media.width  >= CustomStyles.desktopBreak ? 42.0 : 32,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                           overflow: TextOverflow.clip,
                         ),
                       ),
@@ -447,7 +447,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if(model.customerName != null) ... [
-                      const Icon(Icons.perm_identity, size: 24),
+                      const Icon(Icons.perm_identity, size: 24, color: CustomColors.dark_1),
                       const SizedBox(width: 9,),
                       SelectableText(
                         model.customerName!,
@@ -455,13 +455,13 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 14.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark_1,
                         ),
                       ),
                     ],
                     if(model.companyName != null) ... [
                       const SizedBox(width: 18,),
-                      const Icon(Icons.business, size: 24),
+                      const Icon(Icons.business, size: 24, color: CustomColors.dark_1),
                       const SizedBox(width: 9,),
                       SelectableText(
                         model.companyName!,
@@ -469,7 +469,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 14.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark_1,
                         ),
                       ),
                     ],
