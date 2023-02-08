@@ -1,31 +1,27 @@
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import 'package:flutter/foundation.dart';
 import 'app/app.locator.dart';
 import 'app/app.router.dart';
 import 'cart/cart_view.dart';
+
+// http://localhost:8080/?cotz=LDviRW7F3hoBPZ4LzWfN
 
 void mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
   VoltzKeys _config = VoltzKeys();
 
-
-
   if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
     // Some android/ios specific code
-  }
-  else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
+  } else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
     // Some desktop specific code there
-  }
-  else {
+  } else {
     // Some web specific code there
-
   }
 
   await Firebase.initializeApp(
@@ -35,7 +31,10 @@ void mainCommon() async {
   String? version = Uri.base.queryParameters["version"];
   print("el id cotizacion es : ${quoteId}");
   setupLocator();
-  runApp( MyApp(quoteId: quoteId, version: version,));
+  runApp(MyApp(
+    quoteId: quoteId,
+    version: version,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -65,7 +64,10 @@ class MyApp extends StatelessWidget {
         fontFamily: "Hellix",
       ),
       //home: QuoteView(quoteId: quoteId, version: version,),
-      home: CartView(quoteId: quoteId, version: version,),
+      home: CartView(
+        quoteId: quoteId,
+        version: version,
+      ),
       navigatorKey: StackedService.navigatorKey,
       // home: AddCardView(), // Used when testing a view
       //initialRoute: Routes.cartView,

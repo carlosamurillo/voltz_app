@@ -1,7 +1,5 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
@@ -9,8 +7,8 @@ import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../utils/custom_colors.dart';
 
 
-class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
-  const PDFDownloadButton({Key? key}) : super(key: key, reactive: true);
+class CsvDownloadButton extends StackedHookView<QuoteViewModel> {
+  const CsvDownloadButton({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
@@ -59,7 +57,7 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                Text('PDF',
+                                Text('CSV',
                                   style: GoogleFonts.inter(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
@@ -89,8 +87,8 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
 
 
 
-class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
-  const PDFDownloadButtonMobile({Key? key}) : super(key: key, reactive: true);
+class CsvDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
+  const CsvDownloadButtonMobile({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
