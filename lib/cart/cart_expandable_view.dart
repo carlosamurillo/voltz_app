@@ -1017,14 +1017,11 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               ),
                               Container(
                                 color: Colors.transparent,
-                                width: 150,
-                                height: 60,
                                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 15),
                                 alignment: Alignment.center,
                                 child: viewModel.isQtyControlOpen
                                     ? Container(
-                                  width: 141.0,
-                                  height: 30,
+                                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
                                   decoration: const BoxDecoration(
                                     color: CustomColors.dark,
                                     borderRadius: BorderRadius.all(Radius.circular(200.0)),
@@ -1062,7 +1059,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                             fontStyle: FontStyle.normal,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 13.0,
-                                            color: const Color(0xFF9C9FAA),
+                                            color: CustomColors.white,
                                           ),
                                           textAlign: TextAlign.center,
                                         ),
