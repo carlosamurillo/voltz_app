@@ -424,7 +424,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                     width: media.width >= CustomStyles.mobileBreak ? (media.width - 310 - 50) : media.width - 50,
                     child: Text(
                       model.quote.alias!,
-                      style: GoogleFonts.inter(
+                      style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
