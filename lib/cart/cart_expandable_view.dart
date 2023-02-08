@@ -448,6 +448,7 @@ class _ProductCard extends State<ProductCard> {
   }
 
   Widget getHeader(BuildContext context, CardItemViewModel viewModel){
+    var media = MediaQuery.of(context).size;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -476,15 +477,16 @@ class _ProductCard extends State<ProductCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 24.0,
                       height: 24.0,
                       child: SvgPicture.asset('assets/svg/info_icon.svg', height: 24, width: 24,),
                     ),
                     const SizedBox(width: 10,),
-                    Container(
+                    SizedBox(
+                      width: 167.0,
                       child: Text(
-                        'Detalles del producto',
+                        media.width >= CustomStyles.mobileBreak ? 'Detalles del producto' : "Detalles",
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
@@ -492,7 +494,6 @@ class _ProductCard extends State<ProductCard> {
                           color: CustomColors.dark,
                         ),
                       ),
-                      width: 167.0,
                     ),
                     const Spacer(),
                     Container(
