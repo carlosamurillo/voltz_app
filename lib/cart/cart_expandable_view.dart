@@ -486,7 +486,7 @@ class _ProductCard extends State<ProductCard> {
                     SizedBox(
                       width: 167.0,
                       child: Text(
-                        media.width >= CustomStyles.mobileBreak ? 'Detalles del producto' : "Detalles",
+                        media.width >= CustomStyles.desktopBreak ? 'Detalles del producto' : "Detalles",
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
@@ -888,6 +888,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
       BuildContext context,
       CardItemViewModel viewModel,
       ) {
+    var media = MediaQuery.of(context).size;
     return Builder(
         builder: (BuildContext context) {
     return Container(
@@ -916,6 +917,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
               children: [
                 Container(
                   width: 288,
+                  height: 65,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(6),),
                     color: Color(0xFFE4E9FC),
@@ -924,7 +926,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                     children: [
                       if(!viewModel.isCalculatorActive)...[
                         Container(
-                            height: 60,
+                            height: 65,
                             width: 50,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
@@ -946,7 +948,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           getQtyLabel(viewModel, 0),
                         ],
                         Container(
-                          height: 60,
+                          height: 65,
                           width: 50,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -965,7 +967,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       ] else ... [
                         Container(
                           width: 288,
-                          height: 60,
+                          height: 65,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(Radius.circular(6),),
                             color: Color(0xFFE4E9FC),
@@ -1017,52 +1019,47 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               ),
                               Container(
                                 color: Colors.transparent,
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 15),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                                 alignment: Alignment.center,
                                 child: viewModel.isQtyControlOpen
-                                    ? Container(
-                                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 24),
-                                  decoration: const BoxDecoration(
-                                    color: CustomColors.dark,
-                                    borderRadius: BorderRadius.all(Radius.circular(200.0)),
-                                  ),
-                                  child: TextFieldTapRegion(
-                                    child: TextButton(
-                                      focusNode: viewModel.focusNodeButton,
-                                      style: ButtonStyle(
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                              (Set<MaterialState> states) {
-                                            return Colors.transparent;
-                                          },
-                                        ),
-                                        backgroundColor:
-                                        MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                              (Set<MaterialState> states) {
-                                            return Colors.transparent;
-                                          },
-                                        ),
+                                    ? TextFieldTapRegion(
+                                  child: TextButton(
+                                    focusNode: viewModel.focusNodeButton,
+                                    style: ButtonStyle(
+                                      overlayColor: MaterialStateProperty
+                                          .resolveWith<Color?>(
+                                            (Set<MaterialState> states) {
+                                          return Colors.transparent;
+                                        },
                                       ),
-                                      onPressed: () {
-                                        print('Se dio clic en Button onPressCalculate');
-                                        viewModel.onPressCalculate(context, index);
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        constraints: const BoxConstraints(
-                                          minHeight: 30.0,
+                                      backgroundColor:
+                                      MaterialStateProperty
+                                          .resolveWith<Color?>(
+                                            (Set<MaterialState> states) {
+                                          return Colors.transparent;
+                                        },
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      print('Se dio clic en Button onPressCalculate');
+                                      viewModel.onPressCalculate(context, index);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 24),
+                                      decoration: const BoxDecoration(
+                                        color: CustomColors.dark,
+                                        borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Actualizar',
+                                        style: GoogleFonts.inter(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 13.0,
+                                          color: CustomColors.white,
                                         ),
-                                        child: Text(
-                                          'Actualizar',
-                                          style: GoogleFonts.inter(
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 13.0,
-                                            color: CustomColors.white,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),
