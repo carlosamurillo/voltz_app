@@ -64,7 +64,7 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
