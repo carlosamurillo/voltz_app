@@ -23,8 +23,8 @@ class QuoteService with ListenableServiceMixin {
   final RxValue<String?> _rxCustomerName = RxValue<String?>(null);
   String? get customerName => _rxCustomerName.value;
 
-  final RxValue<List<ProductsSuggested>> _rxSelectedProducts = RxValue<List<ProductsSuggested>>([]);
-  List<ProductsSuggested> get selectedProducts => _rxSelectedProducts.value;
+  final RxValue<List<ProductSuggested>> _rxSelectedProducts = RxValue<List<ProductSuggested>>([]);
+  List<ProductSuggested> get selectedProducts => _rxSelectedProducts.value;
 
   QuoteService() {
     listenToReactiveValues([_rxQuote, _rxSelectedProducts, _rxCompanyName, _rxCustomerName]);
@@ -46,9 +46,9 @@ class QuoteService with ListenableServiceMixin {
     }
   }
 
-  final StreamController<List<ProductsSuggested>> _streamController = StreamController<List<ProductsSuggested>>();
+  final StreamController<List<ProductSuggested>> _streamController = StreamController<List<ProductSuggested>>();
 // Creating a new stream through the controller
-  Stream<List<ProductsSuggested>> get getStream => _streamController.stream;
+  Stream<List<ProductSuggested>> get getStream => _streamController.stream;
 
   streamProducts() async {
     print('se llamo el servicio streamProducts');

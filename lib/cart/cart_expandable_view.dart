@@ -1,16 +1,16 @@
 import 'dart:html' as html;
+
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
+
 import '../products/product_viewmodel.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/inputText.dart';
@@ -18,99 +18,20 @@ import '../utils/shimmer.dart';
 import '../utils/style.dart';
 import 'cart_expandible_viewmodel.dart';
 import 'cart_item_viewmodel.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'cart_view.dart';
 
 class CardGrid extends StatelessWidget {
-  const CardGrid({Key? key}) : super(key: key,);
-/*
-  @override
-  Widget builder(
-      BuildContext context,
-      CardViewModel viewModel,
-      ) {
-    var media = MediaQuery.of(context).size;
-    print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
-    return StreamBuilder<ProductsSuggested>(
-        stream: viewModel.stream,
-        builder: (BuildContext context, AsyncSnapshot<ProductsSuggested> snapshot) {
-          if(!snapshot.hasData) {
-            return const Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          html.window.history.pushState(
-              null,
-              'Voltz - Cotización ${viewModel.quote.consecutive}',
-              '?cotz=${viewModel.quote.id!}');
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(right: 25, left: 25),
-                height: double.infinity,
-                width: ((media.width - 310 - 25) / 387).truncateToDouble() * (387) + 25,
-                //width: media.width > 900 && media.width <= 1300 ? 799 : (media.width > 1300 && media.width <= 1800 ? 1186 : media.width > 1800 ? 1573 : 412),
-                *//*child: MasonryGridView.count(
-                    physics: const BouncingScrollPhysics(),
-                    //itemCount: viewModel.updateGrid ?(viewModel.quote.detail!.length > 3 ? 3 : viewModel.quote.detail!.length + 1): viewModel.quote.detail!.length,
-                    //viewModel.quote.detail!.length + 1,
-                    itemCount: viewModel.countProducts,
-                    mainAxisSpacing: 25,
-                    crossAxisSpacing: 25,
-                    itemBuilder: (context, index) {
-                      if (index < viewModel.countProducts) {
-                        return ProductCard(
-                          i: index, productSuggested: snapshot.data!,
-                        );
-                      } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                        return const PendingCard();
-                      } else {
-                        return Container();
-                      }
-                    },
-                  crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
-                  //crossAxisCount: media.width > 900 && media.width <= 1300 ? 2 : media.width > 1300 && media.width <= 1800 ? 3 : media.width > 1800 ? 4  : 1,
-                ),*//*
-                child: CustomScrollView(
-                  slivers: [
-                    SliverMasonryGrid.extent(
-                      maxCrossAxisExtent: 362,
-                      mainAxisSpacing: 25,
-                      crossAxisSpacing: 25,
-                      itemBuilder: (context, index) {
-                        if (index < viewModel.productList.length) {
-                          return ProductCard(
-                            i: index, productSuggested: viewModel.productList.elementAt(index),
-                          );
-                        } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                          return const PendingCard();
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        });
-  }*/
-  
+  const CardGrid({Key? key})
+      : super(
+          key: key,
+        );
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GridViewModel>.reactive(
       fireOnViewModelReadyOnce: true,
       builder: (context, viewModel, child) {
         var media = MediaQuery.of(context).size;
-        if(viewModel.selectedProducts.isEmpty) {
+        if (viewModel.selectedProducts.isEmpty) {
           return const Center(
             child: SizedBox(
               width: 30,
@@ -120,21 +41,18 @@ class CardGrid extends StatelessWidget {
           );
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
-        html.window.history.pushState(
-            null,
-            'Voltz - Cotización ${viewModel.quote.consecutive}',
-            '?cotz=${viewModel.quote.id!}');
+        html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize:  MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
-                slivers: <Widget> [
-                  if(media.width >= CustomStyles.desktopBreak) ...[
+                slivers: <Widget>[
+                  if (media.width >= CustomStyles.desktopBreak) ...[
                     const SliverPadding(
                       padding: EdgeInsets.only(top: 25, bottom: 25),
                     ),
@@ -142,7 +60,7 @@ class CardGrid extends StatelessWidget {
                   const SliverToBoxAdapter(
                     child: CustomerInfo(),
                   ),
-                  if(media.width >= CustomStyles.desktopBreak) ...[
+                  if (media.width >= CustomStyles.desktopBreak) ...[
                     const SliverPadding(
                       padding: EdgeInsets.only(top: 25, bottom: 25),
                     ),
@@ -151,7 +69,9 @@ class CardGrid extends StatelessWidget {
                     padding: media.width >= CustomStyles.mobileBreak ? const EdgeInsets.only(right: 25, left: 25) : const EdgeInsets.only(right: 0, left: 0),
                     sliver: SliverMasonryGrid.count(
                       //maxCrossAxisExtent: 362,
-                      childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty ? viewModel.selectedProducts.length + 1 : viewModel.selectedProducts.length,
+                      childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty
+                          ? viewModel.selectedProducts.length + 1
+                          : viewModel.selectedProducts.length,
                       mainAxisSpacing: 25,
                       crossAxisSpacing: 25,
                       itemBuilder: (context, index) {
@@ -164,13 +84,16 @@ class CardGrid extends StatelessWidget {
                         } else {
                           return Container();
                         }
-                      }, crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
+                      },
+                      crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
                     ),
                   ),
                   const SliverToBoxAdapter(
-                    child: SizedBox(height: 25,),
+                    child: SizedBox(
+                      height: 25,
+                    ),
                   ),
-                  if(media.width < CustomStyles.mobileBreak)...[
+                  if (media.width < CustomStyles.mobileBreak) ...[
                     SliverToBoxAdapter(
                       child: Resume(),
                     ),
@@ -198,264 +121,278 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCard extends State<ProductCard> {
-
   @override
   Widget build(BuildContext context) {
+    //if (widget.i == 1) return NoFoundCard();
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
-        onViewModelReady: (viewModel) => viewModel.initCartView(cardIndex: widget.i,),
+        onViewModelReady: (viewModel) => viewModel.initCartView(
+              cardIndex: widget.i,
+            ),
         fireOnViewModelReadyOnce: false,
         //disposeViewModel: true,
         //createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
           print('_ProductCard ... Se actualiza la vista ');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-            width: 362.0,
-            padding: const EdgeInsets.all(0.0),
-            decoration: BoxDecoration(
-              color: CustomColors.white,
-              borderRadius: BorderRadius.all(const Radius.circular(6.0)),
-              border: Border.all(
-                  color: Color(0xFFD9E0FC),
-                  width: 1,
-                  style: BorderStyle.solid
+          return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Container(
+              width: 362.0,
+              padding: const EdgeInsets.all(0.0),
+              decoration: BoxDecoration(
+                color: CustomColors.white,
+                borderRadius: BorderRadius.all(const Radius.circular(6.0)),
+                border: Border.all(color: Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 362.0,
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (viewModel.selectedProducts[widget.i].coverImage == null) ...[
-                            SizedBox(
-                                width: 120,
-                                height: 120,
-                                child: Image.asset(
-                                  'assets/images/no_photo.png',
-                                  height: 120,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 362.0,
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (viewModel.selectedProducts[widget.i].coverImage == null) ...[
+                              SizedBox(
                                   width: 120,
-                                )),
-                          ] else ...[
-                            SizedBox(
-                                width: 120,
-                                height: 120,
-                                child: Image.network(
-                                  viewModel.selectedProducts[widget.i].coverImage!,
                                   height: 120,
+                                  child: Image.asset(
+                                    'assets/images/no_photo.png',
+                                    height: 120,
+                                    width: 120,
+                                  )),
+                            ] else ...[
+                              SizedBox(
                                   width: 120,
-                                )),
-                          ],
-                          const SizedBox(width: 15,),
-                          SizedBox(
-                            width: 175.0,
-                            height: 120.0,
-                            child:  Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                    if(viewModel.selectedProducts[widget.i].brand!.toLowerCase() == 'tecnolite')...[
-                                      Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
-                                      const SizedBox(width: 5,),
-                                    ],
-                                    SelectableText(
-                                      viewModel.selectedProducts[widget.i].brand!,
-                                      maxLines: 1,
-                                      style: GoogleFonts.inter(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                        color: CustomColors.dark,
-                                        height: 1.1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SelectableText(
-                                      viewModel.selectedProducts[widget.i].sku!,
-                                      maxLines: 1,
-                                      style: GoogleFonts.inter(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14.0,
-                                        color: CustomColors.dark,
-                                        height: 1.1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SelectableText(
-                                      viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].pricePublic!),
-                                      maxLines: 1,
-                                      style: GoogleFonts.inter(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 14.0,
-                                        decoration: TextDecoration.lineThrough,
-                                        color: Color(0xFF9C9FAA),
-                                        height: 1.1,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5,),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                      color: CustomColors.yellowVoltz,
-                                      child: SelectableText(
-                                        "${(viewModel.selectedProducts[widget.i].discountRate!).toStringAsFixed(2)}%" ,
-                                        enableInteractiveSelection: false,
+                                  height: 120,
+                                  child: Image.network(
+                                    viewModel.selectedProducts[widget.i].coverImage!,
+                                    height: 120,
+                                    width: 120,
+                                  )),
+                            ],
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            SizedBox(
+                              width: 175.0,
+                              height: 120.0,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      //Esto es temporal mientras se programa en el backend todas las marcas para la bd
+                                      if (viewModel.selectedProducts[widget.i].brand!.toLowerCase() == 'tecnolite') ...[
+                                        Image.asset(
+                                          'assets/images/favicon_tecnolite.png',
+                                          width: 16,
+                                          height: 17,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                      ],
+                                      SelectableText(
+                                        viewModel.selectedProducts[widget.i].brand!,
                                         maxLines: 1,
                                         style: GoogleFonts.inter(
                                           fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12.0,
-                                          color: Colors.white,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14.0,
+                                          color: CustomColors.dark,
                                           height: 1.1,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Shimmer(
-                                      linearGradient: viewModel.shimmerGradientWhiteBackground,
-                                      child: ShimmerLoading(
-                                        isLoading:
-                                        viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
-                                        shimmerEmptyBox: const ShimmerEmptyBox(
-                                          width: 160,
-                                          height: 21,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            SelectableText(
-                                              viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 18.0,
-                                                color: CustomColors.dark,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 5,),
-                                            SelectableText(
-                                              viewModel.selectedProducts[widget.i].saleUnit!,
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12.0,
-                                                color: CustomColors.dark,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                          ],
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SelectableText(
+                                        viewModel.selectedProducts[widget.i].sku!,
+                                        maxLines: 1,
+                                        style: GoogleFonts.inter(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14.0,
+                                          color: CustomColors.dark,
+                                          height: 1.1,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/svg/copa_icon.svg',
-                                      width: 12,
-                                      height: 12,
-                                    ),
-                                    const SizedBox(width: 5,),
-                                    SelectableText(
-                                      "Precio según cantidad",
-                                      maxLines: 1,
-                                      style: GoogleFonts.inter(
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 12.0,
-                                        color: CustomColors.dark,
-                                        height: 1.1,
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SelectableText(
+                                        viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].pricePublic!),
+                                        maxLines: 1,
+                                        style: GoogleFonts.inter(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14.0,
+                                          decoration: TextDecoration.lineThrough,
+                                          color: Color(0xFF9C9FAA),
+                                          height: 1.1,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                        color: CustomColors.yellowVoltz,
+                                        child: SelectableText(
+                                          "${(viewModel.selectedProducts[widget.i].discountRate!).toStringAsFixed(2)}%",
+                                          enableInteractiveSelection: false,
+                                          maxLines: 1,
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 12.0,
+                                            color: Colors.white,
+                                            height: 1.1,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Shimmer(
+                                        linearGradient: viewModel.shimmerGradientWhiteBackground,
+                                        child: ShimmerLoading(
+                                          isLoading: viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
+                                          shimmerEmptyBox: const ShimmerEmptyBox(
+                                            width: 160,
+                                            height: 21,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              SelectableText(
+                                                viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
+                                                maxLines: 1,
+                                                style: GoogleFonts.inter(
+                                                  fontStyle: FontStyle.normal,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 18.0,
+                                                  color: CustomColors.dark,
+                                                  height: 1.1,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              SelectableText(
+                                                viewModel.selectedProducts[widget.i].saleUnit!,
+                                                maxLines: 1,
+                                                style: GoogleFonts.inter(
+                                                  fontStyle: FontStyle.normal,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12.0,
+                                                  color: CustomColors.dark,
+                                                  height: 1.1,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/svg/copa_icon.svg',
+                                        width: 12,
+                                        height: 12,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      SelectableText(
+                                        "Precio según cantidad",
+                                        maxLines: 1,
+                                        style: GoogleFonts.inter(
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 12.0,
+                                          color: CustomColors.dark,
+                                          height: 1.1,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 25,),
-                      SelectableText(viewModel.selectedProducts[widget.i].skuDescription!
-                          .replaceAll("<em>", "")
-                          .replaceAll("<\/em>", ""),
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.0,
-                          color: CustomColors.dark,
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        SelectableText(
+                          viewModel.selectedProducts[widget.i].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.0,
+                            color: CustomColors.dark,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                if(viewModel.selectedProducts[widget.i].techFile!=null) ...[
-                  getHeader(context, viewModel),
-                ] else ...[
-                  const Divider(
-                    thickness: 1,
-                    color: Color(0xFFD9E0FC),
-                  ),
+                  if (viewModel.selectedProducts[widget.i].techFile != null) ...[
+                    getHeader(context, viewModel),
+                  ] else ...[
+                    const Divider(
+                      thickness: 1,
+                      color: Color(0xFFD9E0FC),
+                    ),
+                  ],
+                  if (viewModel.selectedProducts[widget.i].isCardExpanded) ...[
+                    ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!),
+                  ],
+                  _QuantityCalculatorWidget(index: widget.i),
                 ],
-                if(viewModel.selectedProducts[widget.i].isCardExpanded)...[
-                  ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!),
-                ],
-                 _QuantityCalculatorWidget(index: widget.i),
-              ],
+              ),
             ),
-        ),
-      ]
-    );
+          ]);
         });
   }
 
-  Widget getHeader(BuildContext context, CardItemViewModel viewModel){
-    var media = MediaQuery.of(context).size;
+  Widget getHeader(BuildContext context, CardItemViewModel viewModel) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () async {
           print('dio clic ....');
-            viewModel.expandOrCollapseCard(widget.i);
-          },
+          viewModel.expandOrCollapseCard(widget.i);
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -465,28 +402,28 @@ class _ProductCard extends State<ProductCard> {
                 height: 60.0,
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  border: Border.symmetric(
-                    horizontal: BorderSide(
-                      color: Color(0xFFE4E9FC),
-                      width: 1,
-                      style: BorderStyle.solid)
-                  ),
+                  border: Border.symmetric(horizontal: BorderSide(color: Color(0xFFE4E9FC), width: 1, style: BorderStyle.solid)),
                 ),
                 padding: const EdgeInsets.only(top: 20.0, right: 25.0, bottom: 20.0, left: 25.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    Container(
                       width: 24.0,
                       height: 24.0,
-                      child: SvgPicture.asset('assets/svg/info_icon.svg', height: 24, width: 24,),
+                      child: SvgPicture.asset(
+                        'assets/svg/info_icon.svg',
+                        height: 24,
+                        width: 24,
+                      ),
                     ),
-                    const SizedBox(width: 10,),
-                    SizedBox(
-                      width: 167.0,
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Container(
                       child: Text(
-                        media.width >= CustomStyles.desktopBreak ? 'Detalles del producto' : "Detalles",
+                        'Detalles del producto',
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
@@ -494,21 +431,20 @@ class _ProductCard extends State<ProductCard> {
                           color: CustomColors.dark,
                         ),
                       ),
+                      width: 167.0,
                     ),
                     const Spacer(),
                     Container(
-                      child: viewModel.selectedProducts[widget.i].isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: viewModel.selectedProducts[widget.i].isCardExpanded ? const Icon(Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),
     );
   }
 }
-
 
 class ProductDetail extends StatefulWidget {
   ProductDetail({
@@ -522,7 +458,6 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetail extends State<ProductDetail> {
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
@@ -532,42 +467,39 @@ class _ProductDetail extends State<ProductDetail> {
         disposeViewModel: true,
         createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
-    if(viewModel.product.techFile!=null || viewModel.product.imageUrls != null || viewModel.product.features != null ||
-    viewModel.product.makerWeb != null) {
-      return getExpandedContent(context, viewModel);
-    } else {
-      return Container(
-        width: 362.0,
-        padding: const EdgeInsets.all(25.0),
-        decoration: const BoxDecoration(
-          color: Color(0xFFF8FAFF),
-        ),
-        child: const Center(
-          child: SizedBox(
-            width: 30,
-            height: 30,
-            child: CircularProgressIndicator(),
-          ),
-        )
-      );
-    }
+          if (viewModel.product.techFile != null || viewModel.product.imageUrls != null || viewModel.product.features != null || viewModel.product.makerWeb != null) {
+            return getExpandedContent(context, viewModel);
+          } else {
+            return Container(
+                width: 362.0,
+                padding: const EdgeInsets.all(25.0),
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF8FAFF),
+                ),
+                child: const Center(
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(),
+                  ),
+                ));
+          }
         });
   }
 
-
-  Widget getExpandedContent(BuildContext context, ProductViewModel viewModel){
+  Widget getExpandedContent(BuildContext context, ProductViewModel viewModel) {
     return Container(
       width: 362.0,
-        padding: const EdgeInsets.all(25.0),
-        decoration: const BoxDecoration(
-          color: Color(0xFFF8FAFF),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if(viewModel.product.techFile!=null) ...[
-              Row(
+      padding: const EdgeInsets.all(25.0),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF8FAFF),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (viewModel.product.techFile != null) ...[
+            Row(
               children: [
                 Container(
                     width: 310.0,
@@ -576,16 +508,16 @@ class _ProductDetail extends State<ProductDetail> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                          Text(
-                            'Ficha técnica',
-                            style: GoogleFonts.inter(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
-                              color: CustomColors.dark,
-                            ),
+                        Text(
+                          'Ficha técnica',
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                            color: CustomColors.dark,
                           ),
-                          MouseRegion(
+                        ),
+                        MouseRegion(
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               onTap: () => viewModel.openTechFile(viewModel.product.techFile!),
@@ -593,11 +525,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                  border: Border.all(
-                                      color: CustomColors.dark,
-                                      width: 1,
-                                      style: BorderStyle.solid
-                                  ),
+                                  border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
                                 ),
                                 child: Text(
                                   "Descargar",
@@ -610,104 +538,26 @@ class _ProductDetail extends State<ProductDetail> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                            )
-                          ),
+                            )),
                       ],
-                    )
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      width: 310.0,
-                      height: 1.0,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE4E9FC),
-                      )
-                  ),
-                ],
-              ),
-            ],
-            if(viewModel.product.imageUrls != null && viewModel.product.imageUrls!.isNotEmpty) ...[
-              Row(
-                children: [
-                  Container(
-                      width: 310.0,
-                      padding: const EdgeInsets.all(0.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 310.0,
-                                height: 60.0,
-                                padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                                child: Text(
-                                  'Galería del producto',
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 16.0,
-                                    color: CustomColors.dark,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: 310.0,
-                            height: 310,
-                            padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
-                            child: CarouselSlider(
-                              options: CarouselOptions(
-                                autoPlay: true,
-                                aspectRatio: 2.0,
-                                enlargeCenterPage: true,
-                              ),
-                              items: viewModel.product.imageUrls!
-                                  .map((item) => Container(
-                                child: Container(
-                                  height: 310,
-                                  width: 310,
-                                  margin: EdgeInsets.all(5.0),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
-                                        ],
-                                      )),
-                                ),
-                              ))
-                                  .toList(),
-                            ),
-                          ),
-
-                        ],
-                      )
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      width: 310.0,
-                      height: 1.0,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE4E9FC),
-                      )
-                  ),
-                ],
-              ),
-            ],
-            if(viewModel.product.featuresString != null) ...[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
+                    )),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    width: 310.0,
+                    height: 1.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE4E9FC),
+                    )),
+              ],
+            ),
+          ],
+          if (viewModel.product.imageUrls != null && viewModel.product.imageUrls!.isNotEmpty) ...[
+            Row(
+              children: [
+                Container(
                     width: 310.0,
                     padding: const EdgeInsets.all(0.0),
                     child: Column(
@@ -720,7 +570,7 @@ class _ProductDetail extends State<ProductDetail> {
                               height: 60.0,
                               padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
                               child: Text(
-                                'Especificaciones',
+                                'Galería del producto',
                                 style: GoogleFonts.inter(
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
@@ -731,105 +581,170 @@ class _ProductDetail extends State<ProductDetail> {
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
-                              child: SelectableText(
-                                viewModel.product.featuresString!,
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.dark,
-                                ),
-                              ),
-                              width: 310.0,
+                        Container(
+                          width: 310.0,
+                          height: 310,
+                          padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              autoPlay: true,
+                              aspectRatio: 2.0,
+                              enlargeCenterPage: true,
                             ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                                width: 310.0,
-                                height: 1.0,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFE4E9FC),
-                                )
-                            ),
-                          ],
+                            items: viewModel.product.imageUrls!
+                                .map((item) => Container(
+                                      child: Container(
+                                        height: 310,
+                                        width: 310,
+                                        margin: EdgeInsets.all(5.0),
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
+                                              ],
+                                            )),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
                         ),
                       ],
-                    ) ,
-                  ),
-                ],
-              ),
-            ],
-            if(viewModel.product.makerWeb != null) ...[
-              Row(
-                children: [
-                  Container(
-                      width: 310.0,
-                      padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                      child: Row(
+                    )),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    width: 310.0,
+                    height: 1.0,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE4E9FC),
+                    )),
+              ],
+            ),
+          ],
+          if (viewModel.product.featuresString != null) ...[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 310.0,
+                  padding: const EdgeInsets.all(0.0),
+                  child: Column(
+                    children: [
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Web del fabricante',
-                            style: GoogleFonts.inter(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
-                              color: CustomColors.dark,
+                          Container(
+                            width: 310.0,
+                            height: 60.0,
+                            padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
+                            child: Text(
+                              'Especificaciones',
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                                color: CustomColors.dark,
+                              ),
                             ),
                           ),
-                          MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: GestureDetector(
-                                onTap: () => viewModel.openWebPage(viewModel.product.makerWeb!),
-                                child: Container(
-                                  padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                    border: Border.all(
-                                        color: CustomColors.dark,
-                                        width: 1,
-                                        style: BorderStyle.solid
-                                    ),
-                                  ),
-                                  child: Text(
-                                    "Visitar",
-                                    style: GoogleFonts.inter(
-                                      fontStyle: FontStyle.normal,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 13.0,
-                                      color: CustomColors.dark,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
+                            child: SelectableText(
+                              viewModel.product.featuresString!,
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14.0,
+                                color: CustomColors.dark,
                               ),
+                            ),
+                            width: 310.0,
                           ),
                         ],
-                      )
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                              width: 310.0,
+                              height: 1.0,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFE4E9FC),
+                              )),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      width: 310.0,
-                      height: 1.0,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFE4E9FC),
-                      )
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ],
-        ),
+          if (viewModel.product.makerWeb != null) ...[
+            Row(
+              children: [
+                Container(
+                    width: 310.0,
+                    padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Web del fabricante',
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                            color: CustomColors.dark,
+                          ),
+                        ),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: GestureDetector(
+                            onTap: () => viewModel.openWebPage(viewModel.product.makerWeb!),
+                            child: Container(
+                              padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(const Radius.circular(200.0)),
+                                border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
+                              ),
+                              child: Text(
+                                "Visitar",
+                                style: GoogleFonts.inter(
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13.0,
+                                  color: CustomColors.dark,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    width: 310.0,
+                    height: 1.0,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFE4E9FC),
+                    )),
+              ],
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -851,7 +766,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
               height: 60,
               width: 188,
               color: Colors.transparent,
-              child:  Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -878,338 +793,334 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                 ],
               ),
             ),
-          )
-      ),
+          )),
     );
   }
 
   @override
   Widget builder(
-      BuildContext context,
-      CardItemViewModel viewModel,
-      ) {
-    var media = MediaQuery.of(context).size;
-    return Builder(
-        builder: (BuildContext context) {
-    return Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.all(25),
-        width: 362,
-        child: Column(children: [
-          FocusScope(
-            onFocusChange: (focused) {
-              print('FocusScope: Input Has Focus:  ${viewModel.focusNodeInput.hasFocus}');
-              print('FocusScope: Button has Focus:  ${viewModel.focusNodeButton.hasFocus}');
-              print('FocusScope: Input has Primary Focus:  ${viewModel.focusNodeInput.hasPrimaryFocus}');
-              print('FocusScope: Button has Primary Focus:  ${viewModel.focusNodeButton.hasPrimaryFocus}');
-              //print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
-              print('--------------------------------------');
-              //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.parent!.hasPrimaryFocus}');
-              //print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
-              //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 288,
-                  height: 65,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6),),
-                    color: Color(0xFFE4E9FC),
-                  ),
-                  child: Row(
-                    children: [
-                      if(!viewModel.isCalculatorActive)...[
-                        Container(
-                            height: 65,
+    BuildContext context,
+    CardItemViewModel viewModel,
+  ) {
+    return Builder(builder: (BuildContext context) {
+      return Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(25),
+          width: 362,
+          child: Column(children: [
+            FocusScope(
+              onFocusChange: (focused) {
+                print('FocusScope: Input Has Focus:  ${viewModel.focusNodeInput.hasFocus}');
+                print('FocusScope: Button has Focus:  ${viewModel.focusNodeButton.hasFocus}');
+                print('FocusScope: Input has Primary Focus:  ${viewModel.focusNodeInput.hasPrimaryFocus}');
+                print('FocusScope: Button has Primary Focus:  ${viewModel.focusNodeButton.hasPrimaryFocus}');
+                //print('FocusScope: Parent has Primary Focus:  ${viewModel.focusNodeInput.parent!.hasPrimaryFocus}');
+                print('--------------------------------------');
+                //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.parent!.hasPrimaryFocus}');
+                //print('FocusScope: Add has Focus:  ${viewModel.focusAdd.hasFocus}');
+                //print('FocusScope: Add has Primary Focus:  ${viewModel.focusAdd.hasPrimaryFocus}');
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 288,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(6),
+                      ),
+                      color: Color(0xFFE4E9FC),
+                    ),
+                    child: Row(
+                      children: [
+                        if (!viewModel.isCalculatorActive) ...[
+                          Container(
+                            height: 60,
                             width: 50,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(6),
-                                bottomRight: Radius.circular(6),),
+                                bottomRight: Radius.circular(6),
+                              ),
                               color: Colors.transparent,
                             ),
                             alignment: Alignment.center,
                             child: IconButton(
                               mouseCursor: SystemMouseCursors.click,
                               style: null,
-                              icon: const Icon(Icons.remove, size: 24,),
+                              icon: const Icon(
+                                Icons.remove,
+                                size: 24,
+                              ),
                               onPressed: () => viewModel.activateCalculator(),
                             ),
-                        ),
-                        if(viewModel.isQtyLabelHighlight)...[
-                          getQtyLabel(viewModel, 2),
-                        ] else ... [
-                          getQtyLabel(viewModel, 0),
-                        ],
-                        Container(
-                          height: 65,
-                          width: 50,
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(6),
-                              bottomRight: Radius.circular(6),),
-                            color: Colors.transparent,
                           ),
-                          alignment: Alignment.center,
-                          child:  IconButton(
-                            mouseCursor: SystemMouseCursors.click,
-                            style: null,
-                            icon: const Icon(Icons.add, size: 24,),
-                            onPressed: () => viewModel.activateCalculator(),
-                          ),
-                        ),
-                      ] else ... [
-                        Container(
-                          width: 288,
-                          height: 65,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(6),),
-                            color: Color(0xFFE4E9FC),
-                            border: Border.all(
-                              color: CustomColors.dark, //                   <--- border color
-                              width: 1.0,
+                          if (viewModel.isQtyLabelHighlight) ...[
+                            getQtyLabel(viewModel, 2),
+                          ] else ...[
+                            getQtyLabel(viewModel, 0),
+                          ],
+                          Container(
+                            height: 60,
+                            width: 50,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(6),
+                                bottomRight: Radius.circular(6),
+                              ),
+                              color: Colors.transparent,
+                            ),
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              mouseCursor: SystemMouseCursors.click,
+                              style: null,
+                              icon: const Icon(
+                                Icons.add,
+                                size: 24,
+                              ),
+                              onPressed: () => viewModel.activateCalculator(),
                             ),
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: InputTextV3(
-                                  focusNode: viewModel.focusNodeInput,
-                                  paddingContent: const EdgeInsets.only(
-                                      bottom: 14, top: 19, left: 15),
-                                  margin: const EdgeInsets.all(0),
-                                  textStyle: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 22.0,
-                                    color: CustomColors.dark,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                  controller: viewModel.textEditingController,
-                                  borderRadius: const BorderRadius.only(
-                                      bottomLeft: Radius.circular(6),
-                                      topLeft: Radius.circular(6)),
-                                  onTap: () async {
-                                    viewModel.lastValue = double.tryParse(
-                                        viewModel.textEditingController.text)!;
-                                  },
-                                  onChanged: (value) async {
-                                    await viewModel.onTextQtyChanged(value);
-                                  },
-                                  keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                      decimal: true, signed: false),
-                                  inputFormatters: <TextInputFormatter>[
-                                    // for below version 2 use this
-                                    //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp(r'[0-9]+')),
-                                    FilteringTextInputFormatter.deny(RegExp(
-                                        r'^0+')), //users can't type 0 at 1st position),
-                                    // for version 2 and greater youcan also use this
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
-                                ),
+                        ] else ...[
+                          Container(
+                            width: 288,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(6),
                               ),
-                              Container(
-                                color: Colors.transparent,
-                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                                alignment: Alignment.center,
-                                child: viewModel.isQtyControlOpen
-                                    ? TextFieldTapRegion(
-                                  child: TextButton(
-                                    focusNode: viewModel.focusNodeButton,
-                                    style: ButtonStyle(
-                                      overlayColor: MaterialStateProperty
-                                          .resolveWith<Color?>(
-                                            (Set<MaterialState> states) {
-                                          return Colors.transparent;
-                                        },
-                                      ),
-                                      backgroundColor:
-                                      MaterialStateProperty
-                                          .resolveWith<Color?>(
-                                            (Set<MaterialState> states) {
-                                          return Colors.transparent;
-                                        },
-                                      ),
+                              color: Color(0xFFE4E9FC),
+                              border: Border.all(
+                                color: CustomColors.dark, //                   <--- border color
+                                width: 1.0,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: InputTextV3(
+                                    focusNode: viewModel.focusNodeInput,
+                                    paddingContent: const EdgeInsets.only(bottom: 14, top: 19, left: 15),
+                                    margin: const EdgeInsets.all(0),
+                                    textStyle: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 22.0,
+                                      color: CustomColors.dark,
                                     ),
-                                    onPressed: () {
-                                      print('Se dio clic en Button onPressCalculate');
-                                      viewModel.onPressCalculate(context, index);
+                                    textAlign: TextAlign.start,
+                                    controller: viewModel.textEditingController,
+                                    borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(6), topLeft: Radius.circular(6)),
+                                    onTap: () async {
+                                      viewModel.lastValue = double.tryParse(viewModel.textEditingController.text)!;
                                     },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 24),
-                                      decoration: const BoxDecoration(
-                                        color: CustomColors.dark,
-                                        borderRadius: BorderRadius.all(Radius.circular(200.0)),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Actualizar',
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 13.0,
-                                          color: CustomColors.white,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
+                                    onChanged: (value) async {
+                                      await viewModel.onTextQtyChanged(value);
+                                    },
+                                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                                    inputFormatters: <TextInputFormatter>[
+                                      // for below version 2 use this
+                                      //FilteringTextInputFormatter.deny(RegExp(r'^\\s+$'), replacementString: 1.toString()),
+                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]+')),
+                                      FilteringTextInputFormatter.deny(RegExp(r'^0+')), //users can't type 0 at 1st position),
+                                      // for version 2 and greater youcan also use this
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                   ),
-                                ) : Container(),
+                                ),
+                                Container(
+                                  color: Colors.transparent,
+                                  width: 150,
+                                  height: 60,
+                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 15),
+                                  alignment: Alignment.center,
+                                  child: viewModel.isQtyControlOpen
+                                      ? Container(
+                                          width: 141.0,
+                                          height: 30,
+                                          decoration: const BoxDecoration(
+                                            color: CustomColors.dark,
+                                            borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                                          ),
+                                          child: TextFieldTapRegion(
+                                            child: TextButton(
+                                              focusNode: viewModel.focusNodeButton,
+                                              style: ButtonStyle(
+                                                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                                  (Set<MaterialState> states) {
+                                                    return Colors.transparent;
+                                                  },
+                                                ),
+                                                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                                  (Set<MaterialState> states) {
+                                                    return Colors.transparent;
+                                                  },
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                print('Se dio clic en Button onPressCalculate');
+                                                viewModel.onPressCalculate(context, index);
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                constraints: const BoxConstraints(
+                                                  minHeight: 30.0,
+                                                ),
+                                                child: Text(
+                                                  'Actualizar',
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 13.0,
+                                                    color: const Color(0xFF9C9FAA),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Row(
+              children: const [
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Shimmer(
+                  linearGradient: viewModel.shimmerGradientWhiteBackground,
+                  child: ShimmerLoading(
+                    isLoading: viewModel.selectedProducts[index].isCalculatingProductTotals,
+                    shimmerEmptyBox: const ShimmerEmptyBox(
+                      width: 180,
+                      height: 28,
+                    ),
+                    child: Row(
+                      children: [
+                        viewModel.selectedProducts[index].isCalculatingProductTotals
+                            ? Container()
+                            : SelectableText(
+                                viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
+                                style: GoogleFonts.inter(
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 22.0,
+                                  color: CustomColors.dark,
+                                  height: 1.2,
+                                ),
+                                textAlign: TextAlign.left,
+                                //overflow: TextOverflow.clip,
                               ),
-                            ],
+                        Text(
+                          ' +iva',
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.0,
+                            color: CustomColors.dark,
+                            height: 1.2,
                           ),
                         ),
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
-          Row(
-            children: const [
-              SizedBox(
-                height: 15,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Shimmer(
-                linearGradient: viewModel.shimmerGradientWhiteBackground,
-                child: ShimmerLoading(
-                  isLoading:
-                  viewModel.selectedProducts[index].isCalculatingProductTotals,
-                  shimmerEmptyBox: const ShimmerEmptyBox(
-                    width: 180,
-                    height: 28,
-                  ),
-                  child: Row(
-                    children: [
-                      viewModel.selectedProducts[index].isCalculatingProductTotals
-                          ? Container()
-                          : SelectableText(
-                        viewModel.currencyFormat.format(viewModel
-                            .selectedProducts[index]
-                            .total!
-                            .afterDiscount ??
-                            ''),
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 22.0,
-                          color: CustomColors.dark,
-                          height: 1.2,
-                        ),
-                        textAlign: TextAlign.left,
-                        //overflow: TextOverflow.clip,
-                      ),
-                      Text(
-                        ' +iva',
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.0,
-                          color: CustomColors.dark,
-                          height: 1.2,
-                        ),
-                      ),
-                    ],
+            Row(
+              children: const [
+                SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  '¡Disponibilidad inmediata!',
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12.0,
+                    color: CustomColors.dark,
                   ),
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: const [
-              SizedBox(
-                height: 15,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                '¡Disponibilidad inmediata!',
-                style: GoogleFonts.inter(
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12.0,
-                  color: CustomColors.dark,
+              ],
+            ),
+            Row(
+              children: const [
+                SizedBox(
+                  height: 30,
                 ),
-              ),
-            ],
-          ),
-          Row(
-            children: const [
-              SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 90,
-                child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () async {
-
-                      },
-                      child: Text(
-                        '¡Agregado!',
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0,
-                          color: CustomColors.blue,
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 90,
+                  child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () async {},
+                        child: Text(
+                          '¡Agregado!',
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                            color: CustomColors.blueVoltz,
+                          ),
+                          textAlign: TextAlign.left,
                         ),
-                        textAlign: TextAlign.left,
-                      ),
-                    )
+                      )),
                 ),
-              ),
-              Spacer(),
-              SizedBox(
-                width: 60,
-                child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () async {
-                        await viewModel.onDeleteSku(
-                            viewModel.quote.detail![index]);
-                        return viewModel.notifyListeners();
-                      },
-                      child: Text(
-                        'Quitar',
-                        style: GoogleFonts.inter(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0,
-                          color: const Color(0xFF9C9FAA),
+                Spacer(),
+                SizedBox(
+                  width: 60,
+                  child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () async {
+                          await viewModel.onDeleteSku(viewModel.quote.detail![index]);
+                          return viewModel.notifyListeners();
+                        },
+                        child: Text(
+                          'Quitar',
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.0,
+                            color: const Color(0xFF9C9FAA),
+                          ),
+                          textAlign: TextAlign.right,
                         ),
-                        textAlign: TextAlign.right,
-                      ),
-                    )
+                      )),
                 ),
-              ),
-            ],
-          ),
-        ]));
+              ],
+            ),
+          ]));
     });
   }
 }
@@ -1219,9 +1130,9 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel viewModel,
-      ) {
+    BuildContext context,
+    QuoteViewModel viewModel,
+  ) {
     var media = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -1275,7 +1186,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                       Row(
                         children: [
                           Expanded(
-                            child:Text(
+                            child: Text(
                               "Estamos buscando el mejor precio y disponibilidad en cientos de proveedores",
                               style: GoogleFonts.inter(
                                 fontStyle: FontStyle.normal,
@@ -1331,8 +1242,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                   ),
                 ),
               ],
-            )
-        ),
+            )),
       ],
     );
   }

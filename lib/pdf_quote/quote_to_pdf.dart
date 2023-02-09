@@ -19,7 +19,7 @@ class QuotePdf {
   final VoltzKeys _config = VoltzKeys();
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final QuoteModel quote;
-  final List<ProductsSuggested> selectedProducts;
+  final List<ProductSuggested> selectedProducts;
   var _pdf;
   late final _fontRegular;
   late final _fontSemiBold;

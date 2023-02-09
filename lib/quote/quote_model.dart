@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import '../cart/product_model.dart';
 
@@ -158,7 +159,7 @@ class Totals {
 class Detail {
   String? productRequested;
   String? id;
-  List<ProductsSuggested>? productsSuggested;
+  List<ProductSuggested>? productsSuggested;
   int? position;
   //this is only for local proposes
   bool isCalculatingProductTotals = false;
@@ -170,9 +171,9 @@ class Detail {
     id = json['id'];
     position = json['position'];
     if (json['products_suggested'] != null) {
-      productsSuggested = <ProductsSuggested>[];
+      productsSuggested = <ProductSuggested>[];
       for(int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(ProductsSuggested.fromJson(json['id'], json['products_suggested'][a]));
+        productsSuggested!.add(ProductSuggested.fromJsonWithIdRequested(json['id'], json['products_suggested'][a]));
       }
     }
   }
@@ -229,7 +230,7 @@ class Total {
   }
 }
 
-class ProductsSuggested {
+class ProductSuggested {
 
   String? productId;
   String? sku;
@@ -253,7 +254,7 @@ class ProductsSuggested {
   bool isCalculatingProductTotals = false;
   double? discountRate;
 
-  ProductsSuggested(
+  ProductSuggested(
       {this.productRequestedId,
         this.productId,
         this.sku,
@@ -271,8 +272,16 @@ class ProductsSuggested {
         this.isCalculatingProductTotals = false,
       this.discountRate});
 
-  ProductsSuggested.fromJson(String this.productRequestedId, Map<String, dynamic> json) {
+  ProductSuggested.fromJsonWithIdRequested(String this.productRequestedId, Map<String, dynamic> json) {
     productId = json['product_id'];
+    _fillFields(json);
+  }
+
+  ProductSuggested.fromJson(Map<String, dynamic> json) {
+    _fillFields(json);
+  }
+
+  void _fillFields(Map<String, dynamic> json){
     sku = json['sku'];
     skuDescription = json['sku_description'];
     brand = json['brand'];

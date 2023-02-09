@@ -410,7 +410,7 @@ class CartList extends StackedHookView<QuoteViewModel> {
 
 class _CartItemView extends StatefulWidget {
   _CartItemView({Key? key, required this.product}) : super(key: key);
-  ProductsSuggested product;
+  ProductSuggested product;
 
   @override
   _CartItemState createState() => _CartItemState();

@@ -11,6 +11,7 @@ import 'package:stacked_services/src/navigation/navigation_service.dart';
 
 import '../products/products_service.dart';
 import '../quote/quote_service.dart';
+import '../search/serarch_repository.dart';
 
 final locator = StackedLocator.instance;
 
@@ -24,4 +25,5 @@ Future<void> setupLocator(
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => QuoteService());
   locator.registerLazySingleton(() => ProductsService());
+  locator.registerLazySingleton(() => ProductSearchRepository());
 }
