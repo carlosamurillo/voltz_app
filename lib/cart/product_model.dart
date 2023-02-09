@@ -65,9 +65,7 @@ class Product {
     if (json['image_urls'] != null) {
       imageUrls = <String>[];
       for(int a = 0; a < json['image_urls'].length; a++) {
-        if(a != 0) {
-          imageUrls!.add(json['image_urls'][a]);
-        }
+        imageUrls!.add(json['image_urls'][a]);
       }
     }
     if (json.containsKey('status')){
