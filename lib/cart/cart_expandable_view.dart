@@ -25,86 +25,6 @@ class CardGrid extends StatelessWidget {
       : super(
           key: key,
         );
-/*
-  @override
-  Widget builder(
-      BuildContext context,
-      CardViewModel viewModel,
-      ) {
-    var media = MediaQuery.of(context).size;
-    print('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
-    return StreamBuilder<ProductsSuggested>(
-        stream: viewModel.stream,
-        builder: (BuildContext context, AsyncSnapshot<ProductsSuggested> snapshot) {
-          if(!snapshot.hasData) {
-            return const Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          html.window.history.pushState(
-              null,
-              'Voltz - Cotización ${viewModel.quote.consecutive}',
-              '?cotz=${viewModel.quote.id!}');
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(right: 25, left: 25),
-                height: double.infinity,
-                width: ((media.width - 310 - 25) / 387).truncateToDouble() * (387) + 25,
-                //width: media.width > 900 && media.width <= 1300 ? 799 : (media.width > 1300 && media.width <= 1800 ? 1186 : media.width > 1800 ? 1573 : 412),
-                */ /*child: MasonryGridView.count(
-                    physics: const BouncingScrollPhysics(),
-                    //itemCount: viewModel.updateGrid ?(viewModel.quote.detail!.length > 3 ? 3 : viewModel.quote.detail!.length + 1): viewModel.quote.detail!.length,
-                    //viewModel.quote.detail!.length + 1,
-                    itemCount: viewModel.countProducts,
-                    mainAxisSpacing: 25,
-                    crossAxisSpacing: 25,
-                    itemBuilder: (context, index) {
-                      if (index < viewModel.countProducts) {
-                        return ProductCard(
-                          i: index, productSuggested: snapshot.data!,
-                        );
-                      } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                        return const PendingCard();
-                      } else {
-                        return Container();
-                      }
-                    },
-                  crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt(),
-                  //crossAxisCount: media.width > 900 && media.width <= 1300 ? 2 : media.width > 1300 && media.width <= 1800 ? 3 : media.width > 1800 ? 4  : 1,
-                ),*/ /*
-                child: CustomScrollView(
-                  slivers: [
-                    SliverMasonryGrid.extent(
-                      maxCrossAxisExtent: 362,
-                      mainAxisSpacing: 25,
-                      crossAxisSpacing: 25,
-                      itemBuilder: (context, index) {
-                        if (index < viewModel.productList.length) {
-                          return ProductCard(
-                            i: index, productSuggested: viewModel.productList.elementAt(index),
-                          );
-                        } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                          return const PendingCard();
-                        } else {
-                          return Container();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        });
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GridViewModel>.reactive(
@@ -203,7 +123,7 @@ class ProductCard extends StatefulWidget {
 class _ProductCard extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
-    if (widget.i == 1) return NoFoundCard();
+    //if (widget.i == 1) return NoFoundCard();
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(
@@ -286,7 +206,7 @@ class _ProductCard extends State<ProductCard> {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 14.0,
-                                          color: CustomColors.darkVoltz,
+                                          color: CustomColors.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -306,7 +226,7 @@ class _ProductCard extends State<ProductCard> {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 14.0,
-                                          color: CustomColors.darkVoltz,
+                                          color: CustomColors.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -374,7 +294,7 @@ class _ProductCard extends State<ProductCard> {
                                                   fontStyle: FontStyle.normal,
                                                   fontWeight: FontWeight.w500,
                                                   fontSize: 18.0,
-                                                  color: CustomColors.darkVoltz,
+                                                  color: CustomColors.dark,
                                                   height: 1.1,
                                                 ),
                                               ),
@@ -388,7 +308,7 @@ class _ProductCard extends State<ProductCard> {
                                                   fontStyle: FontStyle.normal,
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 12.0,
-                                                  color: CustomColors.darkVoltz,
+                                                  color: CustomColors.dark,
                                                   height: 1.1,
                                                 ),
                                               ),
@@ -420,7 +340,7 @@ class _ProductCard extends State<ProductCard> {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12.0,
-                                          color: CustomColors.darkVoltz,
+                                          color: CustomColors.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -440,7 +360,7 @@ class _ProductCard extends State<ProductCard> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
                             fontSize: 16.0,
-                            color: CustomColors.darkVoltz,
+                            color: CustomColors.dark,
                           ),
                         ),
                       ],
@@ -508,7 +428,7 @@ class _ProductCard extends State<ProductCard> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
                           fontSize: 16.0,
-                          color: CustomColors.darkVoltz,
+                          color: CustomColors.dark,
                         ),
                       ),
                       width: 167.0,
@@ -521,93 +441,6 @@ class _ProductCard extends State<ProductCard> {
                 )),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class NoFoundCard extends StatelessWidget {
-  const NoFoundCard({
-    Key? key,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 362.0,
-      padding: const EdgeInsets.all(30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            width: 362.0,
-            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 56),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(height: 25),
-                const SelectableText(
-                  "¿No lo encuentras?",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 32.0,
-                    color: CustomColors.darkVoltz,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 30),
-                Image.asset(
-                  "assets/images/assistant_icon.png",
-                  width: 62,
-                ),
-                const SizedBox(height: 15),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: const TextSpan(
-                      text: "Buscaremos rápidamente ",
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: CustomColors.blueVoltz,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "el mejor precio y disponibilidad en cientos de proveedores",
-                          style: TextStyle(color: CustomColors.darkVoltz),
-                        ),
-                      ]),
-                ),
-                const SizedBox(height: 15),
-                Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: CustomColors.darkVoltz,
-                      borderRadius: BorderRadius.all(Radius.circular(200.0)),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(200)),
-                        hoverColor: CustomColors.darkVoltz.withOpacity(.8),
-                        onTap: () {},
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Solicitar producto',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
-                              color: CustomColors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -681,7 +514,7 @@ class _ProductDetail extends State<ProductDetail> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0,
-                            color: CustomColors.darkVoltz,
+                            color: CustomColors.dark,
                           ),
                         ),
                         MouseRegion(
@@ -692,7 +525,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                  border: Border.all(color: CustomColors.darkVoltz, width: 1, style: BorderStyle.solid),
+                                  border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
                                 ),
                                 child: Text(
                                   "Descargar",
@@ -700,7 +533,7 @@ class _ProductDetail extends State<ProductDetail> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 13.0,
-                                    color: CustomColors.darkVoltz,
+                                    color: CustomColors.dark,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -742,7 +575,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16.0,
-                                  color: CustomColors.darkVoltz,
+                                  color: CustomColors.dark,
                                 ),
                               ),
                             ),
@@ -785,7 +618,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )),
               ],
@@ -814,7 +647,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16.0,
-                                color: CustomColors.darkVoltz,
+                                color: CustomColors.dark,
                               ),
                             ),
                           ),
@@ -830,7 +663,7 @@ class _ProductDetail extends State<ProductDetail> {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14.0,
-                                color: CustomColors.darkVoltz,
+                                color: CustomColors.dark,
                               ),
                             ),
                             width: 310.0,
@@ -869,7 +702,7 @@ class _ProductDetail extends State<ProductDetail> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0,
-                            color: CustomColors.darkVoltz,
+                            color: CustomColors.dark,
                           ),
                         ),
                         MouseRegion(
@@ -880,7 +713,7 @@ class _ProductDetail extends State<ProductDetail> {
                               padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                border: Border.all(color: CustomColors.darkVoltz, width: 1, style: BorderStyle.solid),
+                                border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
                               ),
                               child: Text(
                                 "Visitar",
@@ -888,7 +721,7 @@ class _ProductDetail extends State<ProductDetail> {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 13.0,
-                                  color: CustomColors.darkVoltz,
+                                  color: CustomColors.dark,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -943,7 +776,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
                       fontSize: 22.0,
-                      color: CustomColors.darkVoltz,
+                      color: CustomColors.dark,
                       height: 1.2,
                     ),
                   ),
@@ -953,7 +786,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0,
-                      color: CustomColors.darkVoltz,
+                      color: CustomColors.dark,
                       height: 1.2,
                     ),
                   ),
@@ -1062,7 +895,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               ),
                               color: Color(0xFFE4E9FC),
                               border: Border.all(
-                                color: CustomColors.darkVoltz, //                   <--- border color
+                                color: CustomColors.dark, //                   <--- border color
                                 width: 1.0,
                               ),
                             ),
@@ -1077,7 +910,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 22.0,
-                                      color: CustomColors.darkVoltz,
+                                      color: CustomColors.dark,
                                     ),
                                     textAlign: TextAlign.start,
                                     controller: viewModel.textEditingController,
@@ -1110,7 +943,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                           width: 141.0,
                                           height: 30,
                                           decoration: const BoxDecoration(
-                                            color: CustomColors.darkVoltz,
+                                            color: CustomColors.dark,
                                             borderRadius: BorderRadius.all(Radius.circular(200.0)),
                                           ),
                                           child: TextFieldTapRegion(
@@ -1192,7 +1025,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22.0,
-                                  color: CustomColors.darkVoltz,
+                                  color: CustomColors.dark,
                                   height: 1.2,
                                 ),
                                 textAlign: TextAlign.left,
@@ -1204,7 +1037,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
                             fontSize: 12.0,
-                            color: CustomColors.darkVoltz,
+                            color: CustomColors.dark,
                             height: 1.2,
                           ),
                         ),
@@ -1231,7 +1064,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontSize: 12.0,
-                    color: CustomColors.darkVoltz,
+                    color: CustomColors.dark,
                   ),
                 ),
               ],
@@ -1306,7 +1139,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
       children: [
         Container(
             decoration: const BoxDecoration(
-              color: CustomColors.darkVoltz,
+              color: CustomColors.dark,
               borderRadius: BorderRadius.all(Radius.circular(6.0)),
             ),
             width: 362.0,
@@ -1374,7 +1207,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                   width: 362.0,
                   padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
                   decoration: const BoxDecoration(
-                    color: CustomColors.darkVoltz,
+                    color: CustomColors.dark,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
                   ),
                   child: Column(

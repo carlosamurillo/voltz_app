@@ -7,6 +7,7 @@ import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/search/search_views.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
@@ -39,7 +40,7 @@ class _CartViewState extends State<CartView> {
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
         return ChangeNotifierProvider(
-            create: (context) => SearchViewModel()..init(),
+            create: (context) => SearchInputViewModel()..init(),
             child: Scaffold(
               backgroundColor: CustomColors.grayBackground_2,
               body: Container(
@@ -47,7 +48,7 @@ class _CartViewState extends State<CartView> {
                 padding: const EdgeInsets.all(0),
                 child: Column(
                   children: [
-                    Header(),
+                    const Header(),
                     _Container(),
                   ],
                 ),
@@ -393,18 +394,19 @@ class _Container extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    final isSelected = context.watch<SearchViewModel>().isSearchSelected;
+    final isSelected = context.watch<SearchInputViewModel>().isSearchSelected;
 
     var media = MediaQuery.of(context).size;
 
-    if (isSelected) return const _SearchDialogSuggestWidget();
+    if (isSelected) return const ProductsSearchResult();
 
     return Expanded(
       child: Container(
         constraints: BoxConstraints(
           minWidth: CustomStyles.mobileBreak,
         ),
-        width: double.infinity,
+        width: media.width,
+        height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
         color: CustomColors.WBY,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -422,51 +424,6 @@ class _Container extends StatelessWidget {
               Resume(),
             ]
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchDialogSuggestWidget extends StatelessWidget {
-  const _SearchDialogSuggestWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset(
-                "assets/images/assistant_icon.png",
-                width: 120,
-              ),
-              const SizedBox(height: 25),
-              const Text(
-                "Busca por código, nombre, especificación, y/o marca.",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32,
-                  color: CustomColors.darkVoltz,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Ejemplos: SML102022, Cable uso rudo, 16AMP, Tecnolite",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: CustomColors.darkVoltz,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -509,7 +466,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                         fontSize: 14.0,
-                        color: CustomColors.darkVoltz,
+                        color: CustomColors.dark,
                       ),
                     ),
                   ],
@@ -527,7 +484,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                         fontSize: 14.0,
-                        color: CustomColors.darkVoltz,
+                        color: CustomColors.dark,
                       ),
                     ),
                   ],
@@ -548,7 +505,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w700,
                         fontSize: media.width >= CustomStyles.desktopBreak ? 42.0 : 32,
-                        color: CustomColors.darkVoltz,
+                        color: CustomColors.dark,
                         overflow: TextOverflow.clip,
                       ),
                     ),

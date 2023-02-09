@@ -6,8 +6,13 @@ import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart' as intl;
 
+import '../app/app.locator.dart';
+
 class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
-  final ProductSearchRepository _productSearchRepository = ProductSearchRepository();
+  final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
+
+  String? get lastQuery => _productSearchRepository.lastQuery;
+
   init() {
   }
 
@@ -15,10 +20,12 @@ class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
   Stream<List<ProductSuggested>> get stream => _productSearchRepository.products;
 
   @override
-  void dispose() {
-    _productSearchRepository.dispose();
-    super.dispose();
+  void onData(List<ProductSuggested>? data) {
+    // TODO: implement onData
+    data?.add(ProductSuggested());
+    super.onData(data);
   }
+
 }
 
 class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {

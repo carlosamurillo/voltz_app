@@ -8,6 +8,7 @@ import '../cart/product_detail_view.dart';
 import '../order/oder_view.dart';
 import '../cart/cart_confirmation.dart';
 import '../products/products_service.dart';
+import '../search/serarch_repository.dart';
 
 /**  flutter pub run build_runner build --delete-conflicting-outputs
  * Anterior es la linea de comando para generar  **/
@@ -16,6 +17,7 @@ import '../products/products_service.dart';
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: QuoteService),
     LazySingleton(classType: ProductsService),
+    LazySingleton(classType: ProductSearchRepository),
   ],
   routes: [
     /** Onboarding and signup **/

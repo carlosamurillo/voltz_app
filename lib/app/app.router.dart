@@ -6,13 +6,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flutter/cupertino.dart' as _i6;
+import 'package:flutter/material.dart' as _i7;
 import 'package:flutter/material.dart';
 import 'package:maketplace/cart/cart_confirmation.dart' as _i4;
 import 'package:maketplace/cart/cart_view.dart' as _i2;
 import 'package:maketplace/cart/product_detail_view.dart' as _i5;
 import 'package:maketplace/order/oder_view.dart' as _i3;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i7;
+import 'package:stacked_services/stacked_services.dart' as _i8;
 
 class Routes {
   static const cartView = '/cart-view';
@@ -99,7 +100,7 @@ class CartViewArguments {
     required this.version,
   });
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
   final String quoteId;
 
@@ -112,7 +113,7 @@ class OrderViewArguments {
     required this.orderId,
   });
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
   final String orderId;
 }
@@ -124,7 +125,7 @@ class CartConfirmationArguments {
     required this.version,
   });
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
   final String quoteId;
 
@@ -137,14 +138,14 @@ class ProductViewMobileArguments {
     required this.productId,
   });
 
-  final _i6.Key? key;
+  final _i7.Key? key;
 
   final String productId;
 }
 
-extension NavigatorStateExtension on _i7.NavigationService {
+extension NavigatorStateExtension on _i8.NavigationService {
   Future<dynamic> navigateToCartView({
-    _i6.Key? key,
+    _i7.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -163,7 +164,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> navigateToOrderView({
-    _i6.Key? key,
+    _i7.Key? key,
     required String orderId,
     int? routerId,
     bool preventDuplicates = true,
@@ -180,7 +181,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> navigateToCartConfirmation({
-    _i6.Key? key,
+    _i7.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -199,7 +200,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> navigateToProductViewMobile({
-    _i6.Key? key,
+    _i7.Key? key,
     required String productId,
     int? routerId,
     bool preventDuplicates = true,
@@ -216,7 +217,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithCartView({
-    _i6.Key? key,
+    _i7.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -235,7 +236,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithOrderView({
-    _i6.Key? key,
+    _i7.Key? key,
     required String orderId,
     int? routerId,
     bool preventDuplicates = true,
@@ -252,7 +253,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithCartConfirmation({
-    _i6.Key? key,
+    _i7.Key? key,
     required String quoteId,
     required String? version,
     int? routerId,
@@ -271,7 +272,7 @@ extension NavigatorStateExtension on _i7.NavigationService {
   }
 
   Future<dynamic> replaceWithProductViewMobile({
-    _i6.Key? key,
+    _i7.Key? key,
     required String productId,
     int? routerId,
     bool preventDuplicates = true,

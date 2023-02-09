@@ -1,17 +1,17 @@
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/search/search_model.dart';
-
+import 'package:stacked/stacked.dart';
 import '../keys_model.dart';
 
-class ProductSearchRepository {
+class ProductSearchRepository with ListenableServiceMixin  {
 
   /// Hits Searcher with default search .
   final _productsSearcher = HitsSearcher.create(
     applicationID: VoltzKeys().algoliaAppId!,
     apiKey: VoltzKeys().algoliaApiKey!,
     state: const SearchState(
-      indexName: 'ecommerce',
+      indexName: 'ecommerce_products',
     ),
   );
 
@@ -21,7 +21,8 @@ class ProductSearchRepository {
   /// Product repository constructor.
   ProductSearchRepository() {
     _components
-      ..add(_productsSearcher);
+      ..add(_productsSearcher,);
+    _productsSearcher.state.listen((searchState) => (_lastQuery = searchState.query));
   }
 
   Stream<SearchMetadata> get searchMetadata => _productsSearcher.responses.map(SearchMetadata.fromResponse);
@@ -33,6 +34,9 @@ class ProductSearchRepository {
   Stream<List<ProductSuggested>> get products => _productsSearcher.responses
       .map((response) => response.hits.map(ProductSuggested.fromJson).toList());
 
+  /// Ultima cadena de texto de busqueda digitada por el usuario
+  String? _lastQuery;
+  String? get lastQuery => _lastQuery;
   /// Execute a query in products
   void query(String string) {
     _productsSearcher.query(string);

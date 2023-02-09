@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:maketplace/app/app.locator.dart';
+import '../search/serarch_repository.dart';
 
-class SearchViewModel extends ChangeNotifier {
+class SearchInputViewModel extends ChangeNotifier {
+  final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
   late FocusNode _focusNodeSearch;
   late TextEditingController _searchTextController;
-  late bool _searchSelected;
+  bool _searchSelected = false;
 
   FocusNode get focusNodeSearch => _focusNodeSearch;
   TextEditingController get searchTextController => _searchTextController;
@@ -12,7 +15,7 @@ class SearchViewModel extends ChangeNotifier {
   void init() {
     _focusNodeSearch = FocusNode();
     _searchTextController = TextEditingController();
-    _searchSelected = false;
+    _searchTextController.addListener(() => _productSearchRepository.query(_searchTextController.text));
     notifyListeners();
   }
 
@@ -22,7 +25,7 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> cancelSsarch() async {
+  Future<void> cancelSearch() async {
     _focusNodeSearch.unfocus();
     _searchSelected = false;
     _searchTextController.text = '';
