@@ -44,7 +44,7 @@ class CardItemViewModel extends ReactiveViewModel {
   @override
   List<ListenableServiceMixin> get listenableServices => [_quoteService,];
   QuoteModel get quote => _quoteService.quote;
-  List<ProductsSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
 
   /**Variables para manejar el foco de los imput y botones*/
   final FocusNode _focusNodeInput = FocusNode();
@@ -216,8 +216,8 @@ class CardItemViewModel extends ReactiveViewModel {
     calculateTotals();
     await _quoteService.updateQuote(quote);
     loadingProductTotals(cardIndex);
-    return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductsSuggested(sku: null)).sku,
-        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
+    return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductSuggested(sku: null)).sku,
+        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
   }
 
@@ -227,8 +227,8 @@ class CardItemViewModel extends ReactiveViewModel {
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();
     await _quoteService.updateQuote(quote);
-    return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(sku: null)).sku,
-        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductsSuggested(productId: null)).productId, productRequested: value.productRequested!,
+    return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(sku: null)).sku,
+        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(productId: null)).productId, productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);
   }
 

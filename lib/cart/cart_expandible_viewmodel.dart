@@ -12,6 +12,6 @@ class GridViewModel extends ReactiveViewModel  {
   List<ListenableServiceMixin> get listenableServices => [_quoteService,];
 
   QuoteModel get quote => _quoteService.quote;
-  List<ProductsSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
 
 }

@@ -79,7 +79,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
   }
 
-  List<ProductsSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
 
   Future<void> navigateToQuoteConfirmation() async {
     return _navigationService.navigateToCartConfirmation(quoteId: quote.id!, version: version);
