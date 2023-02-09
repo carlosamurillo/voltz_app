@@ -63,8 +63,6 @@ class ProductsSearchResult extends StatelessWidget {
                     }, crossAxisCount: ((media.width - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 25) / 387).truncateToDouble().toInt() : 1,
                   ),
                 ),
-              ] else ... [
-
               ],
               const SliverToBoxAdapter(
                 child: SizedBox(height: 25,),
@@ -121,23 +119,17 @@ class SearchInitialViewWidget extends StatelessWidget {
   }
 }
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends StatelessWidget {
   const ProductCard({
     Key? key, required this.product,
   }) : super(key: key);
   final ProductSuggested product;
 
   @override
-  _ProductCard createState() => _ProductCard();
-}
-
-class _ProductCard extends State<ProductCard> {
-
-  @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductCardViewModel>.reactive(
         viewModelBuilder: () => ProductCardViewModel(),
-        onViewModelReady: (viewModel) => viewModel.init(widget.product),
+        onViewModelReady: (viewModel) => viewModel.init(product),
         fireOnViewModelReadyOnce: false,
         //disposeViewModel: true,
         //createNewViewModelOnInsert: true,
@@ -153,7 +145,7 @@ class _ProductCard extends State<ProductCard> {
                     color: CustomColors.white,
                     borderRadius: BorderRadius.all(const Radius.circular(6.0)),
                     border: Border.all(
-                        color: Color(0xFFD9E0FC),
+                        color: const Color(0xFFD9E0FC),
                         width: 1,
                         style: BorderStyle.solid
                     ),
@@ -170,7 +162,7 @@ class _ProductCard extends State<ProductCard> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                if (widget.product.coverImage == null) ...[
+                                if (product.coverImage == null) ...[
                                   SizedBox(
                                       width: 120,
                                       height: 120,
@@ -184,7 +176,7 @@ class _ProductCard extends State<ProductCard> {
                                       width: 120,
                                       height: 120,
                                       child: Image.network(
-                                        widget.product.coverImage!,
+                                        product.coverImage!,
                                         height: 120,
                                         width: 120,
                                       )),
@@ -202,13 +194,13 @@ class _ProductCard extends State<ProductCard> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                          if(widget.product.brand != null && widget.product.brand!.toLowerCase() == 'tecnolite')...[
+                                          if(product.brand != null && product.brand!.toLowerCase() == 'tecnolite')...[
                                             Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
                                             const SizedBox(width: 5,),
                                           ],
                                           SelectableText(
-                                            widget.product.brand == null ? '' :
-                                            widget.product.brand!,
+                                            product.brand == null ? '' :
+                                            product.brand!,
                                             maxLines: 1,
                                             style: GoogleFonts.inter(
                                               fontStyle: FontStyle.normal,
@@ -226,8 +218,8 @@ class _ProductCard extends State<ProductCard> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           SelectableText(
-                                            widget.product.sku == null ? '' :
-                                            widget.product.sku!,
+                                            product.sku == null ? '' :
+                                            product.sku!,
                                             maxLines: 1,
                                             style: GoogleFonts.inter(
                                               fontStyle: FontStyle.normal,
@@ -245,15 +237,15 @@ class _ProductCard extends State<ProductCard> {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: [
                                           SelectableText(
-                                            widget.product.pricePublic == null ? '' :
-                                            viewModel.currencyFormat.format(widget.product.pricePublic!),
+                                            product.pricePublic == null ? '' :
+                                            viewModel.currencyFormat.format(product.pricePublic!),
                                             maxLines: 1,
                                             style: GoogleFonts.inter(
                                               fontStyle: FontStyle.normal,
                                               fontWeight: FontWeight.w400,
                                               fontSize: 14.0,
                                               decoration: TextDecoration.lineThrough,
-                                              color: Color(0xFF9C9FAA),
+                                              color: const Color(0xFF9C9FAA),
                                               height: 1.1,
                                             ),
                                           ),
@@ -262,8 +254,8 @@ class _ProductCard extends State<ProductCard> {
                                             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                             color: CustomColors.yellowVoltz,
                                             child: SelectableText(
-                                              widget.product.discountRate == null ? '' :
-                                              "${(widget.product.discountRate!).toStringAsFixed(2)}%" ,
+                                              product.discountRate == null ? '' :
+                                              "${(product.discountRate!).toStringAsFixed(2)}%" ,
                                               enableInteractiveSelection: false,
                                               maxLines: 1,
                                               style: GoogleFonts.inter(
@@ -286,7 +278,7 @@ class _ProductCard extends State<ProductCard> {
                                             linearGradient: viewModel.shimmerGradientWhiteBackground,
                                             child: ShimmerLoading(
                                               isLoading:
-                                              widget.product.isCalculatingProductTotals,
+                                              product.isCalculatingProductTotals,
                                               shimmerEmptyBox: const ShimmerEmptyBox(
                                                 width: 160,
                                                 height: 21,
@@ -294,8 +286,8 @@ class _ProductCard extends State<ProductCard> {
                                               child: Row(
                                                 children: [
                                                   SelectableText(
-                                                    widget.product.price == null ? '' :
-                                                    viewModel.currencyFormat.format(widget.product.price!.price2!),
+                                                    product.price == null ? '' :
+                                                    viewModel.currencyFormat.format(product.price!.price2!),
                                                     maxLines: 1,
                                                     style: GoogleFonts.inter(
                                                       fontStyle: FontStyle.normal,
@@ -307,8 +299,8 @@ class _ProductCard extends State<ProductCard> {
                                                   ),
                                                   const SizedBox(width: 5,),
                                                   SelectableText(
-                                                    widget.product.saleUnit == null ? '' :
-                                                    widget.product.saleUnit!,
+                                                    product.saleUnit == null ? '' :
+                                                    product.saleUnit!,
                                                     maxLines: 1,
                                                     style: GoogleFonts.inter(
                                                       fontStyle: FontStyle.normal,
@@ -354,7 +346,7 @@ class _ProductCard extends State<ProductCard> {
                               ],
                             ),
                             const SizedBox(height: 25,),
-                            SelectableText(widget.product.skuDescription == null ? '' : widget.product.skuDescription!
+                            SelectableText(product.skuDescription == null ? '' : product.skuDescription!
                                 .replaceAll("<em>", "")
                                 .replaceAll("<\/em>", ""),
                               style: GoogleFonts.inter(
@@ -367,7 +359,7 @@ class _ProductCard extends State<ProductCard> {
                           ],
                         ),
                       ),
-                      if(widget.product.techFile!=null) ...[
+                      if(product.techFile!=null) ...[
                         getHeader(context, viewModel),
                       ] else ...[
                         const Divider(
@@ -375,8 +367,8 @@ class _ProductCard extends State<ProductCard> {
                           color: Color(0xFFD9E0FC),
                         ),
                       ],
-                      if(widget.product.isCardExpanded)...[
-                        ProductDetail(productId: widget.product.productId!),
+                      if(product.isCardExpanded)...[
+                        ProductDetail(productId: product.productId!),
                       ],
                     ],
                   ),
@@ -436,7 +428,7 @@ class _ProductCard extends State<ProductCard> {
                     ),
                     const Spacer(),
                     Container(
-                      child: widget.product.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: product.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
                 )
@@ -448,24 +440,18 @@ class _ProductCard extends State<ProductCard> {
   }
 }
 
-class ProductDetail extends StatefulWidget {
-  ProductDetail({
+class ProductDetail extends StatelessWidget {
+  const ProductDetail({
     Key? key,
     required this.productId,
   }) : super(key: key);
-  String productId;
-
-  @override
-  _ProductDetail createState() => _ProductDetail();
-}
-
-class _ProductDetail extends State<ProductDetail> {
+  final String productId;
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(),
-        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
+        onViewModelReady: (viewModel) => viewModel.init(productId),
         fireOnViewModelReadyOnce: true,
         disposeViewModel: true,
         createNewViewModelOnInsert: true,
@@ -491,7 +477,6 @@ class _ProductDetail extends State<ProductDetail> {
           }
         });
   }
-
 
   Widget getExpandedContent(BuildContext context, ProductViewModel viewModel){
     return Container(
@@ -530,7 +515,7 @@ class _ProductDetail extends State<ProductDetail> {
                               child: Container(
                                 padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(const Radius.circular(200.0)),
+                                  borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                   border: Border.all(
                                       color: CustomColors.dark,
                                       width: 1,
@@ -560,7 +545,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )
                 ),
@@ -609,9 +594,9 @@ class _ProductDetail extends State<ProductDetail> {
                               child: Container(
                                 height: 310,
                                 width: 310,
-                                margin: EdgeInsets.all(5.0),
+                                margin: const EdgeInsets.all(5.0),
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     child: Stack(
                                       children: <Widget>[
                                         Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
@@ -633,7 +618,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )
                 ),
@@ -673,6 +658,7 @@ class _ProductDetail extends State<ProductDetail> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
+                            width: 310.0,
                             child: SelectableText(
                               viewModel.product.featuresString!,
                               style: GoogleFonts.inter(
@@ -682,7 +668,6 @@ class _ProductDetail extends State<ProductDetail> {
                                 color: CustomColors.dark,
                               ),
                             ),
-                            width: 310.0,
                           ),
                         ],
                       ),
@@ -729,7 +714,7 @@ class _ProductDetail extends State<ProductDetail> {
                             child: Container(
                               padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(const Radius.circular(200.0)),
+                                borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                 border: Border.all(
                                     color: CustomColors.dark,
                                     width: 1,
@@ -759,7 +744,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )
                 ),
