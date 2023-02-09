@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
-import '../search/serarch_repository.dart';
+import 'serarch_repository.dart';
 
 class SearchInputViewModel extends ChangeNotifier {
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();

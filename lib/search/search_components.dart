@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maketplace/cart/search_view_model.dart';
+import 'package:maketplace/search/input_view_model.dart';
 import 'package:provider/provider.dart';
 import '../utils/custom_colors.dart';
 
