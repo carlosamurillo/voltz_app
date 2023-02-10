@@ -103,11 +103,11 @@ class QuoteService with ListenableServiceMixin {
   final _notificationService = locator<NotificationService>();
   Future<void> addProductToQuote(String idProduct,) async {
     if(_rxQuote.value.detail != null) {
+      _notificationService.emitSimpleNotification("Ejecutando...", "Se está añadiendo un producto a la cotización activa.");
       DocumentReference reference = FirebaseFirestore.instance.collection(
           'quote-detail').doc(_rxQuote.value.id);
       await reference.update(
           {'record.next_action': 'add_product', 'record.meta_data': idProduct});
-      _notificationService.emitSimpleNotification("Añadiendo producto...", "Se está añadiendo un producto a la cotización.");
     } else {
       throw Exception('No hay una cotizacion activa, debe asegurarse que primero se inicialice el servicio de QuoteService con una cotizacion');
     }
@@ -158,6 +158,7 @@ class QuoteService with ListenableServiceMixin {
             await streamProducts();
             _getCustomerName(id: _rxQuote.value.customer!.id);
             notifyListeners();
+            _notificationService.emitSimpleNotification("Terminado", "Se añadió el producto y se recalcularon los totales. Puedes cambiar las cantidades allá");
             print("Se llamo notifyListeners desde Servicio QuoteService");
           }
         } else {

@@ -116,6 +116,6 @@ class ProductCardViewModel extends BaseViewModel {
   _showNotification() async {
     return showOverlayNotification((context) {
       return const SimpleNotificationWidget();
-    }, duration: const Duration(seconds: 5));
+    }, duration: const Duration(seconds: 45), position: NotificationPosition.bottom);
   }
 }

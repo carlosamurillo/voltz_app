@@ -1,6 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'notifications_viewmodel.dart';
 
@@ -15,19 +17,32 @@ class SimpleNotificationWidget extends StatelessWidget {
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 4),
+          color: CustomColors.safeBlue,
+          margin: const EdgeInsets.symmetric(horizontal: 25),
           child: SafeArea(
             child: ListTile(
               leading: SizedBox.fromSize(
                   size: const Size(40, 40),
                   child: ClipOval(
                       child: Container(
-                        color: Colors.black,
+                        color: CustomColors.yellowVoltz,
                       ))),
-              title: Text(model.title),
-              subtitle: Text(model.message),
+              title: Text(
+                model.title,
+                style: GoogleFonts.inter(
+                  color: CustomColors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),),
+              subtitle: Text(
+                model.message,
+                style: GoogleFonts.inter(
+                  color: CustomColors.white,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                ),),
               trailing: IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Icons.close, color: Colors.white),
                   onPressed: () {
                     model.dismissNotification(context);
                   }),
