@@ -17,6 +17,7 @@ import '../common/header.dart';
 import '../utils/custom_colors.dart';
 import '../utils/shimmer.dart';
 import 'cart_expandable_view.dart';
+import 'container_viewmodel.dart';
 
 class CartView extends StatefulWidget {
   const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
@@ -36,34 +37,24 @@ class _CartViewState extends State<CartView> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<QuoteViewModel>.nonReactive(
-      viewModelBuilder: () => QuoteViewModel(),
-      builder: (context, viewModel, child) {
-        return ChangeNotifierProvider(
-            create: (context) => SearchInputViewModel()..init(),
-            child: Scaffold(
-              backgroundColor: CustomColors.grayBackground_2,
-              body: Container(
-                color: CustomColors.WBY,
-                padding: const EdgeInsets.all(0),
-                child: Column(
-                  children: [
-                    const Header(),
-                    _Container(),
-                  ],
-                ),
-              ),
-            ));
-      },
-      onViewModelReady: (viewModel) => viewModel.init(widget.quoteId, widget.version),
-      fireOnViewModelReadyOnce: true,
+    return Scaffold(
+      backgroundColor: CustomColors.grayBackground_2,
+      body: Container(
+        color: CustomColors.WBY,
+        padding: const EdgeInsets.all(0),
+        child: Column(
+          children: [
+            const Header(),
+            _Container(quoteId: widget.quoteId, version: widget.version),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class Resume extends StackedHookView<QuoteViewModel> {
-  Resume({Key? key}) : super(key: key, reactive: true);
-  final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+  const Resume({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
@@ -148,7 +139,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    currencyFormat.format(viewModel.quote.totals!.subTotal!),
+                                    viewModel.currencyFormat.format(viewModel.quote.totals!.subTotal!),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -176,7 +167,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    '-${currencyFormat.format(viewModel.quote.totals!.discount!)}',
+                                    '-${viewModel.currencyFormat.format(viewModel.quote.totals!.discount!)}',
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -204,7 +195,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    currencyFormat.format(viewModel.quote.totals!.tax),
+                                    viewModel.currencyFormat.format(viewModel.quote.totals!.tax),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -243,7 +234,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     ),
                                   ] else ...[
                                     SelectableText(
-                                      currencyFormat.format(viewModel.quote.shipping!.total),
+                                      viewModel.currencyFormat.format(viewModel.quote.shipping!.total),
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w500,
@@ -277,7 +268,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SelectableText(
-                                    '${currencyFormat.format(viewModel.quote.totals!.total)} MXN',
+                                    '${viewModel.currencyFormat.format(viewModel.quote.totals!.total)} MXN',
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w700,
@@ -390,42 +381,72 @@ class Resume extends StackedHookView<QuoteViewModel> {
 }
 
 class _Container extends StatelessWidget {
+  const _Container({
+    Key? key, required this.quoteId, this.version,
+  }) : super(key: key,);
+
+  final String quoteId;
+  final String? version;
+
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final isSelected = context.watch<SearchInputViewModel>().isSearchSelected;
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<ContainerViewModel>.reactive(
+      viewModelBuilder: () => ContainerViewModel(),
+      builder: (context, model, child) {
 
-    var media = MediaQuery.of(context).size;
+        if (model.isSearchSelected) return const ProductsSearchResult();
 
-    if (isSelected) return const ProductsSearchResult();
+        return _CartContainer(quoteId: quoteId, version: version,);
+      },
+    );
+  }
+}
 
-    return Expanded(
-      child: Container(
-        constraints: BoxConstraints(
-          minWidth: CustomStyles.mobileBreak,
-        ),
-        width: media.width,
-        height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-        color: CustomColors.WBY,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(),
-            Column(
+
+class _CartContainer extends StatelessWidget {
+  const _CartContainer({
+    Key? key, required this.quoteId, this.version,
+  }) : super(key: key,);
+
+  final String quoteId;
+  final String? version;
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<QuoteViewModel>.nonReactive(
+      viewModelBuilder: () => QuoteViewModel(),
+      onViewModelReady: (viewModel) => viewModel.init(quoteId, version),
+      builder: (context, model, child) {
+        var media = MediaQuery.of(context).size;
+
+        return Expanded(
+          child: Container(
+            constraints: BoxConstraints(
+              minWidth: CustomStyles.mobileBreak,
+            ),
+            width: media.width,
+            height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+            color: CustomColors.WBY,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CardGrid(),
+                const Spacer(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: const [
+                    CardGrid(),
+                  ],
+                ),
+                const Spacer(),
+                if (media.width >= CustomStyles.mobileBreak) ...[
+                  const Resume(),
+                ]
               ],
             ),
-            const Spacer(),
-            if (media.width >= CustomStyles.mobileBreak) ...[
-              Resume(),
-            ]
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import '../cart/product_model.dart';
+import '../product/product_model.dart';
 
 class QuoteModel {
   int? version = 2;
@@ -278,6 +277,7 @@ class ProductSuggested {
   }
 
   ProductSuggested.fromJson(Map<String, dynamic> json) {
+    productId = json['objectID'];
     _fillFields(json);
   }
 

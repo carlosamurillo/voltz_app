@@ -89,23 +89,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
   }
 
-  Future<void> navigateToProductDetailMobile(String productId) async {
-    return _navigationService.navigateToProductViewMobile(productId: productId );
-  }
-/*
-  Future<bool> updateDetail(int i, int b, double newQuantity) async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    await reference.update({
-      "detail": FieldValue.arrayRemove([quote.detail![i].toJson()]),
-    }).whenComplete(() {
-      quote.detail![i].productsSuggested![b].quantity = newQuantity;
-      reference.update({
-        "detail": FieldValue.arrayUnion([quote.detail![i].toJson()]),
-      });
-    });
-    return true;
-  }*/
-
   void onGenerateOrder(BuildContext context) async {
     updateQuote(quote).then((value) async {
         DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);

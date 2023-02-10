@@ -1,6 +1,5 @@
 import 'dart:html' as html;
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -11,7 +10,7 @@ import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
-import '../products/product_viewmodel.dart';
+import '../product/product_views.dart';
 import '../quote/quote_viewmodel.dart';
 import '../utils/inputText.dart';
 import '../utils/shimmer.dart';
@@ -130,8 +129,8 @@ class _ProductCard extends State<ProductCard> {
               cardIndex: widget.i,
             ),
         fireOnViewModelReadyOnce: false,
-        //disposeViewModel: true,
-        //createNewViewModelOnInsert: true,
+        disposeViewModel: true,
+        createNewViewModelOnInsert: true,
         builder: (context, viewModel, child) {
           print('_ProductCard ... Se actualiza la vista ');
           return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -140,8 +139,8 @@ class _ProductCard extends State<ProductCard> {
               padding: const EdgeInsets.all(0.0),
               decoration: BoxDecoration(
                 color: CustomColors.white,
-                borderRadius: BorderRadius.all(const Radius.circular(6.0)),
-                border: Border.all(color: Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
+                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                border: Border.all(color: const Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,45 +276,48 @@ class _ProductCard extends State<ProductCard> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      Shimmer(
-                                        linearGradient: viewModel.shimmerGradientWhiteBackground,
-                                        child: ShimmerLoading(
-                                          isLoading: viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
-                                          shimmerEmptyBox: const ShimmerEmptyBox(
-                                            width: 160,
-                                            height: 21,
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              SelectableText(
-                                                viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
-                                                maxLines: 1,
-                                                style: GoogleFonts.inter(
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 18.0,
-                                                  color: CustomColors.dark,
-                                                  height: 1.1,
+                                      SizedBox(
+                                        height: 19,
+                                        child: Shimmer(
+                                          linearGradient: viewModel.shimmerGradientWhiteBackground,
+                                          child: ShimmerLoading(
+                                            isLoading: viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
+                                            shimmerEmptyBox: const ShimmerEmptyBox(
+                                              width: 160,
+                                              height: 19,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                SelectableText(
+                                                  viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
+                                                  maxLines: 1,
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18.0,
+                                                    color: CustomColors.dark,
+                                                    height: 1.1,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              SelectableText(
-                                                viewModel.selectedProducts[widget.i].saleUnit!,
-                                                maxLines: 1,
-                                                style: GoogleFonts.inter(
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12.0,
-                                                  color: CustomColors.dark,
-                                                  height: 1.1,
+                                                const SizedBox(
+                                                  width: 5,
                                                 ),
-                                              ),
-                                            ],
+                                                SelectableText(
+                                                  viewModel.selectedProducts[widget.i].saleUnit!,
+                                                  maxLines: 1,
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.0,
+                                                    color: CustomColors.dark,
+                                                    height: 1.1,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                   const SizedBox(
@@ -375,7 +377,7 @@ class _ProductCard extends State<ProductCard> {
                     ),
                   ],
                   if (viewModel.selectedProducts[widget.i].isCardExpanded) ...[
-                    ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!),
+                    ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!,),
                   ],
                   _QuantityCalculatorWidget(index: widget.i),
                 ],
@@ -389,10 +391,7 @@ class _ProductCard extends State<ProductCard> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () async {
-          print('dio clic ....');
-          viewModel.expandOrCollapseCard(widget.i);
-        },
+        onTap: () => viewModel.expandOrCollapseCard(widget.i),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -409,7 +408,7 @@ class _ProductCard extends State<ProductCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 24.0,
                       height: 24.0,
                       child: SvgPicture.asset(
@@ -421,7 +420,8 @@ class _ProductCard extends State<ProductCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    Container(
+                    SizedBox(
+                      width: 167.0,
                       child: Text(
                         'Detalles del producto',
                         style: GoogleFonts.inter(
@@ -431,7 +431,6 @@ class _ProductCard extends State<ProductCard> {
                           color: CustomColors.dark,
                         ),
                       ),
-                      width: 167.0,
                     ),
                     const Spacer(),
                     Container(
@@ -441,309 +440,6 @@ class _ProductCard extends State<ProductCard> {
                 )),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProductDetail extends StatefulWidget {
-  ProductDetail({
-    Key? key,
-    required this.productId,
-  }) : super(key: key);
-  String productId;
-
-  @override
-  _ProductDetail createState() => _ProductDetail();
-}
-
-class _ProductDetail extends State<ProductDetail> {
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<ProductViewModel>.reactive(
-        viewModelBuilder: () => ProductViewModel(),
-        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
-        fireOnViewModelReadyOnce: true,
-        disposeViewModel: true,
-        createNewViewModelOnInsert: true,
-        builder: (context, viewModel, child) {
-          if (viewModel.product.techFile != null || viewModel.product.imageUrls != null || viewModel.product.features != null || viewModel.product.makerWeb != null) {
-            return getExpandedContent(context, viewModel);
-          } else {
-            return Container(
-                width: 362.0,
-                padding: const EdgeInsets.all(25.0),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF8FAFF),
-                ),
-                child: const Center(
-                  child: SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: CircularProgressIndicator(),
-                  ),
-                ));
-          }
-        });
-  }
-
-  Widget getExpandedContent(BuildContext context, ProductViewModel viewModel) {
-    return Container(
-      width: 362.0,
-      padding: const EdgeInsets.all(25.0),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF8FAFF),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (viewModel.product.techFile != null) ...[
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Ficha técnica',
-                          style: GoogleFonts.inter(
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
-                            color: CustomColors.dark,
-                          ),
-                        ),
-                        MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: GestureDetector(
-                              onTap: () => viewModel.openTechFile(viewModel.product.techFile!),
-                              child: Container(
-                                padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                  border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
-                                ),
-                                child: Text(
-                                  "Descargar",
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 13.0,
-                                    color: CustomColors.dark,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )),
-                      ],
-                    )),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    height: 1.0,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE4E9FC),
-                    )),
-              ],
-            ),
-          ],
-          if (viewModel.product.imageUrls != null && viewModel.product.imageUrls!.isNotEmpty) ...[
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    padding: const EdgeInsets.all(0.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 310.0,
-                              height: 60.0,
-                              padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                              child: Text(
-                                'Galería del producto',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0,
-                                  color: CustomColors.dark,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          width: 310.0,
-                          height: 310,
-                          padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
-                          child: CarouselSlider(
-                            options: CarouselOptions(
-                              autoPlay: true,
-                              aspectRatio: 2.0,
-                              enlargeCenterPage: true,
-                            ),
-                            items: viewModel.product.imageUrls!
-                                .map((item) => Container(
-                                      child: Container(
-                                        height: 310,
-                                        width: 310,
-                                        margin: EdgeInsets.all(5.0),
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
-                                              ],
-                                            )),
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    height: 1.0,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE4E9FC),
-                    )),
-              ],
-            ),
-          ],
-          if (viewModel.product.featuresString != null) ...[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  width: 310.0,
-                  padding: const EdgeInsets.all(0.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 310.0,
-                            height: 60.0,
-                            padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                            child: Text(
-                              'Especificaciones',
-                              style: GoogleFonts.inter(
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16.0,
-                                color: CustomColors.dark,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
-                            child: SelectableText(
-                              viewModel.product.featuresString!,
-                              style: GoogleFonts.inter(
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14.0,
-                                color: CustomColors.dark,
-                              ),
-                            ),
-                            width: 310.0,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                              width: 310.0,
-                              height: 1.0,
-                              decoration: BoxDecoration(
-                                color: Color(0xFFE4E9FC),
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-          if (viewModel.product.makerWeb != null) ...[
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    padding: const EdgeInsets.only(top: 20.0, right: 0.0, bottom: 20.0, left: 0.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Web del fabricante',
-                          style: GoogleFonts.inter(
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.0,
-                            color: CustomColors.dark,
-                          ),
-                        ),
-                        MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            onTap: () => viewModel.openWebPage(viewModel.product.makerWeb!),
-                            child: Container(
-                              padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(const Radius.circular(200.0)),
-                                border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
-                              ),
-                              child: Text(
-                                "Visitar",
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13.0,
-                                  color: CustomColors.dark,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    width: 310.0,
-                    height: 1.0,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE4E9FC),
-                    )),
-              ],
-            ),
-          ],
-        ],
       ),
     );
   }
@@ -761,7 +457,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
           onTap: () => viewModel.activateCalculator(),
           child: Material(
             elevation: elevation,
-            color: Color(0xFFE4E9FC),
+            color: const Color(0xFFE4E9FC),
             child: Container(
               height: 60,
               width: 188,
@@ -771,7 +467,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '${viewModel.textEditingController.text}',
+                    viewModel.textEditingController.text,
                     style: GoogleFonts.inter(
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
@@ -890,10 +586,10 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             width: 288,
                             height: 60,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(6),
                               ),
-                              color: Color(0xFFE4E9FC),
+                              color: const Color(0xFFE4E9FC),
                               border: Border.all(
                                 color: CustomColors.dark, //                   <--- border color
                                 width: 1.0,
@@ -936,7 +632,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   color: Colors.transparent,
                                   width: 150,
                                   height: 60,
-                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 15),
                                   alignment: Alignment.center,
                                   child: viewModel.isQtyControlOpen
                                       ? Container(
@@ -1007,41 +703,44 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Shimmer(
-                  linearGradient: viewModel.shimmerGradientWhiteBackground,
-                  child: ShimmerLoading(
-                    isLoading: viewModel.selectedProducts[index].isCalculatingProductTotals,
-                    shimmerEmptyBox: const ShimmerEmptyBox(
-                      width: 180,
-                      height: 28,
-                    ),
-                    child: Row(
-                      children: [
-                        viewModel.selectedProducts[index].isCalculatingProductTotals
-                            ? Container()
-                            : SelectableText(
-                                viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22.0,
-                                  color: CustomColors.dark,
-                                  height: 1.2,
-                                ),
-                                textAlign: TextAlign.left,
-                                //overflow: TextOverflow.clip,
-                              ),
-                        Text(
-                          ' +iva',
-                          style: GoogleFonts.inter(
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12.0,
-                            color: CustomColors.dark,
-                            height: 1.2,
+                SizedBox(
+                  height: 26,
+                  child: Shimmer(
+                    linearGradient: viewModel.shimmerGradientWhiteBackground,
+                    child: ShimmerLoading(
+                      isLoading: viewModel.selectedProducts[index].isCalculatingProductTotals,
+                      shimmerEmptyBox: const ShimmerEmptyBox(
+                        width: 180,
+                        height: 26,
+                      ),
+                      child: Row(
+                        children: [
+                          viewModel.selectedProducts[index].isCalculatingProductTotals
+                              ? Container()
+                              : SelectableText(
+                            viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
+                            style: GoogleFonts.inter(
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.0,
+                              color: CustomColors.dark,
+                              height: 1.2,
+                            ),
+                            textAlign: TextAlign.left,
+                            //overflow: TextOverflow.clip,
                           ),
-                        ),
-                      ],
+                          Text(
+                            ' +iva',
+                            style: GoogleFonts.inter(
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12.0,
+                              color: CustomColors.dark,
+                              height: 1.2,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -1096,7 +795,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                         ),
                       )),
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: 60,
                   child: MouseRegion(
@@ -1131,7 +830,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
   @override
   Widget builder(
     BuildContext context,
-    QuoteViewModel viewModel,
+    QuoteViewModel model,
   ) {
     var media = MediaQuery.of(context).size;
     return Column(
@@ -1166,7 +865,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                         children: [
                           Expanded(
                             child: Text(
-                              "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
+                              "${model.quote.pendingProducts!.length} productos en cotización manual",
                               style: GoogleFonts.inter(
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700,
@@ -1228,7 +927,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                         height: 5,
                       ),
                       Text(
-                        "${DateFormat.yMMMd().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} ${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                        "${DateFormat.yMMMd().format(DateTime.parse(model.quote.createdAt!.toDate().toString()))} ${DateFormat.Hms().format(DateTime.parse(model.quote.createdAt!.toDate().toString()))} última actualización",
                         //viewModel.quote.convertTimestampToLocal(viewModel.quote.createdAt!).toString(),
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,

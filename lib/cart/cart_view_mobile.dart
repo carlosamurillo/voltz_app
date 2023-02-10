@@ -542,7 +542,7 @@ class _cartItemView extends StackedHookView<QuoteViewModel> {
       ) {
     return GestureDetector(
       onTap: model.selectedProducts[productIndex].source != "manual" ? () {
-        model.navigateToProductDetailMobile( model.selectedProducts[productIndex].productId!);
+        //model.navigateToProductDetailMobile( model.selectedProducts[productIndex].productId!);
       } : null,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),

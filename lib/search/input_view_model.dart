@@ -1,39 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:stacked/stacked.dart' show ReactiveViewModel;
+import 'input_search_repository.dart';
 import 'serarch_repository.dart';
 
-class SearchInputViewModel extends ChangeNotifier {
+class SearchInputViewModel extends ReactiveViewModel {
+  final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
   late FocusNode _focusNodeSearch;
   late TextEditingController _searchTextController;
-  bool _searchSelected = false;
 
   FocusNode get focusNodeSearch => _focusNodeSearch;
   TextEditingController get searchTextController => _searchTextController;
-  bool get isSearchSelected => _searchSelected;
+  bool get isSearchSelected => _inputSearchRepository.isSearchSelected;
 
-  void init() {
+  void init() async {
     _focusNodeSearch = FocusNode();
     _searchTextController = TextEditingController();
-    _searchTextController.addListener(() => _productSearchRepository.query(_searchTextController.text));
-    notifyListeners();
+    _searchTextController.addListener(() async => _productSearchRepository.query(_searchTextController.text));
   }
 
   Future<void> changeSearchSelected(bool selected) async {
     if (!selected) _focusNodeSearch.unfocus();
-    _searchSelected = selected;
-    notifyListeners();
+    _inputSearchRepository.changeSearchSelected(selected);
   }
 
   Future<void> cancelSearch() async {
     _focusNodeSearch.unfocus();
-    _searchSelected = false;
     _searchTextController.text = '';
-    notifyListeners();
-  }
-
-  Future<void> searchElements() async {
-    //TODO logic here
+    _inputSearchRepository.changeSearchSelected(false);
   }
 
   @override
