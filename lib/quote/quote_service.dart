@@ -97,6 +97,16 @@ class QuoteService with ListenableServiceMixin {
     return true;
   }
 
+  void addProductToQuote(ProductSuggested product){
+    if(_rxQuote.value.detail != null){
+      List<ProductSuggested> productList = [];
+      _rxQuote.value.detail!.add(Detail(productsSuggested: productList));
+    } else {
+      throw Error();
+    }
+
+  }
+
   Future<void> _updateTotals() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
     await reference.update({'record.next_action': 'calculate_totals'});

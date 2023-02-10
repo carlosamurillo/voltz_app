@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/search/input_view_model.dart';
 import 'package:stacked/stacked.dart';
@@ -17,7 +18,9 @@ class SearchInputWidget extends StatelessWidget {
         disposeViewModel: false,
         createNewViewModelOnInsert: false,
         builder: (context, viewModel, child) {
-          print('SearchInputWidget ... Se actualiza la vista ');
+          if (kDebugMode) {
+            print('SearchInputWidget ... Se actualiza la vista ');
+          }
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(

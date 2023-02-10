@@ -11,18 +11,16 @@ import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceM
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
-import '../search/input_search_repository.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();
-  final _inputSearchRepository = locator<InputSearchRepository>();
   final NavigationService _navigationService = locator<NavigationService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_quoteService, _inputSearchRepository];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
 
   bool updateGrid = true;
 
@@ -39,8 +37,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
   ScrollController scrollController = ScrollController();
   late DocumentSnapshot postByUser;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-
-  bool get isSearchSelected => _inputSearchRepository.isSearchSelected;
 
   //Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
   //Stream<ProductsSuggested> get productsSuggestedStream => _quoteService.stream;
@@ -92,20 +88,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
   Future<void> navigateToQuoteView() async {
     return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
   }
-
-/*
-  Future<bool> updateDetail(int i, int b, double newQuantity) async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    await reference.update({
-      "detail": FieldValue.arrayRemove([quote.detail![i].toJson()]),
-    }).whenComplete(() {
-      quote.detail![i].productsSuggested![b].quantity = newQuantity;
-      reference.update({
-        "detail": FieldValue.arrayUnion([quote.detail![i].toJson()]),
-      });
-    });
-    return true;
-  }*/
 
   void onGenerateOrder(BuildContext context) async {
     updateQuote(quote).then((value) async {

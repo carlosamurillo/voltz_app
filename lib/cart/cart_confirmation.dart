@@ -42,7 +42,7 @@ class _CartConfirmationState extends State<CartConfirmation> {
               padding: EdgeInsets.all(0),
               child: Column(
                 children: [
-                  Header(),
+                  const Header(),
                   _Container(),
                 ],
               ),

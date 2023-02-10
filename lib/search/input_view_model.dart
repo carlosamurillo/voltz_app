@@ -20,15 +20,15 @@ class SearchInputViewModel extends ReactiveViewModel {
     _searchTextController.addListener(() async => _productSearchRepository.query(_searchTextController.text));
   }
 
-  void changeSearchSelected(bool selected) async {
+  Future<void> changeSearchSelected(bool selected) async {
     if (!selected) _focusNodeSearch.unfocus();
     _inputSearchRepository.changeSearchSelected(selected);
   }
 
-  void cancelSearch() async {
+  Future<void> cancelSearch() async {
     _focusNodeSearch.unfocus();
-    _inputSearchRepository.changeSearchSelected(false);
     _searchTextController.text = '';
+    _inputSearchRepository.changeSearchSelected(false);
   }
 
   @override
