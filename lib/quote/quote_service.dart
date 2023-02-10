@@ -97,17 +97,18 @@ class QuoteService with ListenableServiceMixin {
     return true;
   }
 
-  void addProductToQuote(ProductSuggested product){
-    if(_rxQuote.value.detail != null){
-      List<ProductSuggested> productList = [];
-      _rxQuote.value.detail!.add(Detail(productsSuggested: productList));
+  Future<void> addProductToQuote(String idProduct) async {
+    if(_rxQuote.value.detail != null) {
+      DocumentReference reference = FirebaseFirestore.instance.collection(
+          'quote-detail').doc(_rxQuote.value.id);
+      await reference.update(
+          {'record.next_action': 'add_product', 'record.meta_data': idProduct});
     } else {
-      throw Error();
+      throw Exception('No hay una cotizacion activa, debe asegurarse que primero se inicialice el servicio de QuoteService con una cotizacion');
     }
-
   }
 
-  Future<void> _updateTotals() async {
+  Future<void> _updateTotalsCommand() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
     await reference.update({'record.next_action': 'calculate_totals'});
   }

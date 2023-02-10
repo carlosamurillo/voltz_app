@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/serarch_repository.dart';
 import 'package:stacked/stacked.dart';
@@ -101,4 +102,10 @@ class ProductCardViewModel extends BaseViewModel {
     end: Alignment(1.0, 0.3),
     tileMode: TileMode.clamp,
   );
+
+  ///Se trae el servicio QuoteService para anadir productos a una cotizacion
+  final _quoteService = locator<QuoteService>();
+  addProductToQuote(String idProduct) async {
+    _quoteService.addProductToQuote(idProduct);
+  }
 }
