@@ -421,7 +421,8 @@ class _ProductCard extends State<ProductCard> {
                     const SizedBox(
                       width: 10,
                     ),
-                    Container(
+                    SizedBox(
+                      width: 167.0,
                       child: Text(
                         'Detalles del producto',
                         style: GoogleFonts.inter(
@@ -431,7 +432,6 @@ class _ProductCard extends State<ProductCard> {
                           color: CustomColors.dark,
                         ),
                       ),
-                      width: 167.0,
                     ),
                     const Spacer(),
                     Container(
@@ -446,23 +446,18 @@ class _ProductCard extends State<ProductCard> {
   }
 }
 
-class ProductDetail extends StatefulWidget {
-  ProductDetail({
+class ProductDetail extends StatelessWidget {
+  const ProductDetail({
     Key? key,
     required this.productId,
   }) : super(key: key);
-  String productId;
+  final String productId;
 
-  @override
-  _ProductDetail createState() => _ProductDetail();
-}
-
-class _ProductDetail extends State<ProductDetail> {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(),
-        onViewModelReady: (viewModel) => viewModel.init(widget.productId),
+        onViewModelReady: (viewModel) => viewModel.init(productId),
         fireOnViewModelReadyOnce: true,
         disposeViewModel: true,
         createNewViewModelOnInsert: true,
@@ -524,7 +519,7 @@ class _ProductDetail extends State<ProductDetail> {
                               child: Container(
                                 padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(const Radius.circular(200.0)),
+                                  borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                   border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
                                 ),
                                 child: Text(
@@ -548,7 +543,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )),
               ],
@@ -593,19 +588,17 @@ class _ProductDetail extends State<ProductDetail> {
                             ),
                             items: viewModel.product.imageUrls!
                                 .map((item) => Container(
-                                      child: Container(
-                                        height: 310,
-                                        width: 310,
-                                        margin: EdgeInsets.all(5.0),
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                            child: Stack(
-                                              children: <Widget>[
-                                                Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
-                                              ],
-                                            )),
-                                      ),
-                                    ))
+                                  height: 310,
+                                  width: 310,
+                                  margin: const EdgeInsets.all(5.0),
+                                  child: ClipRRect(
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
+                                        ],
+                                      )),
+                                ))
                                 .toList(),
                           ),
                         ),
@@ -657,6 +650,7 @@ class _ProductDetail extends State<ProductDetail> {
                         children: [
                           Container(
                             padding: const EdgeInsets.only(top: 15.0, right: 0.0, bottom: 15.0, left: 0.0),
+                            width: 310.0,
                             child: SelectableText(
                               viewModel.product.featuresString!,
                               style: GoogleFonts.inter(
@@ -666,7 +660,6 @@ class _ProductDetail extends State<ProductDetail> {
                                 color: CustomColors.dark,
                               ),
                             ),
-                            width: 310.0,
                           ),
                         ],
                       ),
@@ -675,7 +668,7 @@ class _ProductDetail extends State<ProductDetail> {
                           Container(
                               width: 310.0,
                               height: 1.0,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Color(0xFFE4E9FC),
                               )),
                         ],
@@ -712,7 +705,7 @@ class _ProductDetail extends State<ProductDetail> {
                             child: Container(
                               padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(const Radius.circular(200.0)),
+                                borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                 border: Border.all(color: CustomColors.dark, width: 1, style: BorderStyle.solid),
                               ),
                               child: Text(
@@ -737,7 +730,7 @@ class _ProductDetail extends State<ProductDetail> {
                 Container(
                     width: 310.0,
                     height: 1.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
                     )),
               ],
@@ -761,7 +754,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
           onTap: () => viewModel.activateCalculator(),
           child: Material(
             elevation: elevation,
-            color: Color(0xFFE4E9FC),
+            color: const Color(0xFFE4E9FC),
             child: Container(
               height: 60,
               width: 188,
@@ -771,7 +764,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    '${viewModel.textEditingController.text}',
+                    viewModel.textEditingController.text,
                     style: GoogleFonts.inter(
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
@@ -890,10 +883,10 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             width: 288,
                             height: 60,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(6),
                               ),
-                              color: Color(0xFFE4E9FC),
+                              color: const Color(0xFFE4E9FC),
                               border: Border.all(
                                 color: CustomColors.dark, //                   <--- border color
                                 width: 1.0,
@@ -936,7 +929,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   color: Colors.transparent,
                                   width: 150,
                                   height: 60,
-                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 15),
+                                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 15),
                                   alignment: Alignment.center,
                                   child: viewModel.isQtyControlOpen
                                       ? Container(
@@ -1096,7 +1089,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                         ),
                       )),
                 ),
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: 60,
                   child: MouseRegion(
@@ -1131,7 +1124,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
   @override
   Widget builder(
     BuildContext context,
-    QuoteViewModel viewModel,
+    QuoteViewModel model,
   ) {
     var media = MediaQuery.of(context).size;
     return Column(
@@ -1166,7 +1159,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                         children: [
                           Expanded(
                             child: Text(
-                              "${viewModel.quote.pendingProducts!.length} productos en cotización manual",
+                              "${model.quote.pendingProducts!.length} productos en cotización manual",
                               style: GoogleFonts.inter(
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700,
@@ -1228,7 +1221,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                         height: 5,
                       ),
                       Text(
-                        "${DateFormat.yMMMd().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} ${DateFormat.Hms().format(DateTime.parse(viewModel.quote.createdAt!.toDate().toString()))} última actualización",
+                        "${DateFormat.yMMMd().format(DateTime.parse(model.quote.createdAt!.toDate().toString()))} ${DateFormat.Hms().format(DateTime.parse(model.quote.createdAt!.toDate().toString()))} última actualización",
                         //viewModel.quote.convertTimestampToLocal(viewModel.quote.createdAt!).toString(),
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
