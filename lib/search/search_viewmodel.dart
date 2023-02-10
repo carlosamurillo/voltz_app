@@ -3,11 +3,14 @@ import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/serarch_repository.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:pdf/widgets.dart' show Context;
 import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart' as intl;
 
 import '../app/app.locator.dart';
+import '../notifications/notifications_view.dart';
 
 class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
@@ -107,5 +110,12 @@ class ProductCardViewModel extends BaseViewModel {
   final _quoteService = locator<QuoteService>();
   addProductToQuote(String idProduct) async {
     _quoteService.addProductToQuote(idProduct);
+    _showNotification();
+  }
+
+  _showNotification() async {
+    return showOverlayNotification((context) {
+      return const SimpleNotificationWidget();
+    }, duration: const Duration(seconds: 5));
   }
 }

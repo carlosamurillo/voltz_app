@@ -4,6 +4,7 @@ import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../cart/cart_view.dart';
+import '../notifications/notifications_service.dart';
 import '../order/oder_view.dart';
 import '../cart/cart_confirmation.dart';
 import '../product/product_service.dart';
@@ -19,6 +20,7 @@ import '../search/serarch_repository.dart';
     LazySingleton(classType: ProductService),
     LazySingleton(classType: ProductSearchRepository),
     LazySingleton(classType: InputSearchRepository),
+    LazySingleton(classType: NotificationService),
   ],
   routes: [
     /** Onboarding and signup **/

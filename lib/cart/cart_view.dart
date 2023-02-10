@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:maketplace/search/input_view_model.dart';
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/search/search_views.dart';
 import 'package:maketplace/utils/style.dart';
-import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
@@ -39,16 +37,20 @@ class _CartViewState extends State<CartView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.grayBackground_2,
-      body: Container(
-        color: CustomColors.WBY,
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          children: [
-            const Header(),
-            _Container(quoteId: widget.quoteId, version: widget.version),
-          ],
-        ),
-      ),
+      body: Stack(
+        children: [
+          Container(
+            color: CustomColors.WBY,
+            padding: const EdgeInsets.all(0),
+            child: Column(
+              children: [
+                const Header(),
+                _Container(quoteId: widget.quoteId, version: widget.version),
+              ],
+            ),
+          ),
+        ],
+      )
     );
   }
 }

@@ -47,7 +47,7 @@ class SearchInputWidget extends StatelessWidget {
                   size: 24,
                   color: viewModel.isSearchSelected ? CustomColors.dark : CustomColors.darkMinusOne,
                 ),
-                suffixIcon: !viewModel.isSearchSelected
+                suffixIcon: viewModel.isSearchSelected
                     ? IconButton(
                   onPressed: () => viewModel.cancelSearch(),
                   icon: const Icon(

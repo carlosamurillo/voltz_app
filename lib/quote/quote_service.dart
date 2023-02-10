@@ -5,11 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:observable_ish/observable_ish.dart';
+import 'package:pdf/widgets.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
 import '../app/app.locator.dart';
+import '../notifications/notifications_service.dart';
 import '../utils/stats.dart';
+
 
 class QuoteService with ListenableServiceMixin {
 
@@ -97,12 +100,14 @@ class QuoteService with ListenableServiceMixin {
     return true;
   }
 
-  Future<void> addProductToQuote(String idProduct) async {
+  final _notificationService = locator<NotificationService>();
+  Future<void> addProductToQuote(String idProduct,) async {
     if(_rxQuote.value.detail != null) {
       DocumentReference reference = FirebaseFirestore.instance.collection(
           'quote-detail').doc(_rxQuote.value.id);
       await reference.update(
           {'record.next_action': 'add_product', 'record.meta_data': idProduct});
+      _notificationService.emitSimpleNotification("Añadiendo producto...", "Se está añadiendo un producto a la cotización.");
     } else {
       throw Exception('No hay una cotizacion activa, debe asegurarse que primero se inicialice el servicio de QuoteService con una cotizacion');
     }
