@@ -11,16 +11,18 @@ import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceM
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
+import '../search/input_search_repository.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 import '../utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();
+  final _inputSearchRepository = locator<InputSearchRepository>();
   final NavigationService _navigationService = locator<NavigationService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService, _inputSearchRepository];
 
   bool updateGrid = true;
 
@@ -37,6 +39,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
   ScrollController scrollController = ScrollController();
   late DocumentSnapshot postByUser;
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+
+  bool get isSearchSelected => _inputSearchRepository.isSearchSelected;
 
   //Stream<List<ProductsSuggested>> get productsSuggestedStream => _quoteService.stream;
   //Stream<ProductsSuggested> get productsSuggestedStream => _quoteService.stream;
@@ -89,9 +93,6 @@ class QuoteViewModel  extends ReactiveViewModel  {
     return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
   }
 
-  Future<void> navigateToProductDetailMobile(String productId) async {
-    return _navigationService.navigateToProductViewMobile(productId: productId );
-  }
 /*
   Future<bool> updateDetail(int i, int b, double newQuantity) async {
     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);

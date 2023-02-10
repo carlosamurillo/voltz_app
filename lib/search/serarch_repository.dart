@@ -31,19 +31,21 @@ class ProductSearchRepository with ListenableServiceMixin  {
   Stream<HitsPage> get searchPage => _productsSearcher.responses.map(HitsPage.fromResponse);
 
   /// Get stream of products.
-  Stream<List<ProductSuggested>> get products => _productsSearcher.responses
-      .map((response) => response.hits.map(ProductSuggested.fromJson).toList());
+  Stream<List<ProductSuggested>> products() async* {
+    yield* _productsSearcher.responses
+        .map((response) => response.hits.map(ProductSuggested.fromJson).toList());
+  }
 
   /// Ultima cadena de texto de busqueda digitada por el usuario
   String? _lastQuery;
   String? get lastQuery => _lastQuery;
   /// Execute a query in products
-  void query(String string) {
+  void query(String string) async {
     _productsSearcher.query(string);
   }
 
-  void applyState(int? pageKey){
-    _productsSearcher.applyState((state) => state.copyWith(page: pageKey));
+  void applyState(int? pageKey) async {
+    _productsSearcher.applyState((state)  => state.copyWith(page: pageKey));
   }
 
   /// Dispose of underlying resources.

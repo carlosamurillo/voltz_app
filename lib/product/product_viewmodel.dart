@@ -1,25 +1,26 @@
 
-import 'package:maketplace/products/products_service.dart';
+import 'package:maketplace/product/product_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
-import '../cart/product_model.dart';
+import 'product_model.dart';
 import 'dart:js' as js;
 
 class ProductViewModel  extends ReactiveViewModel  {
-  final _productsService = ProductsService();
+  final _productsService = ProductService();
   final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_productsService];
 
-  Product get product => _productsService.product;
+  Product? get product => _productsService.getCopyOfProduct();
   final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
-  init(String productId) async {
+  void init(String productId) async {
+    print('ProductViewModel ... productId ... ' + productId);
     _productsService.init(productId);
-    return notifyListeners();
+    notifyListeners();
   }
 
   Future<void> openTechFile(String url) async {

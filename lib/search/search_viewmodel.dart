@@ -11,13 +11,16 @@ import '../app/app.locator.dart';
 class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_productSearchRepository,];
+
   String? get lastQuery => _productSearchRepository.lastQuery;
 
   init() {
   }
 
   @override
-  Stream<List<ProductSuggested>> get stream => _productSearchRepository.products;
+  Stream<List<ProductSuggested>> get stream => _productSearchRepository.products();
 
   @override
   void onData(List<ProductSuggested>? data) {
@@ -71,12 +74,14 @@ class ProductCardViewModel extends BaseViewModel {
   var currencyFormat =
   intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
-  void init(ProductSuggested productSuggested){
+  void init(ProductSuggested productSuggested) async {
     product = productSuggested;
   }
 
+  bool isCardExpanded = false;
   //desactivada la linea mientras se optimiza para
   Future<void> expandOrCollapseCard() async {
+    isCardExpanded = !isCardExpanded;
     product.isCardExpanded = !product.isCardExpanded;
     return notifyListeners();
   }

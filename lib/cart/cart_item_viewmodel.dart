@@ -88,36 +88,33 @@ class CardItemViewModel extends ReactiveViewModel {
     }
   }*/
 
-  void initCartView({required int cardIndex,}) {
+  initCartView({required int cardIndex,}) {
     print('Se ejecuta initCardView de cart_item_viewmodel');
-
     selectedProducts[cardIndex].cardIndex = cardIndex;
     _focusNodeInput.addListener(() => _onFocusInputChange(cardIndex));
     _focusNodeButton.addListener(() => _onFocusButtonChange());
     /*_focusAdd.addListener(() => _onFocusAddChange(cardIndex));
     _focusRemove.addListener(() => _onFocusRemoveChange(cardIndex));*/
     textEditingController.text = selectedProducts[cardIndex].quantity!.toString();
-
-    return notifyListeners();
   }
 
-  Future<void> activateCalculator() async {
+  void activateCalculator() async {
     isCalculatorActive = true;
     _focusNodeInput.requestFocus();
-    return notifyListeners();
+    notifyListeners();
   }
 
-  Future<void> deactivateCalculator() async {
+  void deactivateCalculator() async {
     isCalculatorActive = false;
-    return notifyListeners();
+    notifyListeners();
   }
 
   //desactivada la linea mientras se optimiza para
-  Future<void> expandOrCollapseCard(int cardIndex) async {
+  void expandOrCollapseCard(int cardIndex) async {
     //await _quoteService.resetCards();
     selectedProducts[cardIndex].isCardExpanded = !selectedProducts[cardIndex].isCardExpanded;
     //isCardExpanded = !isCardExpanded;
-    return notifyListeners();
+    notifyListeners();
   }
 
   @override

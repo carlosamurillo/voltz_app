@@ -39,6 +39,19 @@ class _CartViewState extends State<CartView> {
     return ViewModelBuilder<QuoteViewModel>.nonReactive(
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
+        return Scaffold(
+          backgroundColor: CustomColors.grayBackground_2,
+          body: Container(
+            color: CustomColors.WBY,
+            padding: const EdgeInsets.all(0),
+            child: Column(
+              children: const [
+                Header(),
+                _Container(),
+              ],
+            ),
+          ),
+        );
         return ChangeNotifierProvider(
             create: (context) => SearchInputViewModel()..init(),
             child: Scaffold(
@@ -389,16 +402,20 @@ class Resume extends StackedHookView<QuoteViewModel> {
   }
 }
 
-class _Container extends StatelessWidget {
-  @override
-  Widget build(
-    BuildContext context,
-  ) {
-    final isSelected = context.watch<SearchInputViewModel>().isSearchSelected;
 
+class _Container extends StackedHookView<QuoteViewModel> {
+  const _Container({
+    Key? key,
+  }) : super(key: key, reactive: true);
+
+  @override
+  Widget builder(
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     var media = MediaQuery.of(context).size;
 
-    if (isSelected) return const ProductsSearchResult();
+    if (model.isSearchSelected) return const ProductsSearchResult();
 
     return Expanded(
       child: Container(
@@ -415,8 +432,8 @@ class _Container extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const CardGrid(),
+              children: const [
+                CardGrid(),
               ],
             ),
             const Spacer(),

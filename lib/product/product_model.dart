@@ -7,7 +7,6 @@ class Product {
   String? skuDescription;
   String? brand;
   String? techFile;
-  double? quantity;
   double? saleValue;
   String? saleUnit;
   double? pricePublic;
@@ -21,14 +20,12 @@ class Product {
   List<String>? features;
   String? featuresString;
   String? makerWeb;
-  bool isWidgetQtyElevated = false;
 
   Product(
       {this.id,
         this.sku,
         this.skuDescription,
         this.brand,
-        this.quantity,
         this.saleValue,
         this.saleUnit,
         this.pricePublic,
@@ -41,8 +38,11 @@ class Product {
       this.warranty,
       this.features,
       this.featuresString,
-      this.makerWeb,
-      this.isWidgetQtyElevated = false});
+      this.makerWeb,});
+
+  static Product copyWith(Map<String, dynamic> json, String id) {
+    return Product.fromJson(json, id);
+  }
 
   Product.fromJson(Map<String, dynamic> json, String id) {
     this.id = id;
@@ -50,7 +50,6 @@ class Product {
     skuDescription = json['sku_description'];
     brand = json['brand'];
     techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
-    quantity = double.tryParse(json['quantity'].toString());
     saleValue = double.tryParse(json['sale_value'].toString());
     saleUnit = json['sale_unit'];
     pricePublic = double.tryParse(json['price_public'].toString());
@@ -59,13 +58,13 @@ class Product {
     if (json.containsKey('price')){
       price = Price.fromJson(json['price']);
     }
-    if (json.containsKey('source')){
-      source = json['source'];
-    }
+    //se omite la primera imagen la cual es la misma que cover image
     if (json['image_urls'] != null) {
       imageUrls = <String>[];
       for(int a = 0; a < json['image_urls'].length; a++) {
-        imageUrls!.add(json['image_urls'][a]);
+        if(a>0) {
+          imageUrls!.add(json['image_urls'][a]);
+        }
       }
     }
     if (json.containsKey('status')){
@@ -96,7 +95,6 @@ class Product {
     data['sku_description'] = this.skuDescription;
     data['brand'] = this.brand;
     data['tech_file'] = this.techFile;
-    data['quantity'] = this.quantity;
     data['sale_value'] = this.saleValue;
     data['sale_unit'] = this.saleUnit;
     data['price_public'] = this.pricePublic;
