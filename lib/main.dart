@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
           // home: AddCardView(), // Used when testing a view
           //initialRoute: Routes.cartView,
           onGenerateRoute: StackedRouter().onGenerateRoute,
-        );
+        ),
     );
   }
 }
