@@ -290,6 +290,7 @@ class ProductCard extends StatelessWidget {
                       if(viewModel.isCardExpanded)...[
                         ProductDetail(productId: product.productId!),
                       ],
+                      AddToQuoteSection(productId: product.productId!, onTapFunction: viewModel.addProductToQuote),
                     ],
                   ),
                 ),
@@ -402,7 +403,6 @@ class ProductDetail extends StatelessWidget {
   }
 
 }
-
 
 class _ProductDetailWidget extends StatelessWidget {
   const _ProductDetailWidget({
@@ -690,6 +690,56 @@ class _ProductDetailWidget extends StatelessWidget {
               ],
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class AddToQuoteSection extends StatelessWidget {
+  const AddToQuoteSection({Key? key,
+    required this.productId, required this.onTapFunction}) : super(key: key,);
+  final String productId;
+  final void Function(String value) onTapFunction;
+
+  @override
+  Widget build(
+      BuildContext context,
+      ) {
+    var media = MediaQuery.of(context).size;
+    return Padding(
+      padding: const EdgeInsets.all(25),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: CustomColors.dark,
+                borderRadius: BorderRadius.all(Radius.circular(200.0)),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(200)),
+                  hoverColor: CustomColors.dark.withOpacity(.8),
+                  onTap: () => onTapFunction(productId),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Agregar a cotización',
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.0,
+                        color: CustomColors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              )),
         ],
       ),
     );

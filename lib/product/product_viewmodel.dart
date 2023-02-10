@@ -1,5 +1,6 @@
 
 import 'package:maketplace/product/product_service.dart';
+import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
@@ -9,6 +10,7 @@ import 'dart:js' as js;
 
 class ProductViewModel  extends ReactiveViewModel  {
   final _productsService = ProductService();
+
   final NavigationService _navigationService = locator<NavigationService>();
 
   @override
