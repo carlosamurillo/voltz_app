@@ -9,10 +9,11 @@
 import 'package:stacked_core/stacked_core.dart';
 import 'package:stacked_services/src/navigation/navigation_service.dart';
 
+import '../notifications/notifications_service.dart';
 import '../product/product_service.dart';
 import '../quote/quote_service.dart';
 import '../search/input_search_repository.dart';
-import '../search/serarch_repository.dart';
+import '../search/search_repository.dart';
 
 final locator = StackedLocator.instance;
 
@@ -28,4 +29,5 @@ Future<void> setupLocator(
   locator.registerLazySingleton(() => ProductService());
   locator.registerLazySingleton(() => ProductSearchRepository());
   locator.registerLazySingleton(() => InputSearchRepository());
+  locator.registerLazySingleton(() => NotificationService());
 }

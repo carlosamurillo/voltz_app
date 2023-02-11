@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../search/search_components.dart';
+import '../search/search_components.dart' deferred as sc;
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
 
@@ -24,8 +24,17 @@ class Header extends StatelessWidget {
             height: 52,
           ),
           const SizedBox(width: 25),
-          const Expanded(
-            child: SearchInputWidget(),
+          Expanded(
+            child: FutureBuilder(
+              future: sc.loadLibrary(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return sc.SearchInputWidget();
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ),
         ],
       ),

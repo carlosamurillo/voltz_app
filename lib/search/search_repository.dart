@@ -22,7 +22,6 @@ class ProductSearchRepository with ListenableServiceMixin  {
   ProductSearchRepository() {
     _components
       ..add(_productsSearcher,);
-    _productsSearcher.state.listen((searchState) => (_lastQuery = searchState.query));
   }
 
   Stream<SearchMetadata> get searchMetadata => _productsSearcher.responses.map(SearchMetadata.fromResponse);
@@ -39,9 +38,17 @@ class ProductSearchRepository with ListenableServiceMixin  {
   /// Ultima cadena de texto de busqueda digitada por el usuario
   String? _lastQuery;
   String? get lastQuery => _lastQuery;
+  Future<void> setupLastQuery() async {
+    _productsSearcher.state.listen((searchState) async => (_lastQuery = searchState.query));
+  }
+
   /// Execute a query in products
-  void query(String string) async {
-    _productsSearcher.query(string);
+  Future<void> query(String string) async {
+    if(string.isNotEmpty && string.length >= 3) {
+      _productsSearcher.query(string);
+    } else {
+      _productsSearcher.query('');
+    }
   }
 
   void applyState(int? pageKey) async {
