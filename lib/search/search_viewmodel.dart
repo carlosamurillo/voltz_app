@@ -4,7 +4,6 @@ import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/search_repository.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:pdf/widgets.dart' show Context;
 import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart' as intl;

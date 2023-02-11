@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/search/input_view_model.dart';
-import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked.dart' show ViewModelBuilder;
 import '../utils/custom_colors.dart';
 
 class SearchInputWidget extends StatelessWidget {
@@ -13,7 +13,7 @@ class SearchInputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SearchInputViewModel>.reactive(
         viewModelBuilder: () => SearchInputViewModel(),
-        onViewModelReady: (viewModel) => viewModel.init(),
+        onViewModelReady: (viewModel) async => viewModel.init(),
         fireOnViewModelReadyOnce: true,
         disposeViewModel: false,
         createNewViewModelOnInsert: false,
@@ -33,9 +33,9 @@ class SearchInputWidget extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: TextFormField(
-              onTap: () => viewModel.changeSearchSelected(true),
-              onEditingComplete: () => viewModel.changeSearchSelected(false),
-              onSaved: (v) => viewModel.changeSearchSelected(false),
+              onTap: () async => viewModel.changeSearchSelected(true),
+              onEditingComplete: () async => viewModel.changeSearchSelected(false),
+              onSaved: (v) async => viewModel.changeSearchSelected(false),
               controller: viewModel.searchTextController,
               focusNode: viewModel.focusNodeSearch,
               decoration: InputDecoration(
@@ -49,7 +49,7 @@ class SearchInputWidget extends StatelessWidget {
                 ),
                 suffixIcon: viewModel.isSearchSelected
                     ? IconButton(
-                  onPressed: () => viewModel.cancelSearch(),
+                  onPressed: () async => viewModel.cancelSearch(),
                   icon: const Icon(
                     Icons.close,
                     size: 24,

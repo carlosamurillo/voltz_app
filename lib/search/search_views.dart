@@ -1,14 +1,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:stacked/stacked.dart';
-
-import '../product/product_views.dart';
+import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
 import '../utils/custom_colors.dart';
-import '../utils/style.dart';
 
 class ProductsSearchResult extends StatelessWidget {
   const ProductsSearchResult({super.key});
@@ -27,45 +24,34 @@ class ProductsSearchResult extends StatelessWidget {
         }
 
         if(viewModel.data == null) {
-          return const Center(
-            child: SizedBox(
-              width: 30,
-              height: 30,
-              child: CircularProgressIndicator(),
+          return const Expanded(
+            child: Center(
+              child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(),
+              ),
             ),
           );
         }
-        return SizedBox(
-          width: media.width,
-          height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-          child: CustomScrollView(
-            slivers: <Widget> [
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 25,),
-              ),
-              if(viewModel.data!.isNotEmpty) ...[
-                SliverPadding(
-                  padding: media.width >= CustomStyles.mobileBreak ? const EdgeInsets.only(right: 25, left: 25) : const EdgeInsets.only(right: 0, left: 0),
-                  sliver: SliverMasonryGrid.count(
-                    childCount: viewModel.data!.length,
-                    mainAxisSpacing: 25,
-                    crossAxisSpacing: 25,
-                    itemBuilder: (context, index) {
-                      if(index == viewModel.data!.length - 1){
-                        return const NoFoundCard();
-                      }
-                      return ProductCard(
-                          product: viewModel.data![index]
-                      );
-                    }, crossAxisCount: ((media.width - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 25) / 387).truncateToDouble().toInt() : 1,
+        return FutureBuilder(
+          future: gv.loadLibrary(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
+              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!);
+            } else {
+              return const Expanded(
+                child: Center(
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(),
                   ),
                 ),
-              ],
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 25,),
-              ),
-            ],
-          ),);
+              );
+            }
+          },
+        );
         },
     );
   }
