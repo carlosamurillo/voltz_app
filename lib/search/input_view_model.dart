@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel;
@@ -16,9 +18,20 @@ class SearchInputViewModel extends ReactiveViewModel {
 
   init() async {
     _focusNodeSearch = FocusNode();
-    _searchTextController.addListener(() async => _productSearchRepository.query(_searchTextController.text));
     _productSearchRepository.setupLastQuery();
     return notifyListeners();
+  }
+
+
+  final Debouncer _debouncer = Debouncer(milliseconds: 400);
+  onTexInputChanged(String value) {
+    _debouncer.run(() {
+      _executeQueryListener(value);
+    });
+  }
+
+  _executeQueryListener(String query) {
+    _productSearchRepository.query(query);
   }
 
   changeSearchSelected(bool selected) async {
@@ -39,5 +52,24 @@ class SearchInputViewModel extends ReactiveViewModel {
     _focusNodeSearch.dispose();
     _searchTextController.dispose();
     super.dispose();
+  }
+}
+
+class Debouncer {
+  final int milliseconds;
+  VoidCallback? action;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  cancel(){
+    if (null != _timer) {
+      _timer!.cancel();
+    }
+  }
+
+  run(VoidCallback action) {
+    cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/search/input_view_model.dart';
@@ -33,6 +34,7 @@ class SearchInputWidget extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: TextFormField(
+              onChanged: viewModel.onTexInputChanged,
               onTap: () async => viewModel.changeSearchSelected(true),
               onEditingComplete: () async => viewModel.changeSearchSelected(false),
               onSaved: (v) async => viewModel.changeSearchSelected(false),
