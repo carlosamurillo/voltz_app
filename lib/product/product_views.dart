@@ -700,7 +700,7 @@ class AddToQuoteSection extends StatelessWidget {
   const AddToQuoteSection({Key? key,
     required this.productId, required this.onTapFunction}) : super(key: key,);
   final String productId;
-  final void Function(String value) onTapFunction;
+  final void Function(String value,) onTapFunction;
 
   @override
   Widget build(
@@ -723,7 +723,7 @@ class AddToQuoteSection extends StatelessWidget {
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(200)),
                   hoverColor: CustomColors.dark.withOpacity(.8),
-                  onTap: () => onTapFunction(productId),
+                  onTap: () => onTapFunction(productId,),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

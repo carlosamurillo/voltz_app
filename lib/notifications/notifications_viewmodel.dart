@@ -12,9 +12,7 @@ class NotificationViewModel extends ReactiveViewModel {
   @override
   List<ListenableServiceMixin> get listenableServices => [_notificationService,];
 
-  String get title => _notificationService.title;
-  String get message => _notificationService.message;
-  bool get showingNotification => _notificationService.showNotification;
+  NotificationModel get notification => _notificationService.getCopyOfNotification();
 
   void dismissNotification(context) async {
     OverlaySupportEntry.of(context)?.dismiss();

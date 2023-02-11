@@ -32,6 +32,8 @@ class QuoteService with ListenableServiceMixin {
   QuoteService() {
     listenToReactiveValues([_rxQuote, _rxSelectedProducts, _rxCompanyName, _rxCustomerName]);
   }
+
+  String recordLastAction = '';
   
   void init(String quoteId, String? version) async {
     _initReference(quoteId, version);
@@ -106,6 +108,7 @@ class QuoteService with ListenableServiceMixin {
       _notificationService.emitSimpleNotification("Ejecutando...", "Se está añadiendo un producto a la cotización activa.");
       DocumentReference reference = FirebaseFirestore.instance.collection(
           'quote-detail').doc(_rxQuote.value.id);
+      recordLastAction = 'add_product';
       await reference.update(
           {'record.next_action': 'add_product', 'record.meta_data': idProduct});
     } else {
@@ -158,7 +161,10 @@ class QuoteService with ListenableServiceMixin {
             await streamProducts();
             _getCustomerName(id: _rxQuote.value.customer!.id);
             notifyListeners();
-            _notificationService.emitSimpleNotification("Terminado", "Se añadió el producto y se recalcularon los totales. Puedes cambiar las cantidades allá");
+            if(recordLastAction == 'add_product'){
+              _notificationService.emitSimpleNotification("Terminado", "Se añadió el producto y se recalcularon los totales. Puedes cambiar las cantidades allá");
+              recordLastAction = '';
+            }
             print("Se llamo notifyListeners desde Servicio QuoteService");
           }
         } else {

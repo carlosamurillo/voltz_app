@@ -41,7 +41,11 @@ class ProductSearchRepository with ListenableServiceMixin  {
   String? get lastQuery => _lastQuery;
   /// Execute a query in products
   void query(String string) async {
-    _productsSearcher.query(string);
+    if(string.isNotEmpty && string.length >= 3) {
+      _productsSearcher.query(string);
+    } else {
+      _productsSearcher.query('');
+    }
   }
 
   void applyState(int? pageKey) async {

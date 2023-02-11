@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/search/search_model.dart';
-import 'package:maketplace/search/serarch_repository.dart';
+import 'package:maketplace/search/search_repository.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:pdf/widgets.dart' show Context;
 import 'package:stacked/stacked.dart';
@@ -108,14 +108,14 @@ class ProductCardViewModel extends BaseViewModel {
 
   ///Se trae el servicio QuoteService para anadir productos a una cotizacion
   final _quoteService = locator<QuoteService>();
-  addProductToQuote(String idProduct) async {
+  addProductToQuote(String idProduct,) async {
     _quoteService.addProductToQuote(idProduct);
     _showNotification();
   }
 
   _showNotification() async {
     return showOverlayNotification((context) {
-      return const SimpleNotificationWidget();
-    }, duration: const Duration(seconds: 45), position: NotificationPosition.bottom);
+      return const BaseNotificationWidget();
+    }, duration: const Duration(seconds: 10), position: NotificationPosition.bottom,);
   }
 }

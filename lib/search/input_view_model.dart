@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel;
 import 'input_search_repository.dart';
-import 'serarch_repository.dart';
+import 'search_repository.dart';
 
 class SearchInputViewModel extends ReactiveViewModel {
   final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();

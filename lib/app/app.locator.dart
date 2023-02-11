@@ -13,7 +13,7 @@ import '../notifications/notifications_service.dart';
 import '../product/product_service.dart';
 import '../quote/quote_service.dart';
 import '../search/input_search_repository.dart';
-import '../search/serarch_repository.dart';
+import '../search/search_repository.dart';
 
 final locator = StackedLocator.instance;
 

@@ -3,32 +3,25 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 class NotificationService with ListenableServiceMixin {
-  final _rxTitle = RxValue<String>('');
-  final _rxMessage = RxValue<String>('');
-  final _rxShowNotification = RxValue<bool>(false);
-  String get title => _rxTitle.value;
-  String get message => _rxMessage.value;
-  bool get showNotification => _rxShowNotification.value;
+  final _rxNotification = RxValue<NotificationModel>(NotificationModel.name('', '', false, NotificationType.simple));
+  NotificationModel get notification => _rxNotification.value;
 
   NotificationService() {
-    listenToReactiveValues([_rxTitle, _rxMessage, _rxShowNotification]);
+    listenToReactiveValues([_rxNotification,]);
   }
 
-  final _rxType = RxValue<NotificationType>(NotificationType.simple);
-  NotificationType get type => _rxType.value;
+  NotificationModel getCopyOfNotification(){
+    return NotificationModel.copyWith(
+        _rxNotification.value.toJson());
+  }
 
   void emitSimpleNotification(String title, String message) async {
-    _rxType.value = NotificationType.simple;
-    _rxTitle.value = title;
-    _rxMessage.value = message;
-    _rxShowNotification.value = true;
+    _rxNotification.value = NotificationModel.name(title, message, true, NotificationType.simple);
     notifyListeners();
   }
 
   void reset() async {
-    _rxTitle.value = '';
-    _rxMessage.value = '';
-    _rxShowNotification.value = false;
+    _rxNotification.value = NotificationModel.name('', '', false, NotificationType.simple);
     notifyListeners();
   }
 }
@@ -36,5 +29,47 @@ class NotificationService with ListenableServiceMixin {
 enum NotificationType {
   simple,
   medium,
-  enhance,
+  enhance;
+
+  static NotificationType? fromString(String value) {
+    switch (value){
+      case 'simple':
+        return NotificationType.simple;
+      case 'medium':
+        return NotificationType.medium;
+      case 'enhance':
+        return NotificationType.enhance;
+      default:
+        return null;
+    }
+  }
+}
+
+class NotificationModel {
+  String title = '';
+  String message = '';
+  bool showNotification = false;
+  NotificationType type = NotificationType.simple;
+
+  NotificationModel.name(this.title, this.message, this.showNotification, this.type);
+
+  NotificationModel.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    message = json['message'];
+    showNotification = json['show_notification'];
+    type = NotificationType.fromString(json['type'])!;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['message'] = this.message;
+    data['show_notification'] = this.showNotification;
+    data['type'] = this.type.name;
+    return data;
+  }
+
+  static NotificationModel copyWith(Map<String, dynamic> json) {
+    return NotificationModel.fromJson(json);
+  }
 }
