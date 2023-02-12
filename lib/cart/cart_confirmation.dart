@@ -1,8 +1,7 @@
 
 import 'dart:html' as html;
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_model.dart';
@@ -20,10 +19,10 @@ class CartConfirmation extends StatefulWidget {
   final String? version;
 
   @override
-  _CartConfirmationState createState() => _CartConfirmationState();
+  CartConfirmationState createState() => CartConfirmationState();
 }
 
-class _CartConfirmationState extends State<CartConfirmation> {
+class CartConfirmationState extends State<CartConfirmation> {
   late QuoteViewModel model;
   @override
   void initState() {
@@ -39,7 +38,7 @@ class _CartConfirmationState extends State<CartConfirmation> {
         return Scaffold(
             backgroundColor: CustomColors.grayBackground,
             body: Container(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               child: Column(
                 children: [
                   const Header(),
@@ -62,7 +61,7 @@ class _Container extends StatelessWidget {
     return Expanded(
       child: Container(
           width: double.infinity,
-          margin: EdgeInsets.only(left: 100, right: 100),
+          margin: const EdgeInsets.only(left: 100, right: 100),
           child: Row(
             children: [
               Expanded(
@@ -71,9 +70,9 @@ class _Container extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 40, bottom: 40),
+                      margin: const EdgeInsets.only(top: 40, bottom: 40),
                       child: Text('Tu cotización', style: CustomStyles.styleSafeBlue24700),),
-                    Expanded(child: _CartContent(),),
+                    const Expanded(child: _CartContent(),),
                   ],
                 ),
               ),
@@ -256,7 +255,7 @@ class _Resume extends StackedHookView<QuoteViewModel> {
 }
 
 class _CartContent extends StackedHookView<QuoteViewModel> {
-  _CartContent({Key? key,}) : super(key: key, reactive: true);
+  const _CartContent({Key? key,}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
@@ -318,7 +317,7 @@ class _CartContent extends StackedHookView<QuoteViewModel> {
                     height: 24,
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 Text(
                   "Descuento adicional Voltz",
                   style: CustomStyles.styleMuggleGray_418x400,
@@ -371,13 +370,15 @@ class CartList extends StackedHookView<QuoteViewModel> {
   @override
   Widget builder(
       BuildContext context,
-      QuoteViewModel viewModel,
+      QuoteViewModel model,
       ) {
     return Builder(
       builder: (BuildContext context) {
-        if (viewModel.quote.detail != null) {
-          html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
-          print('Se entra a crear la lista');
+        if (model.quote.detail != null) {
+          html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
+          if (kDebugMode) {
+            print('Se entra a crear la lista');
+          }
           return
             Expanded(
               child: Container(
@@ -385,10 +386,10 @@ class CartList extends StackedHookView<QuoteViewModel> {
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
                   reverse: false,
-                  controller: viewModel.scrollController,
-                  itemCount: viewModel.selectedProducts.length,
+                  controller: model.scrollController,
+                  itemCount: model.selectedProducts.length,
                   itemBuilder: (context, index) {
-                    return _CartItemView(product: viewModel.selectedProducts[index]);
+                    return CartItemView(product: model.selectedProducts[index], textEditingController:  TextEditingController());
                   },
                 ),
               )
@@ -408,25 +409,14 @@ class CartList extends StackedHookView<QuoteViewModel> {
   }
 }
 
-class _CartItemView extends StatefulWidget {
-  _CartItemView({Key? key, required this.product}) : super(key: key);
-  ProductSuggested product;
-
-  @override
-  _CartItemState createState() => _CartItemState();
-}
-class _CartItemState extends State<_CartItemView>  {
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  TextEditingController textEditingController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
+class CartItemView extends StatelessWidget {
+  const CartItemView({Key? key, required this.product, required this.textEditingController}) : super(key: key);
+  final ProductSuggested product;
+  final TextEditingController textEditingController;
 
   @override
   Widget build(BuildContext context) {
+    final currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
     return Container(
       color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -434,7 +424,7 @@ class _CartItemState extends State<_CartItemView>  {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            if(widget.product.coverImage == null) ...[
+            if(product.coverImage == null) ...[
               SizedBox(
                 height: 50,
                 width: 50,
@@ -449,7 +439,7 @@ class _CartItemState extends State<_CartItemView>  {
               SizedBox(
                 height: 50,
                 width: 50,
-                child: Image.network(widget.product.coverImage!)
+                child: Image.network(product.coverImage!)
               ),
             ],
             const SizedBox(width: 30,),
@@ -459,14 +449,14 @@ class _CartItemState extends State<_CartItemView>  {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SelectableText(
-                      widget.product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                      product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                       style: CustomStyles.styleMuggleGray_414x600,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
                     ),
                     const SizedBox(height: 3,),
                     SelectableText(
-                      '${widget.product.brand ?? ''} (${widget.product.sku!})',
+                      '${product.brand ?? ''} (${product.sku!})',
                       style: CustomStyles.styleMuggleGray_414x400,
                       textAlign: TextAlign.left,
                       //overflow: TextOverflow.clip,
@@ -475,18 +465,18 @@ class _CartItemState extends State<_CartItemView>  {
                     Row(
                       children: [
                         SelectableText(
-                          '${widget.product.quantity!} ${widget.product.saleUnit!}',
+                          '${product.quantity!} ${product.saleUnit!}',
                           style: CustomStyles.styleSafeBlue14x400,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
                         ),
                         SelectableText(
-                          '  x  ${currencyFormat.format(widget.product.price!.price2!)} c/u  =  ',
+                          '  x  ${currencyFormat.format(product.price!.price2!)} c/u  =  ',
                           style: CustomStyles.styleSafeBlue14x400,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
                         ),
-                        SelectableText('${currencyFormat.format(widget.product.total!.afterDiscount!)} total',
+                        SelectableText('${currencyFormat.format(product.total!.afterDiscount!)} total',
                           style: CustomStyles.styleSafeBlue14x600,
                           textAlign: TextAlign.left,
                           //overflow: TextOverflow.clip,
@@ -513,7 +503,7 @@ class _Dialogs {
         return AlertDialog(
           title: const SelectableText("Hacer pedido"),
           titleTextStyle:
-          TextStyle(
+          const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,fontSize: 20),
           actionsOverflowButtonSpacing: 20,

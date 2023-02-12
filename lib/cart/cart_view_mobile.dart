@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -20,6 +18,8 @@ const Color _background = Color(0xFFEFF2FD);
 const Color _energyYellow_20 = Color(0xFFFDF5D5);
 
 class MobileView extends StatelessWidget {
+  const MobileView({super.key});
+
 
   @override
   Widget build(
@@ -34,7 +34,7 @@ class MobileView extends StatelessWidget {
             children: [
               HeaderMobile(),
               _ad(),
-              _summary(),
+              summary(),
               _cartContent(),
             ],
           ),
@@ -75,8 +75,8 @@ class MobileView extends StatelessWidget {
   }
 }
 
-class _summary extends StackedHookView<QuoteViewModel> {
-  _summary({Key? key,}) : super(key: key, reactive: true);
+class summary extends StackedHookView<QuoteViewModel> {
+  summary({Key? key,}) : super(key: key, reactive: true);
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   @override

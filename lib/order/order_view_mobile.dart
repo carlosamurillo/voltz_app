@@ -66,7 +66,7 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                  borderRadius: const BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
                   color: headerColor,
                 ),
                 child: Row(
@@ -85,7 +85,7 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   decoration: BoxDecoration(
-                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? const BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
                     color: CustomColors.blueBackground,
                   ),
                   child: Row(
@@ -175,7 +175,7 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
   Widget build(BuildContext context) {
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       width: 90,
       child: SelectableText(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
@@ -187,15 +187,14 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
 }
 
 class OrderHeaderMobile extends StatelessWidget {
-  OrderHeaderMobile({required this.total, required this.consecutive});
-  double total;
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-  String consecutive;
+  const OrderHeaderMobile({super.key, required this.total, required this.consecutive});
+  final double total;
+  final String consecutive;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 26, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 24),
       color: Colors.white,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -206,7 +205,7 @@ class OrderHeaderMobile extends StatelessWidget {
             height: 19.86,
           ),
           const Spacer(),
-          SizedBox(width: 16,),
+          const SizedBox(width: 16,),
           SelectableText.rich(
             TextSpan(
               children: [
@@ -255,7 +254,7 @@ class _OrderTotalsMobileState extends State<OrderTotalsMobile> {
   Widget build(BuildContext context) {
     return Container(
       color: CustomColors.volcanicBlue,
-      padding: EdgeInsets.symmetric(vertical: 9, horizontal: 24),
+      padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 24),
       child: Row(
         children: [
           Expanded(

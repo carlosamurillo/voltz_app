@@ -46,7 +46,7 @@ class CardGrid extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
+            SizedBox(
               height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
@@ -93,7 +93,7 @@ class CardGrid extends StatelessWidget {
                     ),
                   ),
                   if (media.width < CustomStyles.mobileBreak) ...[
-                    SliverToBoxAdapter(
+                    const SliverToBoxAdapter(
                       child: Resume(),
                     ),
                   ]
@@ -108,7 +108,7 @@ class CardGrid extends StatelessWidget {
   }
 }
 
-class ProductCard extends StatefulWidget {
+class ProductCard extends StatelessWidget {
   const ProductCard({
     Key? key,
     required this.i,
@@ -116,17 +116,12 @@ class ProductCard extends StatefulWidget {
   final int i;
 
   @override
-  _ProductCard createState() => _ProductCard();
-}
-
-class _ProductCard extends State<ProductCard> {
-  @override
   Widget build(BuildContext context) {
     //if (widget.i == 1) return NoFoundCard();
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(
-              cardIndex: widget.i,
+              cardIndex: i,
             ),
         fireOnViewModelReadyOnce: false,
         disposeViewModel: true,
@@ -154,7 +149,7 @@ class _ProductCard extends State<ProductCard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (viewModel.selectedProducts[widget.i].coverImage == null) ...[
+                            if (viewModel.selectedProducts[i].coverImage == null) ...[
                               SizedBox(
                                   width: 120,
                                   height: 120,
@@ -168,7 +163,7 @@ class _ProductCard extends State<ProductCard> {
                                   width: 120,
                                   height: 120,
                                   child: Image.network(
-                                    viewModel.selectedProducts[widget.i].coverImage!,
+                                    viewModel.selectedProducts[i].coverImage!,
                                     height: 120,
                                     width: 120,
                                   )),
@@ -188,7 +183,7 @@ class _ProductCard extends State<ProductCard> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                      if (viewModel.selectedProducts[widget.i].brand!.toLowerCase() == 'tecnolite') ...[
+                                      if (viewModel.selectedProducts[i].brand!.toLowerCase() == 'tecnolite') ...[
                                         Image.asset(
                                           'assets/images/favicon_tecnolite.png',
                                           width: 16,
@@ -199,7 +194,7 @@ class _ProductCard extends State<ProductCard> {
                                         ),
                                       ],
                                       SelectableText(
-                                        viewModel.selectedProducts[widget.i].brand!,
+                                        viewModel.selectedProducts[i].brand!,
                                         maxLines: 1,
                                         style: GoogleFonts.inter(
                                           fontStyle: FontStyle.normal,
@@ -219,7 +214,7 @@ class _ProductCard extends State<ProductCard> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       SelectableText(
-                                        viewModel.selectedProducts[widget.i].sku!,
+                                        viewModel.selectedProducts[i].sku!,
                                         maxLines: 1,
                                         style: GoogleFonts.inter(
                                           fontStyle: FontStyle.normal,
@@ -237,14 +232,14 @@ class _ProductCard extends State<ProductCard> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       SelectableText(
-                                        viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].pricePublic!),
+                                        viewModel.currencyFormat.format(viewModel.selectedProducts[i].pricePublic!),
                                         maxLines: 1,
                                         style: GoogleFonts.inter(
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 14.0,
                                           decoration: TextDecoration.lineThrough,
-                                          color: Color(0xFF9C9FAA),
+                                          color: const Color(0xFF9C9FAA),
                                           height: 1.1,
                                         ),
                                       ),
@@ -255,7 +250,7 @@ class _ProductCard extends State<ProductCard> {
                                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                                         color: CustomColors.yellowVoltz,
                                         child: SelectableText(
-                                          "${(viewModel.selectedProducts[widget.i].discountRate!).toStringAsFixed(2)}%",
+                                          "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
                                           enableInteractiveSelection: false,
                                           maxLines: 1,
                                           style: GoogleFonts.inter(
@@ -281,7 +276,7 @@ class _ProductCard extends State<ProductCard> {
                                         child: Shimmer(
                                           linearGradient: viewModel.shimmerGradientWhiteBackground,
                                           child: ShimmerLoading(
-                                            isLoading: viewModel.selectedProducts[widget.i].isCalculatingProductTotals,
+                                            isLoading: viewModel.selectedProducts[i].isCalculatingProductTotals,
                                             shimmerEmptyBox: const ShimmerEmptyBox(
                                               width: 160,
                                               height: 19,
@@ -289,7 +284,7 @@ class _ProductCard extends State<ProductCard> {
                                             child: Row(
                                               children: [
                                                 SelectableText(
-                                                  viewModel.currencyFormat.format(viewModel.selectedProducts[widget.i].price!.price2!),
+                                                  viewModel.currencyFormat.format(viewModel.selectedProducts[i].price!.price2!),
                                                   maxLines: 1,
                                                   style: GoogleFonts.inter(
                                                     fontStyle: FontStyle.normal,
@@ -303,7 +298,7 @@ class _ProductCard extends State<ProductCard> {
                                                   width: 5,
                                                 ),
                                                 SelectableText(
-                                                  viewModel.selectedProducts[widget.i].saleUnit!,
+                                                  viewModel.selectedProducts[i].saleUnit!,
                                                   maxLines: 1,
                                                   style: GoogleFonts.inter(
                                                     fontStyle: FontStyle.normal,
@@ -357,7 +352,7 @@ class _ProductCard extends State<ProductCard> {
                           height: 25,
                         ),
                         SelectableText(
-                          viewModel.selectedProducts[widget.i].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                          viewModel.selectedProducts[i].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                           style: GoogleFonts.inter(
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
@@ -368,7 +363,7 @@ class _ProductCard extends State<ProductCard> {
                       ],
                     ),
                   ),
-                  if (viewModel.selectedProducts[widget.i].techFile != null) ...[
+                  if (viewModel.selectedProducts[i].techFile != null) ...[
                     getHeader(context, viewModel),
                   ] else ...[
                     const Divider(
@@ -376,10 +371,10 @@ class _ProductCard extends State<ProductCard> {
                       color: Color(0xFFD9E0FC),
                     ),
                   ],
-                  if (viewModel.selectedProducts[widget.i].isCardExpanded) ...[
-                    ProductDetail(productId: viewModel.selectedProducts[widget.i].productId!,),
+                  if (viewModel.selectedProducts[i].isCardExpanded) ...[
+                    ProductDetail(productId: viewModel.selectedProducts[i].productId!,),
                   ],
-                  _QuantityCalculatorWidget(index: widget.i),
+                  _QuantityCalculatorWidget(index: i),
                 ],
               ),
             ),
@@ -391,7 +386,7 @@ class _ProductCard extends State<ProductCard> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => viewModel.expandOrCollapseCard(widget.i),
+        onTap: () => viewModel.expandOrCollapseCard(i),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -434,7 +429,7 @@ class _ProductCard extends State<ProductCard> {
                     ),
                     const Spacer(),
                     Container(
-                      child: viewModel.selectedProducts[widget.i].isCardExpanded ? const Icon(Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: viewModel.selectedProducts[i].isCardExpanded ? const Icon(Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
                 )),

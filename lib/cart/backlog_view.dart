@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -10,29 +8,29 @@ import '../utils/custom_colors.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class BacklogView extends StackedHookView<QuoteViewModel> {
-  BacklogView({Key? key, }) : super(key: key, reactive: true);
+  const BacklogView({Key? key, }) : super(key: key, reactive: true);
 
   @override
   Widget builder(
       BuildContext context,
-      QuoteViewModel viewModel,
+      QuoteViewModel model,
       ) {
     return Builder(
           builder: (BuildContext context) {
-            if (viewModel.quote.pendingProducts != null) {
+            if (model.quote.pendingProducts != null) {
               return
                 Container(
                   color: Colors.white,
                   child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
                     reverse: false,
-                    controller: viewModel.scrollController,
-                    itemCount: viewModel.quote.pendingProducts!.length + 1,
+                    controller: model.scrollController,
+                    itemCount: model.quote.pendingProducts!.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return const WeAreWorking();
                       } else {
-                        return _BacklogItemView(product: viewModel.quote.pendingProducts![index - 1]);
+                        return _BacklogItemView(product: model.quote.pendingProducts![index - 1]);
                       }
                     },
                   ),
@@ -50,7 +48,7 @@ class WeAreWorking extends StackedHookView<QuoteViewModel> {
   @override
   Widget builder(
       BuildContext context,
-      QuoteViewModel viewModel,
+      QuoteViewModel model,
       ) {
     return Container(
         margin: const EdgeInsets.only(top: 30, bottom: 30),
@@ -77,7 +75,7 @@ class WeAreWorking extends StackedHookView<QuoteViewModel> {
                   textAlign: TextAlign.left,
                   //overflow: TextOverflow.clip,
                 ),
-                _ClockTimeElapsed(dateTime: viewModel.quote.createdAt!.toDate()),
+                _ClockTimeElapsed(dateTime: model.quote.createdAt!.toDate()),
               ],
             )
           ],
@@ -87,8 +85,8 @@ class WeAreWorking extends StackedHookView<QuoteViewModel> {
 }
 
 class _ClockTimeElapsed extends StatefulWidget {
-  _ClockTimeElapsed({Key? key, required this.dateTime,}) : super(key: key);
-  DateTime dateTime;
+  const _ClockTimeElapsed({Key? key, required this.dateTime,}) : super(key: key);
+  final DateTime dateTime;
 
   @override
   _ClockTimeElapsedState createState() => _ClockTimeElapsedState();
@@ -120,7 +118,7 @@ class _ClockTimeElapsedState extends State<_ClockTimeElapsed> {
   calculateDifference() {
     difference = DateTime.now().difference(widget.dateTime);
     differenceStr = difference.toString();
-    if (differenceStr != null && differenceStr.length >= 7) {
+    if (differenceStr.length >= 7) {
       differenceStr = differenceStr.substring(0, differenceStr.length - 7);
     }
   }

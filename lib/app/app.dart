@@ -11,8 +11,8 @@ import '../product/product_service.dart';
 import '../search/input_search_repository.dart';
 import '../search/search_repository.dart';
 
-/**  flutter pub run build_runner build --delete-conflicting-outputs
- * Anterior es la linea de comando para generar  **/
+/// flutter pub run build_runner build --delete-conflicting-outputs
+/// Anterior es la linea de comando para generar  *
 @StackedApp(
   dependencies: [
     LazySingleton(classType: NavigationService),
