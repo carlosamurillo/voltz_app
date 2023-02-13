@@ -305,15 +305,15 @@ class _OrderHeaderId extends StatelessWidget {
             SelectableText.rich(
               TextSpan(
                 children: [
-                  new TextSpan(text: 'Pedido ',
+                  const TextSpan(text: 'Pedido ',
                     style: TextStyle(
                       fontFamily: "Hellix",
                       color: CustomColors.volcanicBlue,
                       fontSize: 48,
                       fontWeight: FontWeight.w600,),
                   ),
-                  new TextSpan(text: "#${orderId}",
-                    style: TextStyle(
+                  TextSpan(text: "#$orderId",
+                    style: const TextStyle(
                       fontFamily: "Hellix",
                       color: CustomColors.volcanicBlue,
                       fontSize: 32,
@@ -327,11 +327,11 @@ class _OrderHeaderId extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10),),
-                      color: Color(0xFFF9FAFF),
-                      border: Border.all(width: 1, color: Color(0xFFE5E7EB))
+                      borderRadius: const BorderRadius.all(Radius.circular(10),),
+                      color: const Color(0xFFF9FAFF),
+                      border: Border.all(width: 1, color: const Color(0xFFE5E7EB))
                   ),
                   child: SelectableText.rich(
                     TextSpan(
@@ -343,8 +343,8 @@ class _OrderHeaderId extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w700,),
                       ),*/
-                        new TextSpan(text: alias,
-                          style: TextStyle(
+                        TextSpan(text: alias,
+                          style: const TextStyle(
                             fontFamily: "Hellix",
                             color: CustomColors.volcanicBlue,
                             fontSize: 14,
@@ -357,11 +357,11 @@ class _OrderHeaderId extends StatelessWidget {
                 ),
                 const SizedBox(width: 40,),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10),),
-                      color: Color(0xFFF9FAFF),
-                      border: Border.all(width: 1, color: Color(0xFFE5E7EB))
+                      borderRadius: const BorderRadius.all(Radius.circular(10),),
+                      color: const Color(0xFFF9FAFF),
+                      border: Border.all(width: 1, color: const Color(0xFFE5E7EB))
                   ),
                   child: SelectableText.rich(
                     TextSpan(
@@ -385,7 +385,7 @@ class _OrderHeaderId extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Container(
                     width: 250,
                     alignment: Alignment.center,
@@ -444,11 +444,11 @@ class _OrderTotalsState extends State<_OrderTotals> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
         color: CustomColors.volcanicBlue,
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(child: Container(
@@ -461,7 +461,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                       "Subtotal único",
                       style: CustomStyles.styleWhiteUno,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     SelectableText(
                       currencyFormat.format(widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
@@ -489,7 +489,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                       "IVA",
                       style: CustomStyles.styleWhiteUno,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     SelectableText(
                       currencyFormat.format(widget.tax * widget.subTotal),
                       style: CustomStyles.styleWhiteUno,
@@ -504,7 +504,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                         "Costo de envío",
                         style: CustomStyles.styleWhiteUno,
                       ),
-                      Spacer(),
+                      const Spacer(),
                       SelectableText(
                         currencyFormat.format(widget.shippingTotal),
                         style: CustomStyles.styleWhiteUno,
@@ -519,7 +519,7 @@ class _OrderTotalsState extends State<_OrderTotals> {
                       "Total",
                       style: CustomStyles.styleWhiteUno,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     SelectableText(
                       currencyFormat.format(widget.total),
                       style: CustomStyles.styleWhiteUno,
@@ -578,7 +578,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
                   color: CustomColors.safeBlue,
                 ),
@@ -617,7 +617,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                   decoration: BoxDecoration(
-                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
+                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? const BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
                     color: CustomColors.blueBackground,
                   ),
                   child: Row(
@@ -716,7 +716,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.all(24),
+                              padding: const EdgeInsets.all(24),
                               width: 177,
                               child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,

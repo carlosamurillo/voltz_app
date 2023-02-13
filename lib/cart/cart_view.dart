@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
@@ -13,7 +12,6 @@ import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 import '../common/header.dart';
 import '../utils/custom_colors.dart';
-import '../utils/shimmer.dart';
 import 'cart_expandable_view.dart';
 import 'container_viewmodel.dart';
 
@@ -23,10 +21,10 @@ class CartView extends StatefulWidget {
   final String? version;
 
   @override
-  _CartViewState createState() => _CartViewState();
+  CartViewState createState() => CartViewState();
 }
 
-class _CartViewState extends State<CartView> {
+class CartViewState extends State<CartView> {
   @override
   void initState() {
     super.initState();
@@ -61,12 +59,12 @@ class Resume extends StackedHookView<QuoteViewModel> {
   @override
   Widget builder(
     BuildContext context,
-    QuoteViewModel viewModel,
+    QuoteViewModel model,
   ) {
     return Builder(
       builder: (BuildContext context) {
         var media = MediaQuery.of(context).size;
-        if (viewModel.quote.detail != null) {
+        if (model.quote.detail != null) {
           return Container(
               color: CustomColors.safeBlue,
               width: 310,
@@ -113,7 +111,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    viewModel.selectedProducts.length.toString(),
+                                    model.selectedProducts.length.toString(),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -141,7 +139,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    viewModel.currencyFormat.format(viewModel.quote.totals!.subTotal!),
+                                    model.currencyFormat.format(model.quote.totals!.subTotal!),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -169,7 +167,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    '-${viewModel.currencyFormat.format(viewModel.quote.totals!.discount!)}',
+                                    '-${model.currencyFormat.format(model.quote.totals!.discount!)}',
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -197,7 +195,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                   ),
                                   const Spacer(),
                                   SelectableText(
-                                    viewModel.currencyFormat.format(viewModel.quote.totals!.tax),
+                                    model.currencyFormat.format(model.quote.totals!.tax),
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
@@ -224,7 +222,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     ),
                                   ),
                                   const Spacer(),
-                                  if (viewModel.quote.shipping == null || viewModel.quote.shipping!.total == 0) ...[
+                                  if (model.quote.shipping == null || model.quote.shipping!.total == 0) ...[
                                     SelectableText(
                                       'Gratis',
                                       style: GoogleFonts.inter(
@@ -236,7 +234,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     ),
                                   ] else ...[
                                     SelectableText(
-                                      viewModel.currencyFormat.format(viewModel.quote.shipping!.total),
+                                      model.currencyFormat.format(model.quote.shipping!.total),
                                       style: GoogleFonts.inter(
                                         fontStyle: FontStyle.normal,
                                         fontWeight: FontWeight.w500,
@@ -270,7 +268,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SelectableText(
-                                    '${viewModel.currencyFormat.format(viewModel.quote.totals!.total)} MXN',
+                                    '${model.currencyFormat.format(model.quote.totals!.total)} MXN',
                                     style: GoogleFonts.inter(
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w700,
@@ -315,10 +313,10 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                             dialog.showAlertDialog(
                                               context,
                                               () async {
-                                                viewModel.onGenerateOrder(context);
+                                                model.onGenerateOrder(context);
                                               },
-                                              viewModel.createConfirmMessage(),
-                                              viewModel.quote.id!,
+                                              model.createConfirmMessage(),
+                                              model.quote.id!,
                                             );
                                           },
                                           child: Container(
@@ -591,7 +589,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
           Tabs(
             tabController: _tabController,
           ),
-          SizedBox(
+          const SizedBox(
             width: 200,
             height: 25,
           ),
@@ -607,7 +605,7 @@ class _CartContentState extends State<_CartContent> with SingleTickerProviderSta
 }
 
 class ComebackLater extends StatelessWidget {
-  const ComebackLater({required this.totalProducts});
+  const ComebackLater({super.key, required this.totalProducts});
   final int totalProducts;
 
   @override
@@ -666,174 +664,6 @@ class ComebackLater extends StatelessWidget {
   }
 }
 
-class _CartTotals extends StackedHookView<QuoteViewModel> {
-  _CartTotals({
-    Key? key,
-  }) : super(key: key, reactive: true);
-  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
-
-  @override
-  Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 10.0,
-            spreadRadius: 2.0,
-            offset: Offset(0, -3),
-          ),
-        ],
-      ),
-      //height: 104,
-      width: double.infinity,
-      padding: EdgeInsets.all(30),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-              width: 210,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6),
-                ),
-                color: CustomColors.energyYellow,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  hoverColor: CustomColors.energyYellowHover,
-                  onTap: () async {
-                    return model.generatePdf();
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    alignment: Alignment.center,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          'Descargar cotización',
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.styleVolcanic16600,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )),
-          Spacer(),
-          _labelSubTotales(
-            currencyFormat: currencyFormat,
-          ),
-          SizedBox(
-            width: 40,
-          ),
-          Container(
-              width: 189,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(6),
-                ),
-                color: CustomColors.safeBlue,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(6)),
-                  hoverColor: CustomColors.safeBlueHover,
-                  onTap: () async {
-                    return model.navigateToQuoteConfirmation();
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    alignment: Alignment.center,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text(
-                          'Generar cotización',
-                          textAlign: TextAlign.center,
-                          style: CustomStyles.styleWhite16x600,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )),
-        ],
-      ),
-    );
-  }
-}
-
-class _labelSubTotales extends StackedHookView<QuoteViewModel> {
-  _labelSubTotales({Key? key, required this.currencyFormat}) : super(key: key, reactive: true);
-  var currencyFormat;
-
-  @override
-  Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
-    return Shimmer(
-      linearGradient: model.shimmerGradientWhiteBackground,
-      child: ShimmerLoading(
-        isLoading: model.quote.totals == null || model.quote.isCalculatingTotals,
-        shimmerEmptyBox: const ShimmerEmptyBox(
-          width: 500,
-          height: 21,
-        ),
-        child: model.quote.totals == null || model.quote.isCalculatingTotals
-            ? Container()
-            : SelectableText.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Subtotal',
-                      style: CustomStyles.styleMuggleGray_416x400,
-                    ),
-                    TextSpan(
-                      text: " ${currencyFormat.format(model.quote.totals!.subTotal)}",
-                      style: CustomStyles.styleMuggleGray_416x600,
-                    ),
-                    TextSpan(
-                      text: '    Dcto. adicional',
-                      style: CustomStyles.styleMuggleGray_416x400,
-                    ),
-                    TextSpan(
-                      text: " ${currencyFormat.format(model.quote.totals!.discount!)}",
-                      style: CustomStyles.styleEnergyYellow_416x600,
-                    ),
-                    TextSpan(
-                      text: '    Total',
-                      style: CustomStyles.styleMuggleGray_416x400,
-                    ),
-                    TextSpan(
-                      text: " ${currencyFormat.format(model.quote.totals!.subTotal! - model.quote.totals!.discount!)}",
-                      style: CustomStyles.styleMuggleGray_416x600,
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.left,
-              ),
-      ),
-    );
-  }
-}
-
 class _Dialogs {
   showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
     // show the dialog
@@ -842,7 +672,7 @@ class _Dialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const SelectableText("Hacer pedido"),
-          titleTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
+          titleTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
           actionsOverflowButtonSpacing: 20,
           actions: [
             ElevatedButton(

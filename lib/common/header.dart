@@ -12,7 +12,7 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Container(
-      padding: media.width >= CustomStyles.desktopBreak ? EdgeInsets.symmetric(vertical: 14, horizontal: 25) : EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: media.width >= CustomStyles.desktopBreak ? const EdgeInsets.symmetric(vertical: 14, horizontal: 25) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       color: CustomColors.white,
       width: double.infinity,
       height: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
@@ -44,7 +44,7 @@ class Header extends StatelessWidget {
 
 
 class HeaderMobile extends StatelessWidget {
-  HeaderMobile({this.paddingVertical = 15, this.paddingHorizontal = 15});
+  HeaderMobile({super.key, this.paddingVertical = 15, this.paddingHorizontal = 15});
   double paddingVertical;
   double paddingHorizontal;
   @override

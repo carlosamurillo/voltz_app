@@ -1,21 +1,4 @@
-import 'dart:html' as html;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:maketplace/cart/cart_expandable_view.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-import '../quote/quote_model.dart';
-import '../quote/quote_viewmodel.dart';
-import '../utils/custom_colors.dart';
-import '../utils/inputText.dart';
-import '../utils/shimmer.dart';
-import '../utils/style.dart';
-import 'cart_item_viewmodel.dart';
-import 'cart_view.dart';
+
 /*
 
 class CartList extends StackedHookView<QuoteViewModel> {

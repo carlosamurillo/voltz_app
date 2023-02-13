@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
-import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 import '../app/app.locator.dart';
 import '../quote/quote_model.dart';
