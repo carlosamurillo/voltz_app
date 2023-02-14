@@ -1,10 +1,9 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/search/search_viewmodel.dart';
-import 'package:stacked/stacked.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
+import 'package:maketplace/utils/buttons.dart';
+import 'package:stacked/stacked.dart';
+
 import '../utils/custom_colors.dart';
 
 class ProductsSearchResult extends StatelessWidget {
@@ -19,11 +18,12 @@ class ProductsSearchResult extends StatelessWidget {
       createNewViewModelOnInsert: true,
       builder: (context, viewModel, child) {
         print('............................................' + media.height.toString());
-        if(viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty){
+        if (viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty) {
+          // return const SearchNotFoundWidget();
           return const SearchInitialViewWidget();
         }
 
-        if(viewModel.data == null) {
+        if (viewModel.data == null) {
           return const Expanded(
             child: Center(
               child: SizedBox(
@@ -52,7 +52,7 @@ class ProductsSearchResult extends StatelessWidget {
             }
           },
         );
-        },
+      },
     );
   }
 }
@@ -97,6 +97,21 @@ class SearchInitialViewWidget extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SearchNotFoundWidget extends StatelessWidget {
+  const SearchNotFoundWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Expanded(
+      child: Center(
+        child: NoFoundCard(),
       ),
     );
   }
@@ -152,34 +167,7 @@ class NoFoundCard extends StatelessWidget {
                       ]),
                 ),
                 const SizedBox(height: 15),
-                Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: CustomColors.dark,
-                      borderRadius: BorderRadius.all(Radius.circular(200.0)),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: const BorderRadius.all(Radius.circular(200)),
-                        hoverColor: CustomColors.dark.withOpacity(.8),
-                        onTap: () {},
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Solicitar producto',
-                            style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
-                              color: CustomColors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    )),
+                ThirdButton(text: "Solicitar producto", onPressed: () {}),
               ],
             ),
           ),
