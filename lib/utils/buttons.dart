@@ -3,10 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({Key? key, required this.text, required this.onPressed}) : super(key: key);
+  const PrimaryButton({Key? key, required this.text, required this.onPressed, this.enabled = true}) : super(key: key);
 
   final String text;
   final Function() onPressed;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     return GeneralButton(
@@ -47,19 +48,21 @@ class ThirdButton extends StatelessWidget {
 }
 
 class GeneralButton extends StatelessWidget {
-  const GeneralButton({Key? key, required this.text, required this.onPressed, required this.textColor, required this.buttonColor, this.borderColor}) : super(key: key);
+  const GeneralButton({Key? key, required this.text, required this.onPressed, required this.textColor, required this.buttonColor, this.borderColor, this.enabled = true})
+      : super(key: key);
 
   final String text;
   final Function() onPressed;
   final Color textColor;
   final Color buttonColor;
   final Color? borderColor;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: buttonColor,
+          color: enabled ? buttonColor : buttonColor.withOpacity(.8),
           borderRadius: const BorderRadius.all(Radius.circular(200.0)),
           border: borderColor != null ? Border.all(color: borderColor!) : null,
         ),
@@ -68,7 +71,7 @@ class GeneralButton extends StatelessWidget {
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(200)),
             hoverColor: buttonColor.withOpacity(.8),
-            onTap: onPressed,
+            onTap: enabled ? onPressed : null,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
