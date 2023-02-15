@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/login/register/register_view.dart';
+import 'package:maketplace/login/code_validator/code_validator_view.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -71,7 +71,8 @@ class MyApp extends StatelessWidget {
         ),
         //home: QuoteView(quoteId: quoteId, version: version,),
         // home: LoginView(),
-        home: RegisterView(),
+        // home: RegisterView(),
+        home: CodeValidatorView(),
 
         // CartView(
         //   quoteId: quoteId,

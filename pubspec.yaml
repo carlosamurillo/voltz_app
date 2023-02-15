@@ -3,7 +3,7 @@ description: Tu asistente para comprar material.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -61,6 +61,9 @@ dependencies:
   infinite_scroll_pagination: ^3.2.0
   overlay_support: ^2.1.0
 
+  pinput: ^2.2.11
+  sms_autofill: ^2.2.0
+
 dev_dependencies:
   build_runner: ^2.3.3
 
@@ -79,11 +82,11 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: true
+  uses-material-design:
+    true
 
     # To add assets to your application, add an assets section, like this:
   assets:

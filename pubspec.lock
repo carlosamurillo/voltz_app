@@ -704,6 +704,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.0"
+  pin_input_text_field:
+    dependency: transitive
+    description:
+      name: pin_input_text_field
+      sha256: a6c3f1f5cb41c44352046773fe26aa61af870b908f84a7257ea2297a782a9fbd
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.0"
+  pinput:
+    dependency: "direct main"
+    description:
+      name: pinput
+      sha256: e6aabd1571dde622f9b942f62ac2c80f84b0b50f95fa209a93e78f7d621e1f82
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.23"
   platform:
     dependency: transitive
     description:
@@ -829,6 +845,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.9"
+  smart_auth:
+    dependency: transitive
+    description:
+      name: smart_auth
+      sha256: "8cfaec55b77d5930ed1666bb7ae70db5bade099bb1422401386853b400962113"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.8"
+  sms_autofill:
+    dependency: "direct main"
+    description:
+      name: sms_autofill
+      sha256: b4985f30527d42604a0bcf6ddd4793dd0415322e26f62bac1d487e2a36defa7c
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   source_gen:
     dependency: transitive
     description:
@@ -957,6 +989,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.4"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      sha256: d315be0f6641898b280ffa34e2ddb14f3d12b1a37882557869646e0cc363d0cc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+1"
   url_launcher:
     dependency: "direct main"
     description:
