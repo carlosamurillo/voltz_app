@@ -95,12 +95,12 @@ class ProductCard extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                          if(product.brand != null && product.brand!.toLowerCase() == 'tecnolite')...[
-                                            Image.asset('assets/images/favicon_tecnolite.png', width: 16, height: 17,),
+                                          if(product.brandFavicon != null)...[
+                                            Image.network(product.brandFavicon!, width: 16, height: 17,),
                                             const SizedBox(width: 5,),
                                           ],
                                           SizedBox(
-                                            width: product.brand!.toLowerCase() == 'tecnolite' ? 154 : 175,
+                                            width: product.brandFavicon != null ? 154 : 175,
                                             child: Tooltip(
                                               message: product.brand?? '',
                                               child: Text(

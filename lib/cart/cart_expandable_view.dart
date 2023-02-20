@@ -183,15 +183,9 @@ class ProductCard extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                      if (viewModel.selectedProducts[i].brand!.toLowerCase() == 'tecnolite') ...[
-                                        Image.asset(
-                                          'assets/images/favicon_tecnolite.png',
-                                          width: 16,
-                                          height: 17,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
+                                      if(viewModel.selectedProducts[i].brandFavicon != null)...[
+                                        Image.network(viewModel.selectedProducts[i].brandFavicon!, width: 16, height: 17,),
+                                        const SizedBox(width: 5,),
                                       ],
                                       SelectableText(
                                         viewModel.selectedProducts[i].brand!,
