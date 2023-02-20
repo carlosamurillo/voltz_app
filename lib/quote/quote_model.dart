@@ -245,6 +245,7 @@ class ProductSuggested {
   Price? price = Price();
   Total? total = Total();
   String? source;
+  String? brandFavicon;
 
   /** these are for local propose **/
   int? cardIndex;
@@ -269,7 +270,8 @@ class ProductSuggested {
       this.total,
       this.source, this.isCardExpanded = false,
         this.isCalculatingProductTotals = false,
-      this.discountRate});
+      this.discountRate,
+      this.brandFavicon});
 
   ProductSuggested.fromJsonWithIdRequested(String this.productRequestedId, Map<String, dynamic> json) {
     productId = json['product_id'];
@@ -304,6 +306,9 @@ class ProductSuggested {
     if(price != null && price!.price2 != null && pricePublic != null){
       discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
     }
+    if (json.containsKey('brand_favicon')){
+      brandFavicon = json['brand_favicon'];
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -330,6 +335,10 @@ class ProductSuggested {
     if (this.source != null) {
       data['source'] =
           this.source!;
+    }
+    if (this.brandFavicon != null) {
+      data['brand_favicon'] =
+      this.brandFavicon!;
     }
     return data;
   }
