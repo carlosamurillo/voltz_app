@@ -8,7 +8,7 @@ class AuthViewModel extends ChangeNotifier {
   late UserData signedUserData;
 
   void init() {
-    userStatus = UserSignStatus.none;
+    userStatus = UserSignStatus.unauthenticated;
     signedUserData = UserData.initial();
     verifiySignedInUser();
   }
@@ -16,9 +16,13 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> verifiySignedInUser() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      if (user.isAnonymous) {
+        userStatus = UserSignStatus.anonymous;
+      }
       verifyUserRegister(user.uid);
     } else {
-      userStatus = UserSignStatus.unauthenticated;
+      await FirebaseAuth.instance.signInAnonymously();
+      userStatus = UserSignStatus.anonymous;
     }
     notifyListeners();
   }

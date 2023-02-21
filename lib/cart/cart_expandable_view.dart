@@ -50,7 +50,7 @@ class CardGrid extends StatelessWidget {
               height: media.width >= CustomStyles.mobileBreak
                   ? //
                   media.height - CustomStyles.desktopHeaderHeight - 30
-                  : media.height - CustomStyles.mobileHeaderHeight - 30,
+                  : media.height - CustomStyles.mobileHeaderHeight - 100,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
                 slivers: <Widget>[
