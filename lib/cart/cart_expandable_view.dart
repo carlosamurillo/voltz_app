@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,7 +40,7 @@ class CardGrid extends StatelessWidget {
           );
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
-        html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+        // html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,7 +372,9 @@ class ProductCard extends StatelessWidget {
                     ),
                   ],
                   if (viewModel.selectedProducts[i].isCardExpanded) ...[
-                    ProductDetail(productId: viewModel.selectedProducts[i].productId!,),
+                    ProductDetail(
+                      productId: viewModel.selectedProducts[i].productId!,
+                    ),
                   ],
                   _QuantityCalculatorWidget(index: i),
                 ],
@@ -713,17 +715,17 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           viewModel.selectedProducts[index].isCalculatingProductTotals
                               ? Container()
                               : SelectableText(
-                            viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
-                            style: GoogleFonts.inter(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 22.0,
-                              color: CustomColors.dark,
-                              height: 1.2,
-                            ),
-                            textAlign: TextAlign.left,
-                            //overflow: TextOverflow.clip,
-                          ),
+                                  viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 22.0,
+                                    color: CustomColors.dark,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                  //overflow: TextOverflow.clip,
+                                ),
                           Text(
                             ' +iva',
                             style: GoogleFonts.inter(
