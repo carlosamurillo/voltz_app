@@ -105,7 +105,7 @@ class _CodeValidatorBody extends StatelessWidget {
                               ),
                               backgroundColor: CustomColors.energyYellow,
                               behavior: SnackBarBehavior.floating,
-                              duration: const Duration(milliseconds: 5000),
+                              duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
                               onVisible: () async {},
                             ));
@@ -122,7 +122,7 @@ class _CodeValidatorBody extends StatelessWidget {
                               ),
                               backgroundColor: CustomColors.energyYellow,
                               behavior: SnackBarBehavior.floating,
-                              duration: const Duration(milliseconds: 5000),
+                              duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
                               onVisible: () async {},
                             ));

@@ -57,28 +57,38 @@ class _InitSessionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     final userSignStatus = context.watch<AuthViewModel>().userStatus;
     switch (userSignStatus) {
       case UserSignStatus.authenticated:
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 180, minWidth: 100, maxHeight: 40, minHeight: 40),
-          child: PrimaryButton(
-            text: "Cerrar sesión",
-            onPressed: () {
-              context.read<AuthViewModel>().signOut();
-            },
-          ),
+        return IconButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          icon: const Icon(Icons.person, color: CustomColors.blueVoltz),
+        );
+      case UserSignStatus.pendingToRegister:
+        return IconButton(
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
+          icon: const Icon(Icons.person, color: CustomColors.orangeAlert),
         );
       case UserSignStatus.unauthenticated:
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 180, minWidth: 100, maxHeight: 40, minHeight: 40),
-          child: PrimaryButton(
-            text: "Iniciar sesión",
-            onPressed: () {
-              context.read<LoginViewModel>().init();
-              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LoginView()));
-            },
-          ),
+        if (media.width >= CustomStyles.desktopBreak) {
+          return ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 180, minWidth: 100, maxHeight: 40, minHeight: 40),
+            child: PrimaryButton(
+              text: "Iniciar sesión",
+              onPressed: () {
+                context.read<LoginViewModel>().init();
+                Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LoginView()));
+              },
+            ),
+          );
+        }
+        return IconButton(
+          onPressed: () {
+            context.read<LoginViewModel>().init();
+            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const LoginView()));
+          },
+          icon: const Icon(Icons.person, color: CustomColors.blueVoltz),
         );
       default:
         return Container();

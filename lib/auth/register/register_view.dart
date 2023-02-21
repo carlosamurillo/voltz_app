@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/auth_view_model.dart';
+import 'package:maketplace/auth/login/login_view.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
 import 'package:maketplace/auth/register/register_view_model.dart';
 import 'package:maketplace/utils/buttons.dart';
@@ -104,8 +105,23 @@ class _RegisterBody extends StatelessWidget {
                         ),
                     onChanged: (v) => context.read<RegisterViewModel>().changeEmailAddress(v),
                   ),
-
-                  //TODO incluir el numero de telefono
+                  InputText(
+                    hintText: "Número teléfono",
+                    margin: const EdgeInsets.symmetric(vertical: 7.5),
+                    enabled: false,
+                    initialValue: "(+52) ${context.read<LoginViewModel>().phoneNumber.getOrElse(() => "INVALID PHONE NUMBER")}",
+                    suffixIcon: SizedBox(
+                      width: 105,
+                      child: ThirdButton(
+                        onPressed: () {
+                          context.read<AuthViewModel>().signOut();
+                          context.read<LoginViewModel>().init();
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const LoginView()));
+                        },
+                        text: "Cambiar",
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 21),
                   Row(
                     children: <Widget>[
@@ -139,7 +155,7 @@ class _RegisterBody extends StatelessWidget {
                         case RegisterStatus.initial:
                           return const _ActionButton();
                         case RegisterStatus.processing:
-                          return const CircularProgressIndicator();
+                          return const Center(child: CircularProgressIndicator());
                         case RegisterStatus.success:
                           Future.delayed(const Duration(seconds: 0), () {
                             context.read<AuthViewModel>().init();
@@ -147,16 +163,16 @@ class _RegisterBody extends StatelessWidget {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: SelectableText(
                                 "Su usuario ha sido creado correctamente.",
-                                style: CustomStyles.styleVolcanicDos,
+                                style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
                               ),
-                              backgroundColor: CustomColors.energyYellow,
+                              backgroundColor: CustomColors.energyGreen,
                               behavior: SnackBarBehavior.floating,
-                              duration: const Duration(milliseconds: 5000),
+                              duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
                               onVisible: () async {},
                             ));
                           });
-                          return const CircularProgressIndicator();
+                          return const Center(child: CircularProgressIndicator());
                         case RegisterStatus.failure:
                           Future.delayed(const Duration(seconds: 0), () {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -166,7 +182,7 @@ class _RegisterBody extends StatelessWidget {
                               ),
                               backgroundColor: CustomColors.redAlert,
                               behavior: SnackBarBehavior.floating,
-                              duration: const Duration(milliseconds: 5000),
+                              duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
                               onVisible: () async {},
                             ));

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/login/code_validator_view.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
-import 'package:maketplace/cart/cart_view.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/inputText.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
@@ -24,24 +24,10 @@ class LoginView extends StatelessWidget {
 class _LoginBody extends StatelessWidget {
   const _LoginBody({Key? key}) : super(key: key);
 
-  void _changeRoute(BuildContext context, LoginScreenStatus actualScreen) {
-    Future.delayed(const Duration(seconds: 0), () {
-      if (actualScreen == LoginScreenStatus.inputCodeScreen) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const CodeValidatorView()),
-        );
-      } else if (actualScreen == LoginScreenStatus.overview) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const CartView(quoteId: "", version: "")),
-        );
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final actualScreenStatus = context.watch<LoginViewModel>().loginScreenStatus;
-    _changeRoute(context, actualScreenStatus);
+    final isProcessing = context.watch<LoginViewModel>().isProcessing;
+
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 360),
@@ -108,17 +94,49 @@ class _LoginBody extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 80),
-                  Builder(builder: (context) {
-                    final isProcessing = context.watch<LoginViewModel>().isProcessing;
-                    if (isProcessing) return const CircularProgressIndicator();
-                    return PrimaryButton(
-                      text: "Continuar",
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        context.read<LoginViewModel>().login();
+                  if (isProcessing)
+                    const SingleChildScrollView()
+                  else
+                    Selector<LoginViewModel, LoginScreenStatus>(
+                      builder: (context, status, child) {
+                        switch (status) {
+                          case LoginScreenStatus.inputCodeScreen:
+                            Future.delayed(const Duration(seconds: 0), () {
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const CodeValidatorView()));
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: SelectableText(
+                                  "Ingrese el código de verificación.",
+                                  style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+                                ),
+                                backgroundColor: CustomColors.energyGreen,
+                                behavior: SnackBarBehavior.floating,
+                                duration: const Duration(milliseconds: 2000),
+                                margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+                                onVisible: () async {},
+                              ));
+                            });
+                            return const _LoginButton();
+                          case LoginScreenStatus.failure:
+                            Future.delayed(const Duration(seconds: 0), () {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: SelectableText(
+                                  "Error, vuelva a intentarlo.",
+                                  style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+                                ),
+                                backgroundColor: CustomColors.redAlert,
+                                behavior: SnackBarBehavior.floating,
+                                duration: const Duration(milliseconds: 2000),
+                                margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+                                onVisible: () async {},
+                              ));
+                            });
+                            return const _LoginButton();
+                          default:
+                            return const _LoginButton();
+                        }
                       },
-                    );
-                  }),
+                      selector: (_, vm) => vm.loginScreenStatus,
+                    ),
                   const SizedBox(height: 10),
                   RichText(
                     textAlign: TextAlign.center,
@@ -146,6 +164,21 @@ class _LoginBody extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _LoginButton extends StatelessWidget {
+  const _LoginButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PrimaryButton(
+      text: "Continuar",
+      onPressed: () {
+        FocusScope.of(context).unfocus();
+        context.read<LoginViewModel>().login();
+      },
     );
   }
 }

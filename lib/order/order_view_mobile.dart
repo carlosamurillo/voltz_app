@@ -7,7 +7,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
-import 'package:number_inc_dec/number_inc_dec.dart';
 import 'package:provider/provider.dart';
 import '../utils/custom_colors.dart';
 import 'order_viewmodel.dart';

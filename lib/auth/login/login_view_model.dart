@@ -63,8 +63,10 @@ class LoginViewModel extends ChangeNotifier {
       );
     } on Exception catch (e) {
       print("*luis inicio sesion  $e");
+      _loginScreenStatus = LoginScreenStatus.failure;
     } catch (e) {
       print("*luis error inicio sesion  $e");
+      _loginScreenStatus = LoginScreenStatus.failure;
     }
     _isProcessing = false;
     notifyListeners();
@@ -91,8 +93,10 @@ class LoginViewModel extends ChangeNotifier {
       _verifiySignedInUser();
     } on Exception catch (e) {
       print("*luis exception codigo  $e");
+      _loginScreenStatus = LoginScreenStatus.failure;
     } catch (e) {
       print("*luis error codigo  $e");
+      _loginScreenStatus = LoginScreenStatus.failure;
     }
 
     _isProcessing = false;
@@ -140,9 +144,10 @@ class LoginViewModel extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
+      _loginScreenStatus = LoginScreenStatus.failure;
       print("*luis error verificar usuario  $e");
     }
   }
 }
 
-enum LoginScreenStatus { loginScreen, inputCodeScreen, registerScreen, overview, none }
+enum LoginScreenStatus { loginScreen, inputCodeScreen, registerScreen, overview, failure, none }

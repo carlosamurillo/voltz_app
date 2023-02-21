@@ -26,10 +26,11 @@ class DefaultFirebaseOptionsDevelop {
       //   'you can reconfigure this by running the FlutterFire CLI again.',
       // );
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
+      // throw UnsupportedError(
+      //   'DefaultFirebaseOptions have not been configured for ios - '
+      //   'you can reconfigure this by running the FlutterFire CLI again.',
+      // );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -65,6 +66,15 @@ class DefaultFirebaseOptionsDevelop {
     appId: '1:884121058223:android:b36cc85bd565538bf24d5a',
     messagingSenderId: '884121058223',
     projectId: 'mx.voltz.mobile.dev',
+    authDomain: 'voltz-develop.firebaseapp.com',
+    storageBucket: 'voltz-develop.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
+    appId: '1:884121058223:ios:422157c6eef7fec1f24d5a',
+    messagingSenderId: '884121058223',
+    projectId: 'com.example.voltzWeb ',
     authDomain: 'voltz-develop.firebaseapp.com',
     storageBucket: 'voltz-develop.appspot.com',
   );

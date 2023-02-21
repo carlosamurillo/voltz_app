@@ -47,7 +47,10 @@ class CardGrid extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+              height: media.width >= CustomStyles.mobileBreak
+                  ? //
+                  media.height - CustomStyles.desktopHeaderHeight - 30
+                  : media.height - CustomStyles.mobileHeaderHeight - 30,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
                 slivers: <Widget>[
@@ -183,9 +186,9 @@ class ProductCard extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                      if (viewModel.selectedProducts[i].brand!.toLowerCase() == 'tecnolite') ...[
-                                        Image.asset(
-                                          'assets/images/favicon_tecnolite.png',
+                                      if (viewModel.selectedProducts[i].brandFavicon != null) ...[
+                                        Image.network(
+                                          viewModel.selectedProducts[i].brandFavicon!,
                                           width: 16,
                                           height: 17,
                                         ),
