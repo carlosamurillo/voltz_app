@@ -158,7 +158,7 @@ class Totals {
 class Detail {
   String? productRequested;
   String? id;
-  List<ProductSuggested>? productsSuggested;
+  List<Product>? productsSuggested;
   int? position;
   //this is only for local proposes
   bool isCalculatingProductTotals = false;
@@ -170,9 +170,9 @@ class Detail {
     id = json['id'];
     position = json['position'];
     if (json['products_suggested'] != null) {
-      productsSuggested = <ProductSuggested>[];
+      productsSuggested = <Product>[];
       for(int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(ProductSuggested.fromJsonWithIdRequested(json['id'], json['products_suggested'][a]));
+        productsSuggested!.add(Product.fromJsonWithId(json: json['products_suggested'][a], id: json['id'],));
       }
     }
   }
@@ -228,7 +228,7 @@ class Total {
     return data;
   }
 }
-
+/*
 class ProductSuggested {
 
   String? productId;
@@ -247,7 +247,7 @@ class ProductSuggested {
   String? source;
   String? brandFavicon;
 
-  /** these are for local propose **/
+  *//** these are for local propose **//*
   int? cardIndex;
   String? productRequestedId;
   bool isCardExpanded = false;
@@ -342,7 +342,7 @@ class ProductSuggested {
     }
     return data;
   }
-}
+}*/
 
 class DiscardedProducts {
   String? requestedProducts;

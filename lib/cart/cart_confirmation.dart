@@ -10,13 +10,13 @@ import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import '../common/header.dart';
+import '../product/product_model.dart';
 import '../utils/custom_colors.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class CartConfirmation extends StatefulWidget {
-  const CartConfirmation({Key? key, required this.quoteId, required this.version}) : super(key: key);
+  const CartConfirmation({Key? key, required this.quoteId,}) : super(key: key);
   final String quoteId;
-  final String? version;
 
   @override
   CartConfirmationState createState() => CartConfirmationState();
@@ -48,7 +48,7 @@ class CartConfirmationState extends State<CartConfirmation> {
             )
         );
       },
-      onViewModelReady: (viewModel) => viewModel.initConfirmation(widget.quoteId, widget.version),
+      onViewModelReady: (viewModel) => viewModel.initConfirmation(widget.quoteId,),
     );
   }
 }
@@ -411,7 +411,7 @@ class CartList extends StackedHookView<QuoteViewModel> {
 
 class CartItemView extends StatelessWidget {
   const CartItemView({Key? key, required this.product, required this.textEditingController}) : super(key: key);
-  final ProductSuggested product;
+  final Product product;
   final TextEditingController textEditingController;
 
   @override

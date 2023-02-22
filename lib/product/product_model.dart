@@ -7,59 +7,110 @@ class Product {
   String? skuDescription;
   String? brand;
   String? techFile;
+  double quantity = 1;
   double? saleValue;
   String? saleUnit;
   double? pricePublic;
   String? priceCurrency;
   String? coverImage;
-  Price? price = Price();
+  Total? total;
   String? source;
+  String? brandFavicon;
+  Price? price;
   List<String>? imageUrls;
   String? status;
   String? warranty;
   List<String>? features;
   String? featuresString;
   String? makerWeb;
+  bool? selected;
+
+
+  /** these are for local propose **/
+  int? cardIndex;
+  String? productRequestedId;
+  bool isCardExpanded = false;
+  bool isCalculatingProductTotals = false;
+  double? discountRate;
 
   Product(
       {this.id,
+        this.techFile,
         this.sku,
         this.skuDescription,
         this.brand,
+        this.quantity = 1,
         this.saleValue,
         this.saleUnit,
         this.pricePublic,
         this.priceCurrency,
         this.coverImage,
-        this.price,
+        this.total,
         this.source,
+        this.brandFavicon,
+        this.price,
       this.imageUrls,
       this.status,
       this.warranty,
       this.features,
       this.featuresString,
-      this.makerWeb,});
+      this.makerWeb,
+      this.selected});
 
-  static Product copyWith(Map<String, dynamic> json, String id) {
-    return Product.fromJson(json, id);
+  Product.fromJsonWithId({required Map<String, dynamic> json, required String id,}) {
+    this.id = id;
+    _fillFields(json);
   }
 
-  Product.fromJson(Map<String, dynamic> json, String id) {
-    this.id = id;
+  Product.fromJson(Map<String, dynamic> json) {
+    if(json.containsKey('objectID')){
+      this.id = json['objectID'];
+    } else {
+      print('EEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOORRRRRRRRR');
+    }
+    _fillFields(json);
+  }
+
+  static Product copyWith(Map<String, dynamic> json, String id,) {
+    return Product.fromJsonWithId(json: json, id: id);
+  }
+
+  _fillFields(Map<String, dynamic> json,) {
     sku = json['sku'];
     skuDescription = json['sku_description'];
-    brand = json['brand'];
-    techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
-    saleValue = double.tryParse(json['sale_value'].toString());
-    saleUnit = json['sale_unit'];
-    pricePublic = double.tryParse(json['price_public'].toString());
-    priceCurrency = json['price_currency'];
-    coverImage = json['image_cover'];
-    if (json.containsKey('price')){
+
+    if (json.containsKey('brand')){
+      brand = json['brand'] ;
+    }
+    if (json.containsKey('tech_file')){
+      techFile = json['tech_file'] ;
+    }
+    if (json.containsKey('sale_value')){
+      saleValue =double.tryParse(json['sale_value'].toString());
+    }
+    if (json.containsKey('sale_unit')){
+      saleUnit = json['sale_unit'];
+    }
+    if (json.containsKey('price_public')){
+      pricePublic = double.tryParse(json['price_public'].toString());
+    }
+    if (json.containsKey('price_currency')){
+      priceCurrency = json['price_currency'];
+    }
+    if (json.containsKey('image_cover')){
+      coverImage = json['image_cover'];
+    }
+    if (json.containsKey('quantity')){
+      quantity = json['quantity'];
+    }
+    if (json.containsKey('price') && json['price'] != null){
       price = Price.fromJson(json['price']);
     }
+    if (json.containsKey('total') && json['total'] != null){
+      total = Total.fromJson(json['total']);
+    }
     //se omite la primera imagen la cual es la misma que cover image
-    if (json['image_urls'] != null) {
+    if (json.containsKey('image_urls') && json['image_urls'] != null) {
       imageUrls = <String>[];
       for(int a = 0; a < json['image_urls'].length; a++) {
         if(a>0) {
@@ -73,7 +124,7 @@ class Product {
     if (json.containsKey('warranty')){
       warranty = json['warranty'];
     }
-    if (json['features'] != null) {
+    if (json.containsKey('features') && json['features'] != null && json['features'].length > 0) {
       features = <String>[];
       for(int a = 0; a < json['features'].length; a++) {
         features!.add(json['features'][a]);
@@ -83,9 +134,20 @@ class Product {
           featuresString = "${featuresString!}, ${json['features'][a]}";
         }
       }
+    } else {
+      featuresString = null;
     }
     if (json.containsKey('maker_web')){
       makerWeb = json['maker_web'];
+    }
+    if(json.containsKey('price') && json.containsKey('price_public') && price != null && price!.price2 != null && pricePublic != null){
+      discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
+    }
+    if (json.containsKey('brand_favicon')){
+      brandFavicon = json['brand_favicon'];
+    }
+    if (json.containsKey('selected')){
+      selected = json['selected'];
     }
   }
 
@@ -99,6 +161,10 @@ class Product {
     data['sale_unit'] = this.saleUnit;
     data['price_public'] = this.pricePublic;
     data['image_cover'] = this.coverImage;
+    if (this.quantity != null) {
+      data['quantity'] =
+      this.quantity!;
+    }
     if (this.price != null) {
       data['price'] =
           this.price!.toMap();
@@ -126,6 +192,18 @@ class Product {
     if (this.makerWeb != null) {
       data['maker_web'] =
           this.makerWeb;
+    }
+    if (this.total != null) {
+      data['total'] =
+          this.total!.toMap();
+    }
+    if (this.brandFavicon != null) {
+      data['brand_favicon'] =
+      this.brandFavicon!;
+    }
+    if (this.selected != null) {
+      data['selected'] =
+      this.selected!;
     }
     return data;
   }
@@ -209,6 +287,29 @@ class DollarConversion {
     data['value'] = this.value;
     data['source'] = this.source;
     data['date'] = this.date;
+    return data;
+  }
+}
+
+
+class Total {
+  double? beforeDiscount;
+  double? afterDiscount;
+  double? discount;
+
+  Total({this.beforeDiscount = 0, this.afterDiscount = 0, this.discount = 0});
+
+  Total.fromJson(Map<String, dynamic> json) {
+    beforeDiscount = json['before_discount'];
+    afterDiscount = json['after_discount'];
+    discount = json['discount'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['before_discount'] = this.beforeDiscount;
+    data['after_discount'] = this.afterDiscount;
+    data['discount'] = this.discount;
     return data;
   }
 }

@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
+import 'package:maketplace/product/product_model.dart';
 
 import '../app/app.locator.dart';
+import '../login/auth_service.dart';
 import '../quote/quote_model.dart';
 import '../quote/quote_service.dart';
 import '../utils/stats.dart';
@@ -39,11 +41,14 @@ class CardItemViewModel extends ReactiveViewModel {
     tileMode: TileMode.clamp,
   );
 
+  final _authService = locator<AuthService>();
+  bool get isLogged => _authService.isLogged;
+
   final _quoteService = locator<QuoteService>();
   @override
-  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService, _authService];
   QuoteModel get quote => _quoteService.quote;
-  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<Product> get selectedProducts => _quoteService.selectedProducts;
 
   /**Variables para manejar el foco de los imput y botones*/
   final FocusNode _focusNodeInput = FocusNode();
@@ -212,8 +217,8 @@ class CardItemViewModel extends ReactiveViewModel {
     calculateTotals();
     await _quoteService.updateQuote(quote);
     loadingProductTotals(cardIndex);
-    return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => ProductSuggested(sku: null)).sku,
-        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(productId: null)).productId, productRequested: quote.detail![i].productRequested!,
+    return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => Product(sku: null)).sku,
+        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id, productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
   }
 
@@ -223,8 +228,8 @@ class CardItemViewModel extends ReactiveViewModel {
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
     calculateTotals();
     await _quoteService.updateQuote(quote);
-    return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(sku: null)).sku,
-        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => ProductSuggested(productId: null)).productId, productRequested: value.productRequested!,
+    return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(sku: null)).sku,
+        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id, productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);
   }
 

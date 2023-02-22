@@ -1,4 +1,5 @@
 
+import 'package:maketplace/utils/added_dialog.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
@@ -24,19 +25,24 @@ class NotificationService with ListenableServiceMixin {
     _rxNotification.value = NotificationModel.name('', '', false, NotificationType.simple);
     notifyListeners();
   }
+  
+  void emitDialogNotification(String title, String textButtonUno, String textButtonDos) async {
+    _rxNotification.value = NotificationModel.name(title, '', true, NotificationType.dialog);
+    notifyListeners();
+  }
 }
 
 enum NotificationType {
   simple,
-  medium,
+  dialog,
   enhance;
 
   static NotificationType? fromString(String value) {
     switch (value){
       case 'simple':
         return NotificationType.simple;
-      case 'medium':
-        return NotificationType.medium;
+      case 'dialog':
+        return NotificationType.dialog;
       case 'enhance':
         return NotificationType.enhance;
       default:
@@ -47,6 +53,8 @@ enum NotificationType {
 
 class NotificationModel {
   String title = '';
+  String textButtonUno = '';
+  String textButtonDos = '';
   String message = '';
   bool showNotification = false;
   NotificationType type = NotificationType.simple;
@@ -55,6 +63,8 @@ class NotificationModel {
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
+    textButtonUno = json['text_button_uno'];
+    textButtonDos = json['text_button_dos'];
     message = json['message'];
     showNotification = json['show_notification'];
     type = NotificationType.fromString(json['type'])!;
@@ -66,6 +76,8 @@ class NotificationModel {
     data['message'] = this.message;
     data['show_notification'] = this.showNotification;
     data['type'] = this.type.name;
+    data['text_button_uno'] = this.textButtonUno;
+    data['text_button_dos'] = this.textButtonDos;
     return data;
   }
 

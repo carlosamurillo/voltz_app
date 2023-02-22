@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:pdf/widgets.dart';
@@ -26,8 +27,8 @@ class QuoteService with ListenableServiceMixin {
   final RxValue<String?> _rxCustomerName = RxValue<String?>(null);
   String? get customerName => _rxCustomerName.value;
 
-  final RxValue<List<ProductSuggested>> _rxSelectedProducts = RxValue<List<ProductSuggested>>([]);
-  List<ProductSuggested> get selectedProducts => _rxSelectedProducts.value;
+  final RxValue<List<Product>> _rxSelectedProducts = RxValue<List<Product>>([]);
+  List<Product> get selectedProducts => _rxSelectedProducts.value;
 
   QuoteService() {
     listenToReactiveValues([_rxQuote, _rxSelectedProducts, _rxCompanyName, _rxCustomerName]);
@@ -35,25 +36,21 @@ class QuoteService with ListenableServiceMixin {
 
   String recordLastAction = '';
   
-  void init(String quoteId, String? version) async {
-    _initReference(quoteId, version);
+  void init(String quoteId,) async {
+    _initReference(quoteId);
     _getQuote();
-    await _listenChanges(version);
+    await _listenChanges();
     //_updateTotals();
   }
 
   late DocumentReference reference;
-  _initReference(String quoteId, String? version){
-    if(version == "original"){
-      reference = FirebaseFirestore.instance.collection('quote-detail').doc(quoteId).collection('version').doc(quoteId);
-    } else {
-      reference = FirebaseFirestore.instance.collection('quote-detail').doc(quoteId);
-    }
+  _initReference(String quoteId,){
+    reference = FirebaseFirestore.instance.collection('quote-detail').doc(quoteId);
   }
 
-  final StreamController<List<ProductSuggested>> _streamController = StreamController<List<ProductSuggested>>();
+  final StreamController<List<Product>> _streamController = StreamController<List<Product>>();
 // Creating a new stream through the controller
-  Stream<List<ProductSuggested>> get getStream => _streamController.stream;
+  Stream<List<Product>> get getStream => _streamController.stream;
 
   streamProducts() async {
     print('se llamo el servicio streamProducts');
@@ -140,14 +137,14 @@ class QuoteService with ListenableServiceMixin {
     notifyListeners();
   }
   
-  Future<void> _listenChanges(String? version) async {
+  Future<void> _listenChanges() async {
     reference.snapshots().listen(
           (documentSnapshot) async {
         print("Se recibe data nueva desde el servidor");
         if (documentSnapshot.exists) {
           QuoteModel data = await _processQuote(documentSnapshot);
 
-          if(version == null && quote.accepted){
+          if(quote.accepted){
             Future.delayed(const Duration(milliseconds: 1500), () {
               _navigationService.navigateToOrderView(orderId: quote.id!);
             });

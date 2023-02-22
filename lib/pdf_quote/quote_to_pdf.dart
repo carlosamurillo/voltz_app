@@ -12,6 +12,7 @@ import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
 import 'package:maketplace/pdf_quote/svg_icons.dart';
 
 import '../keys_model.dart';
+import '../product/product_model.dart';
 
 
 class QuotePdf {
@@ -19,7 +20,7 @@ class QuotePdf {
   final VoltzKeys _config = VoltzKeys();
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final QuoteModel quote;
-  final List<ProductSuggested> selectedProducts;
+  final List<Product> selectedProducts;
   var _pdf;
   late final _fontRegular;
   late final _fontSemiBold;

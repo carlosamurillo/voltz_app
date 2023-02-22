@@ -16,9 +16,8 @@ import 'cart_expandable_view.dart';
 import 'container_viewmodel.dart';
 
 class CartView extends StatefulWidget {
-  const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
+  const CartView({Key? key, required this.quoteId,}) : super(key: key);
   final String quoteId;
-  final String? version;
 
   @override
   CartViewState createState() => CartViewState();
@@ -43,7 +42,7 @@ class CartViewState extends State<CartView> {
             child: Column(
               children: [
                 const Header(),
-                _Container(quoteId: widget.quoteId, version: widget.version),
+                _Container(quoteId: widget.quoteId,),
               ],
             ),
           ),
@@ -382,11 +381,10 @@ class Resume extends StackedHookView<QuoteViewModel> {
 
 class _Container extends StatelessWidget {
   const _Container({
-    Key? key, required this.quoteId, this.version,
+    Key? key, required this.quoteId,
   }) : super(key: key,);
 
   final String quoteId;
-  final String? version;
 
   @override
   Widget build(BuildContext context) {
@@ -396,7 +394,7 @@ class _Container extends StatelessWidget {
 
         if (model.isSearchSelected) return const ProductsSearchResult();
 
-        return _CartContainer(quoteId: quoteId, version: version,);
+        return _CartContainer(quoteId: quoteId,);
       },
     );
   }
@@ -405,17 +403,16 @@ class _Container extends StatelessWidget {
 
 class _CartContainer extends StatelessWidget {
   const _CartContainer({
-    Key? key, required this.quoteId, this.version,
+    Key? key, required this.quoteId,
   }) : super(key: key,);
 
   final String quoteId;
-  final String? version;
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<QuoteViewModel>.nonReactive(
       viewModelBuilder: () => QuoteViewModel(),
-      onViewModelReady: (viewModel) => viewModel.init(quoteId, version),
+      onViewModelReady: (viewModel) => viewModel.init(quoteId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
 

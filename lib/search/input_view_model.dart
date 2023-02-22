@@ -7,6 +7,7 @@ import 'input_search_repository.dart';
 import 'search_repository.dart';
 
 class SearchInputViewModel extends ReactiveViewModel {
+
   final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
   late FocusNode _focusNodeSearch;
@@ -21,7 +22,6 @@ class SearchInputViewModel extends ReactiveViewModel {
     _productSearchRepository.setupLastQuery();
     return notifyListeners();
   }
-
 
   final Debouncer _debouncer = Debouncer(milliseconds: 400);
   onTexInputChanged(String value) {

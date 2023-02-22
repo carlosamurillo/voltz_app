@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
@@ -47,11 +48,10 @@ class QuoteViewModel  extends ReactiveViewModel  {
     super.dispose();
   }
 
-  init(String quoteId, String? version) async {
+  init(String quoteId,) async {
     _quoteId = quoteId;
-    this.version = version;
     initReference();
-    _quoteService.init(quoteId, version);
+    _quoteService.init(quoteId,);
 
     return notifyListeners();
   }
@@ -62,9 +62,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
     await _quoteService.resetCards();*/
   }
 
-  initConfirmation(String quoteId, String? version) async {
+  initConfirmation(String quoteId,) async {
     _quoteId = quoteId;
-    this.version = version;
     initReference();
     return notifyListeners();
   }
@@ -79,14 +78,14 @@ class QuoteViewModel  extends ReactiveViewModel  {
     }
   }
 
-  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<Product> get selectedProducts => _quoteService.selectedProducts;
 
   Future<void> navigateToQuoteConfirmation() async {
-    return _navigationService.navigateToCartConfirmation(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartConfirmation(quoteId: quote.id!,);
   }
 
   Future<void> navigateToQuoteView() async {
-    return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartView(quoteId: quote.id!,);
   }
 
   void onGenerateOrder(BuildContext context) async {
@@ -178,7 +177,7 @@ class QuoteViewModel  extends ReactiveViewModel  {
       for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
         if(quote.detail![i].productsSuggested![b].selected == true) {
           orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
-            productId: quote.detail![i].productsSuggested![b].productId,
+            productId: quote.detail![i].productsSuggested![b].id,
             sku: quote.detail![i].productsSuggested![b].sku,
             skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
             brand: quote.detail![i].productsSuggested![b].brand,

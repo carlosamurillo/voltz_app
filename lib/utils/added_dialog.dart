@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:maketplace/notifications/notifications_view.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
+import '../notifications/notifications_service.dart';
 
-void showAddedDialog(BuildContext context) async {
+void showNotificationDialog(BuildContext context,) async {
   return await showDialog(
     context: context,
     barrierColor: CustomColors.blueVoltz.withOpacity(.7),
-    builder: (context) => AlertDialog(
+    builder: (context) => const AlertDialog(
       backgroundColor: Colors.white,
       insetPadding: EdgeInsets.zero,
-      contentPadding: const EdgeInsets.all(25),
-      content: GeneralDialog(
-        text: "¡Agregado a la cotización!",
-        button1: ThirdButton(text: "Ir a la cotización", onPressed: () {}),
-        button2: SecondaryButton(text: "Seguir agregando", onPressed: () => Navigator.of(context).pop()),
-      ),
+      contentPadding: EdgeInsets.all(25),
+      content: BaseNotificationWidget()
     ),
   );
 }

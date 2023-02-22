@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/login/code_validator/code_validator_view.dart';
+import 'package:maketplace/login/auth_gate.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -28,24 +28,21 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: _config.firebaseOptions,
   );
-  // String quoteId = Uri.base.queryParameters["cotz"]!;
-  // String? version = Uri.base.queryParameters["version"];
+  String? quoteId = Uri.base.queryParameters["cotz"];
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
-  // runApp(MyApp(
-  //   quoteId: quoteId,
-  //   version: version,
-  // ));
   runApp(MyApp(
+     quoteId: quoteId,
+  ));
+  /*runApp(MyApp(
     quoteId: "adsf",
     version: "asdf",
-  ));
+  ));*/
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.quoteId, required this.version});
-  final String quoteId;
-  final String? version;
+  const MyApp({super.key, this.quoteId,});
+  final String? quoteId;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -72,12 +69,8 @@ class MyApp extends StatelessWidget {
         //home: QuoteView(quoteId: quoteId, version: version,),
         // home: LoginView(),
         // home: RegisterView(),
-        home: CodeValidatorView(),
-
-        // CartView(
-        //   quoteId: quoteId,
-        //   version: version,
-        // ),
+        // home: CodeValidatorView(),
+        home: AuthGate(quoteId: quoteId,),
         navigatorKey: StackedService.navigatorKey,
         // home: AddCardView(), // Used when testing a view
         //initialRoute: Routes.cartView,

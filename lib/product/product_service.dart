@@ -45,7 +45,7 @@ class ProductService with ListenableServiceMixin {
 
   bool viewRecorded = false;
   Future<Product> _processProduct(DocumentSnapshot documentSnapshot) async {
-    return Product.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+    return Product.fromJsonWithId(json: documentSnapshot.data() as Map<String, dynamic>, id: documentSnapshot.id);
   }
 
 }

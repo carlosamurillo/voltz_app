@@ -366,7 +366,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ],
                   if (viewModel.selectedProducts[i].isCardExpanded) ...[
-                    ProductDetail(productId: viewModel.selectedProducts[i].productId!,),
+                    ProductDetail(productId: viewModel.selectedProducts[i].id!,),
                   ],
                   _QuantityCalculatorWidget(index: i),
                 ],
