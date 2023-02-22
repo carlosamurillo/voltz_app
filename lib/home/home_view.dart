@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
 import 'package:maketplace/home/home_viewmodel.dart';
 import 'package:maketplace/utils/custom_colors.dart';
@@ -18,6 +19,7 @@ class HomeView extends StatelessWidget {
       builder: (context, model, child) {
 
         return const Scaffold(
+          drawer: MenuDrawer(),
           backgroundColor: CustomColors.WBY,
           // No appBar property provided, only the body.
           body: CustomScrollView(

@@ -1,13 +1,17 @@
 
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/search_repository.dart';
 import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:stacked_services/stacked_services.dart';
 
-import '../app/app.locator.dart';
-import '../product/product_model.dart';
+import 'package:maketplace/app/app.router.dart';
 
 class ProductSearchViewModel extends StreamViewModel<List<Product>> {
+
+  final NavigationService _navigationService = locator<NavigationService>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
   @override
@@ -25,6 +29,10 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
   void onData(List<Product>? data) {
     data?.add(Product());
     super.onData(data);
+  }
+
+  navigateToLogin() async {
+    return _navigationService.navigateToLoginView();
   }
 }
 

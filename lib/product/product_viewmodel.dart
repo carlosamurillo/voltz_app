@@ -1,6 +1,6 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/product/product_service.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/utils/added_dialog.dart';
@@ -8,7 +8,6 @@ import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceM
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
-import '../login/auth_service.dart';
 import 'product_model.dart';
 import 'dart:js' as js;
 
@@ -60,7 +59,7 @@ class ProductCardViewModel extends ReactiveViewModel {
   }
 
   final _authService = locator<AuthService>();
-  bool get isLogged => _authService.isLogged;
+  UserSignStatus get userSignStatus => _authService.userSignStatus;
   @override
   List<ListenableServiceMixin> get listenableServices => [_authService,];
 

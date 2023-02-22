@@ -33,21 +33,21 @@ class CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.grayBackground_2,
-      body: Stack(
-        children: [
-          Container(
-            color: CustomColors.WBY,
-            padding: const EdgeInsets.all(0),
-            child: Column(
-              children: [
-                const Header(),
-                _Container(quoteId: widget.quoteId,),
-              ],
+        backgroundColor: CustomColors.grayBackground_2,
+        body: Stack(
+          children: [
+            Container(
+              color: CustomColors.WBY,
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  const Header(),
+                  _Container(quoteId: widget.quoteId,),
+                ],
+              ),
             ),
-          ),
-        ],
-      )
+          ],
+        )
     );
   }
 }
@@ -57,9 +57,9 @@ class Resume extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     return Builder(
       builder: (BuildContext context) {
         var media = MediaQuery.of(context).size;
@@ -311,7 +311,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                             _Dialogs dialog = _Dialogs();
                                             dialog.showAlertDialog(
                                               context,
-                                              () async {
+                                                  () async {
                                                 model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),
@@ -455,9 +455,9 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     if (model.quote.customer != null) {
       var media = MediaQuery.of(context).size;
       return Container(

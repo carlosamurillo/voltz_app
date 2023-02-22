@@ -49,13 +49,13 @@ class Product {
         this.source,
         this.brandFavicon,
         this.price,
-      this.imageUrls,
-      this.status,
-      this.warranty,
-      this.features,
-      this.featuresString,
-      this.makerWeb,
-      this.selected});
+        this.imageUrls,
+        this.status,
+        this.warranty,
+        this.features,
+        this.featuresString,
+        this.makerWeb,
+        this.selected});
 
   Product.fromJsonWithId({required Map<String, dynamic> json, required String id,}) {
     this.id = id;

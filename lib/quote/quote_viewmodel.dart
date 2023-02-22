@@ -90,8 +90,8 @@ class QuoteViewModel  extends ReactiveViewModel  {
 
   void onGenerateOrder(BuildContext context) async {
     updateQuote(quote).then((value) async {
-        DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-        await reference.update({'accepted': true});
+      DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
+      await reference.update({'accepted': true});
     });
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

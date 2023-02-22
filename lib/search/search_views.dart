@@ -25,7 +25,8 @@ class ProductsSearchResult extends StatelessWidget {
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
-              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!);
+              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
+                onTapImprovePrice: viewModel.navigateToLogin,);
             } else {
               return const Expanded(
                 child: Center(
@@ -171,13 +172,15 @@ class SliverClassicSearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
       viewModelBuilder: () => ProductSearchViewModel(),
+      disposeViewModel: false,
       builder: (context, viewModel, child) {
         print('SliverClassicSearchView ... se renderiza...');
         return FutureBuilder(
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
-              return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!);
+              return gv.SliverProductGridView(childCount: viewModel.data!.length,
+                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin,);
             } else {
               return const SliverToBoxAdapter(
                 child: Center(

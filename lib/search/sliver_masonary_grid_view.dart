@@ -8,9 +8,10 @@ import '../product/product_views.dart';
 import '../utils/style.dart';
 
 class ProductGridView extends StatelessWidget {
-  const ProductGridView({super.key, required this.childCount, required this.data});
+  const ProductGridView({super.key, required this.childCount, required this.data, required this.onTapImprovePrice});
   final int childCount;
   final List<Product> data;
+  final Function onTapImprovePrice;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class ProductGridView extends StatelessWidget {
           const SliverToBoxAdapter(
             child: SizedBox(height: 25,),
           ),
-          SliverProductGridView(childCount: data.length, data: data,),
+          SliverProductGridView(childCount: data.length, data: data, onTapImprovePrice: onTapImprovePrice,),
           const SliverToBoxAdapter(
             child: SizedBox(height: 25,),
           ),
@@ -33,9 +34,10 @@ class ProductGridView extends StatelessWidget {
 }
 
 class SliverProductGridView extends StatelessWidget {
-  const SliverProductGridView({super.key, required this.childCount, required this.data});
+  const SliverProductGridView({super.key, required this.childCount, required this.data, required this.onTapImprovePrice});
   final int childCount;
   final List<Product> data;
+  final Function onTapImprovePrice;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class SliverProductGridView extends StatelessWidget {
               return const NoFoundCard();
             }
             return ProductCard(
-                product: data[index]
+                product: data[index], onTapImprovePrice: onTapImprovePrice,
             );
           }, crossAxisCount: ((media.width - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 25) / 387).truncateToDouble().toInt() : 1,
         ),

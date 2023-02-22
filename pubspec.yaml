@@ -66,6 +66,8 @@ dependencies:
   pinput: ^2.2.11
   sms_autofill: ^2.2.0
 
+  dartz: ^0.10.1
+
 dev_dependencies:
   build_runner: ^2.3.3
 

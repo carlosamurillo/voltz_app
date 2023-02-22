@@ -37,11 +37,11 @@ class QuoteModel {
         this.accepted = false,
         this.discardedProducts,
         this.shipping,
-      this.pendingProducts,
-      this.record,
-      this.quoteCategory,
-      this.totals,
-      this.customer,});
+        this.pendingProducts,
+        this.record,
+        this.quoteCategory,
+        this.totals,
+        this.customer,});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     version = json['version'];

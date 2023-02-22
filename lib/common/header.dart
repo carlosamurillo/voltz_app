@@ -1,27 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:maketplace/login/auth_gate_viewmodel.dart';
+import 'package:maketplace/auth/gate_simple_viewmodel.dart';
+import 'package:maketplace/common/drawer.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
 import '../search/search_components.dart' deferred as sc;
 import '../utils/buttons.dart';
 import '../utils/custom_colors.dart';
 import '../utils/style.dart';
-import 'header_viewmodel.dart';
 
 class Header extends StatelessWidget  {
   const Header({super.key, this.paddingVertical = 14, this.paddingHorizontal = 25});
   final double paddingVertical;
   final double paddingHorizontal;
 
-
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<HeaderViewModel>.reactive(
-      viewModelBuilder: () => HeaderViewModel(),
-      builder: (context, model, child) {
-        var media = MediaQuery.of(context).size;
-        return Container(
+    var media = MediaQuery.of(context).size;
+    return SafeArea(
+        child: Container(
           padding: media.width >= CustomStyles.desktopBreak ? const EdgeInsets.symmetric(vertical: 14, horizontal: 25) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           color: CustomColors.white,
           width: double.infinity,
@@ -50,21 +47,14 @@ class Header extends StatelessWidget  {
                 ),
               ),
               const SizedBox(width: 25),
-              if(!model.isLogged) ...[
-                SizedBox(
-                  width: 193,
-                  child: PrimaryButton(
-                    text: 'Iniciar sesión',
-                    icon: Icons.account_circle,
-                    onPressed: ()=>{},
-                  ),
-                ),
-              ],
+              _InitSessionButton(
+                onTapMenu: () async {
+                  print('Drawer ');
+                  Scaffold.of(context).openDrawer();
+                } ,),
             ],
           ),
-        );
-
-      },
+        )
     );
   }
 }
@@ -85,6 +75,50 @@ class SliverHeader extends StatelessWidget {
       collapsedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
       expandedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
       title: const Header(),
+    );
+  }
+}
+
+class _InitSessionButton extends StatelessWidget {
+  const _InitSessionButton({Key? key, required this.onTapMenu}) : super(key: key);
+  final Function() onTapMenu;
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<GateSimpleViewModel>.reactive(
+      viewModelBuilder: () => GateSimpleViewModel(),
+      builder: (context, model, child) {
+        var media = MediaQuery.of(context).size;
+        return SafeArea(
+            child: LayoutBuilder(
+              builder: (BuildContext ctx, BoxConstraints constraints){
+                if(constraints.maxWidth >= CustomStyles.desktopBreak){
+                  //Button de Inicio de session desktop
+                  return model.authSignStatus == UserSignStatus.authenticated ? IconButton(
+                    onPressed: () => onTapMenu(),
+                    icon: const Icon(Icons.menu, color: CustomColors.dark),
+                  ) : ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 250, minWidth: 193, maxHeight: 40, minHeight: 40),
+                    child: PrimaryButton(
+                      text: 'Iniciar sesión',
+                      icon: Icons.account_circle,
+                      onPressed: () => model.navigateToLogin(),
+                    ),
+                  );
+                } else {
+                  //Button de Inicio de session y de menu tableta y mobile
+                  return model.authSignStatus == UserSignStatus.authenticated ?  IconButton(
+                    onPressed: () => onTapMenu(),
+                    icon: const Icon(Icons.menu, color: CustomColors.dark),
+                  ) : IconButton(
+                    onPressed: () => model.navigateToLogin(),
+                    icon: const Icon(Icons.account_circle, color: CustomColors.dark),
+                  );
+                }
+              }
+            ),
+        );
+      },
     );
   }
 }

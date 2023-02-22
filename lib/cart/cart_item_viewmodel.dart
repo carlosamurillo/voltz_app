@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/product/product_model.dart';
-
 import '../app/app.locator.dart';
-import '../login/auth_service.dart';
 import '../quote/quote_model.dart';
 import '../quote/quote_service.dart';
 import '../utils/stats.dart';
@@ -21,7 +20,7 @@ class CardItemViewModel extends ReactiveViewModel {
   bool isQtyControlOpen = false;
   bool isCalculatorActive = false;
   bool isCardExpanded = false;
- 
+
   bool get isQtyLabelHighlight => _isQtyLabelHighlight;
   bool _isQtyLabelHighlight = false;
 
@@ -42,7 +41,7 @@ class CardItemViewModel extends ReactiveViewModel {
   );
 
   final _authService = locator<AuthService>();
-  bool get isLogged => _authService.isLogged;
+  UserSignStatus get userSignStatus => _authService.userSignStatus;
 
   final _quoteService = locator<QuoteService>();
   @override
@@ -60,7 +59,7 @@ class CardItemViewModel extends ReactiveViewModel {
   final FocusNode _focusRemove = FocusNode();
   FocusNode get focusAdd => _focusAdd;
   FocusNode get focusRemove => _focusRemove;*/
-  
+
   /*void requestFocusAdd(int cardIndex){
     _focusAdd.requestFocus();
   }

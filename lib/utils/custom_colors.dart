@@ -37,6 +37,7 @@ class CustomColors {
   static const Color muggleGray_5 = Color(0xFFEFF2FD);
 
   static const Color blueVoltz = Color(0xFF2E5CFF);
+  static const Color bluePlusOne = Color(0xFF2953E6);
   static const Color white = Color(0xFFFFFFFF);
   static const Color dark = Color(0xFF394055);
   static const Color grayVoltz = Color(0xFFBDC3D8);

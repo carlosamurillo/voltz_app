@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
+import 'package:maketplace/gate/auth_gate.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/login/auth_gate.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -26,13 +26,13 @@ void mainCommon() async {
   }
 
   await Firebase.initializeApp(
-    options: _config.firebaseOptions,
+    options: kIsWeb ? _config.firebaseOptions : null,
   );
   String? quoteId = Uri.base.queryParameters["cotz"];
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
   runApp(MyApp(
-     quoteId: quoteId,
+    quoteId: quoteId,
   ));
   /*runApp(MyApp(
     quoteId: "adsf",
@@ -79,3 +79,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

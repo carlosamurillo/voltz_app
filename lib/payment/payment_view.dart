@@ -1,14 +1,12 @@
-
-import 'dart:html' as html;
-import 'package:flutter/cupertino.dart';
+// import 'dart:html' as html;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
-import '../utils/custom_colors.dart';
+
 import '../order/order_viewmodel.dart';
+import '../utils/custom_colors.dart';
 
 class PaymentInstructions extends StatefulWidget {
   PaymentInstructions({required this.total, required this.order_consecutive, required this.showOrderListener});
@@ -21,7 +19,6 @@ class PaymentInstructions extends StatefulWidget {
 }
 
 class _PaymentInstructionsState extends State<PaymentInstructions> {
-
   String _actionTitle = '';
   Color _buttonColor = CustomColors.safeBlue;
   Color _buttonHoverColor = CustomColors.safeBlueHover;
@@ -33,12 +30,12 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
     setupVariables();
   }
 
-  setupVariables(){
-    if(context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
+  setupVariables() {
+    if (context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
       _actionTitle = 'Ya pagué mi envío';
       _buttonColor = CustomColors.safeBlue;
       _buttonHoverColor = CustomColors.safeBlueHover;
-    } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying'){
+    } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
       _buttonColor = CustomColors.energyYellow;
       _buttonHoverColor = CustomColors.energyYellowHover;
@@ -54,7 +51,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child:  Container(
+      child: Container(
         padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
         width: 666,
         alignment: Alignment.center,
@@ -156,7 +153,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
               padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 30),
               width: 666,
               color: Colors.white,
-              child:  Row(
+              child: Row(
                 children: [
                   Container(
                     child: SelectableText("Importe", style: CustomStyles.styleVolcanic14x500),
@@ -183,9 +180,8 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
             Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: CustomColors.volcanicGrey),
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(5.0) //                 <--- border radius here
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
+                      ),
                 ),
                 padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
                 margin: const EdgeInsets.only(top: 20, bottom: 20, left: 0, right: 0),
@@ -208,16 +204,20 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                     SelectableText.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: '* En el titular de cuenta poner: ',
+                          TextSpan(
+                            text: '* En el titular de cuenta poner: ',
                             style: CustomStyles.styleVolcanic14x500,
                           ),
-                          TextSpan(text: "VOLTZ MEXICO SAPI DE CV",
+                          TextSpan(
+                            text: "VOLTZ MEXICO SAPI DE CV",
                             style: CustomStyles.styleVolcanicBlueDos,
                           ),
-                          TextSpan(text: "\n* RFC: ",
+                          TextSpan(
+                            text: "\n* RFC: ",
                             style: CustomStyles.styleVolcanic14x500,
                           ),
-                          TextSpan(text: "VME221026G21",
+                          TextSpan(
+                            text: "VME221026G21",
                             style: CustomStyles.styleVolcanicBlueDos,
                           ),
                         ],
@@ -225,19 +225,24 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                       textAlign: TextAlign.start,
                     ),
                   ],
-                )
-            ),
+                )),
             Container(
               padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
               width: 666,
               child: GestureDetector(
                 onTap: () {
-                  html.window.open(fiscalUrl, "_blank");
+                  // html.window.open(fiscalUrl, "_blank");
                 },
-                child: Text("Descargar comprobante situación fiscal", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.right,),
+                child: Text(
+                  "Descargar comprobante situación fiscal",
+                  style: CustomStyles.styleBlue14x500,
+                  textAlign: TextAlign.right,
+                ),
               ),
             ),
-            const SizedBox(width: 16,),
+            const SizedBox(
+              width: 16,
+            ),
             Container(
                 margin: const EdgeInsets.symmetric(vertical: 30),
                 child: Row(
@@ -245,10 +250,11 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                     Container(
                         width: 250,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(26),),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(26),
+                            ),
                             color: Color(0xFFFFFDFB),
-                            border: Border.all(width: 2, color: CustomColors.safeBlue)
-                        ),
+                            border: Border.all(width: 2, color: CustomColors.safeBlue)),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -260,16 +266,14 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                               alignment: Alignment.center,
-                              child:  Row(
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   RichText(
                                     text: TextSpan(
                                       children: [
-                                        new TextSpan(text: 'Ver Pedido',
-                                            style: CustomStyles.styleBlue14x700
-                                        ),
+                                        new TextSpan(text: 'Ver Pedido', style: CustomStyles.styleBlue14x700),
                                       ],
                                     ),
                                     textAlign: TextAlign.start,
@@ -278,14 +282,15 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                               ),
                             ),
                           ),
-                        )
-                    ),
+                        )),
                     const Spacer(),
                     Container(
                         width: 250,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(26),),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(26),
+                          ),
                           color: _buttonColor,
                         ),
                         child: Material(
@@ -293,7 +298,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                           child: InkWell(
                             borderRadius: const BorderRadius.all(Radius.circular(26)),
                             hoverColor: _buttonHoverColor,
-                            onTap: (){
+                            onTap: () {
                               context.read<OrderViewModel>().changePaymentStatus();
                               setState(() {
                                 setupVariables();
@@ -303,29 +308,34 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                               alignment: Alignment.center,
-                              child:  Row(
+                              child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text(_actionTitle , style: CustomStyles.styleWhiteDos,)
+                                  Text(
+                                    _actionTitle,
+                                    style: CustomStyles.styleWhiteDos,
+                                  )
                                 ],
                               ),
                             ),
                           ),
-                        )
-                    ),
+                        )),
                   ],
-                )
-            ),
+                )),
             Container(
               padding: const EdgeInsets.only(top: 20, bottom: 0, left: 0, right: 0),
               width: 666,
               child: GestureDetector(
                 onTap: () {
-                  html.window.open('https://walink.co/d9aef3', "_blank");
+                  // html.window.open('https://walink.co/d9aef3', "_blank");
                 },
-                child: Text("¿Pago en efectivo? Contácta un agente Voltz", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.center,),
+                child: Text(
+                  "¿Pago en efectivo? Contácta un agente Voltz",
+                  style: CustomStyles.styleBlue14x500,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           ],
@@ -346,7 +356,6 @@ class PaymentInstructionsMobile extends StatefulWidget {
 }
 
 class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
-
   String _actionTitle = '';
   Color _buttonColor = CustomColors.safeBlue;
   Color _buttonHoverColor = CustomColors.safeBlueHover;
@@ -358,12 +367,12 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
     setupVariables();
   }
 
-  setupVariables(){
-    if(context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
+  setupVariables() {
+    if (context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
       _actionTitle = 'Ya pagué mi envío';
       _buttonColor = CustomColors.safeBlue;
       _buttonHoverColor = CustomColors.safeBlueHover;
-    } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying'){
+    } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
       _buttonColor = CustomColors.energyYellow;
       _buttonHoverColor = CustomColors.energyYellowHover;
@@ -488,9 +497,8 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
             Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: CustomColors.volcanicGrey),
-                  borderRadius: const BorderRadius.all(
-                      Radius.circular(5.0) //                 <--- border radius here
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
+                      ),
                 ),
                 padding: const EdgeInsets.only(top: 15, bottom: 15, left: 20, right: 20),
                 margin: const EdgeInsets.only(top: 20, bottom: 10, left: 0, right: 0),
@@ -514,16 +522,20 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                       child: SelectableText.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: '* En el titular de cuenta poner: ',
+                            TextSpan(
+                              text: '* En el titular de cuenta poner: ',
                               style: CustomStyles.styleVolcanic14x500,
                             ),
-                            TextSpan(text: "VOLTZ MEXICO SAPI DE CV",
+                            TextSpan(
+                              text: "VOLTZ MEXICO SAPI DE CV",
                               style: CustomStyles.styleVolcanicBlueDos,
                             ),
-                            TextSpan(text: "\n* RFC: ",
+                            TextSpan(
+                              text: "\n* RFC: ",
                               style: CustomStyles.styleVolcanic14x500,
                             ),
-                            TextSpan(text: "VME221026G21",
+                            TextSpan(
+                              text: "VME221026G21",
                               style: CustomStyles.styleVolcanicBlueDos,
                             ),
                           ],
@@ -532,26 +544,32 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                       ),
                     ),
                   ],
-                )
-            ),
+                )),
             Container(
               padding: const EdgeInsets.only(top: 10, bottom: 0, left: 0, right: 0),
               width: 368,
               child: GestureDetector(
                 onTap: () {
-                  html.window.open(fiscalUrl, "_blank");
+                  // html.window.open(fiscalUrl, "_blank");
                 },
-                child: Text("Descargar comprobante situación fiscal", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.right,),
+                child: Text(
+                  "Descargar comprobante situación fiscal",
+                  style: CustomStyles.styleBlue14x500,
+                  textAlign: TextAlign.right,
+                ),
               ),
             ),
-            const SizedBox(height: 40,),
+            const SizedBox(
+              height: 40,
+            ),
             Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(26),),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(26),
+                    ),
                     color: Color(0xFFFFFDFB),
-                    border: Border.all(width: 2, color: CustomColors.safeBlue)
-                ),
+                    border: Border.all(width: 2, color: CustomColors.safeBlue)),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -563,16 +581,14 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       alignment: Alignment.center,
-                      child:  Row(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RichText(
                             text: TextSpan(
                               children: [
-                                new TextSpan(text: 'Ver Pedido',
-                                    style: CustomStyles.styleBlue14x700
-                                ),
+                                new TextSpan(text: 'Ver Pedido', style: CustomStyles.styleBlue14x700),
                               ],
                             ),
                             textAlign: TextAlign.start,
@@ -581,14 +597,17 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                       ),
                     ),
                   ),
-                )
+                )),
+            const SizedBox(
+              height: 15,
             ),
-            const SizedBox(height: 15,),
             Container(
                 width: double.infinity,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(26),),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(26),
+                  ),
                   color: _buttonColor,
                 ),
                 child: Material(
@@ -596,7 +615,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                   child: InkWell(
                     borderRadius: const BorderRadius.all(Radius.circular(26)),
                     hoverColor: _buttonHoverColor,
-                    onTap: (){
+                    onTap: () {
                       context.read<OrderViewModel>().changePaymentStatus();
                       setState(() {
                         setupVariables();
@@ -606,30 +625,40 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                       alignment: Alignment.center,
-                      child:  Row(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text(_actionTitle , style: CustomStyles.styleWhiteDos,)
+                          Text(
+                            _actionTitle,
+                            style: CustomStyles.styleWhiteDos,
+                          )
                         ],
                       ),
                     ),
                   ),
-                )
+                )),
+            const SizedBox(
+              height: 15,
             ),
-            const SizedBox(height: 15,),
             Container(
               padding: const EdgeInsets.only(top: 20, bottom: 0, left: 0, right: 0),
               width: 368,
               child: GestureDetector(
                 onTap: () {
-                  html.window.open('https://walink.co/d9aef3', "_blank");
+                  // html.window.open('https://walink.co/d9aef3', "_blank");
                 },
-                child: Text("¿Pago en efectivo? Contácta un agente Voltz", style: CustomStyles.styleBlue14x500, textAlign: TextAlign.center,),
+                child: Text(
+                  "¿Pago en efectivo? Contácta un agente Voltz",
+                  style: CustomStyles.styleBlue14x500,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
-            const SizedBox(height: 50,),
+            const SizedBox(
+              height: 50,
+            ),
           ],
         ),
       ),

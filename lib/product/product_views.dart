@@ -5,15 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-
 import '../../utils/custom_colors.dart';
 import '../../utils/shimmer.dart';
 import '../../utils/style.dart';
-import '../cart/cart_item_viewmodel.dart';
 import '../utils/buttons.dart';
 import '../utils/inputText.dart';
 
@@ -21,10 +20,11 @@ import '../utils/inputText.dart';
 class ProductCard extends StatelessWidget {
   const ProductCard({
     Key? key, required this.product, this.isSearchVersion = true, this.isCartVersion = false,
-  }) : super(key: key);
+    this.onTapImprovePrice,}) : super(key: key);
   final Product product;
   final bool isSearchVersion;
   final bool isCartVersion;
+  final Function? onTapImprovePrice;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +157,7 @@ class ProductCard extends StatelessWidget {
                                         ],
                                       ),
                                       const Spacer(),
-                                      if(viewModel.isLogged) ...[
+                                      if(viewModel.userSignStatus == UserSignStatus.authenticated) ...[
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -298,13 +298,15 @@ class ProductCard extends StatelessWidget {
                                           ],
                                         ),
                                         const SizedBox(height: 5,),
-                                        SizedBox(
-                                          width: 175,
-                                          child: PrimaryButton(
-                                            text: 'Mejorar precio',
-                                            onPressed: () => {},
-                                          ),
-                                        )
+                                        if(onTapImprovePrice != null) ...[
+                                          SizedBox(
+                                            width: 175,
+                                            child: PrimaryButton(
+                                              text: 'Mejorar precio',
+                                              onPressed: () => onTapImprovePrice!() ,
+                                            ),
+                                          )
+                                        ],
                                       ],
                                     ],
                                   ),
@@ -336,7 +338,7 @@ class ProductCard extends StatelessWidget {
                       if(viewModel.isCardExpanded)...[
                         ProductDetail(productId: product.id!),
                       ],
-                      if(viewModel.isLogged && isSearchVersion)...[
+                      if(viewModel.userSignStatus == UserSignStatus.authenticated && isSearchVersion)...[
                         ActionsView(
                           showBuyNow: true,
                           productId: product.id!,
@@ -344,7 +346,7 @@ class ProductCard extends StatelessWidget {
                           toBuyNowFunction: viewModel.buyNow,
                         ),
                       ],
-                      if(viewModel.isLogged && isCartVersion)...[
+                      if(viewModel.userSignStatus == UserSignStatus.anonymous && isCartVersion)...[
                         //const _QuantityCalculatorWidget(),
                       ],
                     ],

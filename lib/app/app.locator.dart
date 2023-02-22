@@ -9,8 +9,8 @@
 import 'package:stacked_core/stacked_core.dart';
 import 'package:stacked_services/src/navigation/navigation_service.dart';
 
-import '../login/auth_gate_viewmodel.dart';
-import '../login/auth_service.dart';
+import '../auth/login/login_service.dart';
+import '../gate/auth_service.dart';
 import '../notifications/notifications_service.dart';
 import '../product/product_service.dart';
 import '../quote/quote_service.dart';
@@ -33,5 +33,5 @@ Future<void> setupLocator(
   locator.registerLazySingleton(() => InputSearchRepository());
   locator.registerLazySingleton(() => NotificationService());
   locator.registerLazySingleton(() => AuthService());
-  locator.registerLazySingleton(() => AuthGateViewModel());
+  locator.registerLazySingleton(() => LoginService());
 }

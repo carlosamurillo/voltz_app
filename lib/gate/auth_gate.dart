@@ -13,9 +13,10 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AuthGateViewModel>.reactive(
-      viewModelBuilder: () => locator<AuthGateViewModel>(),
+      viewModelBuilder: () => AuthGateViewModel(),
       onViewModelReady: (viewModel) => viewModel.init(quoteId: quoteId),
       disposeViewModel: false,
+      fireOnViewModelReadyOnce: false,
       builder: (context, model, child) {
         return const Scaffold(
           backgroundColor: CustomColors.WBY,

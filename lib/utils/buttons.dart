@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/pet_voltz_path.dart';
-import 'package:splash/splash.dart';
 
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({Key? key, required this.text, required this.onPressed, this.enabled = true, this.icon}) : super(key: key);
@@ -93,7 +92,7 @@ class GeneralButton extends StatelessWidget {
                 children: [
                   if(icon != null)...[
                     Icon(icon,
-                      size: 20,
+                      size: 24,
                       color: textColor,
                     )
                   ],
@@ -148,14 +147,14 @@ class BaseButton extends StatelessWidget {
         ),
         onPressed: onPressed,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if(icon != null) ...[
                 Icon(icon,
-                  size: 20,
+                  size: 24,
                   color: textColor,
                 )
               ],

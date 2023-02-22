@@ -1,5 +1,5 @@
 
-import 'package:maketplace/login/auth_service.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart';
 import '../app/app.locator.dart';
 
@@ -10,5 +10,5 @@ class HomeViewModel extends ReactiveViewModel {
   @override
   List<ListenableServiceMixin> get listenableServices => [_authService,];
 
-  bool get isLogged => _authService.isLogged;
+  UserSignStatus get userSignStatus => _authService.userSignStatus;
 }
