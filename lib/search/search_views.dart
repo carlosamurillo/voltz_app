@@ -14,26 +14,12 @@ class ProductsSearchResult extends StatelessWidget {
     var media = MediaQuery.of(context).size;
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
       viewModelBuilder: () => ProductSearchViewModel(),
-      fireOnViewModelReadyOnce: false,
-      createNewViewModelOnInsert: true,
       builder: (context, viewModel, child) {
-        print('............................................' + media.height.toString());
-        if (viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty) {
-          // return const SearchNotFoundWidget();
+        print('ProductsSearchResults view ... ');
+        if(viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null){
           return const SearchInitialViewWidget();
         }
 
-        if (viewModel.data == null) {
-          return const Expanded(
-            child: Center(
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        }
         return FutureBuilder(
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
