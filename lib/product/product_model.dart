@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
@@ -21,24 +20,25 @@ class Product {
   String? featuresString;
   String? makerWeb;
 
-  Product(
-      {this.id,
-        this.sku,
-        this.skuDescription,
-        this.brand,
-        this.saleValue,
-        this.saleUnit,
-        this.pricePublic,
-        this.priceCurrency,
-        this.coverImage,
-        this.price,
-        this.source,
-      this.imageUrls,
-      this.status,
-      this.warranty,
-      this.features,
-      this.featuresString,
-      this.makerWeb,});
+  Product({
+    this.id,
+    this.sku,
+    this.skuDescription,
+    this.brand,
+    this.saleValue,
+    this.saleUnit,
+    this.pricePublic,
+    this.priceCurrency,
+    this.coverImage,
+    this.price,
+    this.source,
+    this.imageUrls,
+    this.status,
+    this.warranty,
+    this.features,
+    this.featuresString,
+    this.makerWeb,
+  });
 
   static Product copyWith(Map<String, dynamic> json, String id) {
     return Product.fromJson(json, id);
@@ -55,36 +55,36 @@ class Product {
     pricePublic = double.tryParse(json['price_public'].toString());
     priceCurrency = json['price_currency'];
     coverImage = json['image_cover'];
-    if (json.containsKey('price')){
+    if (json.containsKey('price')) {
       price = Price.fromJson(json['price']);
     }
     //se omite la primera imagen la cual es la misma que cover image
     if (json['image_urls'] != null) {
       imageUrls = <String>[];
-      for(int a = 0; a < json['image_urls'].length; a++) {
-        if(a>0) {
+      for (int a = 0; a < json['image_urls'].length; a++) {
+        if (a > 0) {
           imageUrls!.add(json['image_urls'][a]);
         }
       }
     }
-    if (json.containsKey('status')){
+    if (json.containsKey('status')) {
       status = json['status'];
     }
-    if (json.containsKey('warranty')){
+    if (json.containsKey('warranty')) {
       warranty = json['warranty'];
     }
     if (json['features'] != null) {
       features = <String>[];
-      for(int a = 0; a < json['features'].length; a++) {
+      for (int a = 0; a < json['features'].length; a++) {
         features!.add(json['features'][a]);
-        if(a == 0){
+        if (a == 0) {
           featuresString = json['features'][a].toString();
         } else {
           featuresString = "${featuresString!}, ${json['features'][a]}";
         }
       }
     }
-    if (json.containsKey('maker_web')){
+    if (json.containsKey('maker_web')) {
       makerWeb = json['maker_web'];
     }
   }
@@ -100,37 +100,29 @@ class Product {
     data['price_public'] = this.pricePublic;
     data['image_cover'] = this.coverImage;
     if (this.price != null) {
-      data['price'] =
-          this.price!.toMap();
+      data['price'] = this.price!.toMap();
     }
     if (this.source != null) {
-      data['source'] =
-      this.source!;
+      data['source'] = this.source!;
     }
     if (this.imageUrls != null) {
-      data['image_urls'] =
-          this.imageUrls!.map((v) => v).toList();
+      data['image_urls'] = this.imageUrls!.map((v) => v).toList();
     }
     if (this.status != null) {
-      data['status'] =
-      this.status!;
+      data['status'] = this.status!;
     }
     if (this.warranty != null) {
-      data['warranty'] =
-      this.warranty!;
+      data['warranty'] = this.warranty!;
     }
     if (this.features != null) {
-      data['features'] =
-          this.features!.map((v) => v).toList();
+      data['features'] = this.features!.map((v) => v).toList();
     }
     if (this.makerWeb != null) {
-      data['maker_web'] =
-          this.makerWeb;
+      data['maker_web'] = this.makerWeb;
     }
     return data;
   }
 }
-
 
 class Price {
   double? priceBest;
@@ -145,28 +137,28 @@ class Price {
   Price({this.priceBest = 0, this.price1 = 0, this.price2 = 0, this.currency, this.stock = 0, this.supplierCode, this.supplierName, this.dollarConversion});
 
   Price.fromJson(Map<String, dynamic> json) {
-    if(json.containsKey('price_best')) {
-      priceBest = json['price_best'];
+    if (json.containsKey('price_best')) {
+      priceBest = double.tryParse(json['price_best']?.toString() ?? '');
     }
-    if(json.containsKey('price_1')) {
-      price1 = json['price_1'];
+    if (json.containsKey('price_1')) {
+      price1 = double.tryParse(json['price_1']?.toString() ?? '');
     }
-    if(json.containsKey('price_2')) {
-      price2 = json['price_2'];
+    if (json.containsKey('price_2')) {
+      price2 = double.tryParse(json['price_2']?.toString() ?? '');
     }
-    if(json.containsKey('currency')) {
+    if (json.containsKey('currency')) {
       currency = json['currency'];
     }
-    if(json.containsKey('stock')) {
-      stock = json['stock'];
+    if (json.containsKey('stock')) {
+      stock = double.tryParse(json['stock']?.toString() ?? '');
     }
-    if(json.containsKey('supplier_code')) {
+    if (json.containsKey('supplier_code')) {
       supplierCode = json['supplier_code'];
     }
-    if(json.containsKey('supplier_name')) {
+    if (json.containsKey('supplier_name')) {
       supplierName = json['supplier_name'];
     }
-    if(json.containsKey('dollar_conversion')) {
+    if (json.containsKey('dollar_conversion')) {
       dollarConversion = DollarConversion.fromJson(json['dollar_conversion']);
     }
   }
@@ -180,12 +172,11 @@ class Price {
     data['stock'] = this.stock;
     data['supplier_code'] = this.supplierCode;
     data['supplier_name'] = this.supplierName;
-    if(this.dollarConversion != null){
+    if (this.dollarConversion != null) {
       data['dollar_conversion'] = this.dollarConversion!.toMap();
     }
     return data;
   }
-
 }
 
 class DollarConversion {

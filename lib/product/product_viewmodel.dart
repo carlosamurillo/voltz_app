@@ -1,14 +1,13 @@
-
+import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/product/product_service.dart';
-import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
-import 'package:intl/intl.dart' as intl;
+
 import '../app/app.locator.dart';
 import 'product_model.dart';
-import 'dart:js' as js;
+// import 'dart:js' as js;
 
-class ProductViewModel  extends ReactiveViewModel  {
+class ProductViewModel extends ReactiveViewModel {
   final _productsService = ProductService();
 
   final NavigationService _navigationService = locator<NavigationService>();
@@ -26,15 +25,14 @@ class ProductViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> openTechFile(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   Future<void> openWebPage(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   navigateBack() async {
     _navigationService.back();
   }
-
 }

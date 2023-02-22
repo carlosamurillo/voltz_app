@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:maketplace/cart/tabs_view.dart';
+import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -34,22 +35,22 @@ class CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.grayBackground_2,
-      body: Stack(
-        children: [
-          Container(
-            color: CustomColors.WBY,
-            padding: const EdgeInsets.all(0),
-            child: Column(
-              children: [
-                const Header(),
-                _Container(quoteId: widget.quoteId, version: widget.version),
-              ],
+        endDrawer: const VoltzDrawer(),
+        backgroundColor: CustomColors.grayBackground_2,
+        body: Stack(
+          children: [
+            Container(
+              color: CustomColors.WBY,
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  const Header(),
+                  _Container(quoteId: widget.quoteId, version: widget.version),
+                ],
+              ),
             ),
-          ),
-        ],
-      )
-    );
+          ],
+        ));
   }
 }
 
@@ -382,8 +383,12 @@ class Resume extends StackedHookView<QuoteViewModel> {
 
 class _Container extends StatelessWidget {
   const _Container({
-    Key? key, required this.quoteId, this.version,
-  }) : super(key: key,);
+    Key? key,
+    required this.quoteId,
+    this.version,
+  }) : super(
+          key: key,
+        );
 
   final String quoteId;
   final String? version;
@@ -393,20 +398,25 @@ class _Container extends StatelessWidget {
     return ViewModelBuilder<ContainerViewModel>.reactive(
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
-
         if (model.isSearchSelected) return const ProductsSearchResult();
 
-        return _CartContainer(quoteId: quoteId, version: version,);
+        return _CartContainer(
+          quoteId: quoteId,
+          version: version,
+        );
       },
     );
   }
 }
 
-
 class _CartContainer extends StatelessWidget {
   const _CartContainer({
-    Key? key, required this.quoteId, this.version,
-  }) : super(key: key,);
+    Key? key,
+    required this.quoteId,
+    this.version,
+  }) : super(
+          key: key,
+        );
 
   final String quoteId;
   final String? version;
