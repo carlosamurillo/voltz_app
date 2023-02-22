@@ -10,10 +10,10 @@ class AuthViewModel extends ChangeNotifier {
   void init() {
     userStatus = UserSignStatus.unauthenticated;
     signedUserData = UserData.initial();
-    verifiySignedInUser();
+    verifySignedInUser();
   }
 
-  Future<void> verifiySignedInUser() async {
+  Future<void> verifySignedInUser() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       if (user.isAnonymous) {
