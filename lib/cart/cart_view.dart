@@ -2,28 +2,90 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:maketplace/cart/tabs_view.dart';
+import 'package:maketplace/common/header.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/search/search_views.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-
-import '../common/header.dart';
-import '../utils/custom_colors.dart';
 import 'cart_expandable_view.dart';
 import 'container_viewmodel.dart';
 
-class CartView extends StatefulWidget {
-  const CartView({Key? key, required this.quoteId,}) : super(key: key);
+import 'package:maketplace/common/drawer.dart';
+
+class CartView extends StatelessWidget {
+  const CartView({Key? key, required this.quoteId}) : super(key: key,);
+  final String quoteId;
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<ContainerViewModel>.reactive(
+      viewModelBuilder: () => ContainerViewModel(),
+      builder: (context, model, child) {
+        return Scaffold(
+          drawer: const MenuDrawer(),
+          backgroundColor: CustomColors.WBY,
+          // No appBar property provided, only the body.
+          body: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                // These are the slivers that show up in the "outer" scroll view.
+                return <Widget>[
+                  const SliverHeader(),
+                  /*SliverOverlapAbsorber(
+                    // This widget takes the overlapping behavior of the SliverAppBar,
+                    // and redirects it to the SliverOverlapInjector below. If it is
+                    // missing, then it is possible for the nested "inner" scroll view
+                    // below to end up under the SliverAppBar even when the inner
+                    // scroll view thinks it has not been scrolled.
+                    // This is not necessary if the "headerSliverBuilder" only builds
+                    // widgets that do not overlap the next sliver.
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    sliver: const SliverHeader(),
+                  ),*/
+                ];
+              },
+              body: Builder(
+                  builder: (BuildContext context){
+                    if(model.isSearchSelected) {
+                      return const CustomScrollView(
+                        //physics: model.isSearchSelected ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+                        // Add the app bar and list of items as slivers in the next steps.
+                          slivers: <Widget>[
+                            SliverToBoxAdapter(
+                              child: SizedBox(height: 25,),
+                            ),
+                            SliverSearchStatsView(),
+                            SliverToBoxAdapter(
+                              child: SizedBox(height: 25,),
+                            ),
+                            SliverProductsSearchResult(),
+                            SliverToBoxAdapter(
+                              child: SizedBox(height: 25,),
+                            ),
+                          ]);
+                    }
+                    return _CartContainer(quoteId: quoteId,);
+                  }
+              ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CartView2 extends StatefulWidget {
+  const CartView2({Key? key, required this.quoteId,}) : super(key: key);
   final String quoteId;
 
   @override
   CartViewState createState() => CartViewState();
 }
 
-class CartViewState extends State<CartView> {
+class CartViewState extends State<CartView2> {
   @override
   void initState() {
     super.initState();
@@ -42,7 +104,7 @@ class CartViewState extends State<CartView> {
               child: Column(
                 children: [
                   const Header(),
-                  _Container(quoteId: widget.quoteId,),
+                  _SliverContainer(quoteId: widget.quoteId,),
                 ],
               ),
             ),
@@ -379,8 +441,8 @@ class Resume extends StackedHookView<QuoteViewModel> {
   }
 }
 
-class _Container extends StatelessWidget {
-  const _Container({
+class _SliverContainer extends StatelessWidget {
+  const _SliverContainer({
     Key? key, required this.quoteId,
   }) : super(key: key,);
 
@@ -392,9 +454,11 @@ class _Container extends StatelessWidget {
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
 
-        if (model.isSearchSelected) return const ProductsSearchResult();
+        if (model.isSearchSelected) return const SliverProductsSearchResult();
 
-        return _CartContainer(quoteId: quoteId,);
+        return SliverToBoxAdapter(
+          child: _CartContainer(quoteId: quoteId,),
+        );
       },
     );
   }
@@ -422,20 +486,12 @@ class _CartContainer extends StatelessWidget {
               minWidth: CustomStyles.mobileBreak,
             ),
             width: media.width,
-            height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+           // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
             color: CustomColors.WBY,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Spacer(),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    CardGrid(),
-                  ],
-                ),
-                const Spacer(),
+                const CardGrid(),
                 if (media.width >= CustomStyles.mobileBreak) ...[
                   const Resume(),
                 ]
@@ -468,7 +524,6 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (media.width >= CustomStyles.desktopBreak) ...[
-              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,

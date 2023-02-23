@@ -7,7 +7,7 @@ class Product {
   String? skuDescription;
   String? brand;
   String? techFile;
-  double quantity = 1;
+  double? quantity = 1;
   double? saleValue;
   String? saleUnit;
   double? pricePublic;
@@ -101,7 +101,7 @@ class Product {
       coverImage = json['image_cover'];
     }
     if (json.containsKey('quantity')){
-      quantity = json['quantity'];
+      quantity = double.tryParse(json['quantity'].toString());
     }
     if (json.containsKey('price') && json['price'] != null){
       price = Price.fromJson(json['price']);
