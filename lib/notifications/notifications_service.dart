@@ -3,7 +3,7 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 class NotificationService with ListenableServiceMixin {
-  final _rxNotification = RxValue<NotificationModel>(NotificationModel.withButtons('', '', false, NotificationType.simple, '', ''));
+  final _rxNotification = RxValue<NotificationModel>(NotificationModel.withButtons('', '', false, NotificationType.simple, '', '',));
   NotificationModel get notification => _rxNotification.value;
 
   NotificationService() {
@@ -25,8 +25,9 @@ class NotificationService with ListenableServiceMixin {
     notifyListeners();
   }
   
-  void emitDialogNotification(String title, String textButtonUno, String textButtonDos) async {
-    _rxNotification.value = NotificationModel.withButtons(title, '', true, NotificationType.dialog, textButtonUno, textButtonDos);
+  void emitDialogNotification(String title, String textButtonUno, String textButtonDos,) async {
+    _rxNotification.value = NotificationModel.withButtons(title, '', true, NotificationType.dialog,
+        textButtonUno, textButtonDos,);
     notifyListeners();
   }
 }
@@ -59,7 +60,8 @@ class NotificationModel {
   NotificationType type = NotificationType.simple;
 
   NotificationModel.simple(this.title, this.message, this.showNotification, this.type,);
-  NotificationModel.withButtons(this.title, this.message, this.showNotification, this.type, this.textButtonUno, this.textButtonDos, );
+  NotificationModel.withButtons(this.title, this.message, this.showNotification, this.type,
+      this.textButtonUno, this.textButtonDos,);
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];

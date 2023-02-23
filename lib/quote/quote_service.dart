@@ -2,6 +2,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/notifications/notifications_service.dart';
@@ -100,7 +101,7 @@ class QuoteService with ListenableServiceMixin {
   final _notificationService = locator<NotificationService>();
   Future<void> addProductToQuote(String idProduct,) async {
     if(_rxQuote.value.detail != null) {
-      _notificationService.emitDialogNotification("Recalculando totales...", "Ir a la cotización", "Seguir agregando" );
+      _notificationService.emitDialogNotification("Recalculando totales...", "Ir a la cotización", "Seguir agregando",);
       DocumentReference reference = FirebaseFirestore.instance.collection(
           'quote-detail').doc(_rxQuote.value.id);
       recordLastAction = 'add_product';
@@ -157,7 +158,7 @@ class QuoteService with ListenableServiceMixin {
             _getCustomerName(id: _rxQuote.value.customer!.id);
             notifyListeners();
             if(recordLastAction == 'add_product'){
-              _notificationService.emitDialogNotification("¡Agregado a la cotización!", "Ir a la cotización", "Seguir agregando" );
+              _notificationService.emitDialogNotification("¡Agregado a la cotización!", "Ir a la cotización", "Seguir agregando",);
               recordLastAction = '';
             }
             print("Se llamo notifyListeners desde Servicio QuoteService");

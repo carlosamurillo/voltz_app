@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/common/header.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/search/search_views.dart';
@@ -13,7 +14,6 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 import 'package:maketplace/cart/cart_expandable_view.dart';
 import 'package:maketplace/cart/container_viewmodel.dart';
-
 import 'package:maketplace/common/drawer.dart';
 
 class CartView extends StatelessWidget {
@@ -26,7 +26,7 @@ class CartView extends StatelessWidget {
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
         return Scaffold(
-          endDrawer: const MenuDrawer(),
+          endDrawer: model.userSignStatus == UserSignStatus.authenticated ? const MenuDrawer() : null,
           backgroundColor: CustomColors.WBY,
           // No appBar property provided, only the body.
           body: NestedScrollView(

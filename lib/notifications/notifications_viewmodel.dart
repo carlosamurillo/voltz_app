@@ -14,9 +14,10 @@ class NotificationViewModel extends ReactiveViewModel {
 
   NotificationModel get notification => _notificationService.getCopyOfNotification();
 
-  void dismissNotification(context) async {
+  dismissNotification(context) async {
     OverlaySupportEntry.of(context)?.dismiss();
     _notificationService.reset();
   }
+
 
 }

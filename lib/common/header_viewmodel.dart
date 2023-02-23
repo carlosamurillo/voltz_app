@@ -26,9 +26,9 @@ class HeaderViewModel extends ReactiveViewModel {
     return _navigationService.navigateToLoginView();
   }
 
-  showSearchWidget() {
-    _openSearchService.changeSearchOpened(true);
-    _inputSearchRepository.changeSearchSelected(true);
+  showSearchWidget() async {
+    await _openSearchService.changeSearchOpened(true);
+    return _inputSearchRepository.changeSearchSelected(true);
   }
 
 }

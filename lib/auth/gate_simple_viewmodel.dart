@@ -22,6 +22,6 @@ class GateSimpleViewModel extends ReactiveViewModel {
   }
 
   navigateToHome() async {
-    return _navigationService.navigateToHomeView();
+    return _navigationService.clearStackAndShow(Routes.homeView);
   }
 }

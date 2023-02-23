@@ -53,11 +53,9 @@ class Header extends StatelessWidget  {
                     ),
                     if(model.authSignStatus != UserSignStatus.authenticated) ...[
                       const SizedBox(width: 25),
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 250,
-                            minWidth: 193,
-                            maxHeight: 40,
-                            minHeight: 40),
+                      SizedBox(
+                        width: 180,
+                        height: 40,
                         child: PrimaryButton(
                           text: 'Iniciar sesión',
                           icon: Icons.account_circle,
@@ -65,7 +63,7 @@ class Header extends StatelessWidget  {
                         ),
                       ),
                     ],
-                  ] else ...[
+                  ] else ...[ //Para cuando es desde Mobile
                     if(model.isSearchOpened) ...[
                       Expanded(
                         child: FutureBuilder(
@@ -114,7 +112,6 @@ class Header extends StatelessWidget  {
   }
 }
 
-
 class SliverHeader extends StatelessWidget {
   const SliverHeader({super.key});
 
@@ -125,7 +122,6 @@ class SliverHeader extends StatelessWidget {
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SliverAppBar(
-          automaticallyImplyLeading: model.authSignStatus == UserSignStatus.authenticated ? true : false,
           iconTheme: const IconThemeData(color: CustomColors.dark),
           pinned: media.width >= CustomStyles.desktopBreak ? true : false,
           snap: true,

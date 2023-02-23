@@ -173,7 +173,7 @@ class SliverClassicSearchView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
       viewModelBuilder: () => ProductSearchViewModel(),
-      disposeViewModel: false,
+      disposeViewModel: true,
       builder: (context, viewModel, child) {
         print('SliverClassicSearchView ... se renderiza...');
         return FutureBuilder(
@@ -208,7 +208,6 @@ class SliverSearchStatsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SearchStatsViewModel>.reactive(
       viewModelBuilder: () => SearchStatsViewModel(),
-      onViewModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) {
         print('SearchStatsView ... se renderiza...');
         return SliverToBoxAdapter(

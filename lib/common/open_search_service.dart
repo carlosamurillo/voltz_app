@@ -12,8 +12,8 @@ class OpenSearchService with ListenableServiceMixin {
     listenToReactiveValues([_rxSearchOpened,]);
   }
 
-  Future<void> changeSearchOpened(bool selected) async {
+  changeSearchOpened(bool selected) async {
     _rxSearchOpened.value = selected;
-    notifyListeners();
+    return notifyListeners();
   }
 }

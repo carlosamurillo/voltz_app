@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/home/home_viewmodel.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
       viewModelBuilder: () => HomeViewModel(),
       builder: (context, model, child) {
         return Scaffold(
-          endDrawer: const MenuDrawer(),
+          endDrawer: model.userSignStatus == UserSignStatus.authenticated ? const MenuDrawer() : null,
           backgroundColor: CustomColors.WBY,
           // No appBar property provided, only the body.
           body: CustomScrollView(
@@ -52,3 +53,4 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+

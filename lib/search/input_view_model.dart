@@ -11,15 +11,14 @@ class SearchInputViewModel extends ReactiveViewModel {
   final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
   final OpenSearchService _openSearchService = locator<OpenSearchService>();
-  late FocusNode _focusNodeSearch;
-  final TextEditingController _searchTextController = TextEditingController();
 
-  FocusNode get focusNodeSearch => _focusNodeSearch;
-  TextEditingController get searchTextController => _searchTextController;
+  TextEditingController get searchTextController => _inputSearchRepository.searchTextController;
   bool get isSearchSelected => _inputSearchRepository.isSearchSelected;
 
+  FocusNode get focusNodeSearch => _inputSearchRepository.focusNodeSearch;
+
   init() async {
-    _focusNodeSearch = FocusNode();
+    isSearchSelected ? _inputSearchRepository.focusNodeSearch.requestFocus() : _inputSearchRepository.focusNodeSearch.unfocus();
     _productSearchRepository.setupLastQuery();
     return notifyListeners();
   }
@@ -36,23 +35,20 @@ class SearchInputViewModel extends ReactiveViewModel {
   }
 
   changeSearchSelected(bool selected) async {
-    if (!selected) _focusNodeSearch.unfocus();
+    if (!selected) _inputSearchRepository.focusNodeSearch.unfocus();
     _inputSearchRepository.changeSearchSelected(selected);
     return notifyListeners();
   }
 
   cancelSearch() async {
-    _focusNodeSearch.unfocus();
-    _searchTextController.text = '';
-    _inputSearchRepository.changeSearchSelected(false);
+    _inputSearchRepository.cancelSearch();
     _openSearchService.changeSearchOpened(false);
     return notifyListeners();
   }
 
   @override
   void dispose() async {
-    _focusNodeSearch.dispose();
-    _searchTextController.dispose();
+    _inputSearchRepository.onDispose();
     super.dispose();
   }
 }

@@ -18,7 +18,14 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
 
   String? get lastQuery => _productSearchRepository.lastQuery;
 
-  init() {
+  init() async {
+    showLastSearch();
+  }
+
+  showLastSearch() async {
+    if(lastQuery != null && lastQuery!.isNotEmpty){
+      return _productSearchRepository.query('');
+    }
   }
 
   @override
@@ -75,10 +82,6 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
 
 class SearchStatsViewModel extends StreamViewModel<SearchMetadata>{
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
-
-  init() async {
-    _productSearchRepository.query('');
-  }
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_productSearchRepository,];
