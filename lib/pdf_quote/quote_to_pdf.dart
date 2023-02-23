@@ -12,13 +12,14 @@ import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
 
 import '../keys_model.dart';
+import '../product/product_model.dart';
 
 class QuotePdf {
   QuotePdf({required this.quote, required this.selectedProducts});
   final VoltzKeys _config = VoltzKeys();
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final QuoteModel quote;
-  final List<ProductSuggested> selectedProducts;
+  final List<Product> selectedProducts;
   var _pdf;
   late final _fontRegular;
   late final _fontSemiBold;

@@ -1,9 +1,14 @@
 
+import 'package:maketplace/auth/login/login_service.dart';
+import 'package:maketplace/auth/login/login_view.dart';
+import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/home/home_view.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../cart/cart_view.dart';
+import '../cart/buy_now_view.dart';
 import '../notifications/notifications_service.dart';
 import '../order/oder_view.dart';
 import '../cart/cart_confirmation.dart';
@@ -21,12 +26,17 @@ import '../search/search_repository.dart';
     LazySingleton(classType: ProductSearchRepository),
     LazySingleton(classType: InputSearchRepository),
     LazySingleton(classType: NotificationService),
+    LazySingleton(classType: AuthService),
+    LazySingleton(classType: LoginService),
   ],
   routes: [
     /** Onboarding and signup **/
     CupertinoRoute(page: CartView),
     CupertinoRoute(page: OrderView),
     CupertinoRoute(page: CartConfirmation,),
+    CupertinoRoute(page: HomeView),
+    CupertinoRoute(page: BuyNowView),
+    CupertinoRoute(page: LoginView),
   ],
 )
 class AppSetup {

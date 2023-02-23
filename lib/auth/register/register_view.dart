@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:maketplace/auth/auth_view_model.dart';
 import 'package:maketplace/auth/login/login_view.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
 import 'package:maketplace/auth/register/register_view_model.dart';
@@ -28,6 +27,7 @@ class RegisterView extends StatelessWidget {
 
 class _RegisterBody extends StatelessWidget {
   const _RegisterBody({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -114,8 +114,7 @@ class _RegisterBody extends StatelessWidget {
                       width: 105,
                       child: ThirdButton(
                         onPressed: () {
-                          context.read<AuthViewModel>().signOut();
-                          context.read<LoginViewModel>().init();
+                          context.read<RegisterViewModel>().signOut();
                           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const LoginView()));
                         },
                         text: "Cambiar",
@@ -149,16 +148,15 @@ class _RegisterBody extends StatelessWidget {
                     onChanged: (v) => context.read<RegisterViewModel>().changeRfc(v),
                   ),
                   const SizedBox(height: 80),
-                  Selector<RegisterViewModel, RegisterStatus>(
-                    builder: (context, status, child) {
-                      switch (status) {
+                  LayoutBuilder(
+                    builder: (BuildContext ctx, BoxConstraints constraints){
+                      switch (context.read<RegisterViewModel>().registerStatus) {
                         case RegisterStatus.initial:
                           return const _ActionButton();
                         case RegisterStatus.processing:
                           return const Center(child: CircularProgressIndicator());
                         case RegisterStatus.success:
                           Future.delayed(const Duration(seconds: 0), () {
-                            context.read<AuthViewModel>().init();
                             Navigator.of(context).pop();
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: SelectableText(
@@ -190,7 +188,6 @@ class _RegisterBody extends StatelessWidget {
                           return const _ActionButton();
                       }
                     },
-                    selector: (_, vm) => vm.registerStatus,
                   ),
                 ],
               ),

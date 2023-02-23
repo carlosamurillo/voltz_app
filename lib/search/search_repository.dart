@@ -1,4 +1,5 @@
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:stacked/stacked.dart';
@@ -24,15 +25,18 @@ class ProductSearchRepository with ListenableServiceMixin  {
       ..add(_productsSearcher,);
   }
 
-  Stream<SearchMetadata> get searchMetadata => _productsSearcher.responses.map(SearchMetadata.fromResponse);
-
   /// Get stream of products.
   Stream<HitsPage> get searchPage => _productsSearcher.responses.map(HitsPage.fromResponse);
 
   /// Get stream of products.
-  Stream<List<ProductSuggested>> products() async* {
+  Stream<List<Product>> products() async* {
     yield* _productsSearcher.responses
-        .map((response) => response.hits.map(ProductSuggested.fromJson).toList());
+        .map((response) => response.hits.map(Product.fromJson).toList());
+  }
+
+  /// Get stream of metadata.
+  Stream<SearchMetadata> searchMetaData() async* {
+    yield*_productsSearcher.responses.map(SearchMetadata.fromResponse);
   }
 
   /// Ultima cadena de texto de busqueda digitada por el usuario

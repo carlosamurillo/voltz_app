@@ -1,17 +1,17 @@
-import 'package:flutter/cupertino.dart';
-import 'package:maketplace/quote/quote_model.dart';
-import 'package:maketplace/quote/quote_service.dart';
+
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/search_repository.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:intl/intl.dart' as intl;
+import 'package:stacked_services/stacked_services.dart';
 
-import '../app/app.locator.dart';
-import '../notifications/notifications_view.dart';
+import 'package:maketplace/app/app.router.dart';
 
-class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
+class ProductSearchViewModel extends StreamViewModel<List<Product>> {
+
+  final NavigationService _navigationService = locator<NavigationService>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
   @override
@@ -23,21 +23,23 @@ class ProductSearchViewModel extends StreamViewModel<List<ProductSuggested>> {
   }
 
   @override
-  Stream<List<ProductSuggested>> get stream => _productSearchRepository.products();
+  Stream<List<Product>> get stream => _productSearchRepository.products();
 
   @override
-  void onData(List<ProductSuggested>? data) {
-    // TODO: implement onData
-    data?.add(ProductSuggested());
+  void onData(List<Product>? data) {
+    data?.add(Product());
     super.onData(data);
   }
 
+  navigateToLogin() async {
+    return _navigationService.navigateToLoginView();
+  }
 }
 
 class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
 
   final ProductSearchRepository _productSearchRepository = ProductSearchRepository();
-  final PagingController<int, ProductSuggested> pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, Product> pagingController = PagingController(firstPageKey: 0);
 
   init() {
     _initPageController();
@@ -72,49 +74,13 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
   }
 }
 
-class ProductCardViewModel extends BaseViewModel {
-  late ProductSuggested product;
-  var currencyFormat =
-  intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+class SearchStatsViewModel extends StreamViewModel<SearchMetadata>{
+  final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
-  void init(ProductSuggested productSuggested) async {
-    product = productSuggested;
+  init() {
   }
 
-  bool isCardExpanded = false;
-  //desactivada la linea mientras se optimiza para
-  Future<void> expandOrCollapseCard() async {
-    isCardExpanded = !isCardExpanded;
-    product.isCardExpanded = !product.isCardExpanded;
-    return notifyListeners();
-  }
+  @override
+  Stream<SearchMetadata> get stream => _productSearchRepository.searchMetaData();
 
-  final shimmerGradientWhiteBackground = const LinearGradient(
-    colors: [
-      Color(0xFFEBEBF4),
-      Color(0xFFF4F4F4),
-      Color(0xFFEBEBF4),
-    ],
-    stops: [
-      0.1,
-      0.3,
-      0.4,
-    ],
-    begin: Alignment(-1.0, -0.3),
-    end: Alignment(1.0, 0.3),
-    tileMode: TileMode.clamp,
-  );
-
-  ///Se trae el servicio QuoteService para anadir productos a una cotizacion
-  final _quoteService = locator<QuoteService>();
-  addProductToQuote(String idProduct,) async {
-    _quoteService.addProductToQuote(idProduct);
-    _showNotification();
-  }
-
-  _showNotification() async {
-    return showOverlayNotification((context) {
-      return const BaseNotificationWidget();
-    }, duration: const Duration(seconds: 10), position: NotificationPosition.bottom,);
-  }
 }

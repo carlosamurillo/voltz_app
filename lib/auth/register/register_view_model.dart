@@ -2,8 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/auth/gate_simple_viewmodel.dart';
+import 'package:maketplace/gate/auth_service.dart';
+import 'package:stacked/stacked.dart';
 
-class RegisterViewModel extends ChangeNotifier {
+class RegisterViewModel extends ReactiveViewModel {
+
+  final _authService = locator<AuthService>();
+  @override
+  List<ListenableServiceMixin> get listenableServices => [ _authService, ];
+
+  UserSignStatus get authSignStatus => _authService.userSignStatus;
+
   late bool _isBussiness;
   late Either<String, String> _nameOption;
   late Either<String, String> _lastNameOption;
@@ -116,6 +127,8 @@ class RegisterViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  signOut() => _authService.signOut();
 }
 
 enum RegisterStatus { initial, processing, success, failure }

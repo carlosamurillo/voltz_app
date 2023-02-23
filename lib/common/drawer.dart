@@ -1,64 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maketplace/auth/auth_view_model.dart';
+import 'package:maketplace/auth/gate_simple_viewmodel.dart';
 import 'package:maketplace/utils/custom_colors.dart';
-import 'package:provider/provider.dart';
+import 'package:stacked/stacked.dart';
 
-class VoltzDrawer extends StatelessWidget {
-  const VoltzDrawer({Key? key}) : super(key: key);
+class MenuDrawer extends StatelessWidget {
+  const MenuDrawer({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      child: Drawer(
-        backgroundColor: CustomColors.blueVoltz,
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svg/logo_mobile.svg',
-                      width: 97,
-                      height: 18,
+    return ViewModelBuilder<GateSimpleViewModel>.reactive(
+      fireOnViewModelReadyOnce: true,
+      builder: (context, viewModel, child) {
+        var media = MediaQuery.of(context).size;
+        return SizedBox(
+          width: 300,
+          height: media.height,
+          child: Drawer(
+            backgroundColor: CustomColors.blueVoltz,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SvgPicture.asset(
+                          'assets/svg/logo_voltz_white.svg',
+                          width: 120,
+                          height: 52,
+                        ),
+                        IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close, color: Colors.white)),
+                      ],
                     ),
-                    IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close, color: Colors.white)),
+                    const SizedBox(height: 50),
+                    DrawerItem(
+                      icondata: Icons.home_outlined,
+                      onPressed: () {},
+                      selected: true,
+                      text: "Inicio",
+                    ),
+                    const SizedBox(height: 10),
+                    DrawerItem(
+                      icondata: Icons.bookmark_added_sharp,
+                      onPressed: () {},
+                      selected: false,
+                      text: "Catálogo",
+                    ),
+                    const Spacer(),
+                    DrawerItem(
+                      icondata: Icons.close,
+                      onPressed: () {
+                        viewModel.signOut();
+                        Navigator.of(context).pop();
+                      },
+                      selected: false,
+                      text: "Cerrar sesión",
+                    ),
                   ],
                 ),
-                const SizedBox(height: 50),
-                DrawerItem(
-                  icondata: Icons.home_outlined,
-                  onPressed: () {},
-                  selected: true,
-                  text: "Inicio",
-                ),
-                const SizedBox(height: 10),
-                DrawerItem(
-                  icondata: Icons.bookmark_added_sharp,
-                  onPressed: () {},
-                  selected: false,
-                  text: "Catálogo",
-                ),
-                const Spacer(),
-                DrawerItem(
-                  icondata: Icons.close,
-                  onPressed: () {
-                    context.read<AuthViewModel>().signOut();
-                    Navigator.of(context).pop();
-                  },
-                  selected: false,
-                  text: "Cerrar sesión",
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
+      viewModelBuilder: () => GateSimpleViewModel(),
     );
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product {
@@ -6,86 +7,147 @@ class Product {
   String? skuDescription;
   String? brand;
   String? techFile;
+  double quantity = 1;
   double? saleValue;
   String? saleUnit;
   double? pricePublic;
   String? priceCurrency;
   String? coverImage;
-  Price? price = Price();
+  Total? total;
   String? source;
+  String? brandFavicon;
+  Price? price;
   List<String>? imageUrls;
   String? status;
   String? warranty;
   List<String>? features;
   String? featuresString;
   String? makerWeb;
+  bool? selected;
 
-  Product({
-    this.id,
-    this.sku,
-    this.skuDescription,
-    this.brand,
-    this.saleValue,
-    this.saleUnit,
-    this.pricePublic,
-    this.priceCurrency,
-    this.coverImage,
-    this.price,
-    this.source,
-    this.imageUrls,
-    this.status,
-    this.warranty,
-    this.features,
-    this.featuresString,
-    this.makerWeb,
-  });
 
-  static Product copyWith(Map<String, dynamic> json, String id) {
-    return Product.fromJson(json, id);
+  /** these are for local propose **/
+  int? cardIndex;
+  String? productRequestedId;
+  bool isCardExpanded = false;
+  bool isCalculatingProductTotals = false;
+  double? discountRate;
+
+  Product(
+      {this.id,
+        this.techFile,
+        this.sku,
+        this.skuDescription,
+        this.brand,
+        this.quantity = 1,
+        this.saleValue,
+        this.saleUnit,
+        this.pricePublic,
+        this.priceCurrency,
+        this.coverImage,
+        this.total,
+        this.source,
+        this.brandFavicon,
+        this.price,
+        this.imageUrls,
+        this.status,
+        this.warranty,
+        this.features,
+        this.featuresString,
+        this.makerWeb,
+        this.selected});
+
+  Product.fromJsonWithId({required Map<String, dynamic> json, required String id,}) {
+    this.id = id;
+    _fillFields(json);
   }
 
-  Product.fromJson(Map<String, dynamic> json, String id) {
-    this.id = id;
+  Product.fromJson(Map<String, dynamic> json) {
+    if(json.containsKey('objectID')){
+      this.id = json['objectID'];
+    } else {
+      print('EEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRROOOOOOOOOOOOOOOORRRRRRRRR');
+    }
+    _fillFields(json);
+  }
+
+  static Product copyWith(Map<String, dynamic> json, String id,) {
+    return Product.fromJsonWithId(json: json, id: id);
+  }
+
+  _fillFields(Map<String, dynamic> json,) {
     sku = json['sku'];
     skuDescription = json['sku_description'];
-    brand = json['brand'];
-    techFile = json.containsKey("tech_file") ? json['tech_file'] : null;
-    saleValue = double.tryParse(json['sale_value'].toString());
-    saleUnit = json['sale_unit'];
-    pricePublic = double.tryParse(json['price_public'].toString());
-    priceCurrency = json['price_currency'];
-    coverImage = json['image_cover'];
-    if (json.containsKey('price')) {
+
+    if (json.containsKey('brand')){
+      brand = json['brand'] ;
+    }
+    if (json.containsKey('tech_file')){
+      techFile = json['tech_file'] ;
+    }
+    if (json.containsKey('sale_value')){
+      saleValue =double.tryParse(json['sale_value'].toString());
+    }
+    if (json.containsKey('sale_unit')){
+      saleUnit = json['sale_unit'];
+    }
+    if (json.containsKey('price_public')){
+      pricePublic = double.tryParse(json['price_public'].toString());
+    }
+    if (json.containsKey('price_currency')){
+      priceCurrency = json['price_currency'];
+    }
+    if (json.containsKey('image_cover')){
+      coverImage = json['image_cover'];
+    }
+    if (json.containsKey('quantity')){
+      quantity = json['quantity'];
+    }
+    if (json.containsKey('price') && json['price'] != null){
       price = Price.fromJson(json['price']);
     }
+    if (json.containsKey('total') && json['total'] != null){
+      total = Total.fromJson(json['total']);
+    }
     //se omite la primera imagen la cual es la misma que cover image
-    if (json['image_urls'] != null) {
+    if (json.containsKey('image_urls') && json['image_urls'] != null) {
       imageUrls = <String>[];
-      for (int a = 0; a < json['image_urls'].length; a++) {
-        if (a > 0) {
+      for(int a = 0; a < json['image_urls'].length; a++) {
+        if(a>0) {
           imageUrls!.add(json['image_urls'][a]);
         }
       }
     }
-    if (json.containsKey('status')) {
+    if (json.containsKey('status')){
       status = json['status'];
     }
-    if (json.containsKey('warranty')) {
+    if (json.containsKey('warranty')){
       warranty = json['warranty'];
     }
-    if (json['features'] != null) {
+    if (json.containsKey('features') && json['features'] != null && json['features'].length > 0) {
       features = <String>[];
-      for (int a = 0; a < json['features'].length; a++) {
+      for(int a = 0; a < json['features'].length; a++) {
         features!.add(json['features'][a]);
-        if (a == 0) {
+        if(a == 0){
           featuresString = json['features'][a].toString();
         } else {
           featuresString = "${featuresString!}, ${json['features'][a]}";
         }
       }
+    } else {
+      featuresString = null;
     }
-    if (json.containsKey('maker_web')) {
+    if (json.containsKey('maker_web')){
       makerWeb = json['maker_web'];
+    }
+    if(json.containsKey('price') && json.containsKey('price_public') && price != null && price!.price2 != null && pricePublic != null){
+      discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
+    }
+    if (json.containsKey('brand_favicon')){
+      brandFavicon = json['brand_favicon'];
+    }
+    if (json.containsKey('selected')){
+      selected = json['selected'];
     }
   }
 
@@ -99,30 +161,54 @@ class Product {
     data['sale_unit'] = this.saleUnit;
     data['price_public'] = this.pricePublic;
     data['image_cover'] = this.coverImage;
+    if (this.quantity != null) {
+      data['quantity'] =
+      this.quantity!;
+    }
     if (this.price != null) {
-      data['price'] = this.price!.toMap();
+      data['price'] =
+          this.price!.toMap();
     }
     if (this.source != null) {
-      data['source'] = this.source!;
+      data['source'] =
+      this.source!;
     }
     if (this.imageUrls != null) {
-      data['image_urls'] = this.imageUrls!.map((v) => v).toList();
+      data['image_urls'] =
+          this.imageUrls!.map((v) => v).toList();
     }
     if (this.status != null) {
-      data['status'] = this.status!;
+      data['status'] =
+      this.status!;
     }
     if (this.warranty != null) {
-      data['warranty'] = this.warranty!;
+      data['warranty'] =
+      this.warranty!;
     }
     if (this.features != null) {
-      data['features'] = this.features!.map((v) => v).toList();
+      data['features'] =
+          this.features!.map((v) => v).toList();
     }
     if (this.makerWeb != null) {
-      data['maker_web'] = this.makerWeb;
+      data['maker_web'] =
+          this.makerWeb;
+    }
+    if (this.total != null) {
+      data['total'] =
+          this.total!.toMap();
+    }
+    if (this.brandFavicon != null) {
+      data['brand_favicon'] =
+      this.brandFavicon!;
+    }
+    if (this.selected != null) {
+      data['selected'] =
+      this.selected!;
     }
     return data;
   }
 }
+
 
 class Price {
   double? priceBest;
@@ -137,28 +223,28 @@ class Price {
   Price({this.priceBest = 0, this.price1 = 0, this.price2 = 0, this.currency, this.stock = 0, this.supplierCode, this.supplierName, this.dollarConversion});
 
   Price.fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('price_best')) {
-      priceBest = double.tryParse(json['price_best']?.toString() ?? '');
+    if(json.containsKey('price_best')) {
+      priceBest = json['price_best'];
     }
-    if (json.containsKey('price_1')) {
-      price1 = double.tryParse(json['price_1']?.toString() ?? '');
+    if(json.containsKey('price_1')) {
+      price1 = json['price_1'];
     }
-    if (json.containsKey('price_2')) {
-      price2 = double.tryParse(json['price_2']?.toString() ?? '');
+    if(json.containsKey('price_2')) {
+      price2 = json['price_2'];
     }
-    if (json.containsKey('currency')) {
+    if(json.containsKey('currency')) {
       currency = json['currency'];
     }
-    if (json.containsKey('stock')) {
-      stock = double.tryParse(json['stock']?.toString() ?? '');
+    if(json.containsKey('stock')) {
+      stock = json['stock'];
     }
-    if (json.containsKey('supplier_code')) {
+    if(json.containsKey('supplier_code')) {
       supplierCode = json['supplier_code'];
     }
-    if (json.containsKey('supplier_name')) {
+    if(json.containsKey('supplier_name')) {
       supplierName = json['supplier_name'];
     }
-    if (json.containsKey('dollar_conversion')) {
+    if(json.containsKey('dollar_conversion')) {
       dollarConversion = DollarConversion.fromJson(json['dollar_conversion']);
     }
   }
@@ -172,11 +258,12 @@ class Price {
     data['stock'] = this.stock;
     data['supplier_code'] = this.supplierCode;
     data['supplier_name'] = this.supplierName;
-    if (this.dollarConversion != null) {
+    if(this.dollarConversion != null){
       data['dollar_conversion'] = this.dollarConversion!.toMap();
     }
     return data;
   }
+
 }
 
 class DollarConversion {
@@ -200,6 +287,29 @@ class DollarConversion {
     data['value'] = this.value;
     data['source'] = this.source;
     data['date'] = this.date;
+    return data;
+  }
+}
+
+
+class Total {
+  double? beforeDiscount;
+  double? afterDiscount;
+  double? discount;
+
+  Total({this.beforeDiscount = 0, this.afterDiscount = 0, this.discount = 0});
+
+  Total.fromJson(Map<String, dynamic> json) {
+    beforeDiscount = json['before_discount'];
+    afterDiscount = json['after_discount'];
+    discount = json['discount'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['before_discount'] = this.beforeDiscount;
+    data['after_discount'] = this.afterDiscount;
+    data['discount'] = this.discount;
     return data;
   }
 }

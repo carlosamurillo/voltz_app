@@ -1,29 +1,27 @@
-import 'dart:async';
 
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart' as OrderModel;
-import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
+import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
-
+import 'package:intl/intl.dart' as intl;
 import '../app/app.locator.dart';
 import '../utils/custom_colors.dart';
-import '../utils/stats.dart';
 import '../utils/style.dart';
+import '../utils/stats.dart';
 
-class QuoteViewModel extends ReactiveViewModel {
+class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();
   final NavigationService _navigationService = locator<NavigationService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [
-        _quoteService,
-      ];
+  List<ListenableServiceMixin> get listenableServices => [_quoteService,];
 
   bool updateGrid = true;
 
@@ -50,11 +48,10 @@ class QuoteViewModel extends ReactiveViewModel {
     super.dispose();
   }
 
-  init(String quoteId, String? version) async {
+  init(String quoteId,) async {
     _quoteId = quoteId;
-    this.version = version;
     initReference();
-    _quoteService.init(quoteId, version);
+    _quoteService.init(quoteId,);
 
     return notifyListeners();
   }
@@ -65,31 +62,30 @@ class QuoteViewModel extends ReactiveViewModel {
     await _quoteService.resetCards();*/
   }
 
-  initConfirmation(String quoteId, String? version) async {
+  initConfirmation(String quoteId,) async {
     _quoteId = quoteId;
-    this.version = version;
     initReference();
     return notifyListeners();
   }
 
   late DocumentReference reference;
 
-  initReference() {
-    if (version == "original") {
+  initReference(){
+    if(version == "original"){
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId).collection('version').doc(_quoteId);
     } else {
       reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
     }
   }
 
-  List<ProductSuggested> get selectedProducts => _quoteService.selectedProducts;
+  List<Product> get selectedProducts => _quoteService.selectedProducts;
 
   Future<void> navigateToQuoteConfirmation() async {
-    return _navigationService.navigateToCartConfirmation(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartConfirmation(quoteId: quote.id!,);
   }
 
   Future<void> navigateToQuoteView() async {
-    return _navigationService.navigateToCartView(quoteId: quote.id!, version: version);
+    return _navigationService.navigateToCartView(quoteId: quote.id!,);
   }
 
   void onGenerateOrder(BuildContext context) async {
@@ -99,22 +95,24 @@ class QuoteViewModel extends ReactiveViewModel {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: SelectableText(
-        "Gracias, hemos recibido tu orden.",
-        style: CustomStyles.styleVolcanicDos,
-      ),
+      content: SelectableText("Gracias, hemos recibido tu orden.", style: CustomStyles.styleVolcanicDos,),
       backgroundColor: CustomColors.energyYellow,
       behavior: SnackBarBehavior.floating,
-      duration: const Duration(milliseconds: 2000),
-      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
-      onVisible: () async {},
+      duration: const Duration(milliseconds: 5000),
+      margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height - 40,
+          right: 20,
+          left: 20),
+      onVisible: () async {
+
+      },
     ));
     await _saveOrder(_generateOrderV2()); //se cambio a V2
     Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
     //_navigationService.navigateToOrderView(orderId: quote.id!);
   }
 
-  setQuantity(int i, int b, double quantity) {
+  setQuantity(int i, int b, double quantity){
     quote.detail![i].productsSuggested![b].quantity = quantity;
   }
 
@@ -123,7 +121,7 @@ class QuoteViewModel extends ReactiveViewModel {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.set(reference, quote.toJson());
     }).then(
-      (value) => print("DocumentSnapshot successfully updated!" + quote.id!),
+          (value) => print("DocumentSnapshot successfully updated!" + quote.id! ),
       onError: (e) => print("Error updating document $e"),
     );
     return true;
@@ -135,22 +133,22 @@ class QuoteViewModel extends ReactiveViewModel {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.update(reference, quote.toJson());
     }).then(
-      (value) => print("DocumentSnapshot successfully updated!" + quote.id!),
+          (value) => print("DocumentSnapshot successfully updated!" + quote.id! ),
       onError: (e) => print("Error updating document $e"),
     );
     return true;
   }
 
   // instruccion para que el backend calcule totales
-  void calculateTotals() {
+  void calculateTotals(){
     quote.record!.nextAction = 'calculate_totals';
   }
 
-  void loadingAll(int productIndex) {
+  void loadingAll (int productIndex) {
     _quoteService.loadingAll();
   }
 
-  void loadingTotals() {
+  void loadingTotals () {
     _quoteService.loadingQuoteTotals();
   }
 
@@ -158,7 +156,8 @@ class QuoteViewModel extends ReactiveViewModel {
     quote.pendingProducts!.remove(value);
     quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.requestedProduct, reason: "No lo quiero.", position: value.position));
     await updateQuote(quote);
-    return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!, countProductsSuggested: 0);
+    return Stats.SkuBorrado(quoteId: _quoteId, skuSuggested: null, productRequested: value.requestedProduct!,
+        countProductsSuggested: 0);
   }
 
   Future<void> _saveOrder(OrderModel.OrderModel orderModel) async {
@@ -169,16 +168,16 @@ class QuoteViewModel extends ReactiveViewModel {
     });
   }
 
-  OrderModel.OrderModel _generateOrderV2() {
+  OrderModel.OrderModel _generateOrderV2(){
     List<OrderModel.OrderDetail> orderDetailList = [];
-    for (int i = 0; i <= quote.detail!.length - 1; i++) {
+    for(int i = 0; i <= quote.detail!.length - 1; i++) {
       OrderModel.OrderDetail orderDetail = OrderModel.OrderDetail();
-      orderDetail.productRequested = quote.detail![i].productRequested!;
+      orderDetail.productRequested =  quote.detail![i].productRequested!;
       orderDetail.productsOrdered = [];
-      for (int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++) {
-        if (quote.detail![i].productsSuggested![b].selected == true) {
+      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
+        if(quote.detail![i].productsSuggested![b].selected == true) {
           orderDetail.productsOrdered!.add(OrderModel.ProductsOrdered(
-            productId: quote.detail![i].productsSuggested![b].productId,
+            productId: quote.detail![i].productsSuggested![b].id,
             sku: quote.detail![i].productsSuggested![b].sku,
             skuDescription: quote.detail![i].productsSuggested![b].skuDescription,
             brand: quote.detail![i].productsSuggested![b].brand,
@@ -189,7 +188,7 @@ class QuoteViewModel extends ReactiveViewModel {
           ));
         }
       }
-      if (orderDetail.productsOrdered!.isNotEmpty) {
+      if(orderDetail.productsOrdered!.isNotEmpty){
         orderDetailList.add(orderDetail);
       }
     }
@@ -205,38 +204,39 @@ class QuoteViewModel extends ReactiveViewModel {
     return orderModel;
   }
 
-  String createConfirmMessage() {
+  String createConfirmMessage(){
     String? message;
-    for (int i = 0; i <= quote.detail!.length - 1; i++) {
+    for(int i = 0; i <= quote.detail!.length - 1; i++) {
       bool indicator = false;
-      for (int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++) {
-        if (quote.detail![i].productsSuggested![b].selected == true) {
+      for(int b = 0; b <= quote.detail![i].productsSuggested!.length - 1; b++){
+        if(quote.detail![i].productsSuggested![b].selected == true) {
           indicator = true;
         }
       }
-      if (indicator == false) {
-        if (message == null) {
-          message = "${(i + 1)}";
+      if(indicator == false){
+        if(message == null){
+          message = "${(i+1)}";
         } else {
-          message = "$message, ${(i + 1)}";
+          message = "$message, ${(i+1)}";
         }
       }
       indicator = false;
     }
-    if (message == null) {
+    if(message == null){
       message = "¿Confirmas que deseas hacer el pedido?";
     } else {
       final List l = message.split(' ');
-      if (l.length == 1) {
+      if(l.length == 1){
         message = "La fila $message no tienen un producto asignado. ¿Deseas generar el pedido sin él?";
       } else {
         message = "Las filas $message no tienen un producto asignado. ¿Deseas generar el pedido sin ellos?";
       }
     }
     return message;
+
   }
 
-  trackCSVExport() {
+  trackCSVExport(){
     Stats.ButtonClicked('Exportar CSV');
   }
 
@@ -260,4 +260,5 @@ class QuoteViewModel extends ReactiveViewModel {
     end: Alignment(1.0, 0.3),
     tileMode: TileMode.clamp,
   );
+
 }

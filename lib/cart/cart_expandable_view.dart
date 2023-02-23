@@ -1,5 +1,6 @@
-// import 'dart:html' as html;
+import 'dart:html' as html;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -22,8 +23,8 @@ import 'cart_view.dart';
 class CardGrid extends StatelessWidget {
   const CardGrid({Key? key})
       : super(
-          key: key,
-        );
+    key: key,
+  );
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GridViewModel>.reactive(
@@ -40,17 +41,16 @@ class CardGrid extends StatelessWidget {
           );
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
-        // html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+        if(kIsWeb){
+          html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+        }
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: media.width >= CustomStyles.mobileBreak
-                  ? //
-                  media.height - CustomStyles.desktopHeaderHeight - 30
-                  : media.height - CustomStyles.mobileHeaderHeight - 100,
+              height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
                 slivers: <Widget>[
@@ -124,8 +124,8 @@ class ProductCard extends StatelessWidget {
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(
-              cardIndex: i,
-            ),
+          cardIndex: i,
+        ),
         fireOnViewModelReadyOnce: false,
         disposeViewModel: true,
         createNewViewModelOnInsert: true,
@@ -186,15 +186,9 @@ class ProductCard extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                      if (viewModel.selectedProducts[i].brandFavicon != null) ...[
-                                        Image.network(
-                                          viewModel.selectedProducts[i].brandFavicon!,
-                                          width: 16,
-                                          height: 17,
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
+                                      if(viewModel.selectedProducts[i].brandFavicon != null)...[
+                                        Image.network(viewModel.selectedProducts[i].brandFavicon!, width: 16, height: 17,),
+                                        const SizedBox(width: 5,),
                                       ],
                                       SelectableText(
                                         viewModel.selectedProducts[i].brand!,
@@ -375,9 +369,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ],
                   if (viewModel.selectedProducts[i].isCardExpanded) ...[
-                    ProductDetail(
-                      productId: viewModel.selectedProducts[i].productId!,
-                    ),
+                    ProductDetail(productId: viewModel.selectedProducts[i].id!,),
                   ],
                   _QuantityCalculatorWidget(index: i),
                 ],
@@ -495,9 +487,9 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    CardItemViewModel viewModel,
-  ) {
+      BuildContext context,
+      CardItemViewModel viewModel,
+      ) {
     return Builder(builder: (BuildContext context) {
       return Container(
           decoration: const BoxDecoration(
@@ -636,50 +628,50 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                   alignment: Alignment.center,
                                   child: viewModel.isQtyControlOpen
                                       ? Container(
-                                          width: 141.0,
-                                          height: 30,
-                                          decoration: const BoxDecoration(
-                                            color: CustomColors.dark,
-                                            borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                                    width: 141.0,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                      color: CustomColors.dark,
+                                      borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                                    ),
+                                    child: TextFieldTapRegion(
+                                      child: TextButton(
+                                        focusNode: viewModel.focusNodeButton,
+                                        style: ButtonStyle(
+                                          overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                                (Set<MaterialState> states) {
+                                              return Colors.transparent;
+                                            },
                                           ),
-                                          child: TextFieldTapRegion(
-                                            child: TextButton(
-                                              focusNode: viewModel.focusNodeButton,
-                                              style: ButtonStyle(
-                                                overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                                                  (Set<MaterialState> states) {
-                                                    return Colors.transparent;
-                                                  },
-                                                ),
-                                                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                                                  (Set<MaterialState> states) {
-                                                    return Colors.transparent;
-                                                  },
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                print('Se dio clic en Button onPressCalculate');
-                                                viewModel.onPressCalculate(context, index);
-                                              },
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                constraints: const BoxConstraints(
-                                                  minHeight: 30.0,
-                                                ),
-                                                child: Text(
-                                                  'Actualizar',
-                                                  style: GoogleFonts.inter(
-                                                    fontStyle: FontStyle.normal,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 13.0,
-                                                    color: const Color(0xFF9C9FAA),
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
+                                          backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                                (Set<MaterialState> states) {
+                                              return Colors.transparent;
+                                            },
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          print('Se dio clic en Button onPressCalculate');
+                                          viewModel.onPressCalculate(context, index);
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          constraints: const BoxConstraints(
+                                            minHeight: 30.0,
+                                          ),
+                                          child: Text(
+                                            'Actualizar',
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 13.0,
+                                              color: const Color(0xFF9C9FAA),
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
-                                        )
+                                        ),
+                                      ),
+                                    ),
+                                  )
                                       : Container(),
                                 ),
                               ],
@@ -718,17 +710,17 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                           viewModel.selectedProducts[index].isCalculatingProductTotals
                               ? Container()
                               : SelectableText(
-                                  viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 22.0,
-                                    color: CustomColors.dark,
-                                    height: 1.2,
-                                  ),
-                                  textAlign: TextAlign.left,
-                                  //overflow: TextOverflow.clip,
-                                ),
+                            viewModel.currencyFormat.format(viewModel.selectedProducts[index].total!.afterDiscount ?? ''),
+                            style: GoogleFonts.inter(
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.0,
+                              color: CustomColors.dark,
+                              height: 1.2,
+                            ),
+                            textAlign: TextAlign.left,
+                            //overflow: TextOverflow.clip,
+                          ),
                           Text(
                             ' +iva',
                             style: GoogleFonts.inter(
@@ -829,9 +821,9 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     var media = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,

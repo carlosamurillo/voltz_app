@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
 import 'package:maketplace/utils/buttons.dart';
@@ -24,7 +25,8 @@ class ProductsSearchResult extends StatelessWidget {
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
-              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!);
+              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
+                onTapImprovePrice: viewModel.navigateToLogin,);
             } else {
               return const Expanded(
                 child: Center(
@@ -161,6 +163,141 @@ class NoFoundCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class SliverClassicSearchView extends StatelessWidget {
+  const SliverClassicSearchView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<ProductSearchViewModel>.reactive(
+      viewModelBuilder: () => ProductSearchViewModel(),
+      disposeViewModel: false,
+      builder: (context, viewModel, child) {
+        print('SliverClassicSearchView ... se renderiza...');
+        return FutureBuilder(
+          future: gv.loadLibrary(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
+              return gv.SliverProductGridView(childCount: viewModel.data!.length,
+                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin,);
+            } else {
+              return const SliverToBoxAdapter(
+                child: Center(
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+
+class SliverSearchStatsView extends StatelessWidget {
+  const SliverSearchStatsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<SearchStatsViewModel>.reactive(
+      viewModelBuilder: () => SearchStatsViewModel(),
+      builder: (context, viewModel, child) {
+        print('SearchStatsView ... se renderiza...');
+        return SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 35),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Busca por código, nombre, especificación, y/o marca.",
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22.0,
+                    color: CustomColors.dark,
+                  ),
+                  textAlign: TextAlign.left,
+                ),
+                const Spacer(),
+                if(viewModel.data != null) ...[
+                  Text(
+                    '${viewModel.data!.nbHits} SKU disponibles',
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.0,
+                      color: CustomColors.dark,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
+              ],
+            ),
+          )
+        );
+      },
+    );
+  }
+}
+
+
+
+class HowToSearchBanner extends StatelessWidget {
+  const HowToSearchBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    print('HowToSearchBanner ... se renderiza...');
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 50),
+      height: 188,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        color: CustomColors.yellowVoltz,
+        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/how_search.png', height: 138, width: 138,),
+          const SizedBox(width: 25,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Busca por código, nombre, especificación, y/o marca.",
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32.0,
+                  color: CustomColors.dark,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                "Ejemplos: SML102022, Cable uso rudo, 16AMP, y/o Tecnolite",
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.0,
+                  color: CustomColors.dark,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
 }
 
 

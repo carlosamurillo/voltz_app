@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-
 import '../product/product_model.dart';
 
 class QuoteModel {
@@ -22,28 +21,27 @@ class QuoteModel {
   //this is only for local proposes
   bool isCalculatingTotals = false;
 
-  convertTimestampToLocal(Timestamp date) {
+  convertTimestampToLocal(Timestamp date){
     var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
     return dateTime.toLocal();
   }
 
-  QuoteModel({
-    this.version,
-    this.id,
-    this.consecutive,
-    this.alias,
-    this.createdAt,
-    this.publishedAt,
-    this.detail,
-    this.accepted = false,
-    this.discardedProducts,
-    this.shipping,
-    this.pendingProducts,
-    this.record,
-    this.quoteCategory,
-    this.totals,
-    this.customer,
-  });
+  QuoteModel(
+      {this.version,
+        this.id,
+        this.consecutive,
+        this.alias,
+        this.createdAt,
+        this.publishedAt,
+        this.detail,
+        this.accepted = false,
+        this.discardedProducts,
+        this.shipping,
+        this.pendingProducts,
+        this.record,
+        this.quoteCategory,
+        this.totals,
+        this.customer,});
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     version = json['version'];
@@ -102,13 +100,15 @@ class QuoteModel {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();
     }
     if (this.discardedProducts != null) {
-      data['discarded_products'] = this.discardedProducts!.map((v) => v.toMap()).toList();
+      data['discarded_products'] =
+          this.discardedProducts!.map((v) => v.toMap()).toList();
     }
     if (this.shipping != null) {
       data['shipping'] = this.shipping!.toMap();
     }
     if (this.pendingProducts != null) {
-      data['arr_not_result'] = this.pendingProducts!.map((v) => v.toJson()).toList();
+      data['arr_not_result'] =
+          this.pendingProducts!.map((v) => v.toJson()).toList();
     }
     if (this.record != null) {
       data['record'] = this.record!.toMap();
@@ -148,7 +148,7 @@ class Totals {
     data['discount'] = discount;
     data['factor_discount'] = factorDiscount;
     data['sub_total'] = subTotal;
-    data['tax'] = tax;
+    data['tax'] =  tax;
     data['total'] = total;
     data['saving'] = saving;
     return data;
@@ -158,26 +158,21 @@ class Totals {
 class Detail {
   String? productRequested;
   String? id;
-  List<ProductSuggested>? productsSuggested;
+  List<Product>? productsSuggested;
   int? position;
   //this is only for local proposes
   bool isCalculatingProductTotals = false;
 
-  Detail({
-    this.productRequested,
-    this.id,
-    this.productsSuggested,
-    this.position,
-  });
+  Detail({this.productRequested, this.id, this.productsSuggested, this.position,});
 
   Detail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
     id = json['id'];
     position = json['position'];
     if (json['products_suggested'] != null) {
-      productsSuggested = <ProductSuggested>[];
-      for (int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(ProductSuggested.fromJsonWithIdRequested(json['id'], json['products_suggested'][a]));
+      productsSuggested = <Product>[];
+      for(int a = 0; a < json['products_suggested'].length; a++) {
+        productsSuggested!.add(Product.fromJsonWithId(json: json['products_suggested'][a], id: json['id'],));
       }
     }
   }
@@ -189,7 +184,8 @@ class Detail {
       data['id'] = this.id!;
     }
     if (this.productsSuggested != null) {
-      data['products_suggested'] = this.productsSuggested!.map((v) => v.toJson()).toList();
+      data['products_suggested'] =
+          this.productsSuggested!.map((v) => v.toJson()).toList();
     }
     data['position'] = this.position;
     return data;
@@ -219,9 +215,9 @@ class Total {
   Total({this.beforeDiscount = 0, this.afterDiscount = 0, this.discount = 0});
 
   Total.fromJson(Map<String, dynamic> json) {
-    beforeDiscount = double.tryParse(json['before_discount']?.toString() ?? '');
-    afterDiscount = double.tryParse(json['after_discount']?.toString() ?? '');
-    discount = double.tryParse(json['discount']?.toString() ?? '');
+    beforeDiscount = json['before_discount'];
+    afterDiscount = json['after_discount'];
+    discount = json['discount'];
   }
 
   Map<String, dynamic> toMap() {
@@ -232,8 +228,9 @@ class Total {
     return data;
   }
 }
-
+/*
 class ProductSuggested {
+
   String? productId;
   String? sku;
   String? skuDescription;
@@ -250,7 +247,7 @@ class ProductSuggested {
   String? source;
   String? brandFavicon;
 
-  /** these are for local propose **/
+  *//** these are for local propose **//*
   int? cardIndex;
   String? productRequestedId;
   bool isCardExpanded = false;
@@ -259,21 +256,20 @@ class ProductSuggested {
 
   ProductSuggested(
       {this.productRequestedId,
-      this.productId,
-      this.sku,
-      this.skuDescription,
-      this.brand,
-      this.quantity = 0,
-      this.saleValue,
-      this.saleUnit,
-      this.pricePublic = 0.0,
-      this.selected,
-      this.coverImage,
+        this.productId,
+        this.sku,
+        this.skuDescription,
+        this.brand,
+        this.quantity = 0,
+        this.saleValue,
+        this.saleUnit,
+        this.pricePublic = 0.0,
+        this.selected,
+        this.coverImage,
       this.price,
       this.total,
-      this.source,
-      this.isCardExpanded = false,
-      this.isCalculatingProductTotals = false,
+      this.source, this.isCardExpanded = false,
+        this.isCalculatingProductTotals = false,
       this.discountRate,
       this.brandFavicon});
 
@@ -287,7 +283,7 @@ class ProductSuggested {
     _fillFields(json);
   }
 
-  void _fillFields(Map<String, dynamic> json) {
+  void _fillFields(Map<String, dynamic> json){
     sku = json['sku'];
     skuDescription = json['sku_description'];
     brand = json['brand'];
@@ -298,19 +294,19 @@ class ProductSuggested {
     pricePublic = double.tryParse(json['price_public'].toString());
     selected = json['selected'];
     coverImage = json['image_cover'];
-    if (json.containsKey('price')) {
+    if (json.containsKey('price')){
       price = Price.fromJson(json['price']);
     }
-    if (json.containsKey('total') && json['total'] != null) {
+    if (json.containsKey('total') && json['total'] != null){
       total = Total.fromJson(json['total']);
     }
-    if (json.containsKey('source')) {
+    if (json.containsKey('source')){
       source = json['source'];
     }
-    if (price != null && price!.price2 != null && pricePublic != null) {
-      discountRate = ((pricePublic! - price!.price2!) / pricePublic!) * 100;
+    if(price != null && price!.price2 != null && pricePublic != null){
+      discountRate = ((pricePublic! - price!.price2!)  / pricePublic!) * 100;
     }
-    if (json.containsKey('brand_favicon')) {
+    if (json.containsKey('brand_favicon')){
       brandFavicon = json['brand_favicon'];
     }
   }
@@ -329,20 +325,24 @@ class ProductSuggested {
     data['selected'] = this.selected;
     data['image_cover'] = this.coverImage;
     if (this.price != null) {
-      data['price'] = this.price!.toMap();
+      data['price'] =
+          this.price!.toMap();
     }
     if (this.total != null) {
-      data['total'] = this.total!.toMap();
+      data['total'] =
+          this.total!.toMap();
     }
     if (this.source != null) {
-      data['source'] = this.source!;
+      data['source'] =
+          this.source!;
     }
     if (this.brandFavicon != null) {
-      data['brand_favicon'] = this.brandFavicon!;
+      data['brand_favicon'] =
+      this.brandFavicon!;
     }
     return data;
   }
-}
+}*/
 
 class DiscardedProducts {
   String? requestedProducts;
@@ -368,6 +368,7 @@ class DiscardedProducts {
     return data;
   }
 }
+
 
 class PendingProduct {
   String? requestedProduct;
@@ -397,12 +398,10 @@ class PendingProduct {
 class Shipping {
   double? total;
 
-  Shipping({
-    this.total,
-  });
+  Shipping({this.total,});
 
   Shipping.fromJson(Map<String, dynamic> json) {
-    total = double.tryParse(json['total']?.toString() ?? '');
+    total = json['total'];
   }
 
   Map<String, dynamic> toMap() {
@@ -416,10 +415,7 @@ class Customer {
   String? id;
   String? category;
 
-  Customer({
-    this.id,
-    this.category,
-  });
+  Customer({this.id, this.category,});
 
   Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];

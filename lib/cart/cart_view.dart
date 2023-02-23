@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:maketplace/cart/tabs_view.dart';
-import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
@@ -17,9 +16,8 @@ import 'cart_expandable_view.dart';
 import 'container_viewmodel.dart';
 
 class CartView extends StatefulWidget {
-  const CartView({Key? key, required this.quoteId, required this.version}) : super(key: key);
+  const CartView({Key? key, required this.quoteId,}) : super(key: key);
   final String quoteId;
-  final String? version;
 
   @override
   CartViewState createState() => CartViewState();
@@ -35,7 +33,6 @@ class CartViewState extends State<CartView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        endDrawer: const VoltzDrawer(),
         backgroundColor: CustomColors.grayBackground_2,
         body: Stack(
           children: [
@@ -45,12 +42,13 @@ class CartViewState extends State<CartView> {
               child: Column(
                 children: [
                   const Header(),
-                  _Container(quoteId: widget.quoteId, version: widget.version),
+                  _Container(quoteId: widget.quoteId,),
                 ],
               ),
             ),
           ],
-        ));
+        )
+    );
   }
 }
 
@@ -59,9 +57,9 @@ class Resume extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     return Builder(
       builder: (BuildContext context) {
         var media = MediaQuery.of(context).size;
@@ -313,7 +311,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                             _Dialogs dialog = _Dialogs();
                                             dialog.showAlertDialog(
                                               context,
-                                              () async {
+                                                  () async {
                                                 model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),
@@ -383,49 +381,38 @@ class Resume extends StackedHookView<QuoteViewModel> {
 
 class _Container extends StatelessWidget {
   const _Container({
-    Key? key,
-    required this.quoteId,
-    this.version,
-  }) : super(
-          key: key,
-        );
+    Key? key, required this.quoteId,
+  }) : super(key: key,);
 
   final String quoteId;
-  final String? version;
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ContainerViewModel>.reactive(
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
+
         if (model.isSearchSelected) return const ProductsSearchResult();
 
-        return _CartContainer(
-          quoteId: quoteId,
-          version: version,
-        );
+        return _CartContainer(quoteId: quoteId,);
       },
     );
   }
 }
 
+
 class _CartContainer extends StatelessWidget {
   const _CartContainer({
-    Key? key,
-    required this.quoteId,
-    this.version,
-  }) : super(
-          key: key,
-        );
+    Key? key, required this.quoteId,
+  }) : super(key: key,);
 
   final String quoteId;
-  final String? version;
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<QuoteViewModel>.nonReactive(
       viewModelBuilder: () => QuoteViewModel(),
-      onViewModelReady: (viewModel) => viewModel.init(quoteId, version),
+      onViewModelReady: (viewModel) => viewModel.init(quoteId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
 
@@ -468,9 +455,9 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
 
   @override
   Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
+      BuildContext context,
+      QuoteViewModel model,
+      ) {
     if (model.quote.customer != null) {
       var media = MediaQuery.of(context).size;
       return Container(
