@@ -480,23 +480,21 @@ class _CartContainer extends StatelessWidget {
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
 
-        return Expanded(
-          child: Container(
-            constraints: BoxConstraints(
-              minWidth: CustomStyles.mobileBreak,
-            ),
-            width: media.width,
-           // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-            color: CustomColors.WBY,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CardGrid(),
-                if (media.width >= CustomStyles.mobileBreak) ...[
-                  const Resume(),
-                ]
-              ],
-            ),
+        return Container(
+          constraints: BoxConstraints(
+            minWidth: CustomStyles.mobileBreak,
+          ),
+          width: media.width,
+          // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+          color: CustomColors.WBY,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CardGrid(),
+              if (media.width >= CustomStyles.mobileBreak) ...[
+                const Resume(),
+              ]
+            ],
           ),
         );
       },
