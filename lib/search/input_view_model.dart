@@ -1,15 +1,16 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/common/open_search_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel;
-import 'input_search_repository.dart';
-import 'search_repository.dart';
+import 'package:maketplace/search/input_search_repository.dart';
+import 'package:maketplace/search/search_repository.dart';
 
 class SearchInputViewModel extends ReactiveViewModel {
 
   final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
+  final OpenSearchService _openSearchService = locator<OpenSearchService>();
   late FocusNode _focusNodeSearch;
   final TextEditingController _searchTextController = TextEditingController();
 
@@ -44,6 +45,7 @@ class SearchInputViewModel extends ReactiveViewModel {
     _focusNodeSearch.unfocus();
     _searchTextController.text = '';
     _inputSearchRepository.changeSearchSelected(false);
+    _openSearchService.changeSearchOpened(false);
     return notifyListeners();
   }
 

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:intl/intl.dart' as intl;
 import 'package:flutter/cupertino.dart';
+import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/product/product_model.dart';
-import '../app/app.locator.dart';
-import '../quote/quote_model.dart';
-import '../quote/quote_service.dart';
-import '../utils/stats.dart';
+import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/quote/quote_service.dart';
+import 'package:maketplace/utils/stats.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 
 class CardItemViewModel extends ReactiveViewModel {

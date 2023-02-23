@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
-import '../app/app.locator.dart';
-import 'auth_gate_viewmodel.dart';
+import 'package:maketplace/gate/auth_gate_viewmodel.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({Key? key, this.quoteId}) : super(key: key);
@@ -28,4 +27,3 @@ class AuthGate extends StatelessWidget {
     );
   }
 }
-

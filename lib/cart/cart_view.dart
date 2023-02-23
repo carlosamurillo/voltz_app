@@ -11,8 +11,8 @@ import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-import 'cart_expandable_view.dart';
-import 'container_viewmodel.dart';
+import 'package:maketplace/cart/cart_expandable_view.dart';
+import 'package:maketplace/cart/container_viewmodel.dart';
 
 import 'package:maketplace/common/drawer.dart';
 
@@ -26,7 +26,7 @@ class CartView extends StatelessWidget {
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
         return Scaffold(
-          drawer: const MenuDrawer(),
+          endDrawer: const MenuDrawer(),
           backgroundColor: CustomColors.WBY,
           // No appBar property provided, only the body.
           body: NestedScrollView(
@@ -54,10 +54,10 @@ class CartView extends StatelessWidget {
                         //physics: model.isSearchSelected ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
                         // Add the app bar and list of items as slivers in the next steps.
                           slivers: <Widget>[
-                            SliverToBoxAdapter(
+                            /*SliverToBoxAdapter(
                               child: SizedBox(height: 25,),
                             ),
-                            SliverSearchStatsView(),
+                            SliverSearchStatsView(),*/
                             SliverToBoxAdapter(
                               child: SizedBox(height: 25,),
                             ),

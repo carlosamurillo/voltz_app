@@ -1,10 +1,8 @@
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/order/order_model.dart';
 import 'package:stacked/stacked.dart' show BaseViewModel;
-
-import '../utils/stats.dart';
+import 'package:maketplace/utils/stats.dart';
 
 class OrderViewModel  extends BaseViewModel {
 

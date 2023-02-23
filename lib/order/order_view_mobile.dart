@@ -8,8 +8,8 @@ import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
-import '../utils/custom_colors.dart';
-import 'order_viewmodel.dart';
+import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
 
 
 class OrderTableDetailMobile extends StatefulWidget {

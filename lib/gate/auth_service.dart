@@ -6,8 +6,8 @@ import 'package:observable_ish/value/value.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import '../app/app.locator.dart';
-import '../app/app.router.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 
 class AuthService  with ListenableServiceMixin {
 

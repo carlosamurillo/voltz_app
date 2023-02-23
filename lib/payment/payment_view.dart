@@ -1,12 +1,11 @@
-// import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
-
-import '../order/order_viewmodel.dart';
-import '../utils/custom_colors.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class PaymentInstructions extends StatefulWidget {
   PaymentInstructions({required this.total, required this.order_consecutive, required this.showOrderListener});

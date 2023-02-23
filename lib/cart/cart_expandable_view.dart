@@ -10,15 +10,14 @@ import 'package:intl/intl.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-
-import '../product/product_views.dart';
-import '../quote/quote_viewmodel.dart';
-import '../utils/inputText.dart';
-import '../utils/shimmer.dart';
-import '../utils/style.dart';
-import 'cart_expandible_viewmodel.dart';
-import 'cart_item_viewmodel.dart';
-import 'cart_view.dart';
+import 'package:maketplace/product/product_views.dart';
+import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/utils/inputText.dart';
+import 'package:maketplace/utils/shimmer.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:maketplace/cart/cart_expandible_viewmodel.dart';
+import 'package:maketplace/cart/cart_item_viewmodel.dart';
+import 'package:maketplace/cart/cart_view.dart';
 
 class CardGrid extends StatelessWidget {
   const CardGrid({Key? key})

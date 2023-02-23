@@ -4,8 +4,7 @@ import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
 import 'package:maketplace/utils/buttons.dart';
 import 'package:stacked/stacked.dart';
-
-import '../utils/custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class SliverProductsSearchResult extends StatelessWidget {
   const SliverProductsSearchResult({super.key});
@@ -28,7 +27,7 @@ class SliverProductsSearchResult extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
               return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
-                onTapImprovePrice: viewModel.navigateToLogin,);
+                onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: false);
             } else {
               return const SliverFillRemaining(
                 child: Center(
@@ -167,7 +166,8 @@ class NoFoundCard extends StatelessWidget {
 }
 
 class SliverClassicSearchView extends StatelessWidget {
-  const SliverClassicSearchView({super.key});
+  const SliverClassicSearchView({super.key, required this.isHomeVersion});
+  final bool isHomeVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +181,7 @@ class SliverClassicSearchView extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
               return gv.SliverProductGridView(childCount: viewModel.data!.length,
-                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin,);
+                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: isHomeVersion);
             } else {
               return const SliverToBoxAdapter(
                 child: Center(
@@ -208,6 +208,7 @@ class SliverSearchStatsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SearchStatsViewModel>.reactive(
       viewModelBuilder: () => SearchStatsViewModel(),
+      onViewModelReady: (viewModel) => viewModel.init(),
       builder: (context, viewModel, child) {
         print('SearchStatsView ... se renderiza...');
         return SliverToBoxAdapter(

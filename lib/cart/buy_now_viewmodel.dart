@@ -2,7 +2,7 @@
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_service.dart';
 import 'package:stacked/stacked.dart';
-import '../app/app.locator.dart';
+import 'package:maketplace/app/app.locator.dart';
 
 class ToBuyNowViewModel extends ReactiveViewModel {
 

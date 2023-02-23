@@ -10,11 +10,11 @@ import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
-import '../../utils/custom_colors.dart';
-import '../../utils/shimmer.dart';
-import '../../utils/style.dart';
-import '../utils/buttons.dart';
-import '../utils/inputText.dart';
+import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/utils/shimmer.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:maketplace/utils/buttons.dart';
+import 'package:maketplace/utils/inputText.dart';
 
 
 class ProductCard extends StatelessWidget {
@@ -338,9 +338,10 @@ class ProductCard extends StatelessWidget {
                       if(viewModel.isCardExpanded)...[
                         ProductDetail(productId: product.id!),
                       ],
-                      if(viewModel.userSignStatus == UserSignStatus.authenticated && isSearchVersion)...[
+                      if(viewModel.userSignStatus == UserSignStatus.authenticated)...[
                         ActionsView(
-                          showBuyNow: true,
+                          showBuyNow: isSearchVersion ? true : false,
+                          showAddToQuote:  isSearchVersion ? false : isCartVersion ? false : true,
                           productId: product.id!,
                           addQuoteFunction: viewModel.addProductToQuote,
                           toBuyNowFunction: viewModel.buyNow,
@@ -757,9 +758,10 @@ class _ProductDetailWidget extends StatelessWidget {
 
 class ActionsView extends StatelessWidget {
   const ActionsView({Key? key,
-    required this.productId, required this.addQuoteFunction, this.showBuyNow = false, required this.toBuyNowFunction}) : super(key: key,);
+    required this.productId, required this.addQuoteFunction, this.showBuyNow = false, this.showAddToQuote = false, required this.toBuyNowFunction}) : super(key: key,);
   final String productId;
   final bool showBuyNow;
+  final bool showAddToQuote;
   final void Function(String value, BuildContext context) addQuoteFunction;
   final void Function(String value,) toBuyNowFunction;
 
@@ -777,7 +779,9 @@ class ActionsView extends StatelessWidget {
             PrimaryButton(text: 'Comprar ya', onPressed: () async => toBuyNowFunction(productId)),
             const SizedBox(height: 10,)
           ],
-          SecondaryButton(text: 'Agregar a cotización', onPressed:  () async => addQuoteFunction(productId, context)),
+          if(showAddToQuote) ...[
+            SecondaryButton(text: 'Agregar a cotización', onPressed:  () async => addQuoteFunction(productId, context)),
+          ],
         ],
       ),
     );

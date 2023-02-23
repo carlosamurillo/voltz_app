@@ -7,9 +7,8 @@ import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
-
-import 'app/app.locator.dart';
-import 'app/app.router.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 
 // http://localhost:8080/?cotz=LDviRW7F3hoBPZ4LzWfN
 

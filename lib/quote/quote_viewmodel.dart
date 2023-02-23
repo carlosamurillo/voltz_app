@@ -11,10 +11,10 @@ import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 import 'package:intl/intl.dart' as intl;
-import '../app/app.locator.dart';
-import '../utils/custom_colors.dart';
-import '../utils/style.dart';
-import '../utils/stats.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:maketplace/utils/stats.dart';
 
 class QuoteViewModel  extends ReactiveViewModel  {
   final _quoteService = locator<QuoteService>();

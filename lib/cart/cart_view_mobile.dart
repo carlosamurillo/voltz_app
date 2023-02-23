@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/common/header.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/extensions.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
-import '../common/header.dart';
 
 const double fontSizeParagraph = 12;
 const Color _white = Color(0xFFFFFFFF);

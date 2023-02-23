@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:maketplace/utils/buttons.dart';
-import '../utils/custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class BlueAppBar extends AppBar {
   BlueAppBar({super.key, required this.context });
@@ -29,6 +29,7 @@ class BlueAppBar extends AppBar {
       onPressed: () => Navigator.of(context).pop(),
       buttonColor: CustomColors.white,
       backGroundColor: CustomColors.blueVoltz,
+      borderColor: CustomColors.white,
     ),
   ];
 }

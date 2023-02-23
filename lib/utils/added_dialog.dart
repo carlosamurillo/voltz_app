@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:maketplace/notifications/notifications_view.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
-import '../notifications/notifications_service.dart';
 
 void showNotificationDialog(BuildContext context,) async {
   return await showDialog(

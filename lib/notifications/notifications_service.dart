@@ -1,10 +1,9 @@
 
-import 'package:maketplace/utils/added_dialog.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 class NotificationService with ListenableServiceMixin {
-  final _rxNotification = RxValue<NotificationModel>(NotificationModel.name('', '', false, NotificationType.simple));
+  final _rxNotification = RxValue<NotificationModel>(NotificationModel.withButtons('', '', false, NotificationType.simple, '', ''));
   NotificationModel get notification => _rxNotification.value;
 
   NotificationService() {
@@ -17,17 +16,17 @@ class NotificationService with ListenableServiceMixin {
   }
 
   void emitSimpleNotification(String title, String message) async {
-    _rxNotification.value = NotificationModel.name(title, message, true, NotificationType.simple);
+    _rxNotification.value = NotificationModel.simple(title, message, true, NotificationType.simple);
     notifyListeners();
   }
 
   void reset() async {
-    _rxNotification.value = NotificationModel.name('', '', false, NotificationType.simple);
+    _rxNotification.value = NotificationModel.withButtons('', '', false, NotificationType.simple, '', '');
     notifyListeners();
   }
   
   void emitDialogNotification(String title, String textButtonUno, String textButtonDos) async {
-    _rxNotification.value = NotificationModel.name(title, '', true, NotificationType.dialog);
+    _rxNotification.value = NotificationModel.withButtons(title, '', true, NotificationType.dialog, textButtonUno, textButtonDos);
     notifyListeners();
   }
 }
@@ -59,7 +58,8 @@ class NotificationModel {
   bool showNotification = false;
   NotificationType type = NotificationType.simple;
 
-  NotificationModel.name(this.title, this.message, this.showNotification, this.type);
+  NotificationModel.simple(this.title, this.message, this.showNotification, this.type,);
+  NotificationModel.withButtons(this.title, this.message, this.showNotification, this.type, this.textButtonUno, this.textButtonDos, );
 
   NotificationModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];

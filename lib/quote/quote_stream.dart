@@ -1,6 +1,5 @@
 
 import 'dart:async';
-
 import 'package:maketplace/quote/quote_model.dart';
 
 class QuoteStream {

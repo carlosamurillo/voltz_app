@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart'  show ListenableServiceMixin;
-import 'product_model.dart';
+import 'package:maketplace/product/product_model.dart';
 
 class ProductService with ListenableServiceMixin {
   final RxValue<Product?> _rxProduct = RxValue<Product?>(null);

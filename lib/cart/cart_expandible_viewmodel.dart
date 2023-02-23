@@ -3,8 +3,8 @@ import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 
-import '../app/app.locator.dart';
-import '../product/product_model.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/product/product_model.dart';
 
 class GridViewModel extends ReactiveViewModel  {
 

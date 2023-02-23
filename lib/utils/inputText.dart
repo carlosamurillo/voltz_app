@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class InputText extends StatefulWidget {
   InputText(

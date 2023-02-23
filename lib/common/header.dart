@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:maketplace/auth/gate_simple_viewmodel.dart';
-import 'package:maketplace/common/drawer.dart';
+import 'package:maketplace/common/header_viewmodel.dart';
 import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/utils/buttons.dart';
+import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
-import '../search/search_components.dart' deferred as sc;
-import '../utils/buttons.dart';
-import '../utils/custom_colors.dart';
-import '../utils/style.dart';
+import 'package:maketplace/search/search_components.dart' deferred as sc;
+
 
 class Header extends StatelessWidget  {
   const Header({super.key, this.paddingVertical = 14, this.paddingHorizontal = 25});
@@ -16,72 +17,133 @@ class Header extends StatelessWidget  {
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
-    return SafeArea(
-        child: Container(
-          padding: media.width >= CustomStyles.desktopBreak ? const EdgeInsets.symmetric(vertical: 14, horizontal: 25) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          color: CustomColors.white,
-          width: double.infinity,
-          height: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/svg/logo_voltz_white_background.svg',
-                width: 120,
-                height: 52,
+    return ViewModelBuilder<HeaderViewModel>.reactive(
+      viewModelBuilder: () => HeaderViewModel(),
+      builder: (context, model, child) {
+        var media = MediaQuery.of(context).size;
+        return SafeArea(
+            child: Container(
+              padding: media.width >= CustomStyles.desktopBreak ? const EdgeInsets.only(top: 14, bottom: 14, left: 25, right: 10) : const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 5),
+              color: CustomColors.white,
+              width: double.infinity,
+              height: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if(media.width >= CustomStyles.desktopBreak) ...[
+                    SvgPicture.asset(
+                      'assets/svg/logo_voltz_white_background.svg',
+                      width: 120,
+                      height: 52,
+                    ),
+                    const SizedBox(width: 25),
+                    Expanded(
+                      child: FutureBuilder(
+                        future: sc.loadLibrary(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            return sc.SearchInputWidget();
+                          } else {
+                            return Container();
+                          }
+                        },
+                      ),
+                    ),
+                    if(model.authSignStatus != UserSignStatus.authenticated) ...[
+                      const SizedBox(width: 25),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 250,
+                            minWidth: 193,
+                            maxHeight: 40,
+                            minHeight: 40),
+                        child: PrimaryButton(
+                          text: 'Iniciar sesión',
+                          icon: Icons.account_circle,
+                          onPressed: () => model.navigateToLogin(),
+                        ),
+                      ),
+                    ],
+                  ] else ...[
+                    if(model.isSearchOpened) ...[
+                      Expanded(
+                        child: FutureBuilder(
+                          future: sc.loadLibrary(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              return sc.SearchInputWidget();
+                            } else {
+                              return Container();
+                            }
+                          },
+                        ),
+                      ),
+                    ] else ...[
+                      SvgPicture.asset(
+                        'assets/svg/logo_voltz_white_background.svg',
+                        width: 120,
+                        height: 52,
+                      ),
+                      const Spacer(),
+                      CustomIconButton(
+                        onPressed: () => model.showSearchWidget(),
+                        buttonColor: CustomColors.white,
+                        backGroundColor: CustomColors.dark,
+                        icon: Icons.search,
+                        borderColor: CustomColors.WBY,
+                      ),
+                      if(model.authSignStatus != UserSignStatus.authenticated) ...[
+                        const SizedBox(width: 5),
+                        CustomIconButton(
+                          onPressed: () => model.navigateToLogin(),
+                          buttonColor: CustomColors.dark,
+                          backGroundColor: Colors.white,
+                          icon: Icons.account_circle,
+                          borderColor: CustomColors.WBY,
+                        ),
+                      ],
+                    ],
+                  ],
+                ],
               ),
-              const SizedBox(width: 25),
-              Expanded(
-                child: FutureBuilder(
-                  future: sc.loadLibrary(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return sc.SearchInputWidget();
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(width: 25),
-              _InitSessionButton(
-                onTapMenu: () async {
-                  print('Drawer ');
-                  Scaffold.of(context).openDrawer();
-                } ,),
-            ],
-          ),
-        )
+            )
+        );
+      },
     );
   }
 }
+
 
 class SliverHeader extends StatelessWidget {
   const SliverHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.of(context).size;
-    return SliverAppBar(
-      pinned: media.width >= CustomStyles.desktopBreak ? true : false,
-      snap: true,
-      floating: true,
-      backgroundColor: CustomColors.white,
-      titleSpacing: 0,
-      toolbarHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
-      collapsedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
-      expandedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
-      title: const Header(),
+    return ViewModelBuilder<GateSimpleViewModel>.reactive(
+      viewModelBuilder: () => GateSimpleViewModel(),
+      builder: (context, model, child) {
+        var media = MediaQuery.of(context).size;
+        return SliverAppBar(
+          automaticallyImplyLeading: model.authSignStatus == UserSignStatus.authenticated ? true : false,
+          iconTheme: const IconThemeData(color: CustomColors.dark),
+          pinned: media.width >= CustomStyles.desktopBreak ? true : false,
+          snap: true,
+          floating: true,
+          backgroundColor: CustomColors.white,
+          titleSpacing: 0,
+          toolbarHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
+          collapsedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
+          expandedHeight: media.width >= CustomStyles.desktopBreak ? CustomStyles.desktopHeaderHeight : CustomStyles.mobileHeaderHeight,
+          title: const Header(),
+        );
+      },
     );
   }
 }
 
 class _InitSessionButton extends StatelessWidget {
-  const _InitSessionButton({Key? key, required this.onTapMenu}) : super(key: key);
-  final Function() onTapMenu;
+  const _InitSessionButton({Key? key,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,29 +153,31 @@ class _InitSessionButton extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         return SafeArea(
             child: LayoutBuilder(
-              builder: (BuildContext ctx, BoxConstraints constraints){
-                if(constraints.maxWidth >= CustomStyles.desktopBreak){
-                  //Button de Inicio de session desktop
-                  return model.authSignStatus == UserSignStatus.authenticated ? IconButton(
-                    onPressed: () => onTapMenu(),
-                    icon: const Icon(Icons.menu, color: CustomColors.dark),
-                  ) : ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 250, minWidth: 193, maxHeight: 40, minHeight: 40),
-                    child: PrimaryButton(
-                      text: 'Iniciar sesión',
-                      icon: Icons.account_circle,
+              builder: (BuildContext ctx, BoxConstraints constraints) {
+                if (model.authSignStatus != UserSignStatus.authenticated) {
+                  if (constraints.maxWidth >= CustomStyles.desktopBreak) {
+                    //Button de Inicio de session desktop
+                    return ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 250,
+                          minWidth: 193,
+                          maxHeight: 40,
+                          minHeight: 40),
+                      child: PrimaryButton(
+                        text: 'Iniciar sesión',
+                        icon: Icons.account_circle,
+                        onPressed: () => model.navigateToLogin(),
+                      ),
+                    );
+                  } else {
+                    //Button de Inicio de session y de menu tableta y mobile
+                    return IconButton(
                       onPressed: () => model.navigateToLogin(),
-                    ),
-                  );
+                      icon: const Icon(
+                          Icons.account_circle, color: CustomColors.dark),
+                    );
+                  }
                 } else {
-                  //Button de Inicio de session y de menu tableta y mobile
-                  return model.authSignStatus == UserSignStatus.authenticated ?  IconButton(
-                    onPressed: () => onTapMenu(),
-                    icon: const Icon(Icons.menu, color: CustomColors.dark),
-                  ) : IconButton(
-                    onPressed: () => model.navigateToLogin(),
-                    icon: const Icon(Icons.account_circle, color: CustomColors.dark),
-                  );
+                  return const SizedBox();
                 }
               }
             ),

@@ -7,8 +7,8 @@ import 'package:maketplace/utils/added_dialog.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
 import 'package:intl/intl.dart' as intl;
-import '../app/app.locator.dart';
-import 'product_model.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'dart:js' as js;
 
 class ProductViewModel  extends ReactiveViewModel  {

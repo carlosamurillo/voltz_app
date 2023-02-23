@@ -1,9 +1,8 @@
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 import 'package:maketplace/product/product_model.dart';
-import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:stacked/stacked.dart';
-import '../keys_model.dart';
+import 'package:maketplace/keys_model.dart';
 
 class ProductSearchRepository with ListenableServiceMixin  {
 

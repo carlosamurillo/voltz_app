@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
-import '../utils/custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class BacklogView extends StackedHookView<QuoteViewModel> {

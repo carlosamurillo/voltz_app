@@ -1,6 +1,6 @@
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/search/input_search_repository.dart';
 import 'package:stacked/stacked.dart';
-import '../search/input_search_repository.dart';
-import '../app/app.locator.dart';
 
 class ContainerViewModel extends ReactiveViewModel {
   final _inputSearchRepository = locator<InputSearchRepository>();

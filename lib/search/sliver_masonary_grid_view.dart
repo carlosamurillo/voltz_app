@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:maketplace/search/search_views.dart';
-import '../product/product_model.dart';
-import '../product/product_views.dart';
-import '../utils/style.dart';
+import 'package:maketplace/product/product_model.dart';
+import 'package:maketplace/product/product_views.dart';
+import 'package:maketplace/utils/style.dart';
 
 class ProductGridView extends StatelessWidget {
   const ProductGridView({super.key, required this.childCount, required this.data, required this.onTapImprovePrice});
@@ -24,7 +24,7 @@ class ProductGridView extends StatelessWidget {
           const SliverToBoxAdapter(
             child: SizedBox(height: 25,),
           ),
-          SliverProductGridView(childCount: data.length, data: data, onTapImprovePrice: onTapImprovePrice,),
+          SliverProductGridView(childCount: data.length, data: data, onTapImprovePrice: onTapImprovePrice, isHomeVersion: false),
           const SliverToBoxAdapter(
             child: SizedBox(height: 25,),
           ),
@@ -34,10 +34,12 @@ class ProductGridView extends StatelessWidget {
 }
 
 class SliverProductGridView extends StatelessWidget {
-  const SliverProductGridView({super.key, required this.childCount, required this.data, required this.onTapImprovePrice});
+  const SliverProductGridView({super.key, required this.childCount, required this.data, required this.onTapImprovePrice,
+    required this.isHomeVersion});
   final int childCount;
   final List<Product> data;
   final Function onTapImprovePrice;
+  final bool isHomeVersion;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,7 @@ class SliverProductGridView extends StatelessWidget {
               return const NoFoundCard();
             }
             return ProductCard(
+                isSearchVersion: isHomeVersion,
                 product: data[index], onTapImprovePrice: onTapImprovePrice,
             );
           }, crossAxisCount: ((media.width - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 25) / 387).truncateToDouble().toInt() : 1,

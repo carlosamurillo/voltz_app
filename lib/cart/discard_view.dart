@@ -4,8 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
-import '../utils/custom_colors.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class DiscardView extends StackedHookView<QuoteViewModel> {
@@ -37,19 +37,7 @@ class DiscardView extends StackedHookView<QuoteViewModel> {
               ),
             );
         } else {
-          return true ?
-          const CircularProgressIndicator(): Container(
-              padding: EdgeInsets.all(80),
-              color: CustomColors.backgroundCanvas,
-              alignment: Alignment.center,
-              child: Container(
-                color: Colors.white,
-                child: Text('Ups!, sin resultados. Intenta con otros filtros...',
-                  overflow: TextOverflow.clip,
-                  textAlign: TextAlign.center,
-                  style: CustomStyles.styleVolcanicUno,
-                ),
-              ));
+          return const CircularProgressIndicator();
         }
       },
     );
