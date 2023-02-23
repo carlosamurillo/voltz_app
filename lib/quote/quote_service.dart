@@ -2,17 +2,16 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/notifications/notifications_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/utils/stats.dart';
 import 'package:observable_ish/observable_ish.dart';
-import 'package:pdf/widgets.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
-
-import '../app/app.locator.dart';
-import '../notifications/notifications_service.dart';
-import '../utils/stats.dart';
 
 
 class QuoteService with ListenableServiceMixin {
@@ -102,7 +101,7 @@ class QuoteService with ListenableServiceMixin {
   final _notificationService = locator<NotificationService>();
   Future<void> addProductToQuote(String idProduct,) async {
     if(_rxQuote.value.detail != null) {
-      _notificationService.emitSimpleNotification("Ejecutando...", "Se está añadiendo un producto a la cotización activa.");
+      _notificationService.emitDialogNotification("Recalculando totales...", "Ir a la cotización", "Seguir agregando",);
       DocumentReference reference = FirebaseFirestore.instance.collection(
           'quote-detail').doc(_rxQuote.value.id);
       recordLastAction = 'add_product';
@@ -136,7 +135,7 @@ class QuoteService with ListenableServiceMixin {
     _rxCompanyName.value = json['name'];
     notifyListeners();
   }
-  
+
   Future<void> _listenChanges() async {
     reference.snapshots().listen(
           (documentSnapshot) async {
@@ -159,7 +158,7 @@ class QuoteService with ListenableServiceMixin {
             _getCustomerName(id: _rxQuote.value.customer!.id);
             notifyListeners();
             if(recordLastAction == 'add_product'){
-              _notificationService.emitSimpleNotification("Terminado", "Se añadió el producto y se recalcularon los totales. Puedes cambiar las cantidades allá");
+              _notificationService.emitDialogNotification("¡Agregado a la cotización!", "Ir a la cotización", "Seguir agregando",);
               recordLastAction = '';
             }
             print("Se llamo notifyListeners desde Servicio QuoteService");

@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
-
-import '../utils/custom_colors.dart';
-import '../utils/style.dart';
-import 'backlog_view.dart';
-import 'cart_expandable_view.dart';
-import 'cart_item_view.dart';
-import 'discard_view.dart';
+import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:maketplace/cart/backlog_view.dart';
+import 'package:maketplace/cart/cart_expandable_view.dart';
+import 'package:maketplace/cart/discard_view.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class Tabs extends StatefulWidget {

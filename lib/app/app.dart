@@ -1,20 +1,21 @@
 
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view.dart';
+import 'package:maketplace/common/open_search_service.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/home/home_view.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:stacked/stacked_annotations.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import '../cart/cart_view.dart';
-import '../cart/buy_now_view.dart';
-import '../notifications/notifications_service.dart';
-import '../order/oder_view.dart';
-import '../cart/cart_confirmation.dart';
-import '../product/product_service.dart';
-import '../search/input_search_repository.dart';
-import '../search/search_repository.dart';
+import 'package:maketplace/cart/cart_view.dart';
+import 'package:maketplace/cart/buy_now_view.dart';
+import 'package:maketplace/notifications/notifications_service.dart';
+import 'package:maketplace/order/oder_view.dart';
+import 'package:maketplace/cart/cart_confirmation.dart';
+import 'package:maketplace/product/product_service.dart';
+import 'package:maketplace/search/input_search_repository.dart';
+import 'package:maketplace/search/search_repository.dart';
 
 /// flutter pub run build_runner build --delete-conflicting-outputs
 /// Anterior es la linea de comando para generar  *
@@ -28,6 +29,7 @@ import '../search/search_repository.dart';
     LazySingleton(classType: NotificationService),
     LazySingleton(classType: AuthService),
     LazySingleton(classType: LoginService),
+    LazySingleton(classType: OpenSearchService),
   ],
   routes: [
     /** Onboarding and signup **/

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/common/open_search_service.dart';
 import 'package:maketplace/notifications/notifications_view.dart';
+import 'package:maketplace/search/input_search_repository.dart';
+import 'package:maketplace/search/search_repository.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
-import '../notifications/notifications_service.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 void showNotificationDialog(BuildContext context,) async {
   return await showDialog(
@@ -12,9 +17,19 @@ void showNotificationDialog(BuildContext context,) async {
       backgroundColor: Colors.white,
       insetPadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.all(25),
-      content: BaseNotificationWidget()
+      content: BaseNotificationWidget(onTapButtonUno: goToQuotationFromDialog,)
     ),
   );
+}
+
+
+final _inputSearchRepository = locator<InputSearchRepository>();
+final OpenSearchService _openSearchService = locator<OpenSearchService>();
+final NavigationService _navigationService = locator<NavigationService>();
+goToQuotationFromDialog() async {
+  _inputSearchRepository.cancelSearch();
+  _openSearchService.changeSearchOpened(false);
+  return _navigationService.popRepeated(1);
 }
 
 void showExistDialog(BuildContext context) async {

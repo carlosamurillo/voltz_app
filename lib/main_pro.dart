@@ -1,8 +1,7 @@
 
-import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/firebase_options_pro.dart';
-import 'keys_model.dart';
-import 'main.dart';
+import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/main.dart';
 
 void main() async {
 

@@ -1,9 +1,7 @@
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/firebase_options_dev.dart';
 import 'package:maketplace/main.dart';
-import 'keys_model.dart';
+import 'package:maketplace/keys_model.dart';
 
 void main() async {
   // Init flavor config

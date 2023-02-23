@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/search/input_view_model.dart';
 import 'package:stacked/stacked.dart' show ViewModelBuilder;
-import '../utils/custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class SearchInputWidget extends StatelessWidget {
   const SearchInputWidget({
@@ -15,7 +15,7 @@ class SearchInputWidget extends StatelessWidget {
     return ViewModelBuilder<SearchInputViewModel>.reactive(
         viewModelBuilder: () => SearchInputViewModel(),
         onViewModelReady: (viewModel) async => viewModel.init(),
-        fireOnViewModelReadyOnce: true,
+        fireOnViewModelReadyOnce: false,
         disposeViewModel: false,
         createNewViewModelOnInsert: false,
         builder: (context, viewModel, child) {

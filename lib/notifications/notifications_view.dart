@@ -2,15 +2,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/utils/added_dialog.dart';
+import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
-import '../utils/added_dialog.dart';
-import '../utils/buttons.dart';
-import 'notifications_service.dart';
-import 'notifications_viewmodel.dart';
+import 'package:maketplace/notifications/notifications_service.dart';
+import 'package:maketplace/notifications/notifications_viewmodel.dart';
 
 class BaseNotificationWidget extends StatelessWidget {
-  const BaseNotificationWidget({Key? key,}) : super(key: key);
+  const BaseNotificationWidget({Key? key, required this.onTapButtonUno}) : super(key: key);
+  final Function()? onTapButtonUno;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +24,15 @@ class BaseNotificationWidget extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         return GeneralDialog(
           text: model.notification.title,
-          button1: ThirdButton(text: model.notification.textButtonUno, onPressed: () {}),
+          button1: ThirdButton(text: model.notification.textButtonUno,
+            onPressed: onTapButtonUno ?? onTapButtonUno!(),
+          ),
           button2: SecondaryButton(text: model.notification.textButtonDos, onPressed: () => Navigator.of(context).pop()),
         );
       },
     );
   }
 }
-
 
 class SimpleNotificationWidget extends StatelessWidget {
   const SimpleNotificationWidget({Key? key, required this.data, required this.dismissNotification}) : super(key: key);

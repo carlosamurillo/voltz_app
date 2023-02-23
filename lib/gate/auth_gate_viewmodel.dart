@@ -1,7 +1,7 @@
 
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin, ReactiveViewModel;
-import '../app/app.locator.dart';
+import 'package:maketplace/app/app.locator.dart';
 
 class AuthGateViewModel extends ReactiveViewModel {
 

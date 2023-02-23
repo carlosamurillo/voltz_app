@@ -10,15 +10,14 @@ import 'package:intl/intl.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-
-import '../product/product_views.dart';
-import '../quote/quote_viewmodel.dart';
-import '../utils/inputText.dart';
-import '../utils/shimmer.dart';
-import '../utils/style.dart';
-import 'cart_expandible_viewmodel.dart';
-import 'cart_item_viewmodel.dart';
-import 'cart_view.dart';
+import 'package:maketplace/product/product_views.dart';
+import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/utils/inputText.dart';
+import 'package:maketplace/utils/shimmer.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:maketplace/cart/cart_expandible_viewmodel.dart';
+import 'package:maketplace/cart/cart_item_viewmodel.dart';
+import 'package:maketplace/cart/cart_view.dart';
 
 class CardGrid extends StatelessWidget {
   const CardGrid({Key? key})
@@ -44,66 +43,75 @@ class CardGrid extends StatelessWidget {
         if(kIsWeb){
           html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         }
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-              width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  if (media.width >= CustomStyles.desktopBreak) ...[
-                    const SliverPadding(
-                      padding: EdgeInsets.only(top: 25, bottom: 25),
-                    ),
-                  ],
-                  const SliverToBoxAdapter(
-                    child: CustomerInfo(),
-                  ),
-                  if (media.width >= CustomStyles.desktopBreak) ...[
-                    const SliverPadding(
-                      padding: EdgeInsets.only(top: 25, bottom: 25),
-                    ),
-                  ],
-                  SliverPadding(
-                    padding: media.width >= CustomStyles.mobileBreak ? const EdgeInsets.only(right: 25, left: 25) : const EdgeInsets.only(right: 0, left: 0),
-                    sliver: SliverMasonryGrid.count(
-                      //maxCrossAxisExtent: 362,
-                      childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty
-                          ? viewModel.selectedProducts.length + 1
-                          : viewModel.selectedProducts.length,
-                      mainAxisSpacing: 25,
-                      crossAxisSpacing: 25,
-                      itemBuilder: (context, index) {
-                        if (index < viewModel.selectedProducts.length) {
-                          return ProductCard(
-                            i: index,
-                          );
-                        } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
-                          return const PendingCard();
-                        } else {
-                          return Container();
-                        }
-                      },
-                      crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 25,
-                    ),
-                  ),
-                  if (media.width < CustomStyles.mobileBreak) ...[
-                    const SliverToBoxAdapter(
-                      child: Resume(),
-                    ),
-                  ]
-                ],
-              ),
-            )
-          ],
+
+        return Expanded(
+            child: LayoutBuilder(
+                builder: (context, constraint){
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: constraint.maxWidth,
+                        height: constraint.maxHeight,
+                        //height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+                        //width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
+                        child: CustomScrollView(
+                          slivers: <Widget>[
+                            if (media.width >= CustomStyles.desktopBreak) ...[
+                              const SliverPadding(
+                                padding: EdgeInsets.only(top: 25,),
+                              ),
+                            ],
+                            const SliverToBoxAdapter(
+                              child: CustomerInfo(),
+                            ),
+                            if (media.width >= CustomStyles.desktopBreak) ...[
+                              const SliverPadding(
+                                padding: EdgeInsets.only(top: 25,),
+                              ),
+                            ],
+                            SliverPadding(
+                              padding: media.width >= CustomStyles.mobileBreak ? const EdgeInsets.all(25) : const EdgeInsets.all(0),
+                              sliver: SliverMasonryGrid.count(
+                                //maxCrossAxisExtent: 362,
+                                childCount: viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty
+                                    ? viewModel.selectedProducts.length + 1
+                                    : viewModel.selectedProducts.length,
+                                mainAxisSpacing: 25,
+                                crossAxisSpacing: 25,
+                                itemBuilder: (context, index) {
+                                  if (index < viewModel.selectedProducts.length) {
+                                    return ProductCard(
+                                      i: index,
+                                    );
+                                  } else if (viewModel.quote.pendingProducts != null && viewModel.quote.pendingProducts!.isNotEmpty) {
+                                    return const PendingCard();
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                                crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
+                              ),
+                            ),
+                            const SliverToBoxAdapter(
+                              child: SizedBox(
+                                height: 25,
+                              ),
+                            ),
+                            if (media.width < CustomStyles.mobileBreak) ...[
+                              const SliverToBoxAdapter(
+                                child: Resume(),
+                              ),
+                            ]
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+            ),
         );
       },
       viewModelBuilder: () => GridViewModel(),

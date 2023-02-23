@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
-import '../utils/custom_colors.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 
 class CsvDownloadButton extends StackedHookView<QuoteViewModel> {

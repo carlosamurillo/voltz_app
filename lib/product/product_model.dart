@@ -7,7 +7,7 @@ class Product {
   String? skuDescription;
   String? brand;
   String? techFile;
-  double quantity = 1;
+  double? quantity = 1;
   double? saleValue;
   String? saleUnit;
   double? pricePublic;
@@ -101,7 +101,7 @@ class Product {
       coverImage = json['image_cover'];
     }
     if (json.containsKey('quantity')){
-      quantity = json['quantity'];
+      quantity = double.tryParse(json['quantity'].toString());
     }
     if (json.containsKey('price') && json['price'] != null){
       price = Price.fromJson(json['price']);
@@ -153,14 +153,40 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sku'] = this.sku;
-    data['sku_description'] = this.skuDescription;
-    data['brand'] = this.brand;
-    data['tech_file'] = this.techFile;
-    data['sale_value'] = this.saleValue;
-    data['sale_unit'] = this.saleUnit;
-    data['price_public'] = this.pricePublic;
-    data['image_cover'] = this.coverImage;
+
+    if (this.sku != null) {
+      data['sku'] =
+      this.sku!;
+    }
+    if (this.skuDescription != null) {
+      data['sku_description'] =
+      this.skuDescription!;
+    }
+    if (this.brand != null) {
+      data['brand'] =
+      this.brand!;
+    }
+    if (this.techFile != null) {
+      data['tech_file'] =
+      this.techFile!;
+    }
+    if (this.saleValue != null) {
+      data['sale_value'] =
+      this.saleValue!;
+    }
+    if (this.saleUnit != null) {
+      data['sale_unit'] =
+      this.saleUnit!;
+    }
+    if (this.pricePublic != null) {
+      data['price_public'] =
+      this.pricePublic!;
+    }
+    if (this.coverImage != null) {
+      data['image_cover'] =
+      this.coverImage!;
+    }
+
     if (this.quantity != null) {
       data['quantity'] =
       this.quantity!;
@@ -251,19 +277,35 @@ class Price {
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['price_best'] = this.priceBest;
-    data['price_1'] = this.price1;
-    data['price_2'] = this.price2;
-    data['currency'] = this.currency;
-    data['stock'] = this.stock;
-    data['supplier_code'] = this.supplierCode;
-    data['supplier_name'] = this.supplierName;
+    if(this.priceBest != null){
+      data['price_best'] = this.priceBest;
+    }
+    if(this.price1 != null){
+      data['price_1'] = this.price1;
+    }
+    if(this.price2 != null){
+      data['price_2'] = this.price2;
+    }
+    if(this.currency != null){
+      data['currency'] = this.currency;
+    }
+    if(this.stock != null){
+      data['stock'] = this.stock;
+    }
+    if(this.dollarConversion != null){
+      data['dollar_conversion'] = this.dollarConversion!.toMap();
+    }
+    if(this.supplierCode != null){
+      data['supplier_code'] = this.supplierCode;
+    }
+    if(this.supplierName != null){
+      data['supplier_name'] = this.supplierName;
+    }
     if(this.dollarConversion != null){
       data['dollar_conversion'] = this.dollarConversion!.toMap();
     }
     return data;
   }
-
 }
 
 class DollarConversion {
@@ -275,10 +317,18 @@ class DollarConversion {
   DollarConversion({this.currency, this.value, this.source, this.date});
 
   DollarConversion.fromJson(Map<String, dynamic> json) {
-    currency = json['currency'];
-    value = json['value'];
-    source = json['source'];
-    date = json['date'];
+    if(json.containsKey('currency')) {
+      currency = json['currency'];
+    }
+    if(json.containsKey('value')) {
+      value = json['value'];
+    }
+    if(json.containsKey('source')) {
+      source = json['source'];
+    }
+    if(json.containsKey('date')) {
+      date = json['date'];
+    }
   }
 
   Map<String, dynamic> toMap() {
@@ -293,16 +343,22 @@ class DollarConversion {
 
 
 class Total {
-  double? beforeDiscount;
-  double? afterDiscount;
-  double? discount;
+  double? beforeDiscount = 0;
+  double? afterDiscount = 0;
+  double? discount = 0;
 
   Total({this.beforeDiscount = 0, this.afterDiscount = 0, this.discount = 0});
 
   Total.fromJson(Map<String, dynamic> json) {
-    beforeDiscount = json['before_discount'];
-    afterDiscount = json['after_discount'];
-    discount = json['discount'];
+    if(json.containsKey('before_discount')) {
+      beforeDiscount = json['before_discount'];
+    }
+    if(json.containsKey('after_discount')) {
+      afterDiscount = json['after_discount'];
+    }
+    if(json.containsKey('discount')) {
+      discount = json['discount'];
+    }
   }
 
   Map<String, dynamic> toMap() {

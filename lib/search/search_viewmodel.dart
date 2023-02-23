@@ -6,7 +6,6 @@ import 'package:maketplace/search/search_repository.dart';
 import 'package:stacked/stacked.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:stacked_services/stacked_services.dart';
-
 import 'package:maketplace/app/app.router.dart';
 
 class ProductSearchViewModel extends StreamViewModel<List<Product>> {
@@ -19,7 +18,14 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
 
   String? get lastQuery => _productSearchRepository.lastQuery;
 
-  init() {
+  init() async {
+    showLastSearch();
+  }
+
+  showLastSearch() async {
+    if(lastQuery != null && lastQuery!.isNotEmpty){
+      return _productSearchRepository.query('');
+    }
   }
 
   @override
@@ -77,8 +83,8 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
 class SearchStatsViewModel extends StreamViewModel<SearchMetadata>{
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
-  init() {
-  }
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_productSearchRepository,];
 
   @override
   Stream<SearchMetadata> get stream => _productSearchRepository.searchMetaData();

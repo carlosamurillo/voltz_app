@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:maketplace/cart/buy_now_viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
-import '../common/app_bar_view.dart';
-import '../product/product_views.dart';
-import '../utils/custom_colors.dart';
+import 'package:maketplace/common/app_bar_view.dart';
+import 'package:maketplace/product/product_views.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 class BuyNowView extends StatelessWidget {
   const BuyNowView({

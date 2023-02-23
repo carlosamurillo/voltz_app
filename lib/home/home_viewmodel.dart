@@ -1,7 +1,7 @@
 
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart';
-import '../app/app.locator.dart';
+import 'package:maketplace/app/app.locator.dart';
 
 class HomeViewModel extends ReactiveViewModel {
 

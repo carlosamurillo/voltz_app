@@ -4,11 +4,10 @@ import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
 import 'package:maketplace/utils/buttons.dart';
 import 'package:stacked/stacked.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
-import '../utils/custom_colors.dart';
-
-class ProductsSearchResult extends StatelessWidget {
-  const ProductsSearchResult({super.key});
+class SliverProductsSearchResult extends StatelessWidget {
+  const SliverProductsSearchResult({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +17,19 @@ class ProductsSearchResult extends StatelessWidget {
       builder: (context, viewModel, child) {
         print('ProductsSearchResults view ... ');
         if(viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null){
-          return const SearchInitialViewWidget();
+          return const SliverFillRemaining(
+            child: SearchInitialViewWidget(),
+          );
         }
 
         return FutureBuilder(
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
-              return gv.ProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
-                onTapImprovePrice: viewModel.navigateToLogin,);
+              return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
+                onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: false);
             } else {
-              return const Expanded(
+              return const SliverFillRemaining(
                 child: Center(
                   child: SizedBox(
                     width: 30,
@@ -52,38 +53,37 @@ class SearchInitialViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 35.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.asset(
-                "assets/images/assistant_icon.png",
-                width: 120,
+    return Center(
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 35.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Image.asset(
+              "assets/images/assistant_icon.png",
+              width: 120,
+            ),
+            const SizedBox(height: 25),
+            const Text(
+              "Busca por código, nombre, especificación, y/o marca.",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 32,
+                color: CustomColors.dark,
               ),
-              const SizedBox(height: 25),
-              const Text(
-                "Busca por código, nombre, especificación, y/o marca.",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32,
-                  color: CustomColors.dark,
-                ),
-                textAlign: TextAlign.center,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              "Ejemplos: SML102022, Cable uso rudo, 16AMP, Tecnolite",
+              style: TextStyle(
+                fontSize: 18,
+                color: CustomColors.dark,
               ),
-              const SizedBox(height: 10),
-              const Text(
-                "Ejemplos: SML102022, Cable uso rudo, 16AMP, Tecnolite",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: CustomColors.dark,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
@@ -166,13 +166,14 @@ class NoFoundCard extends StatelessWidget {
 }
 
 class SliverClassicSearchView extends StatelessWidget {
-  const SliverClassicSearchView({super.key});
+  const SliverClassicSearchView({super.key, required this.isHomeVersion});
+  final bool isHomeVersion;
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
       viewModelBuilder: () => ProductSearchViewModel(),
-      disposeViewModel: false,
+      disposeViewModel: true,
       builder: (context, viewModel, child) {
         print('SliverClassicSearchView ... se renderiza...');
         return FutureBuilder(
@@ -180,7 +181,7 @@ class SliverClassicSearchView extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
               return gv.SliverProductGridView(childCount: viewModel.data!.length,
-                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin,);
+                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: isHomeVersion);
             } else {
               return const SliverToBoxAdapter(
                 child: Center(
