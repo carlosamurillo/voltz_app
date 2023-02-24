@@ -1,3 +1,5 @@
+import 'dart:js' as js;
+
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
@@ -9,7 +11,6 @@ import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/utils/added_dialog.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
-// import 'dart:js' as js;
 
 class ProductViewModel extends ReactiveViewModel {
   final _productsService = ProductService();
@@ -29,11 +30,11 @@ class ProductViewModel extends ReactiveViewModel {
   }
 
   Future<void> openTechFile(String url) async {
-    // js.context.callMethod('open', [url]);
+    js.context.callMethod('open', [url]);
   }
 
   Future<void> openWebPage(String url) async {
-    // js.context.callMethod('open', [url]);
+    js.context.callMethod('open', [url]);
   }
 
   navigateBack() async {
