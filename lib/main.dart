@@ -2,13 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_segment/flutter_segment.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/gate/auth_gate.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:maketplace/app/app.locator.dart';
-import 'package:maketplace/app/app.router.dart';
 
 // http://localhost:8080/?cotz=LDviRW7F3hoBPZ4LzWfN
 
@@ -27,7 +27,8 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: kIsWeb ? _config.firebaseOptions : null,
   );
-  String? quoteId = Uri.base.queryParameters["cotz"];
+  // String? quoteId = Uri.base.queryParameters["cotz"];
+  String? quoteId = "LDviRW7F3hoBPZ4LzWfN";
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
   runApp(MyApp(
@@ -40,7 +41,10 @@ void mainCommon() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, this.quoteId,});
+  const MyApp({
+    super.key,
+    this.quoteId,
+  });
   final String? quoteId;
   // This widget is the root of your application.
   @override
@@ -69,7 +73,9 @@ class MyApp extends StatelessWidget {
         // home: LoginView(),
         // home: RegisterView(),
         // home: CodeValidatorView(),
-        home: AuthGate(quoteId: quoteId,),
+        home: AuthGate(
+          quoteId: quoteId,
+        ),
         navigatorKey: StackedService.navigatorKey,
         // home: AddCardView(), // Used when testing a view
         //initialRoute: Routes.cartView,
@@ -78,4 +84,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

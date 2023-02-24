@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_service.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/utils/added_dialog.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:maketplace/app/app.locator.dart';
-import 'package:maketplace/product/product_model.dart';
-import 'dart:js' as js;
+// import 'dart:js' as js;
 
-class ProductViewModel  extends ReactiveViewModel  {
+class ProductViewModel extends ReactiveViewModel {
   final _productsService = ProductService();
 
   final NavigationService _navigationService = locator<NavigationService>();
@@ -29,11 +29,11 @@ class ProductViewModel  extends ReactiveViewModel  {
   }
 
   Future<void> openTechFile(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   Future<void> openWebPage(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   navigateBack() async {
@@ -41,13 +41,10 @@ class ProductViewModel  extends ReactiveViewModel  {
   }
 }
 
-
 class ProductCardViewModel extends ReactiveViewModel {
-
   final NavigationService _navigationService = locator<NavigationService>();
   late Product product;
-  var currencyFormat =
-  intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
 
   void init(Product product) async {
     this.product = product;
@@ -61,7 +58,9 @@ class ProductCardViewModel extends ReactiveViewModel {
   final _authService = locator<AuthService>();
   UserSignStatus get userSignStatus => _authService.userSignStatus;
   @override
-  List<ListenableServiceMixin> get listenableServices => [_authService,];
+  List<ListenableServiceMixin> get listenableServices => [
+        _authService,
+      ];
 
   bool isCardExpanded = false;
   //desactivada la linea mientras se optimiza para
@@ -108,7 +107,6 @@ class ProductCardViewModel extends ReactiveViewModel {
     return _navigationService.navigateToBuyNowView(productId: productId);
   }
 
-
   /**Variables para manejar el foco de los imput y botones*/
   final FocusNode _focusNodeInput = FocusNode();
   final FocusNode _focusNodeButton = FocusNode();
@@ -123,7 +121,6 @@ class ProductCardViewModel extends ReactiveViewModel {
   bool get isQtyLabelHighlight => _isQtyLabelHighlight;
   bool _isQtyLabelHighlight = false;
 
-
   void activateCalculator() async {
     isCalculatorActive = true;
     _focusNodeInput.requestFocus();
@@ -134,7 +131,6 @@ class ProductCardViewModel extends ReactiveViewModel {
     isCalculatorActive = false;
     notifyListeners();
   }
-
 
   @override
   void dispose() {
@@ -169,8 +165,7 @@ class ProductCardViewModel extends ReactiveViewModel {
   _onFocusButtonChange() async {
     print('Button Has Focus:  ${_focusNodeButton.hasFocus}');
     if (_focusNodeButton.hasFocus) {
-    } else {
-    }
+    } else {}
   }
 
   areaLostFocus() async {
@@ -195,7 +190,9 @@ class ProductCardViewModel extends ReactiveViewModel {
     _focusNodeButton.requestFocus();
   }
 
-  onPressCalculate(BuildContext context,) async {
+  onPressCalculate(
+    BuildContext context,
+  ) async {
     deactivateCalculator();
     await setCalculateVisibility(false);
     lastValue = double.tryParse(textEditingController.text) ?? 0;
@@ -203,7 +200,7 @@ class ProductCardViewModel extends ReactiveViewModel {
     setQuantity(double.tryParse(textEditingController.text) ?? 0);
   }
 
-  setQuantity(double quantity){
+  setQuantity(double quantity) {
     product.quantity = quantity;
   }
 }
