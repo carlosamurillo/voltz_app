@@ -7,15 +7,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:maketplace/product/product_views.dart';
+import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/utils/inputText.dart';
+import 'package:maketplace/utils/shimmer.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
-import '../product/product_views.dart';
-import '../quote/quote_viewmodel.dart';
-import '../utils/inputText.dart';
-import '../utils/shimmer.dart';
-import '../utils/style.dart';
 import 'cart_expandible_viewmodel.dart';
 import 'cart_item_viewmodel.dart';
 import 'cart_view.dart';
@@ -33,11 +33,7 @@ class CardGrid extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         if (viewModel.selectedProducts.isEmpty) {
           return const Center(
-            child: SizedBox(
-              width: 30,
-              height: 30,
-              child: CircularProgressIndicator(),
-            ),
+            child: SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
           );
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');

@@ -27,8 +27,8 @@ void mainCommon() async {
   await Firebase.initializeApp(
     options: kIsWeb ? _config.firebaseOptions : null,
   );
-  // String? quoteId = Uri.base.queryParameters["cotz"];
-  String? quoteId = "LDviRW7F3hoBPZ4LzWfN";
+  String? quoteId = Uri.base.queryParameters["cotz"];
+  // String? quoteId = "LDviRW7F3hoBPZ4LzWfN";
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
   runApp(MyApp(
