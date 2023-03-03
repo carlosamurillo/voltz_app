@@ -18,7 +18,18 @@
                 // "--flavor",
                 // "dev",
             ],
-            "program": "lib/main_dev.dart"
+            "program": "lib/main_voltz_dev.dart"
+        },
+        {
+            "name": "JetzWeb Dev",
+            "request": "launch",
+            "type": "dart",
+            //"flutterMode": "profile",
+            "args": [
+                // "--flavor",
+                // "dev",
+            ],
+            "program": "lib/main_jetz_dev.dart"
         },
         {
             "name": "voltz_web (profile mode)",

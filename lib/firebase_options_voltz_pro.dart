@@ -13,24 +13,22 @@ import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, Tar
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class DefaultFirebaseOptionsDevelop {
+class DefaultFirebaseOptionsVoltzProduction {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
-      // throw UnsupportedError(
-      //   'DefaultFirebaseOptions have not been configured for android - '
-      //   'you can reconfigure this by running the FlutterFire CLI again.',
-      // );
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for android - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.iOS:
-        return ios;
-      // throw UnsupportedError(
-      //   'DefaultFirebaseOptions have not been configured for ios - '
-      //   'you can reconfigure this by running the FlutterFire CLI again.',
-      // );
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -54,28 +52,12 @@ class DefaultFirebaseOptionsDevelop {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
-    appId: '1:884121058223:web:5287e00d4f25ca3ef24d5a',
-    messagingSenderId: '884121058223',
-    projectId: 'voltz-develop',
-    authDomain: 'voltz-develop.firebaseapp.com',
-    storageBucket: 'voltz-develop.appspot.com',
-  );
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
-    appId: '1:884121058223:android:b36cc85bd565538bf24d5a',
-    messagingSenderId: '884121058223',
-    projectId: 'mx.voltz.mobile.dev',
-    authDomain: 'voltz-develop.firebaseapp.com',
-    storageBucket: 'voltz-develop.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
-    appId: '1:884121058223:ios:422157c6eef7fec1f24d5a',
-    messagingSenderId: '884121058223',
-    projectId: 'com.example.voltzWeb ',
-    authDomain: 'voltz-develop.firebaseapp.com',
-    storageBucket: 'voltz-develop.appspot.com',
+    apiKey: 'AIzaSyBHoRvL7-K2OJdBIssJAMXOqd00xSnEJNw',
+    appId: '1:930873677724:web:68c8143502ea3604c39a59',
+    messagingSenderId: '930873677724',
+    projectId: 'voltz-pro',
+    authDomain: 'voltz-pro.firebaseapp.com',
+    storageBucket: 'voltz-pro.appspot.com',
+    measurementId: 'G-6SZDDQXMLM',
   );
 }

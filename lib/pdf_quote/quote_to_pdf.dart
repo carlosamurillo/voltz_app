@@ -1,4 +1,4 @@
-import 'dart:js' as js;
+// import 'dart:js' as js;
 import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -15,7 +15,7 @@ import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
 
 class QuotePdf {
   QuotePdf({required this.quote, required this.selectedProducts});
-  final VoltzKeys _config = VoltzKeys();
+  final AppKeys _config = AppKeys();
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final QuoteModel quote;
   final List<Product> selectedProducts;
@@ -930,6 +930,6 @@ class QuotePdf {
   }
 
   Future<void> _openPdf(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 }

@@ -1,44 +1,11 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_segment/flutter_segment.dart';
-import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/gate/auth_gate.dart';
-import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
-
-// http://localhost:8080/?cotz=LDviRW7F3hoBPZ4LzWfN
-
-void mainCommon() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  VoltzKeys _config = VoltzKeys();
-
-  if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
-    // Some android/ios specific code
-  } else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
-    // Some desktop specific code there
-  } else {
-    // Some web specific code there
-  }
-
-  await Firebase.initializeApp(
-    options: kIsWeb ? _config.firebaseOptions : null,
-  );
-  String? quoteId = Uri.base.queryParameters["cotz"];
-  // String? quoteId = "LDviRW7F3hoBPZ4LzWfN";
-  // print("el id cotizacion es : ${quoteId}");
-  setupLocator();
-  runApp(MyApp(
-    quoteId: quoteId,
-  ));
-  /*runApp(MyApp(
-    quoteId: "adsf",
-    version: "asdf",
-  ));*/
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -69,6 +36,15 @@ class MyApp extends StatelessWidget {
           primaryColor: CustomColors.safeBlue,
           fontFamily: "Hellix",
         ),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale('en'),
+          Locale('es'),
+        ],
         //home: QuoteView(quoteId: quoteId, version: version,),
         // home: LoginView(),
         // home: RegisterView(),

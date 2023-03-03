@@ -1,7 +1,6 @@
-
 import 'package:firebase_core/firebase_core.dart';
 
-class VoltzKeys {
+class AppKeys {
   final String? cloudFunctionsUrl;
   final String? algoliaAppId;
   final String? algoliaApiKey;
@@ -9,9 +8,9 @@ class VoltzKeys {
   final String? segmentWriteKey;
   final String? appUrl;
 
-  static VoltzKeys? _instance;
+  static AppKeys? _instance;
 
-  factory VoltzKeys({
+  factory AppKeys({
     String? cloudFunctionsUrl,
     String? algoliaAppId,
     String? algoliaApiKey,
@@ -19,7 +18,7 @@ class VoltzKeys {
     String? segmentWriteKey,
     String? appUrl,
   }) =>
-      _instance ??= VoltzKeys._(
+      _instance ??= AppKeys._(
         cloudFunctionsUrl: cloudFunctionsUrl,
         algoliaAppId: algoliaAppId,
         algoliaApiKey: algoliaApiKey,
@@ -28,7 +27,7 @@ class VoltzKeys {
         appUrl: appUrl,
       );
 
-  VoltzKeys._({
+  AppKeys._({
     this.cloudFunctionsUrl,
     this.algoliaAppId,
     this.algoliaApiKey,

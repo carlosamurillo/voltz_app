@@ -33,126 +33,129 @@ class _CodeValidatorBody extends StatelessWidget {
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SafeArea(
-          child: LayoutBuilder(
-              builder: (BuildContext ctx, BoxConstraints constraints){
-                return  Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 360),
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/svg/voltz_logo.svg',
-                                  width: 39.69,
-                                  height: 19.86,
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.close),
-                                ),
-                              ],
+          child: LayoutBuilder(builder: (BuildContext ctx, BoxConstraints constraints) {
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 360),
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SvgPicture.asset(
+                              'assets/svg/voltz_logo.svg',
+                              width: 39.69,
+                              height: 19.86,
                             ),
-                            const SizedBox(height: 50),
-                            const SelectableText(
-                              "Bienvenido",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: CustomColors.dark,
-                              ),
+                            IconButton(
+                              onPressed: () => model.navigateBack(),
+                              icon: const Icon(Icons.close),
                             ),
-                            const SizedBox(height: 5),
-                            const SelectableText(
-                              "Ingresa tu código de acceso.",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 32.0,
-                                color: CustomColors.dark,
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            RichText(
-                              text: TextSpan(
-                                text: "Te enviamos un mensaje de texto, con el código, al número ",
-                                style: const TextStyle(fontSize: 14, color: CustomColors.dark),
-                                children: [
-                                  TextSpan(
-                                    text: context.read<LoginViewModel>().phoneNumber.getOrElse(() => ""),
-                                    style: const TextStyle(fontSize: 14, color: CustomColors.blueVoltz),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                            const _PinPut(),
-                            const SizedBox(height: 75),
-                            if (model.isProcessing)
-                              const SingleChildScrollView()
-                            else
-                              LayoutBuilder(
-                                builder: (BuildContext ctx, BoxConstraints constraints){
-                                  switch (model.loginScreenStatus) {
-                                    case LoginScreenStatus.registerScreen:
-                                      Future.delayed(const Duration(seconds: 0), () {
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const RegisterView()));
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: SelectableText(
-                                            "Necesitamos crear tu usuario.",
-                                            style: CustomStyles.styleVolcanicDos,
-                                          ),
-                                          backgroundColor: CustomColors.energyYellow,
-                                          behavior: SnackBarBehavior.floating,
-                                          duration: const Duration(milliseconds: 2000),
-                                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
-                                          onVisible: () async {},
-                                        ));
-                                      });
-                                      return _ActionButton(onTap: model.validateCode,);
-                                    case LoginScreenStatus.overview:
-                                      Future.delayed(const Duration(seconds: 0), () {
-                                        Navigator.of(context).pop();
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content: SelectableText(
-                                            "Bienvenido.",
-                                            style: CustomStyles.styleVolcanicDos,
-                                          ),
-                                          backgroundColor: CustomColors.energyYellow,
-                                          behavior: SnackBarBehavior.floating,
-                                          duration: const Duration(milliseconds: 2000),
-                                          margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
-                                          onVisible: () async {},
-                                        ));
-                                      });
-                                      return _ActionButton(onTap: model.validateCode,);
-                                    default:
-                                      return _ActionButton(onTap: model.validateCode,);
-                                  }
-                                },
-                              ),
                           ],
                         ),
-                      ),
+                        const SizedBox(height: 50),
+                        const SelectableText(
+                          "Bienvenido",
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: CustomColors.dark,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        const SelectableText(
+                          "Ingresa tu código de acceso.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 32.0,
+                            color: CustomColors.dark,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        RichText(
+                          text: TextSpan(
+                            text: "Te enviamos un mensaje de texto, con el código, al número ",
+                            style: const TextStyle(fontSize: 14, color: CustomColors.dark),
+                            children: [
+                              TextSpan(
+                                text: context.read<LoginViewModel>().phoneNumber.getOrElse(() => ""),
+                                style: const TextStyle(fontSize: 14, color: CustomColors.blueVoltz),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        const _PinPut(),
+                        const SizedBox(height: 75),
+                        if (model.isProcessing)
+                          const SingleChildScrollView()
+                        else
+                          LayoutBuilder(
+                            builder: (BuildContext ctx, BoxConstraints constraints) {
+                              switch (model.loginScreenStatus) {
+                                case LoginScreenStatus.registerScreen:
+                                  Future.delayed(const Duration(seconds: 0), () {
+                                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const RegisterView()));
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: SelectableText(
+                                        "Necesitamos crear tu usuario.",
+                                        style: CustomStyles.styleVolcanicDos,
+                                      ),
+                                      backgroundColor: CustomColors.energyYellow,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(milliseconds: 2000),
+                                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+                                      onVisible: () async {},
+                                    ));
+                                  });
+                                  return _ActionButton(
+                                    onTap: model.validateCode,
+                                  );
+                                case LoginScreenStatus.overview:
+                                  Future.delayed(const Duration(seconds: 0), () {
+                                    Navigator.of(context).pop();
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: SelectableText(
+                                        "Bienvenido.",
+                                        style: CustomStyles.styleVolcanicDos,
+                                      ),
+                                      backgroundColor: CustomColors.energyYellow,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(milliseconds: 2000),
+                                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+                                      onVisible: () async {},
+                                    ));
+                                  });
+                                  return _ActionButton(
+                                    onTap: model.validateCode,
+                                  );
+                                default:
+                                  return _ActionButton(
+                                    onTap: model.validateCode,
+                                  );
+                              }
+                            },
+                          ),
+                      ],
                     ),
                   ),
-                );
-              }
-          ),
+                ),
+              ),
+            );
+          }),
         );
       },
     );
   }
 }
-
 
 class _ActionButton extends StatelessWidget {
   const _ActionButton({Key? key, required this.onTap}) : super(key: key);
@@ -170,9 +173,10 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
-
 class _PinPut extends StackedHookView<LoginViewModel> {
-  const _PinPut({Key? key,}) : super(key: key);
+  const _PinPut({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget builder(BuildContext context, LoginViewModel model) {
@@ -210,19 +214,17 @@ class _PinPut extends StackedHookView<LoginViewModel> {
         const SizedBox(
           height: 5,
         ),
-        model.codeNumber.isLeft()
-            ? Container(
-          alignment: Alignment.centerLeft,
-          child: const Text(
-            "Código incorrecto, vuelva a intentarlo",
-            style: TextStyle(color: Colors.red),
-          ),
-        )
-            : Container()
+        if (model.showErrorMessages)
+          model.codeNumber.isLeft()
+              ? Container(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    "Código incorrecto, vuelva a intentarlo",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                )
+              : Container()
       ],
     );
   }
-
-
-
 }

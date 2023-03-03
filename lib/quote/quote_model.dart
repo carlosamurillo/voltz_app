@@ -19,6 +19,7 @@ class QuoteModel {
   String? quoteCategory;
   Totals? totals = Totals();
   Customer? customer = Customer();
+  Author? author = Author();
   //this is only for local proposes
   bool isCalculatingTotals = false;
 
@@ -43,6 +44,7 @@ class QuoteModel {
     this.quoteCategory,
     this.totals,
     this.customer,
+    this.author,
   });
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
@@ -86,6 +88,9 @@ class QuoteModel {
     if (json.containsKey('customer') && json['customer'] != null) {
       customer = Customer.fromJson(json['customer']);
     }
+    if (json.containsKey('author') && json['author'] != null) {
+      author = Author.fromJson(json['author']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -120,6 +125,9 @@ class QuoteModel {
     if (this.customer != null) {
       data['customer'] = this.customer!.toMap();
     }
+    if (this.author != null) {
+      data['author'] = this.author!.toMap();
+    }
     return data;
   }
 }
@@ -135,12 +143,12 @@ class Totals {
   Totals({this.discount = 0, this.factorDiscount = 0, this.subTotal = 0, this.tax = 0, this.total = 0, this.saving = 0});
 
   Totals.fromJson(Map<String, dynamic> json) {
-    discount = json['discount'];
-    factorDiscount = json['factor_discount'];
-    subTotal = json['sub_total'];
-    tax = json['tax'];
-    total = json['total'];
-    saving = json['saving'];
+    discount = double.tryParse(json['discount']?.toString() ?? '');
+    factorDiscount = double.tryParse(json['factor_discount']?.toString() ?? '');
+    subTotal = double.tryParse(json['sub_total']?.toString() ?? '');
+    tax = double.tryParse(json['tax']?.toString() ?? '');
+    total = double.tryParse(json['total']?.toString() ?? '');
+    saving = double.tryParse(json['saving']?.toString() ?? '');
   }
 
   Map<String, dynamic> toMap() {
@@ -437,6 +445,28 @@ class Customer {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['category'] = this.category;
+    return data;
+  }
+}
+
+class Author {
+  String? id;
+  String? email;
+
+  Author({
+    this.id,
+    this.email,
+  });
+
+  Author.fromJson(Map<String, dynamic> json) {
+    id = json['user_id'];
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['user_id'] = this.id;
+    data['email'] = this.email;
     return data;
   }
 }
