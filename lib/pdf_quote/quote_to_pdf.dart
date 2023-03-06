@@ -1,16 +1,17 @@
 import 'dart:js' as js;
 import 'dart:typed_data';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/pdf_quote/svg_icons.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/extensions.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
-import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/product/product_model.dart';
 
 class QuotePdf {
   QuotePdf({required this.quote, required this.selectedProducts});

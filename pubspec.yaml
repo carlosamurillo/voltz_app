@@ -68,6 +68,8 @@ dependencies:
 
   dartz: ^0.10.1
 
+  expandable_bottom_bar: ^2.0.2
+
 dev_dependencies:
   build_runner: ^2.3.3
 

@@ -1,15 +1,16 @@
 import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/order/order_view_mobile.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
+import 'package:maketplace/payment/payment_view.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
-import 'package:maketplace/payment/payment_view.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:maketplace/order/order_view_mobile.dart';
-import 'package:maketplace/order/order_viewmodel.dart';
 
 class OrderView extends StatefulWidget {
   const OrderView({Key? key, required this.orderId}) : super(key: key);

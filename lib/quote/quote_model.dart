@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+
 import '../product/product_model.dart';
 
 class QuoteModel {
@@ -21,27 +22,28 @@ class QuoteModel {
   //this is only for local proposes
   bool isCalculatingTotals = false;
 
-  convertTimestampToLocal(Timestamp date){
+  convertTimestampToLocal(Timestamp date) {
     var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
     return dateTime.toLocal();
   }
 
-  QuoteModel(
-      {this.version,
-        this.id,
-        this.consecutive,
-        this.alias,
-        this.createdAt,
-        this.publishedAt,
-        this.detail,
-        this.accepted = false,
-        this.discardedProducts,
-        this.shipping,
-        this.pendingProducts,
-        this.record,
-        this.quoteCategory,
-        this.totals,
-        this.customer,});
+  QuoteModel({
+    this.version,
+    this.id,
+    this.consecutive,
+    this.alias,
+    this.createdAt,
+    this.publishedAt,
+    this.detail,
+    this.accepted = false,
+    this.discardedProducts,
+    this.shipping,
+    this.pendingProducts,
+    this.record,
+    this.quoteCategory,
+    this.totals,
+    this.customer,
+  });
 
   QuoteModel.fromJson(Map<String, dynamic> json, String docId) {
     version = json['version'];
@@ -100,15 +102,13 @@ class QuoteModel {
       data['detail'] = this.detail!.map((v) => v.toJson()).toList();
     }
     if (this.discardedProducts != null) {
-      data['discarded_products'] =
-          this.discardedProducts!.map((v) => v.toMap()).toList();
+      data['discarded_products'] = this.discardedProducts!.map((v) => v.toMap()).toList();
     }
     if (this.shipping != null) {
       data['shipping'] = this.shipping!.toMap();
     }
     if (this.pendingProducts != null) {
-      data['arr_not_result'] =
-          this.pendingProducts!.map((v) => v.toJson()).toList();
+      data['arr_not_result'] = this.pendingProducts!.map((v) => v.toJson()).toList();
     }
     if (this.record != null) {
       data['record'] = this.record!.toMap();
@@ -148,7 +148,7 @@ class Totals {
     data['discount'] = discount;
     data['factor_discount'] = factorDiscount;
     data['sub_total'] = subTotal;
-    data['tax'] =  tax;
+    data['tax'] = tax;
     data['total'] = total;
     data['saving'] = saving;
     return data;
@@ -163,7 +163,12 @@ class Detail {
   //this is only for local proposes
   bool isCalculatingProductTotals = false;
 
-  Detail({this.productRequested, this.id, this.productsSuggested, this.position,});
+  Detail({
+    this.productRequested,
+    this.id,
+    this.productsSuggested,
+    this.position,
+  });
 
   Detail.fromJson(Map<String, dynamic> json) {
     productRequested = json['product_requested'];
@@ -171,8 +176,11 @@ class Detail {
     position = json['position'];
     if (json['products_suggested'] != null) {
       productsSuggested = <Product>[];
-      for(int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(Product.fromJsonWithId(json: json['products_suggested'][a], id: json['products_suggested'][a]['product_id'],));
+      for (int a = 0; a < json['products_suggested'].length; a++) {
+        productsSuggested!.add(Product.fromJsonWithId(
+          json: json['products_suggested'][a],
+          id: json['products_suggested'][a]['product_id'],
+        ));
       }
     }
   }
@@ -184,8 +192,7 @@ class Detail {
       data['id'] = this.id!;
     }
     if (this.productsSuggested != null) {
-      data['products_suggested'] =
-          this.productsSuggested!.map((v) => v.toJson()).toList();
+      data['products_suggested'] = this.productsSuggested!.map((v) => v.toJson()).toList();
     }
     data['position'] = this.position;
     return data;
@@ -247,7 +254,7 @@ class ProductSuggested {
   String? source;
   String? brandFavicon;
 
-  *//** these are for local propose **//*
+  */ /** these are for local propose **/ /*
   int? cardIndex;
   String? productRequestedId;
   bool isCardExpanded = false;
@@ -369,7 +376,6 @@ class DiscardedProducts {
   }
 }
 
-
 class PendingProduct {
   String? requestedProduct;
   int? position;
@@ -398,10 +404,12 @@ class PendingProduct {
 class Shipping {
   double? total;
 
-  Shipping({this.total,});
+  Shipping({
+    this.total,
+  });
 
   Shipping.fromJson(Map<String, dynamic> json) {
-    total = json['total'];
+    total = json['total'] * 1.0;
   }
 
   Map<String, dynamic> toMap() {
@@ -415,7 +423,10 @@ class Customer {
   String? id;
   String? category;
 
-  Customer({this.id, this.category,});
+  Customer({
+    this.id,
+    this.category,
+  });
 
   Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
