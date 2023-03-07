@@ -889,9 +889,9 @@ class _CartContainer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const CardGrid(),
-                  // if (media.width >= CustomStyles.mobileBreak) ...[
-                  //   const Resume(),
-                  // ]
+                  if (media.width >= CustomStyles.mobileBreak) ...[
+                    const Resume(),
+                  ]
                 ],
               ),
             ),
