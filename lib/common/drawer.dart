@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/auth/gate_simple_viewmodel.dart';
-import 'package:maketplace/quote_detail/quote_detail_view.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked/stacked.dart';
 
@@ -41,13 +40,7 @@ class MenuDrawer extends StatelessWidget {
                     const SizedBox(height: 50),
                     DrawerItem(
                       icondata: Icons.home_outlined,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (ctx) => QuoteDetailListView(),
-                          ),
-                        );
-                      },
+                      onPressed: () {},
                       selected: true,
                       text: "Inicio",
                     ),
@@ -57,6 +50,13 @@ class MenuDrawer extends StatelessWidget {
                       onPressed: () => viewModel.navigateToHome(),
                       selected: false,
                       text: "Catálogo",
+                    ),
+                    const SizedBox(height: 10),
+                    DrawerItem(
+                      icondata: Icons.bookmark_added_sharp,
+                      onPressed: () => viewModel.navigateToQuotes(),
+                      selected: false,
+                      text: "Mis cotizaciones",
                     ),
                     const Spacer(),
                     DrawerItem(

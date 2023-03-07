@@ -30,16 +30,15 @@ class QuoteDetailService with ListenableServiceMixin {
   Stream<List<QuoteModel>> streamQuotes() async* {
     yield* reference
         .where("customer_id", whereIn: [112, '112']) //
-        // .orderBy("consecutive", descending: true)
-        // .limit(20)
+        .orderBy("consecutive", descending: true)
+        .limit(20)
         .snapshots()
         .map(
-          (snapshot) => snapshot.docs.map(
-            (doc) {
-              print(doc.data());
-              return QuoteModel.fromJson(doc.data() as Map<String, dynamic>, doc.id);
-            },
-          ).toList(),
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => QuoteModel.fromJson(doc.data() as Map<String, dynamic>, doc.id),
+              )
+              .toList(),
         );
   }
 

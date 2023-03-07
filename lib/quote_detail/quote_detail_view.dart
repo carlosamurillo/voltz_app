@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/quote_detail/dashboard_container_viewmodel.dart';
 import 'package:maketplace/quote_detail/quote_detail_viewmodel.dart';
+import 'package:maketplace/search/search_views.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
@@ -14,32 +18,90 @@ class QuoteDetailListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ViewModelBuilder<DashboardContainerViewModel>.reactive(
+      viewModelBuilder: () => DashboardContainerViewModel(),
+      builder: (context, model, child) {
+        return Scaffold(
+          endDrawer: model.userSignStatus == UserSignStatus.authenticated ? const MenuDrawer() : null,
+          backgroundColor: CustomColors.WBY,
+          // No appBar property provided, only the body.
+          body: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              // These are the slivers that show up in the "outer" scroll view.
+              return <Widget>[
+                const SliverHeader(),
+                /*SliverOverlapAbsorber(
+                    // This widget takes the overlapping behavior of the SliverAppBar,
+                    // and redirects it to the SliverOverlapInjector below. If it is
+                    // missing, then it is possible for the nested "inner" scroll view
+                    // below to end up under the SliverAppBar even when the inner
+                    // scroll view thinks it has not been scrolled.
+                    // This is not necessary if the "headerSliverBuilder" only builds
+                    // widgets that do not overlap the next sliver.
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                    sliver: const SliverHeader(),
+                  ),*/
+              ];
+            },
+            body: Builder(builder: (BuildContext context) {
+              if (model.isSearchSelected) {
+                return const CustomScrollView(
+                    //physics: model.isSearchSelected ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+                    // Add the app bar and list of items as slivers in the next steps.
+                    slivers: <Widget>[
+                      /*SliverToBoxAdapter(
+                              child: SizedBox(height: 25,),
+                            ),
+                            SliverSearchStatsView(),*/
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 25,
+                        ),
+                      ),
+                      SliverProductsSearchResult(),
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 25,
+                        ),
+                      ),
+                    ]);
+              }
+              return const _QuoteDetailListView();
+            }),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _QuoteDetailListView extends StatelessWidget {
+  const _QuoteDetailListView({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     return ViewModelBuilder<QuoteDetailViewModel>.reactive(
       viewModelBuilder: () => QuoteDetailViewModel(),
       onViewModelReady: (viewModel) => viewModel.init(),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
 
-        return Scaffold(
-          backgroundColor: CustomColors.WBY,
-          body: Container(
-            constraints: BoxConstraints(
-              minWidth: CustomStyles.mobileBreak,
-            ),
-            color: CustomColors.WBY,
-            child: Column(
-              children: [
-                const Header(),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Expanded(child: _CardGrid()),
-                    ],
-                  ),
+        return Container(
+          constraints: BoxConstraints(
+            minWidth: CustomStyles.mobileBreak,
+          ),
+          color: CustomColors.WBY,
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Expanded(child: _CardGrid()),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
