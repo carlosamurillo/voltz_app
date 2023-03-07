@@ -27,6 +27,7 @@ class CardGrid extends StatelessWidget {
         );
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return ViewModelBuilder<GridViewModel>.reactive(
       fireOnViewModelReadyOnce: true,
       builder: (context, viewModel, child) {
@@ -86,16 +87,16 @@ class CardGrid extends StatelessWidget {
                       crossAxisCount: ((media.width - 310 - 25) / 387).truncateToDouble().toInt() != 0 ? ((media.width - 310 - 25) / 387).truncateToDouble().toInt() : 1,
                     ),
                   ),
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: SizedBox(
-                      height: 25,
+                      height: media.height * 0.20,
                     ),
                   ),
-                  if (media.width < CustomStyles.mobileBreak) ...[
-                    const SliverToBoxAdapter(
-                      child: Resume(),
-                    ),
-                  ]
+                  // if (media.width < CustomStyles.mobileBreak) ...[
+                  //   const SliverToBoxAdapter(
+                  //     child: Resume(),
+                  //   ),
+                  // ]
                 ],
               ),
             )

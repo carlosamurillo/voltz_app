@@ -15,7 +15,7 @@ import 'package:printing/printing.dart' as p show PdfGoogleFonts, networkImage;
 
 class QuotePdf {
   QuotePdf({required this.quote, required this.selectedProducts});
-  final VoltzKeys _config = VoltzKeys();
+  final AppKeys _config = AppKeys();
   var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final QuoteModel quote;
   final List<Product> selectedProducts;

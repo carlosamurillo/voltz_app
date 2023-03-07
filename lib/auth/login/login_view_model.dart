@@ -13,7 +13,10 @@ class LoginViewModel extends ReactiveViewModel {
   UserSignStatus get authSignStatus => _authService.userSignStatus;
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_loginService, _authService, ];
+  List<ListenableServiceMixin> get listenableServices => [
+        _loginService,
+        _authService,
+      ];
 
   bool get isWhatsappCheckboxAccepted => _loginService.acceptWhatsapp;
   bool get showErrorMessages => _loginService.showErrorMessages;
@@ -34,5 +37,6 @@ class LoginViewModel extends ReactiveViewModel {
   changeCode(String? value) => _loginService.changeCode(value);
 
   validateCode() => _loginService.validateCode();
-}
 
+  navigateBack() => _navigationService.back();
+}

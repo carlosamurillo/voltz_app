@@ -38,18 +38,25 @@ class MenuDrawer extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 50),
-                    /*DrawerItem(
+                    DrawerItem(
                       icondata: Icons.home_outlined,
                       onPressed: () {},
                       selected: true,
                       text: "Inicio",
                     ),
-                    const SizedBox(height: 10),*/
+                    const SizedBox(height: 10),
                     DrawerItem(
                       icondata: Icons.bookmark_added_sharp,
                       onPressed: () => viewModel.navigateToHome(),
                       selected: false,
                       text: "Catálogo",
+                    ),
+                    const SizedBox(height: 10),
+                    DrawerItem(
+                      icondata: Icons.bookmark_added_sharp,
+                      onPressed: () => viewModel.navigateToQuotes(),
+                      selected: false,
+                      text: "Mis cotizaciones",
                     ),
                     const Spacer(),
                     DrawerItem(

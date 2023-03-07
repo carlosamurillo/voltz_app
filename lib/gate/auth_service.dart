@@ -1,16 +1,13 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/auth/user_data_model.dart';
 import 'package:observable_ish/value/value.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-import 'package:maketplace/app/app.locator.dart';
-import 'package:maketplace/app/app.router.dart';
-
-class AuthService  with ListenableServiceMixin {
-
+class AuthService with ListenableServiceMixin {
   final NavigationService _navigationService = locator<NavigationService>();
 
   final RxValue<UserSignStatus> _rxUserStatus = RxValue<UserSignStatus>(UserSignStatus.unauthenticated);
@@ -29,12 +26,10 @@ class AuthService  with ListenableServiceMixin {
 
   initAuthGate(String? quoteId) async {
     _rxQuoteId.value = quoteId;
-    FirebaseAuth.instance
-        .authStateChanges()
-        .listen((User? user) async {
-            await _verifySignedInUser(user);
-            redirect();
-        });
+    FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+      await _verifySignedInUser(user);
+      redirect();
+    });
   }
 
   _verifySignedInUser(User? user) async {
@@ -53,8 +48,7 @@ class AuthService  with ListenableServiceMixin {
 
   signInAnonymously() async {
     try {
-      final userCredential =
-          await FirebaseAuth.instance.signInAnonymously();
+      final userCredential = await FirebaseAuth.instance.signInAnonymously();
       print("Signed in with temporary account.");
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -68,7 +62,7 @@ class AuthService  with ListenableServiceMixin {
   }
 
   redirect() async {
-    if(quoteId == null) {
+    if (quoteId == null) {
       _navigationService.clearStackAndShow(Routes.homeView);
     } else {
       final args = CartViewArguments(quoteId: quoteId!);

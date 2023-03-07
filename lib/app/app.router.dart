@@ -5,7 +5,7 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter/cupertino.dart' as _i8;
+import 'package:flutter/cupertino.dart' as _i9;
 import 'package:flutter/material.dart';
 import 'package:maketplace/auth/login/login_view.dart' as _i7;
 import 'package:maketplace/cart/buy_now_view.dart' as _i6;
@@ -13,8 +13,9 @@ import 'package:maketplace/cart/cart_confirmation.dart' as _i4;
 import 'package:maketplace/cart/cart_view.dart' as _i2;
 import 'package:maketplace/home/home_view.dart' as _i5;
 import 'package:maketplace/order/oder_view.dart' as _i3;
+import 'package:maketplace/quote_detail/quote_detail_view.dart' as _i8;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i9;
+import 'package:stacked_services/stacked_services.dart' as _i10;
 
 class Routes {
   static const cartView = '/cart-view';
@@ -29,6 +30,8 @@ class Routes {
 
   static const loginView = '/login-view';
 
+  static const quoteDetailListView = '/quote-detail-list-view';
+
   static const all = <String>{
     cartView,
     orderView,
@@ -36,6 +39,7 @@ class Routes {
     homeView,
     buyNowView,
     loginView,
+    quoteDetailListView,
   };
 }
 
@@ -65,12 +69,16 @@ class StackedRouter extends _i1.RouterBase {
       Routes.loginView,
       page: _i7.LoginView,
     ),
+    _i1.RouteDef(
+      Routes.quoteDetailListView,
+      page: _i8.QuoteDetailListView,
+    ),
   ];
 
   final _pagesMap = <Type, _i1.StackedRouteFactory>{
     _i2.CartView: (data) {
       final args = data.getArgs<CartViewArguments>(nullOk: false);
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) =>
             _i2.CartView(key: args.key, quoteId: args.quoteId),
         settings: data,
@@ -78,7 +86,7 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i3.OrderView: (data) {
       final args = data.getArgs<OrderViewArguments>(nullOk: false);
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) =>
             _i3.OrderView(key: args.key, orderId: args.orderId),
         settings: data,
@@ -86,29 +94,35 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i4.CartConfirmation: (data) {
       final args = data.getArgs<CartConfirmationArguments>(nullOk: false);
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) =>
             _i4.CartConfirmation(key: args.key, quoteId: args.quoteId),
         settings: data,
       );
     },
     _i5.HomeView: (data) {
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) => const _i5.HomeView(),
         settings: data,
       );
     },
     _i6.BuyNowView: (data) {
       final args = data.getArgs<BuyNowViewArguments>(nullOk: false);
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) =>
             _i6.BuyNowView(key: args.key, productId: args.productId),
         settings: data,
       );
     },
     _i7.LoginView: (data) {
-      return _i8.CupertinoPageRoute<dynamic>(
+      return _i9.CupertinoPageRoute<dynamic>(
         builder: (context) => const _i7.LoginView(),
+        settings: data,
+      );
+    },
+    _i8.QuoteDetailListView: (data) {
+      return _i9.CupertinoPageRoute<dynamic>(
+        builder: (context) => const _i8.QuoteDetailListView(),
         settings: data,
       );
     },
@@ -126,7 +140,7 @@ class CartViewArguments {
     required this.quoteId,
   });
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final String quoteId;
 }
@@ -137,7 +151,7 @@ class OrderViewArguments {
     required this.orderId,
   });
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final String orderId;
 }
@@ -148,7 +162,7 @@ class CartConfirmationArguments {
     required this.quoteId,
   });
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final String quoteId;
 }
@@ -159,14 +173,14 @@ class BuyNowViewArguments {
     required this.productId,
   });
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final String productId;
 }
 
-extension NavigatorStateExtension on _i9.NavigationService {
+extension NavigatorStateExtension on _i10.NavigationService {
   Future<dynamic> navigateToCartView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String quoteId,
     int? routerId,
     bool preventDuplicates = true,
@@ -183,7 +197,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> navigateToOrderView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String orderId,
     int? routerId,
     bool preventDuplicates = true,
@@ -200,7 +214,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> navigateToCartConfirmation({
-    _i8.Key? key,
+    _i9.Key? key,
     required String quoteId,
     int? routerId,
     bool preventDuplicates = true,
@@ -231,7 +245,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> navigateToBuyNowView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String productId,
     int? routerId,
     bool preventDuplicates = true,
@@ -261,8 +275,22 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition: transition);
   }
 
+  Future<dynamic> navigateToQuoteDetailListView([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return navigateTo<dynamic>(Routes.quoteDetailListView,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
   Future<dynamic> replaceWithCartView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String quoteId,
     int? routerId,
     bool preventDuplicates = true,
@@ -279,7 +307,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> replaceWithOrderView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String orderId,
     int? routerId,
     bool preventDuplicates = true,
@@ -296,7 +324,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> replaceWithCartConfirmation({
-    _i8.Key? key,
+    _i9.Key? key,
     required String quoteId,
     int? routerId,
     bool preventDuplicates = true,
@@ -327,7 +355,7 @@ extension NavigatorStateExtension on _i9.NavigationService {
   }
 
   Future<dynamic> replaceWithBuyNowView({
-    _i8.Key? key,
+    _i9.Key? key,
     required String productId,
     int? routerId,
     bool preventDuplicates = true,
@@ -351,6 +379,20 @@ extension NavigatorStateExtension on _i9.NavigationService {
         transition,
   ]) async {
     return replaceWith<dynamic>(Routes.loginView,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithQuoteDetailListView([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return replaceWith<dynamic>(Routes.quoteDetailListView,
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

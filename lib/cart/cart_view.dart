@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -130,9 +131,10 @@ class _BottomExpandedAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.2,
-      minChildSize: 0.2,
-      maxChildSize: 0.7,
+      initialChildSize: 0.28,
+      minChildSize: 0.28,
+      maxChildSize: 0.8,
+      controller: DraggableScrollableController(),
       builder: (context, scrollControllerBottom) {
         return ColoredBox(
           color: CustomColors.safeBlue,
@@ -158,10 +160,10 @@ class _BottomReminderTakeOrder extends StackedHookView<QuoteViewModel> {
         return Container(
           color: CustomColors.safeBlue,
           width: media.width,
-          height: media.height * 0.15,
+          height: media.height * 0.20,
           child: SingleChildScrollView(
             controller: ScrollController(),
-            // physics: const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -284,6 +286,7 @@ class _BottomReminderTakeOrder extends StackedHookView<QuoteViewModel> {
                         )),
                   ],
                 ),
+                SizedBox(height: media.height * 0.01),
               ],
             ),
           ),
@@ -638,162 +641,57 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
         if (model.quote.detail != null) {
           return ListView(
             controller: scrollControllerBottom,
-            padding: const EdgeInsets.only(top: 25.0, right: 35.0, bottom: 25.0, left: 35.0),
+            padding: const EdgeInsets.only(right: 35.0, bottom: 25.0, left: 35.0),
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                      width: 360,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Divider(thickness: 5, color: Colors.white, height: 5, indent: 136, endIndent: 136),
-                          const SizedBox(height: 25),
-                          Text(
-                            'Realiza tu pedido ya',
-                            style: GoogleFonts.inter(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 42.0,
-                              color: CustomColors.white,
+                  Expanded(
+                    child: SizedBox(
+                        // width: media.width,
+                        width: clampDouble(360, media.width < 360 ? media.width : 360, 360),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 25.0),
+                              child: Center(
+                                  child: SizedBox(
+                                width: 38,
+                                child: Divider(thickness: 5, color: Colors.white, height: 5),
+                              )),
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(
-                            height: 35,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SelectableText(
-                                'Productos',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.white,
-                                ),
+                            Text(
+                              'Realiza tu pedido ya',
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 42.0,
+                                color: CustomColors.white,
                               ),
-                              const Spacer(),
-                              SelectableText(
-                                model.selectedProducts.length.toString(),
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SelectableText(
-                                'Subtotal',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              SelectableText(
-                                model.currencyFormat.format(model.quote.totals!.subTotal!),
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SelectableText(
-                                'Dcto. adicional',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.yellowVoltz,
-                                ),
-                              ),
-                              const Spacer(),
-                              SelectableText(
-                                '-${model.currencyFormat.format(model.quote.totals!.discount!)}',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0,
-                                  color: CustomColors.yellowVoltz,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SelectableText(
-                                'IVA (16%)',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              SelectableText(
-                                model.currencyFormat.format(model.quote.totals!.tax),
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 18,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SelectableText(
-                                'Envio',
-                                style: GoogleFonts.inter(
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14.0,
-                                  color: CustomColors.white,
-                                ),
-                              ),
-                              const Spacer(),
-                              if (model.quote.shipping == null || model.quote.shipping!.total == 0) ...[
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(
+                              height: 35,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                 SelectableText(
-                                  'Gratis',
+                                  'Productos',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                SelectableText(
+                                  model.selectedProducts.length.toString(),
                                   style: GoogleFonts.inter(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
@@ -801,9 +699,27 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
                                     color: CustomColors.white,
                                   ),
                                 ),
-                              ] else ...[
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                 SelectableText(
-                                  model.currencyFormat.format(model.quote.shipping!.total),
+                                  'Subtotal',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                SelectableText(
+                                  model.currencyFormat.format(model.quote.totals!.subTotal!),
                                   style: GoogleFonts.inter(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
@@ -811,14 +727,110 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
                                     color: CustomColors.white,
                                   ),
                                 ),
-                              ]
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                        ],
-                      )),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SelectableText(
+                                  'Dcto. adicional',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.0,
+                                    color: CustomColors.yellowVoltz,
+                                  ),
+                                ),
+                                const Spacer(),
+                                SelectableText(
+                                  '-${model.currencyFormat.format(model.quote.totals!.discount!)}',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16.0,
+                                    color: CustomColors.yellowVoltz,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SelectableText(
+                                  'IVA (16%)',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                SelectableText(
+                                  model.currencyFormat.format(model.quote.totals!.tax),
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SelectableText(
+                                  'Envio',
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14.0,
+                                    color: CustomColors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (model.quote.shipping == null || model.quote.shipping!.total == 0) ...[
+                                  SelectableText(
+                                    'Gratis',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ] else ...[
+                                  SelectableText(
+                                    model.currencyFormat.format(model.quote.shipping!.total),
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ]
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
+                        )),
+                  ),
                 ],
               ),
             ],

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +6,7 @@ import 'package:observable_ish/value/value.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-class LoginService  with ListenableServiceMixin {
+class LoginService with ListenableServiceMixin {
   final NavigationService _navigationService = locator<NavigationService>();
 
   final RxValue<bool> _rxAcceptWhatsapp = RxValue<bool>(false);
@@ -32,14 +31,23 @@ class LoginService  with ListenableServiceMixin {
   LoginScreenStatus get loginScreenStatus => _rxLoginScreenStatus.value;
 
   LoginService() {
-    listenToReactiveValues([_rxAcceptWhatsapp, _rxPhoneNumber, _rxCodeNumber, _rxIsProcessing,
-      _rxShowErrorMessages, _rxVerificationId, _rxLoginScreenStatus, ]);
+    listenToReactiveValues([
+      _rxAcceptWhatsapp,
+      _rxPhoneNumber,
+      _rxCodeNumber,
+      _rxIsProcessing,
+      _rxShowErrorMessages,
+      _rxVerificationId,
+      _rxLoginScreenStatus,
+    ]);
   }
 
   Future<void> login() async {
     _rxShowErrorMessages.value = true;
     notifyListeners();
-    if (phoneNumber.isLeft() && !acceptWhatsapp) return;
+    if (phoneNumber.isLeft() || !_rxAcceptWhatsapp.value) {
+      return;
+    }
     _rxIsProcessing.value = true;
     notifyListeners();
     try {
@@ -56,11 +64,12 @@ class LoginService  with ListenableServiceMixin {
         codeSent: (verificationId, _) {
           _rxLoginScreenStatus.value = LoginScreenStatus.inputCodeScreen;
           _rxIsProcessing.value = false;
+          _rxShowErrorMessages.value = false;
           notifyListeners();
           _rxVerificationId.value = verificationId;
         },
         codeAutoRetrievalTimeout: (verificationId) {
-          _rxVerificationId.value  = verificationId;
+          _rxVerificationId.value = verificationId;
         },
       );
     } on Exception catch (e) {
@@ -68,7 +77,7 @@ class LoginService  with ListenableServiceMixin {
       _rxLoginScreenStatus.value = LoginScreenStatus.failure;
     } catch (e) {
       print("*luis error inicio sesion  $e");
-      _rxLoginScreenStatus.value  = LoginScreenStatus.failure;
+      _rxLoginScreenStatus.value = LoginScreenStatus.failure;
     }
     _rxIsProcessing.value = false;
     notifyListeners();
@@ -122,7 +131,7 @@ class LoginService  with ListenableServiceMixin {
     if (codeValidatorRegExp.hasMatch(value)) {
       _rxCodeNumber.value = right(value);
     } else {
-      _rxCodeNumber.value  = left(value);
+      _rxCodeNumber.value = left(value);
     }
   }
 
@@ -152,7 +161,7 @@ class LoginService  with ListenableServiceMixin {
   }
 
   checkboxWhatsappChanged() async {
-    _rxAcceptWhatsapp.value = !acceptWhatsapp;
+    _rxAcceptWhatsapp.value = !_rxAcceptWhatsapp.value;
     notifyListeners();
   }
 }

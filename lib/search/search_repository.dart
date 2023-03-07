@@ -1,15 +1,14 @@
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:stacked/stacked.dart';
-import 'package:maketplace/keys_model.dart';
 
-class ProductSearchRepository with ListenableServiceMixin  {
-
+class ProductSearchRepository with ListenableServiceMixin {
   /// Hits Searcher with default search .
   final _productsSearcher = HitsSearcher.create(
-    applicationID: VoltzKeys().algoliaAppId!,
-    apiKey: VoltzKeys().algoliaApiKey!,
+    applicationID: AppKeys().algoliaAppId!,
+    apiKey: AppKeys().algoliaApiKey!,
     state: const SearchState(
       indexName: 'ecommerce_products',
     ),
@@ -21,7 +20,9 @@ class ProductSearchRepository with ListenableServiceMixin  {
   /// Product repository constructor.
   ProductSearchRepository() {
     _components
-      ..add(_productsSearcher,);
+      ..add(
+        _productsSearcher,
+      );
   }
 
   /// Get stream of products.
@@ -29,13 +30,12 @@ class ProductSearchRepository with ListenableServiceMixin  {
 
   /// Get stream of products.
   Stream<List<Product>> products() async* {
-    yield* _productsSearcher.responses
-        .map((response) => response.hits.map(Product.fromJson).toList());
+    yield* _productsSearcher.responses.map((response) => response.hits.map(Product.fromJson).toList());
   }
 
   /// Get stream of metadata.
   Stream<SearchMetadata> searchMetaData() async* {
-    yield*_productsSearcher.responses.map(SearchMetadata.fromResponse);
+    yield* _productsSearcher.responses.map(SearchMetadata.fromResponse);
   }
 
   /// Ultima cadena de texto de busqueda digitada por el usuario
@@ -47,7 +47,7 @@ class ProductSearchRepository with ListenableServiceMixin  {
 
   /// Execute a query in products
   Future<void> query(String string) async {
-    if(string.isNotEmpty && string.length >= 3) {
+    if (string.isNotEmpty && string.length >= 3) {
       _productsSearcher.query(string);
     } else {
       _productsSearcher.query('');
@@ -55,7 +55,7 @@ class ProductSearchRepository with ListenableServiceMixin  {
   }
 
   void applyState(int? pageKey) async {
-    _productsSearcher.applyState((state)  => state.copyWith(page: pageKey));
+    _productsSearcher.applyState((state) => state.copyWith(page: pageKey));
   }
 
   /// Dispose of underlying resources.

@@ -15,6 +15,7 @@ import '../gate/auth_service.dart';
 import '../notifications/notifications_service.dart';
 import '../product/product_service.dart';
 import '../quote/quote_service.dart';
+import '../quote_detail/quote_service.dart';
 import '../search/input_search_repository.dart';
 import '../search/search_repository.dart';
 
@@ -29,6 +30,7 @@ Future<void> setupLocator(
 // Register dependencies
   locator.registerLazySingleton(() => NavigationService());
   locator.registerLazySingleton(() => QuoteService());
+  locator.registerLazySingleton(() => QuoteDetailService());
   locator.registerLazySingleton(() => ProductService());
   locator.registerLazySingleton(() => ProductSearchRepository());
   locator.registerLazySingleton(() => InputSearchRepository());
