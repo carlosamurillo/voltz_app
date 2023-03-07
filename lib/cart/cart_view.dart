@@ -638,7 +638,7 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
         if (model.quote.detail != null) {
           return ListView(
             controller: scrollControllerBottom,
-            padding: const EdgeInsets.only(top: 25.0, right: 35.0, bottom: 25.0, left: 35.0),
+            padding: const EdgeInsets.only(right: 35.0, bottom: 25.0, left: 35.0),
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -650,8 +650,24 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Divider(thickness: 5, color: Colors.white, height: 5, indent: 136, endIndent: 136),
-                          const SizedBox(height: 25),
+                          InkWell(
+                            onTap: () {
+                              if (scrollControllerBottom.hasClients) {
+                                if (scrollControllerBottom.offset > media.height * 0.4) {
+                                  print("esta arriba chamo");
+                                  print(scrollControllerBottom.offset);
+                                  // scrollControllerBottom.position.minScrollExtent
+                                  // scrollControllerBottom.animateTo(0.2, duration: const Duration(milliseconds: 100), curve: Curves.easeIn),
+                                } else {
+                                  print("esta abajo chamo");
+                                }
+                              }
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 25.0),
+                              child: Divider(thickness: 5, color: Colors.white, height: 5, indent: 136, endIndent: 136),
+                            ),
+                          ),
                           Text(
                             'Realiza tu pedido ya',
                             style: GoogleFonts.inter(

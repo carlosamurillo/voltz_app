@@ -1,18 +1,23 @@
+import 'dart:html' as html;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/common/header.dart';
+import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-import 'package:maketplace/common/header.dart';
-import 'package:maketplace/product/product_model.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 
 class CartConfirmation extends StatefulWidget {
-  const CartConfirmation({Key? key, required this.quoteId,}) : super(key: key);
+  const CartConfirmation({
+    Key? key,
+    required this.quoteId,
+  }) : super(key: key);
   final String quoteId;
 
   @override
@@ -44,7 +49,9 @@ class CartConfirmationState extends State<CartConfirmation> {
               ),
             ));
       },
-      onViewModelReady: (viewModel) => viewModel.initConfirmation(widget.quoteId,),
+      onViewModelReady: (viewModel) => viewModel.initConfirmation(
+        widget.quoteId,
+      ),
     );
   }
 }
@@ -433,9 +440,9 @@ class CartList extends StackedHookView<QuoteViewModel> {
     return Builder(
       builder: (BuildContext context) {
         if (model.quote.detail != null) {
-          // if (defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
-          // html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
-          // }
+          if (defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
+            html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
+          }
           if (kDebugMode) {
             print('Se entra a crear la lista');
           }

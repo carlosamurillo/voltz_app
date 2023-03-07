@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +8,6 @@ import 'package:maketplace/common/header.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/extensions.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-
 
 const double fontSizeParagraph = 12;
 const Color _white = Color(0xFFFFFFFF);
@@ -94,10 +95,7 @@ class summary extends StackedHookView<QuoteViewModel> {
     return Builder(
       builder: (BuildContext context) {
         if (model.quote.detail != null) {
-          // html.window.history.pushState(
-          //     null,
-          //     'Voltz - Cotización ${model.quote.consecutive}',
-          //     '?cotz=${model.quote.id!}');
+          html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
           return Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               width: double.infinity,
