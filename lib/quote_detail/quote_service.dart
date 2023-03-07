@@ -29,9 +29,9 @@ class QuoteDetailService with ListenableServiceMixin {
 
   Stream<List<QuoteModel>> streamQuotes() async* {
     yield* reference
-        .where("customer_id", whereIn: [112, '112']) //
-        .orderBy("consecutive", descending: true)
-        .limit(20)
+        .where("customer_id", isEqualTo: "112") //
+        // .orderBy("consecutive", descending: true)
+        // .limit(20)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs

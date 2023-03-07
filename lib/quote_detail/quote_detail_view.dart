@@ -93,6 +93,7 @@ class _QuoteDetailListView extends StatelessWidget {
           color: CustomColors.WBY,
           child: Column(
             children: [
+              const SizedBox(height: 10),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +125,7 @@ class _CardGrid extends StackedHookView<QuoteDetailViewModel> {
           padding: const EdgeInsets.only(right: 25, left: 25),
           child: MasonryGridView.count(
             itemBuilder: (context, index) {
-              return _ItemWidget(model: model.quoteDetailList[index]);
+              return _ItemWidget(quoteModel: model.quoteDetailList[index]);
             },
             itemCount: model.quoteDetailList.length,
             mainAxisSpacing: 25,
@@ -137,53 +138,64 @@ class _CardGrid extends StackedHookView<QuoteDetailViewModel> {
   }
 }
 
-class _ItemWidget extends StatelessWidget {
-  const _ItemWidget({Key? key, required this.model}) : super(key: key);
-  final QuoteModel model;
+class _ItemWidget extends StackedHookView<QuoteDetailViewModel> {
+  const _ItemWidget({Key? key, required this.quoteModel}) : super(key: key, reactive: true);
+  final QuoteModel quoteModel;
   @override
-  Widget build(BuildContext context) {
+  Widget builder(
+    BuildContext context,
+    QuoteDetailViewModel model,
+  ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 17),
       decoration: const BoxDecoration(color: CustomColors.white),
-      width: 350,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(model.alias ?? ''),
-                Row(
-                  children: [
-                    Text(
-                      "creado a las ${intl.DateFormat("HH:mm, dd/MM", 'es_MX').format(model.createdAt!.toDate())}",
-                    ),
-                    const SizedBox(width: 5),
-                    // if (model.author?.id != null) //
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      color: CustomColors.yellowVoltz,
-                      child: const Text(
-                        "ASISTIDO",
-                        style: TextStyle(fontSize: 12, color: Colors.white),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => model.goToCart(quoteModel.id),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 17),
+            width: 350,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(quoteModel.alias ?? ''),
+                      Row(
+                        children: [
+                          Text(
+                            "creado a las ${intl.DateFormat("HH:mm, dd/MM", 'es_MX').format(quoteModel.createdAt!.toDate())}",
+                          ),
+                          const SizedBox(width: 5),
+                          // if (model.author?.id != null) //
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            color: CustomColors.yellowVoltz,
+                            child: const Text(
+                              "ASISTIDO",
+                              style: TextStyle(fontSize: 12, color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  padding: EdgeInsets.all(7.5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: CustomColors.WBY,
+                  ),
+                  child: Text(quoteModel.consecutive.toString()),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          Container(
-            padding: EdgeInsets.all(7.5),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: CustomColors.WBY,
-            ),
-            child: Text(model.consecutive.toString()),
-          ),
-        ],
+        ),
       ),
     );
   }

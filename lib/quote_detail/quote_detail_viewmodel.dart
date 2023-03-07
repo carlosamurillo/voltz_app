@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote_detail/quote_service.dart';
 import 'package:stacked/stacked.dart';
@@ -43,5 +44,11 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   void _streamQuotes() async {
     _quoteModelSubscription?.cancel();
     _quoteModelSubscription = _quoteDetailService.streamQuotes().listen((event) => _quoteDetailService.changeQuoteDetailList(event));
+  }
+
+  void goToCart(String? id) async {
+    if (id == null) return;
+    final args = CartViewArguments(quoteId: id);
+    return _navigationService.navigateTo(Routes.cartView, arguments: args);
   }
 }

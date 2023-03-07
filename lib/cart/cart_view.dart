@@ -286,6 +286,7 @@ class _BottomReminderTakeOrder extends StackedHookView<QuoteViewModel> {
                         )),
                   ],
                 ),
+                SizedBox(height: media.height * 0.01),
               ],
             ),
           ),
