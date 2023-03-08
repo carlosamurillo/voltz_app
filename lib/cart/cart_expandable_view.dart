@@ -166,6 +166,13 @@ class ProductCard extends StatelessWidget {
                                     viewModel.selectedProducts[i].coverImage!,
                                     height: 120,
                                     width: 120,
+                                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                      return Image.asset(
+                                        'assets/images/no_photo.png',
+                                        height: 120,
+                                        width: 120,
+                                      );
+                                    },
                                   )),
                             ],
                             const SizedBox(

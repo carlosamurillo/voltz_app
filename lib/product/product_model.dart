@@ -23,6 +23,7 @@ class Product {
   String? featuresString;
   String? makerWeb;
   bool? selected;
+  BestSupplier? bestSupplier;
 
   /** these are for local propose **/
   int? cardIndex;
@@ -53,7 +54,8 @@ class Product {
       this.features,
       this.featuresString,
       this.makerWeb,
-      this.selected});
+      this.selected,
+      this.bestSupplier});
 
   Product.fromJsonWithId({
     required Map<String, dynamic> json,
@@ -146,8 +148,19 @@ class Product {
     if (json.containsKey('maker_web')) {
       makerWeb = json['maker_web'];
     }
+    if (json.containsKey('best_supplier')) {
+      bestSupplier = BestSupplier.fromJson(json['best_supplier']);
+    }
     if (json.containsKey('price') && json.containsKey('price_public') && price != null && price!.price2 != null && pricePublic != null) {
       discountRate = ((pricePublic! - price!.price2!) / pricePublic!) * 100;
+      if(pricePublic == 0){
+        pricePublic = price!.priceBest! * 1.66;
+      }
+    } else if (json.containsKey('best_supplier') && json.containsKey('price_public') && bestSupplier != null && bestSupplier!.price1 != null && pricePublic != null) {
+      discountRate = ((pricePublic! - bestSupplier!.price1!) / pricePublic!) * 100;
+      if(pricePublic == 0){
+        pricePublic = bestSupplier!.priceBest! * 1.66;
+      }
     }
     if (json.containsKey('brand_favicon')) {
       brandFavicon = json['brand_favicon'];
@@ -155,6 +168,7 @@ class Product {
     if (json.containsKey('selected')) {
       selected = json['selected'];
     }
+
   }
 
   Map<String, dynamic> toJson() {
@@ -217,6 +231,43 @@ class Product {
     }
     if (this.selected != null) {
       data['selected'] = this.selected!;
+    }
+    if (this.bestSupplier != null) {
+      data['best_supplier'] = this.bestSupplier!.toMap();
+    }
+    return data;
+  }
+}
+
+class BestSupplier {
+  double? priceBest;
+  double? price1;
+  String? supplierCode;
+
+  BestSupplier({this.priceBest = 0, this.price1 = 0, this.supplierCode,});
+
+  BestSupplier.fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('price_best')) {
+      priceBest = json['price_best'] * 1.0;
+    }
+    if (json.containsKey('price_1')) {
+      price1 = json['price_1'] * 1.0;
+    }
+    if (json.containsKey('supplier_code')) {
+      supplierCode = json['supplier_code'];
+    }
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.priceBest != null) {
+      data['price_best'] = this.priceBest;
+    }
+    if (this.price1 != null) {
+      data['price_1'] = this.price1;
+    }
+    if (this.supplierCode != null) {
+      data['supplier_code'] = this.supplierCode;
     }
     return data;
   }

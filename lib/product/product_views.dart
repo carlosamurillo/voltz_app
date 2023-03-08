@@ -83,6 +83,13 @@ class ProductCard extends StatelessWidget {
                                         product.coverImage!,
                                         height: 120,
                                         width: 120,
+                                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                          return Image.asset(
+                                            'assets/images/no_photo.png',
+                                            height: 120,
+                                            width: 120,
+                                          );
+                                        },
                                       )),
                                 ],
                                 const SizedBox(width: 15,),
@@ -212,8 +219,8 @@ class ProductCard extends StatelessWidget {
                                                 child: Row(
                                                   children: [
                                                     SelectableText(
-                                                      product.price == null || product.price!.price2 == null ? '' :
-                                                      viewModel.currencyFormat.format(product.price!.price2!),
+                                                      product.bestSupplier == null || product.bestSupplier!.price1 == null ? '' :
+                                                      viewModel.currencyFormat.format(product.bestSupplier!.price1),
                                                       maxLines: 1,
                                                       style: GoogleFonts.inter(
                                                         fontStyle: FontStyle.normal,
@@ -598,7 +605,17 @@ class _ProductDetailWidget extends StatelessWidget {
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0)),
                                     child: Stack(
                                       children: <Widget>[
-                                        Image.network(item, fit: BoxFit.scaleDown, width: double.infinity),
+                                        Image.network(
+                                            item, fit: BoxFit.scaleDown,
+                                            width: double.infinity,
+                                            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                              return Image.asset(
+                                                'assets/images/no_photo.png',
+                                                height: 120,
+                                                width: 120,
+                                              );
+                                            },
+                                        ),
                                       ],
                                     )),
                               ),
