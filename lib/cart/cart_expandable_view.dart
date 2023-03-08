@@ -195,6 +195,9 @@ class ProductCard extends StatelessWidget {
                                           viewModel.selectedProducts[i].brandFavicon!,
                                           width: 16,
                                           height: 17,
+                                          errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                            return Container();
+                                          },
                                         ),
                                         const SizedBox(
                                           width: 5,

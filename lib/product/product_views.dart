@@ -108,7 +108,14 @@ class ProductCard extends StatelessWidget {
                                         children: [
                                           //Esto es temporal mientras se programa en el backend todas las marcas para la bd
                                           if(product.brandFavicon != null)...[
-                                            Image.network(product.brandFavicon!, width: 16, height: 17,),
+                                            Image.network(
+                                              product.brandFavicon!,
+                                              width: 16,
+                                              height: 17,
+                                              errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                return Container();
+                                              },
+                                            ),
                                             const SizedBox(width: 5,),
                                           ],
                                           SizedBox(

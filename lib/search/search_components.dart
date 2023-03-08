@@ -34,9 +34,10 @@ class SearchInputWidget extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: TextFormField(
+              textInputAction: TextInputAction.none,
               onChanged: viewModel.onTexInputChanged,
               onTap: () async => viewModel.changeSearchSelected(true),
-              onEditingComplete: () async => viewModel.changeSearchSelected(false),
+              //onEditingComplete: () async => viewModel.changeSearchSelected(false), // ESta activando el boton de cerrar al dar enter
               onSaved: (v) async => viewModel.changeSearchSelected(false),
               controller: viewModel.searchTextController,
               focusNode: viewModel.focusNodeSearch,
