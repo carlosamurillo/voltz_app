@@ -118,6 +118,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //if (widget.i == 1) return NoFoundCard();
+
     return ViewModelBuilder<CardItemViewModel>.reactive(
         viewModelBuilder: () => CardItemViewModel(),
         onViewModelReady: (viewModel) => viewModel.initCartView(
@@ -374,7 +375,7 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                   if (viewModel.selectedProducts[i].techFile != null) ...[
-                    getHeader(context, viewModel),
+                    getHeader(context, viewModel,),
                   ] else ...[
                     const Divider(
                       thickness: 1,
@@ -394,7 +395,8 @@ class ProductCard extends StatelessWidget {
         });
   }
 
-  Widget getHeader(BuildContext context, CardItemViewModel viewModel) {
+  Widget getHeader(BuildContext context, CardItemViewModel viewModel,) {
+    var media = MediaQuery.of(context).size;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
@@ -430,7 +432,7 @@ class ProductCard extends StatelessWidget {
                     SizedBox(
                       width: 167.0,
                       child: Text(
-                        'Detalles del producto',
+                        media.width >= CustomStyles.desktopBreak ? 'Detalles del producto' : "Detalles",
                         style: GoogleFonts.inter(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,

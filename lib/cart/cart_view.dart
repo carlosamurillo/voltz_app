@@ -26,6 +26,7 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var media = MediaQuery.of(context).size;
     return ViewModelBuilder<ContainerViewModel>.reactive(
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
@@ -74,8 +75,16 @@ class CartView extends StatelessWidget {
                       ),
                     ]);
               }
-              return _CartContainer(
-                quoteId: quoteId,
+              return Stack(
+                children: [
+                  _CartContainer(
+                    quoteId: quoteId,
+                  ),
+                  if (media.width < CustomStyles.mobileBreak) ...[
+                    const _BottomExpandedAppBar(),
+                    const Positioned(bottom: 0, child: _BottomReminderTakeOrder()),
+                  ]
+                ],
               );
             }),
           ),
@@ -146,155 +155,155 @@ class _BottomExpandedAppBar extends StatelessWidget {
   }
 }
 
-class _BottomReminderTakeOrder extends StackedHookView<QuoteViewModel> {
-  const _BottomReminderTakeOrder({Key? key}) : super(key: key, reactive: true);
+class _BottomReminderTakeOrder extends StatelessWidget {
+  const _BottomReminderTakeOrder({Key? key}) : super(key: key,);
 
   @override
-  Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
-    return Builder(builder: (context) {
-      var media = MediaQuery.of(context).size;
-      if (model.quote.detail != null) {
-        return Container(
-          color: CustomColors.safeBlue,
-          width: media.width,
-          height: media.height * 0.20,
-          child: SingleChildScrollView(
-            controller: ScrollController(),
-            physics: const NeverScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                        width: 310,
-                        padding: const EdgeInsets.all(25),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SelectableText(
-                                  '${model.currencyFormat.format(model.quote.totals!.total)} MXN',
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 20.0,
-                                    color: CustomColors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'total',
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12.0,
-                                    color: CustomColors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                    width: 250,
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(200),
-                                      ),
-                                      color: CustomColors.energyYellow,
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<QuoteViewModel>.reactive(
+      viewModelBuilder: () => QuoteViewModel(),
+      builder: (context, model, child) {
+        var media = MediaQuery.of(context).size;
+        if (model.quote.detail != null) {
+          return Container(
+            color: CustomColors.safeBlue,
+            width: media.width,
+            height: media.height * 0.20,
+            child: SingleChildScrollView(
+              controller: ScrollController(),
+              physics: const NeverScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                          width: 310,
+                          padding: const EdgeInsets.all(25),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SelectableText(
+                                    '${model.currencyFormat.format(model.quote.totals!.total)} MXN',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20.0,
+                                      color: CustomColors.white,
                                     ),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        borderRadius: const BorderRadius.all(Radius.circular(200)),
-                                        hoverColor: CustomColors.energyYellowHover,
-                                        onTap: () {
-                                          _Dialogs dialog = _Dialogs();
-                                          dialog.showAlertDialog(
-                                            context,
-                                            () async {
-                                              model.onGenerateOrder(context);
-                                            },
-                                            model.createConfirmMessage(),
-                                            model.quote.id!,
-                                          );
-                                        },
-                                        child: Container(
-                                          width: double.infinity,
-                                          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                                          alignment: Alignment.center,
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Text(
-                                                'Hacer pedido',
-                                                textAlign: TextAlign.center,
-                                                style: CustomStyles.styleVolcanic16600,
-                                              ),
-                                            ],
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'total',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                      width: 250,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(200),
+                                        ),
+                                        color: CustomColors.energyYellow,
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          borderRadius: const BorderRadius.all(Radius.circular(200)),
+                                          hoverColor: CustomColors.energyYellowHover,
+                                          onTap: () {
+                                            _Dialogs dialog = _Dialogs();
+                                            dialog.showAlertDialog(
+                                              context,
+                                                  () async {
+                                                model.onGenerateOrder(context);
+                                              },
+                                              model.createConfirmMessage(),
+                                              model.quote.id!,
+                                            );
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                                            alignment: Alignment.center,
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Text(
+                                                  'Hacer pedido',
+                                                  textAlign: TextAlign.center,
+                                                  style: CustomStyles.styleVolcanic16600,
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.lock,
-                                  size: 16,
-                                  color: CustomColors.white,
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Transacción segura',
-                                  style: GoogleFonts.inter(
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12.0,
+                                      )),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.lock,
+                                    size: 16,
                                     color: CustomColors.white,
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
-                        )),
-                  ],
-                ),
-                SizedBox(height: media.height * 0.01),
-              ],
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Transacción segura',
+                                    style: GoogleFonts.inter(
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12.0,
+                                      color: CustomColors.white,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )),
+                    ],
+                  ),
+                  SizedBox(height: media.height * 0.01),
+                ],
+              ),
             ),
-          ),
-        );
-      } else {
-        return Container(color: CustomColors.safeBlue);
-      }
-    });
+          );
+        } else {
+          return Container(color: CustomColors.safeBlue);
+        }
+      },
+    );
   }
 }
 
@@ -626,17 +635,16 @@ class Resume extends StackedHookView<QuoteViewModel> {
   }
 }
 
-class ResumeBottom extends StackedHookView<QuoteViewModel> {
-  const ResumeBottom({Key? key, required this.scrollControllerBottom}) : super(key: key, reactive: true);
+class ResumeBottom extends StatelessWidget{
+  const ResumeBottom({Key? key, required this.scrollControllerBottom}) : super(key: key,);
 
   final ScrollController scrollControllerBottom;
+
   @override
-  Widget builder(
-    BuildContext context,
-    QuoteViewModel model,
-  ) {
-    return Builder(
-      builder: (BuildContext context) {
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<QuoteViewModel>.reactive(
+      viewModelBuilder: () => QuoteViewModel(),
+      builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         if (model.quote.detail != null) {
           return ListView(
@@ -649,7 +657,7 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
                 children: [
                   Expanded(
                     child: SizedBox(
-                        // width: media.width,
+                      // width: media.width,
                         width: clampDouble(360, media.width < 360 ? media.width : 360, 360),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -659,9 +667,9 @@ class ResumeBottom extends StackedHookView<QuoteViewModel> {
                               padding: EdgeInsets.symmetric(vertical: 25.0),
                               child: Center(
                                   child: SizedBox(
-                                width: 38,
-                                child: Divider(thickness: 5, color: Colors.white, height: 5),
-                              )),
+                                    width: 38,
+                                    child: Divider(thickness: 5, color: Colors.white, height: 5),
+                                  )),
                             ),
                             Text(
                               'Realiza tu pedido ya',
@@ -888,30 +896,22 @@ class _CartContainer extends StatelessWidget {
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
 
-        return Stack(
-          children: [
-            Container(
-              constraints: BoxConstraints(
-                minWidth: CustomStyles.mobileBreak,
-              ),
-              width: media.width,
-              // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-              color: CustomColors.WBY,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CardGrid(),
-                  if (media.width >= CustomStyles.mobileBreak) ...[
-                    const Resume(),
-                  ]
-                ],
-              ),
-            ),
-            if (media.width < CustomStyles.mobileBreak) ...[
-              const _BottomExpandedAppBar(),
-              const Positioned(bottom: 0, child: _BottomReminderTakeOrder()),
-            ]
-          ],
+        return Container(
+          constraints: BoxConstraints(
+            minWidth: CustomStyles.mobileBreak,
+          ),
+          width: media.width,
+          // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+          color: CustomColors.WBY,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CardGrid(),
+              if (media.width >= CustomStyles.mobileBreak) ...[
+                const Resume(),
+              ]
+            ],
+          ),
         );
       },
     );
@@ -1009,8 +1009,8 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                 children: const [
                   SizedBox(width: 10),
                   PDFDownloadButton(),
-                  SizedBox(width: 10),
-                  CsvDownloadButton(),
+                  /*SizedBox(width: 10),
+                  CsvDownloadButton(),*/
                 ],
               ),
             ]

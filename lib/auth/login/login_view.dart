@@ -152,7 +152,7 @@ class _LoginBody extends StatelessWidget {
                             textAlign: TextAlign.center,
                             text: const TextSpan(
                               text: "Al hacer click en ",
-                              style: TextStyle(fontSize: 12, color: CustomColors.darkMinusOne),
+                              style: TextStyle(fontSize: 12, color: CustomColors.dark1),
                               children: [
                                 TextSpan(
                                   text: "\"Continuar\"",

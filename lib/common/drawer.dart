@@ -37,7 +37,7 @@ class MenuDrawer extends StatelessWidget {
                         IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close, color: Colors.white)),
                       ],
                     ),
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 50),/*
                     DrawerItem(
                       icondata: Icons.home_outlined,
                       onPressed: () {},
@@ -51,7 +51,7 @@ class MenuDrawer extends StatelessWidget {
                       selected: false,
                       text: "Catálogo",
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10),*/
                     DrawerItem(
                       icondata: Icons.bookmark_added_sharp,
                       onPressed: () => viewModel.navigateToQuotes(),
