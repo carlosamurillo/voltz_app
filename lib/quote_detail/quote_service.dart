@@ -7,19 +7,22 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
+
 class QuoteDetailService with ListenableServiceMixin {
   final NavigationService _navigationService = locator<NavigationService>();
 
   final RxValue<List<QuoteModel>> _rxQuoteDetailList = RxValue<List<QuoteModel>>([]);
   List<QuoteModel> get quoteDetailList => _rxQuoteDetailList.value;
 
+  String? customerId;
   late CollectionReference reference;
 
   QuoteService() {
     listenToReactiveValues([_rxQuoteDetailList]);
   }
 
-  void init() async {
+  void init(String? customerId) async {
+    customerId = customerId;
     _initReference();
   }
 
@@ -29,7 +32,7 @@ class QuoteDetailService with ListenableServiceMixin {
 
   Stream<List<QuoteModel>> streamQuotes() async* {
     yield* reference
-        .where("customer_id", isEqualTo: "112") //
+        .where("customer.id", isEqualTo: customerId) //
         // .orderBy("consecutive", descending: true)
         // .limit(20)
         .snapshots()

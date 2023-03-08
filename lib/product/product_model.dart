@@ -232,6 +232,9 @@ class Product {
     if (this.selected != null) {
       data['selected'] = this.selected!;
     }
+    if (this.id != null) {
+      data['product_id'] = this.id!;
+    }
     if (this.bestSupplier != null) {
       data['best_supplier'] = this.bestSupplier!.toMap();
     }

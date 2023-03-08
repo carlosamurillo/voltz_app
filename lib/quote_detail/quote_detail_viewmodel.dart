@@ -6,6 +6,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/quote_detail/quote_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
@@ -13,6 +14,7 @@ import 'package:stacked_services/stacked_services.dart' show NavigationService;
 class QuoteDetailViewModel extends ReactiveViewModel {
   final _quoteDetailService = locator<QuoteDetailService>();
   final NavigationService _navigationService = locator<NavigationService>();
+  final _quoteService = locator<QuoteService>();
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_quoteDetailService];
@@ -36,8 +38,12 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   }
 
   init() async {
-    _quoteDetailService.init();
+    if(_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
+
+    }
+    _quoteDetailService.init(_quoteService.quote.customer!.id);
     _streamQuotes();
+
     return notifyListeners();
   }
 
