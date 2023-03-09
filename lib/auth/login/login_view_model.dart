@@ -36,7 +36,10 @@ class LoginViewModel extends ReactiveViewModel {
 
   changeCode(String? value) => _loginService.changeCode(value);
 
-  validateCode() => _loginService.validateCode();
+  validateCode() async {
+    _authService.setRedirect(false);
+    _loginService.validateCode();
+  }
 
   navigateBack() => _navigationService.back();
 }

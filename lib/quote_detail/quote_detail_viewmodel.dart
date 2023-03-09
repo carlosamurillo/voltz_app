@@ -31,6 +31,8 @@ class QuoteDetailViewModel extends ReactiveViewModel {
 
   StreamSubscription<List<QuoteModel>>? _quoteModelSubscription;
 
+  late Stream<QuerySnapshot> quotesTemp;
+
   @override
   void dispose() {
     // Optional teardown:
@@ -38,6 +40,8 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   }
 
   init() async {
+    quotesTemp =
+    FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: _quoteService.quote.customer!.id).snapshots();
     if(_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
 
     }

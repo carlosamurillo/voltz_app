@@ -95,9 +95,9 @@ class Header extends StatelessWidget  {
                         const SizedBox(width: 5),
                         CustomIconButton(
                           onPressed: () => model.navigateToLogin(),
-                          buttonColor: CustomColors.dark,
-                          backGroundColor: Colors.white,
-                          icon: Icons.account_circle,
+                          buttonColor: CustomColors.white,
+                          backGroundColor: CustomColors.dark,
+                          icon: Icons.account_circle_outlined,
                           borderColor: CustomColors.WBY,
                         ),
                       ],

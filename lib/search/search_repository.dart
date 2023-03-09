@@ -9,8 +9,10 @@ class ProductSearchRepository with ListenableServiceMixin {
   final _productsSearcher = HitsSearcher.create(
     applicationID: AppKeys().algoliaAppId!,
     apiKey: AppKeys().algoliaApiKey!,
-    state: const SearchState(
+    state: SearchState(
       indexName: 'ecommerce_products',
+      facetFilters: List.from(['status:Disponible']),
+      hitsPerPage: 40,
     ),
   );
 

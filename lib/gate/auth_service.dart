@@ -20,6 +20,8 @@ class AuthService with ListenableServiceMixin {
   String? get quoteId => _rxQuoteId.value;
   Routes? routeRedirect;
 
+  bool _redirect = true;
+
   AuthService() {
     listenToReactiveValues([_rxUserStatus, _rxSignedUserData, _rxQuoteId]);
   }
@@ -30,6 +32,10 @@ class AuthService with ListenableServiceMixin {
       await _verifySignedInUser(user);
       redirect();
     });
+  }
+
+  setRedirect(bool value){
+    _redirect = value;
   }
 
   _verifySignedInUser(User? user) async {
@@ -62,11 +68,16 @@ class AuthService with ListenableServiceMixin {
   }
 
   redirect() async {
-    if (quoteId == null) {
-      _navigationService.clearStackAndShow(Routes.homeView);
+    if(_redirect) {
+      if (quoteId == null) {
+        _navigationService.clearStackAndShow(Routes.homeView);
+      } else {
+        final args = CartViewArguments(quoteId: quoteId!);
+        _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+      }
     } else {
-      final args = CartViewArguments(quoteId: quoteId!);
-      _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+      notifyListeners();
+      _redirect = true;
     }
   }
 

@@ -15,7 +15,10 @@ class GateSimpleViewModel extends ReactiveViewModel {
 
   UserSignStatus get authSignStatus => _authService.userSignStatus;
 
-  signOut() => _authService.signOut();
+  signOut() {
+    _authService.setRedirect(false);
+    _authService.signOut();
+  }
 
   navigateToLogin() async {
     return _navigationService.navigateToLoginView();
