@@ -49,11 +49,20 @@ class CustomColors {
   Color WBY = const Color(0xFFE4E9FC);
   Color dark1 = const Color(0xFF9C9FAA);
   Color darkPlusOne = const Color(0xFF9C9FAA);
+
+  Color buttonPrimaryColor = const Color(0xFF2E5CFF);
+  Color buttonPrimaryTextColor = const Color(0xFFFFFFFF);
+
+  Color buttonSecondaryColor = const Color(0xFFFFFFFF);
+  Color buttonSecondaryTextColor = const Color(0xFF394055);
+
+  Color buttonThirdColor = const Color(0xFF394055);
+  Color buttonThirdTextColor = const Color(0xFFFFFFFF);
 }
 
 class JeztCustomColors extends CustomColors {
   @override
-  Color blueVoltz = const Color(0xFF00B7EE);
+  Color blueVoltz = const Color(0xFF242424);
   @override
   Color bluePlusOne = const Color(0xFF089DCA);
   @override
@@ -78,4 +87,13 @@ class JeztCustomColors extends CustomColors {
   Color dark1 = const Color(0xFF1F1E1E);
   @override
   Color darkPlusOne = const Color(0xFF1F1E1E);
+
+  Color buttonPrimaryColor = const Color(0xFF242424);
+  Color buttonPrimaryTextColor = const Color(0xFFFFFFFF);
+
+  Color buttonSecondaryColor = const Color(0xFFFFFFFF);
+  Color buttonSecondaryTextColor = const Color(0xFF394055);
+
+  Color buttonThirdColor = const Color(0xFFD2002E);
+  Color buttonThirdTextColor = const Color(0xFFFFFFFF);
 }

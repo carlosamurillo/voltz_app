@@ -20,6 +20,8 @@ class LoginViewModel extends ReactiveViewModel {
 
   bool get isWhatsappCheckboxAccepted => _loginService.acceptWhatsapp;
   bool get showErrorMessages => _loginService.showErrorMessages;
+  bool get loginButtonEnabled => _loginService.loginButtonEnabled;
+  bool get checkCodeButtonEnabled => _loginService.checkCodeButtonEnabled;
   bool get isProcessing => _loginService.isProcessing;
   Either<String, String> get phoneNumber => _loginService.phoneNumber;
   Either<String, String> get codeNumber => _loginService.codeNumber;

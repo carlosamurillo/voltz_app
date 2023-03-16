@@ -9,6 +9,7 @@ import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/inputText.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -95,12 +96,21 @@ class _LoginBody extends StatelessWidget {
                                   activeColor: AppKeys().customColors!.blueVoltz,
                                 ),
                               ),
-                              const Expanded(child: Text("Acepto recibir mensajes por Whatsapp/SMS")),
+                              Expanded(
+                                  child: Text(
+                                "Acepto recibir mensajes por Whatsapp/SMS",
+                                style: (model.showErrorMessages && !model.isWhatsappCheckboxAccepted)
+                                    ? const TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.red,
+                                      )
+                                    : null,
+                              )),
                             ],
                           ),
                           const SizedBox(height: 80),
                           if (model.isProcessing)
-                            const SingleChildScrollView()
+                            const Center(child: CircularProgressIndicator())
                           else
                             LayoutBuilder(
                               builder: (BuildContext ctx, BoxConstraints constraints) {
@@ -182,17 +192,23 @@ class _LoginBody extends StatelessWidget {
   }
 }
 
-class _LoginButton extends StatelessWidget {
-  const _LoginButton({Key? key, required this.onTap}) : super(key: key);
+class _LoginButton extends StackedHookView<LoginViewModel> {
+  const _LoginButton({Key? key, required this.onTap}) : super(key: key, reactive: true);
   final Function onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget builder(
+    BuildContext context,
+    LoginViewModel model,
+  ) {
     return PrimaryButton(
       text: "Continuar",
+      enabled: model.loginButtonEnabled,
       onPressed: () {
-        FocusScope.of(context).unfocus();
-        onTap();
+        if (model.loginButtonEnabled) {
+          FocusScope.of(context).unfocus();
+          onTap();
+        }
       },
     );
   }

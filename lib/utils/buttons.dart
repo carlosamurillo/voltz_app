@@ -16,9 +16,10 @@ class PrimaryButton extends StatelessWidget {
     return BaseButton(
       text: text,
       onPressed: onPressed,
-      textColor: AppKeys().customColors!.white,
-      buttonColor: AppKeys().customColors!.blueVoltz,
+      textColor: AppKeys().customColors!.buttonPrimaryTextColor,
+      buttonColor: AppKeys().customColors!.buttonPrimaryColor,
       icon: icon,
+      enabled: enabled,
     );
   }
 }
@@ -35,9 +36,9 @@ class SecondaryButton extends StatelessWidget {
     return BaseButton(
       text: text,
       onPressed: onPressed,
-      textColor: AppKeys().customColors!.dark,
-      buttonColor: Colors.white,
-      borderColor: AppKeys().customColors!.dark,
+      textColor: AppKeys().customColors!.buttonSecondaryTextColor,
+      buttonColor: AppKeys().customColors!.buttonSecondaryColor,
+      borderColor: AppKeys().customColors!.buttonSecondaryTextColor,
       icon: icon,
     );
   }
@@ -52,7 +53,13 @@ class ThirdButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseButton(text: text, onPressed: onPressed, textColor: AppKeys().customColors!.white, buttonColor: AppKeys().customColors!.dark, icon: icon);
+    return BaseButton(
+      text: text,
+      onPressed: onPressed,
+      textColor: AppKeys().customColors!.buttonThirdTextColor,
+      buttonColor: AppKeys().customColors!.buttonThirdColor,
+      icon: icon,
+    );
   }
 }
 
@@ -155,7 +162,7 @@ class BaseButton extends StatelessWidget {
         elevation: 0.1,
         surfaceTintColor: AppKeys().customColors!.yellowVoltz,
         disabledBackgroundColor: buttonColor.withOpacity(0.6),
-        backgroundColor: buttonColor,
+        backgroundColor: enabled ? buttonColor : buttonColor.withOpacity(0.6),
         side: borderColor == null
             ? null
             : BorderSide(

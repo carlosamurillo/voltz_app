@@ -16,11 +16,11 @@ void main() async {
     appUrl: 'https://voltz-develop.web.app/', // Dev y Pro usan el mismo destino en Segment
     //
     customColors: JeztCustomColors(),
-    logo: 'assets/svg/voltz_logo.svg',
+    logo: 'assets/svg/jetz_logo.svg',
     logoWhite: 'assets/svg/logo_voltz_white.svg',
-    logoWhiteBackground: 'assets/svg/logo_voltz_white_background.svg',
+    logoWhiteBackground: 'assets/svg/logo_jetz_white_background.svg',
     logoMobile: 'assets/svg/logo_mobile.svg',
-    logoIcon: SVGIcons.logo_votz,
+    logoIcon: SVGIcons.logo_jetz,
   );
 
   mainCommonJetz();

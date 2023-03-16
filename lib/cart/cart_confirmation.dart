@@ -1,4 +1,4 @@
-// import 'dart:html' as html;
+import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -441,7 +441,7 @@ class CartList extends StackedHookView<QuoteViewModel> {
       builder: (BuildContext context) {
         if (model.quote.detail != null) {
           if (defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
-            // html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
+            html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
           }
           if (kDebugMode) {
             print('Se entra a crear la lista');

@@ -275,38 +275,41 @@ class _ItemWidget extends StackedHookView<QuoteDetailViewModel> {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      quoteModel.alias ?? '',
-                      style: GoogleFonts.inter(
-                        textStyle: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14.0,
-                          color: AppKeys().customColors!.dark,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        quoteModel.alias ?? '',
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14.0,
+                            color: AppKeys().customColors!.dark,
+                          ),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(
+                        height: 7,
+                      ),
+                      Text(
+                        "creado a las ${intl.DateFormat("HH:mm, dd/MM", 'es_MX').format(quoteModel.createdAt!.toDate())}",
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12.0,
+                            color: AppKeys().customColors!.dark1,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 7,
-                    ),
-                    Text(
-                      "creado a las ${intl.DateFormat("HH:mm, dd/MM", 'es_MX').format(quoteModel.createdAt!.toDate())}",
-                      style: GoogleFonts.inter(
-                        textStyle: TextStyle(
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.0,
-                          color: AppKeys().customColors!.dark1,
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.center,

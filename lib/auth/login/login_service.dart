@@ -21,6 +21,12 @@ class LoginService with ListenableServiceMixin {
   final RxValue<bool> _rxIsProcessing = RxValue<bool>(false);
   bool get isProcessing => _rxIsProcessing.value;
 
+  final RxValue<bool> _rxLoginButtonEnabled = RxValue<bool>(false);
+  bool get loginButtonEnabled => _rxLoginButtonEnabled.value;
+
+  final RxValue<bool> _rxCheckCodeButtonEnabled = RxValue<bool>(false);
+  bool get checkCodeButtonEnabled => _rxCheckCodeButtonEnabled.value;
+
   final RxValue<bool> _rxShowErrorMessages = RxValue<bool>(false);
   bool get showErrorMessages => _rxShowErrorMessages.value;
 
@@ -43,6 +49,7 @@ class LoginService with ListenableServiceMixin {
   }
 
   Future<void> login() async {
+    _rxLoginScreenStatus.value = LoginScreenStatus.none;
     _rxShowErrorMessages.value = true;
     notifyListeners();
     if (phoneNumber.isLeft() || !_rxAcceptWhatsapp.value) {
@@ -85,6 +92,7 @@ class LoginService with ListenableServiceMixin {
 
   Future<void> validateCode() async {
     try {
+      _rxLoginScreenStatus.value = LoginScreenStatus.none;
       _rxShowErrorMessages.value = true;
       notifyListeners();
       if (codeNumber.isLeft()) return;
@@ -115,24 +123,33 @@ class LoginService with ListenableServiceMixin {
   }
 
   changePhoneNumber(String? newPhoneNumber) async {
+    _rxLoginScreenStatus.value = LoginScreenStatus.none;
     final regExp = RegExp(r'(^[0-9]{10,10}$)');
     if (newPhoneNumber == null) return;
     if (regExp.hasMatch(newPhoneNumber)) {
       _rxPhoneNumber.value = right(newPhoneNumber);
+      if (_rxAcceptWhatsapp.value) {
+        _rxLoginButtonEnabled.value = true;
+      }
     } else {
+      _rxLoginButtonEnabled.value = false;
       _rxPhoneNumber.value = left(newPhoneNumber);
     }
     notifyListeners();
   }
 
   changeCode(String? value) async {
+    _rxLoginScreenStatus.value = LoginScreenStatus.none;
     if (value == null) return;
     final codeValidatorRegExp = RegExp('[0-9]{6}');
     if (codeValidatorRegExp.hasMatch(value)) {
+      _rxCheckCodeButtonEnabled.value = true;
       _rxCodeNumber.value = right(value);
     } else {
+      _rxCheckCodeButtonEnabled.value = false;
       _rxCodeNumber.value = left(value);
     }
+    notifyListeners();
   }
 
   Future<void> _verifySignedInUser() async {
@@ -158,10 +175,17 @@ class LoginService with ListenableServiceMixin {
       _rxLoginScreenStatus.value = LoginScreenStatus.failure;
       print("*luis error verificar usuario  $e");
     }
+    notifyListeners();
   }
 
   checkboxWhatsappChanged() async {
+    _rxLoginScreenStatus.value = LoginScreenStatus.none;
     _rxAcceptWhatsapp.value = !_rxAcceptWhatsapp.value;
+    if (_rxAcceptWhatsapp.value && _rxPhoneNumber.value.isRight()) {
+      _rxLoginButtonEnabled.value = true;
+    } else {
+      _rxLoginButtonEnabled.value = false;
+    }
     notifyListeners();
   }
 }

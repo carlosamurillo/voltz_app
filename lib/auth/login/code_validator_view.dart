@@ -96,7 +96,7 @@ class _CodeValidatorBody extends StatelessWidget {
                         const _PinPut(),
                         const SizedBox(height: 75),
                         if (model.isProcessing)
-                          const SingleChildScrollView()
+                          const Center(child: CircularProgressIndicator())
                         else
                           LayoutBuilder(
                             builder: (BuildContext ctx, BoxConstraints constraints) {
@@ -122,9 +122,7 @@ class _CodeValidatorBody extends StatelessWidget {
                                       onVisible: () async {},
                                     ));
                                   });
-                                  return _ActionButton(
-                                    onTap: model.validateCode,
-                                  );
+                                  return const _ActionButton();
                                 case LoginScreenStatus.overview:
                                   Future.delayed(const Duration(seconds: 0), () {
                                     Navigator.of(context).pop();
@@ -140,13 +138,24 @@ class _CodeValidatorBody extends StatelessWidget {
                                       onVisible: () async {},
                                     ));
                                   });
-                                  return _ActionButton(
-                                    onTap: model.validateCode,
-                                  );
+                                  return const _ActionButton();
+                                case LoginScreenStatus.failure:
+                                  Future.delayed(const Duration(seconds: 0), () {
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: SelectableText(
+                                        "Error, el código es incorrecto.",
+                                        style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+                                      ),
+                                      backgroundColor: AppKeys().customColors!.redAlert,
+                                      behavior: SnackBarBehavior.floating,
+                                      duration: const Duration(milliseconds: 2000),
+                                      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+                                      onVisible: () async {},
+                                    ));
+                                  });
+                                  return const _ActionButton();
                                 default:
-                                  return _ActionButton(
-                                    onTap: model.validateCode,
-                                  );
+                                  return const _ActionButton();
                               }
                             },
                           ),
@@ -163,17 +172,22 @@ class _CodeValidatorBody extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({Key? key, required this.onTap}) : super(key: key);
-  final Function onTap;
+class _ActionButton extends StackedHookView<LoginViewModel> {
+  const _ActionButton({Key? key}) : super(key: key, reactive: true);
 
   @override
-  Widget build(BuildContext context) {
+  Widget builder(
+    BuildContext context,
+    LoginViewModel model,
+  ) {
     return PrimaryButton(
       text: "Entrar",
+      enabled: model.checkCodeButtonEnabled,
       onPressed: () {
-        FocusScope.of(context).unfocus();
-        onTap();
+        if (model.checkCodeButtonEnabled) {
+          FocusScope.of(context).unfocus();
+          model.validateCode();
+        }
       },
     );
   }
