@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +6,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/common/header.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
@@ -38,7 +38,7 @@ class CartConfirmationState extends State<CartConfirmation> {
       viewModelBuilder: () => QuoteViewModel(),
       builder: (context, viewModel, child) {
         return Scaffold(
-            backgroundColor: CustomColors.grayBackground,
+            backgroundColor: AppKeys().customColors!.grayBackground,
             body: Container(
               padding: const EdgeInsets.all(0),
               child: Column(
@@ -103,7 +103,7 @@ class _Resume extends StackedHookView<QuoteViewModel> {
         if (viewModel.quote.detail != null) {
           return Container(
               padding: const EdgeInsets.only(top: 100, right: 80, left: 80),
-              color: CustomColors.safeBlue,
+              color: AppKeys().customColors!.safeBlue,
               width: 410,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,17 +217,17 @@ class _Resume extends StackedHookView<QuoteViewModel> {
                   ),
                   Container(
                       width: double.infinity,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(
                           Radius.circular(6),
                         ),
-                        color: CustomColors.energyYellow,
+                        color: AppKeys().customColors!.energyYellow,
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
-                          hoverColor: CustomColors.energyYellowHover,
+                          hoverColor: AppKeys().customColors!.energyYellowHover,
                           onTap: () {
                             _Dialogs dialog = _Dialogs();
                             dialog.showAlertDialog(
@@ -299,7 +299,7 @@ class _Resume extends StackedHookView<QuoteViewModel> {
                 ],
               ));
         } else {
-          return Container(color: CustomColors.safeBlue);
+          return Container(color: AppKeys().customColors!.safeBlue);
         }
       },
     );
@@ -322,11 +322,11 @@ class _CartContent extends StackedHookView<QuoteViewModel> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   //
-                  color: CustomColors.grayBackground_2,
+                  color: AppKeys().customColors!.grayBackground_2,
                   width: 1.0,
                 ),
               ),
@@ -361,7 +361,7 @@ class _CartContent extends StackedHookView<QuoteViewModel> {
           ),
           Container(
               padding: const EdgeInsets.all(20),
-              color: CustomColors.energyYellow_20,
+              color: AppKeys().customColors!.energyYellow_20,
               margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 0),
               width: double.infinity,
               alignment: Alignment.centerRight,
@@ -441,7 +441,7 @@ class CartList extends StackedHookView<QuoteViewModel> {
       builder: (BuildContext context) {
         if (model.quote.detail != null) {
           if (defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
-            html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
+            // html.window.history.pushState(null, 'Voltz - Cotización ${model.quote.consecutive}', '?cotz=${model.quote.id!}');
           }
           if (kDebugMode) {
             print('Se entra a crear la lista');

@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
 import 'package:maketplace/gate/auth_service.dart';
-import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/quote_detail/dashboard_container_viewmodel.dart';
 import 'package:maketplace/quote_detail/quote_detail_viewmodel.dart';
 import 'package:maketplace/quote_detail/quote_overview_model.dart';
 import 'package:maketplace/search/search_views.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
@@ -26,7 +24,7 @@ class QuoteDetailListView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           endDrawer: model.userSignStatus == UserSignStatus.authenticated ? const MenuDrawer() : null,
-          backgroundColor: CustomColors.WBY,
+          backgroundColor: AppKeys().customColors!.WBY,
           // No appBar property provided, only the body.
           body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -93,7 +91,7 @@ class _QuoteDetailListView extends StatelessWidget {
           constraints: BoxConstraints(
             minWidth: CustomStyles.mobileBreak,
           ),
-          color: CustomColors.WBY,
+          color: AppKeys().customColors!.WBY,
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -119,8 +117,7 @@ class TemporalStreamWidget extends StatefulWidget {
 }
 
 class _TemporalStreamState extends State<TemporalStreamWidget> {
-  final Stream<QuerySnapshot> _usersStream =
-  FirebaseFirestore.instance.collection('users').snapshots();
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -138,13 +135,12 @@ class _TemporalStreamState extends State<TemporalStreamWidget> {
         return ListView(
           children: snapshot.data!.docs
               .map((DocumentSnapshot document) {
-            Map<String, dynamic> data =
-            document.data()! as Map<String, dynamic>;
-            return ListTile(
-              title: Text(data['full_name']),
-              subtitle: Text(data['company']),
-            );
-          })
+                Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(data['full_name']),
+                  subtitle: Text(data['company']),
+                );
+              })
               .toList()
               .cast(),
         );
@@ -153,15 +149,14 @@ class _TemporalStreamState extends State<TemporalStreamWidget> {
   }
 }
 
-
 class _CardGridTemp extends StackedHookView<QuoteDetailViewModel> {
   const _CardGridTemp({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteDetailViewModel model,
-      ) {
+    BuildContext context,
+    QuoteDetailViewModel model,
+  ) {
     var media = MediaQuery.of(context).size;
     return StreamBuilder<QuerySnapshot>(
       stream: model.quotesTemp,
@@ -174,51 +169,51 @@ class _CardGridTemp extends StackedHookView<QuoteDetailViewModel> {
           return const Center(child: CircularProgressIndicator());
         }
         var crossAxisCount = ((media.width - 100) / 350).floor() != 0 ? ((media.width - 100) / 350).floor() : 1;
-        var itemWidth = (media.width - 50)  / crossAxisCount;
+        var itemWidth = (media.width - 50) / crossAxisCount;
         return Padding(
-          padding: const EdgeInsets.all(50),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Cotizaciones recientes',
-                style: GoogleFonts.inter(
-                  textStyle: const TextStyle(
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16.0,
-                    color: CustomColors.blueVoltz,
-                    height: 1.1,
+            padding: const EdgeInsets.all(50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Cotizaciones recientes',
+                  style: GoogleFonts.inter(
+                    textStyle: TextStyle(
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.0,
+                      color: AppKeys().customColors!.blueVoltz,
+                      height: 1.1,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20,),
-              Expanded(
-                child: GridView.count(
-                  // Create a grid with 2 columns. If you change the scrollDirection to
-                  // horizontal, this produces 2 rows.
-                  crossAxisCount: ((media.width - 100) / 350).floor() != 0 ? ((media.width - 100) / 350).floor() : 1,
-                  crossAxisSpacing: 0,
-                  childAspectRatio: itemWidth / 120,
-                  mainAxisSpacing: 0,
-
-                  // Generate 100 widgets that display their index in the List.
-                  children: snapshot.data!.docs
-                      .map((DocumentSnapshot document) {
-                    Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      child: _ItemWidget(quoteModel: QuoteOverviewModel.fromJson(data, document.id)),
-                    );
-                  })
-                      .toList()
-                      .cast(),
+                const SizedBox(
+                  height: 20,
                 ),
-              )
-            ],
-          )
-        );
+                Expanded(
+                  child: GridView.count(
+                    // Create a grid with 2 columns. If you change the scrollDirection to
+                    // horizontal, this produces 2 rows.
+                    crossAxisCount: ((media.width - 100) / 350).floor() != 0 ? ((media.width - 100) / 350).floor() : 1,
+                    crossAxisSpacing: 0,
+                    childAspectRatio: itemWidth / 120,
+                    mainAxisSpacing: 0,
+
+                    // Generate 100 widgets that display their index in the List.
+                    children: snapshot.data!.docs
+                        .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+                          return Container(
+                            margin: EdgeInsets.all(10),
+                            child: _ItemWidget(quoteModel: QuoteOverviewModel.fromJson(data, document.id)),
+                          );
+                        })
+                        .toList()
+                        .cast(),
+                  ),
+                )
+              ],
+            ));
       },
     );
   }
@@ -265,12 +260,11 @@ class _ItemWidget extends StackedHookView<QuoteDetailViewModel> {
     return Container(
       width: 350,
       decoration: BoxDecoration(
-        color: Colors.white,
+          color: Colors.white,
           border: Border.all(
-            color: CustomColors.white,
+            color: AppKeys().customColors!.white,
           ),
-          borderRadius: const BorderRadius.all(Radius.circular(6))
-      ),
+          borderRadius: const BorderRadius.all(Radius.circular(6))),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -288,23 +282,25 @@ class _ItemWidget extends StackedHookView<QuoteDetailViewModel> {
                     Text(
                       quoteModel.alias ?? '',
                       style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w700,
                           fontSize: 14.0,
-                          color: CustomColors.dark,
+                          color: AppKeys().customColors!.dark,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 7,),
+                    const SizedBox(
+                      height: 7,
+                    ),
                     Text(
                       "creado a las ${intl.DateFormat("HH:mm, dd/MM", 'es_MX').format(quoteModel.createdAt!.toDate())}",
                       style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,
-                          color: CustomColors.dark1,
+                          color: AppKeys().customColors!.dark1,
                         ),
                       ),
                     ),
@@ -318,26 +314,28 @@ class _ItemWidget extends StackedHookView<QuoteDetailViewModel> {
                     Text(
                       quoteModel.consecutive.toString(),
                       style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
+                        textStyle: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
                           fontSize: 16.0,
-                          color: CustomColors.dark,
+                          color: AppKeys().customColors!.dark,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 7,),
+                    const SizedBox(
+                      height: 7,
+                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                      color: CustomColors.yellowVoltz,
+                      color: AppKeys().customColors!.yellowVoltz,
                       child: Text(
                         "ASISTIDA",
                         style: GoogleFonts.inter(
-                          textStyle: const TextStyle(
+                          textStyle: TextStyle(
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
                             fontSize: 12.0,
-                            color: CustomColors.white,
+                            color: AppKeys().customColors!.white,
                           ),
                         ),
                       ),

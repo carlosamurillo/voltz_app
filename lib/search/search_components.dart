@@ -1,9 +1,8 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/search/input_view_model.dart';
 import 'package:stacked/stacked.dart' show ViewModelBuilder;
-import 'package:maketplace/utils/custom_colors.dart';
 
 class SearchInputWidget extends StatelessWidget {
   const SearchInputWidget({
@@ -28,7 +27,7 @@ class SearchInputWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(200),
               color: Colors.white,
               border: Border.all(
-                color: viewModel.isSearchSelected ? CustomColors.dark : CustomColors.darkPlusOne,
+                color: viewModel.isSearchSelected ? AppKeys().customColors!.dark : AppKeys().customColors!.darkPlusOne,
                 width: 1,
               ),
             ),
@@ -43,25 +42,25 @@ class SearchInputWidget extends StatelessWidget {
               focusNode: viewModel.focusNodeSearch,
               decoration: InputDecoration(
                 hintText: 'Agregar productos',
-                hintStyle: const TextStyle(color: CustomColors.darkPlusOne),
+                hintStyle: TextStyle(color: AppKeys().customColors!.darkPlusOne),
                 border: InputBorder.none,
                 icon: Icon(
                   Icons.search,
                   size: 24,
-                  color: viewModel.isSearchSelected ? CustomColors.dark : CustomColors.dark1,
+                  color: viewModel.isSearchSelected ? AppKeys().customColors!.dark : AppKeys().customColors!.dark1,
                 ),
                 suffixIcon: viewModel.isSearchSelected
                     ? IconButton(
-                  onPressed: () async => viewModel.cancelSearch(),
-                  icon: const Icon(
-                    Icons.close,
-                    size: 24,
-                    color: CustomColors.dark,
-                  ),
-                )
+                        onPressed: () async => viewModel.cancelSearch(),
+                        icon: Icon(
+                          Icons.close,
+                          size: 24,
+                          color: AppKeys().customColors!.dark,
+                        ),
+                      )
                     : null,
                 alignLabelWithHint: true,
-                focusColor: CustomColors.dark,
+                focusColor: AppKeys().customColors!.dark,
               ),
             ),
           );

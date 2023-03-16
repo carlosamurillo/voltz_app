@@ -1,24 +1,20 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
-import 'package:maketplace/utils/custom_colors.dart';
-
 
 class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
   const PDFDownloadButton({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel viewModel,
-      ) {
+    BuildContext context,
+    QuoteViewModel viewModel,
+  ) {
     return Builder(
       builder: (BuildContext context) {
-        if ( viewModel.quote.detail != null) {
+        if (viewModel.quote.detail != null) {
           return Column(
             children: [
               Row(
@@ -26,19 +22,15 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                   Container(
                       width: 115,
                       decoration: BoxDecoration(
-                        color: CustomColors.white,
+                        color: AppKeys().customColors!.white,
                         borderRadius: const BorderRadius.all(Radius.circular(200.0)),
-                        border: Border.all(
-                            color: CustomColors.WBY,
-                            width: 1.0,
-                            style: BorderStyle.solid
-                        ),
+                        border: Border.all(color: AppKeys().customColors!.WBY, width: 1.0, style: BorderStyle.solid),
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.circular(200)),
-                          hoverColor: CustomColors.yellowLight,
+                          hoverColor: AppKeys().customColors!.yellowLight,
                           onTap: () async {
                             return viewModel.generatePdf();
                           },
@@ -46,7 +38,7 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                             alignment: Alignment.center,
-                            child:  Row(
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
@@ -58,12 +50,13 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                                 const SizedBox(
                                   width: 8,
                                 ),
-                                Text('PDF',
+                                Text(
+                                  'PDF',
                                   style: GoogleFonts.inter(
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.dark,
+                                    color: AppKeys().customColors!.dark,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -71,8 +64,7 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
                             ),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 ],
               ),
             ],
@@ -83,22 +75,19 @@ class PDFDownloadButton extends StackedHookView<QuoteViewModel> {
       },
     );
   }
-
 }
-
-
 
 class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
   const PDFDownloadButtonMobile({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel viewModel,
-      ) {
+    BuildContext context,
+    QuoteViewModel viewModel,
+  ) {
     return Builder(
       builder: (BuildContext context) {
-        if ( viewModel.quote.detail != null) {
+        if (viewModel.quote.detail != null) {
           return Column(
             children: [
               Row(
@@ -106,19 +95,15 @@ class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
                   Container(
                       width: 40,
                       decoration: BoxDecoration(
-                        color: CustomColors.white,
+                        color: AppKeys().customColors!.white,
                         borderRadius: const BorderRadius.all(Radius.circular(200.0)),
-                        border: Border.all(
-                            color: CustomColors.WBY,
-                            width: 1.0,
-                            style: BorderStyle.solid
-                        ),
+                        border: Border.all(color: AppKeys().customColors!.WBY, width: 1.0, style: BorderStyle.solid),
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.circular(200)),
-                          hoverColor: CustomColors.yellowLight,
+                          hoverColor: AppKeys().customColors!.yellowLight,
                           onTap: () async {
                             return viewModel.generatePdf();
                           },
@@ -126,7 +111,7 @@ class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 7),
                             alignment: Alignment.center,
-                            child:  Row(
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
@@ -139,8 +124,7 @@ class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
                             ),
                           ),
                         ),
-                      )
-                  ),
+                      )),
                 ],
               ),
             ],
@@ -151,5 +135,4 @@ class PDFDownloadButtonMobile extends StackedHookView<QuoteViewModel> {
       },
     );
   }
-
 }

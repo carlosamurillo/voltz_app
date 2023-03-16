@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/login/code_validator_view.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/buttons.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/inputText.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
@@ -15,9 +15,9 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: CustomColors.blueVoltz,
-      body: _LoginBody(),
+    return Scaffold(
+      backgroundColor: AppKeys().customColors!.blueVoltz,
+      body: const _LoginBody(),
     );
   }
 }
@@ -52,7 +52,7 @@ class _LoginBody extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SvgPicture.asset(
-                                'assets/svg/voltz_logo.svg',
+                                AppKeys().logo!,
                                 width: 39.69,
                                 height: 19.86,
                               ),
@@ -63,12 +63,12 @@ class _LoginBody extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 50),
-                          const SelectableText(
+                          SelectableText(
                             "Identifícate para cotizar y comprar",
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 32.0,
-                              color: CustomColors.dark,
+                              color: AppKeys().customColors!.dark,
                             ),
                           ),
                           const SizedBox(height: 15),
@@ -92,7 +92,7 @@ class _LoginBody extends StatelessWidget {
                                 child: CupertinoSwitch(
                                   value: model.isWhatsappCheckboxAccepted,
                                   onChanged: (v) => model.checkboxWhatsappChanged(),
-                                  activeColor: CustomColors.blueVoltz,
+                                  activeColor: AppKeys().customColors!.blueVoltz,
                                 ),
                               ),
                               const Expanded(child: Text("Acepto recibir mensajes por Whatsapp/SMS")),
@@ -113,7 +113,7 @@ class _LoginBody extends StatelessWidget {
                                           "Ingrese el código de verificación.",
                                           style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
                                         ),
-                                        backgroundColor: CustomColors.energyGreen,
+                                        backgroundColor: AppKeys().customColors!.energyGreen,
                                         behavior: SnackBarBehavior.floating,
                                         duration: const Duration(milliseconds: 2000),
                                         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -130,7 +130,7 @@ class _LoginBody extends StatelessWidget {
                                           "Error, vuelva a intentarlo.",
                                           style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
                                         ),
-                                        backgroundColor: CustomColors.redAlert,
+                                        backgroundColor: AppKeys().customColors!.redAlert,
                                         behavior: SnackBarBehavior.floating,
                                         duration: const Duration(milliseconds: 2000),
                                         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -150,20 +150,20 @@ class _LoginBody extends StatelessWidget {
                           const SizedBox(height: 10),
                           RichText(
                             textAlign: TextAlign.center,
-                            text: const TextSpan(
+                            text: TextSpan(
                               text: "Al hacer click en ",
-                              style: TextStyle(fontSize: 12, color: CustomColors.dark1),
+                              style: TextStyle(fontSize: 12, color: AppKeys().customColors!.dark1),
                               children: [
                                 TextSpan(
                                   text: "\"Continuar\"",
-                                  style: TextStyle(fontSize: 12, color: CustomColors.dark),
+                                  style: TextStyle(fontSize: 12, color: AppKeys().customColors!.dark),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: " acepto los ",
                                 ),
                                 TextSpan(
                                   text: "Términos y condiciones y Política de privacidad.",
-                                  style: TextStyle(fontSize: 12, color: CustomColors.dark),
+                                  style: TextStyle(fontSize: 12, color: AppKeys().customColors!.dark),
                                 ),
                               ],
                             ),

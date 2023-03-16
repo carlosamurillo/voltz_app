@@ -6,10 +6,11 @@ import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart';
 
 class RegisterViewModel extends ReactiveViewModel {
-
   final _authService = locator<AuthService>();
   @override
-  List<ListenableServiceMixin> get listenableServices => [ _authService, ];
+  List<ListenableServiceMixin> get listenableServices => [
+        _authService,
+      ];
 
   UserSignStatus get authSignStatus => _authService.userSignStatus;
 
@@ -18,6 +19,7 @@ class RegisterViewModel extends ReactiveViewModel {
   late Either<String, String> _lastNameOption;
   late Either<String, String> _emailOption;
   late Either<String, String> _rfcOption;
+  late String _phoneNumber;
 
   late bool _showErrorMessages;
   late RegisterStatus _registerStatus;
@@ -28,17 +30,19 @@ class RegisterViewModel extends ReactiveViewModel {
   Either<String, String> get lastNameOption => _lastNameOption;
   Either<String, String> get emailOption => _emailOption;
   Either<String, String> get rfcOption => _rfcOption;
+  String get phoneNumber => _phoneNumber;
 
   RegisterStatus get registerStatus => _registerStatus;
   bool get isProcessing => _isProcessing;
   bool get showErrorMessages => _showErrorMessages;
 
-  void init() {
+  void init(String phoneNumber) {
     _isBussiness = false;
     _nameOption = left('');
     _lastNameOption = left('');
     _emailOption = left('');
     _rfcOption = left('');
+    _phoneNumber = phoneNumber;
     _isProcessing = false;
     _showErrorMessages = false;
     _registerStatus = RegisterStatus.initial;
@@ -84,7 +88,7 @@ class RegisterViewModel extends ReactiveViewModel {
     notifyListeners();
   }
 
-  Future<void> register(String phoneNumber) async {
+  Future<void> register() async {
     _showErrorMessages = true;
     _isProcessing = true;
     _registerStatus = RegisterStatus.processing;
@@ -97,7 +101,7 @@ class RegisterViewModel extends ReactiveViewModel {
             'created': FieldValue.serverTimestamp(),
             'email': emailOption.getOrElse(() => "INVALID EMAIL"),
             'full_name': nameOption.getOrElse(() => "INVALID NAME"),
-            'phone': phoneNumber,
+            'phone': _phoneNumber,
             'role': "UserRole.User",
           };
           if (isBusiness) {

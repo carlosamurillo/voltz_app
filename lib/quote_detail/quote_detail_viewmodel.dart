@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
@@ -39,13 +40,15 @@ class QuoteDetailViewModel extends ReactiveViewModel {
     super.dispose();
   }
 
-  init() async {
-    quotesTemp =
-    FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: _quoteService.quote.customer!.id).snapshots();
-    if(_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
-
+  init() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: currentUser.uid).snapshots();
+      if (_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {}
+      _quoteDetailService.init(currentUser.uid);
+    } else {
+      quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: '').snapshots();
     }
-    _quoteDetailService.init(_quoteService.quote.customer!.id);
     _streamQuotes();
 
     return notifyListeners();

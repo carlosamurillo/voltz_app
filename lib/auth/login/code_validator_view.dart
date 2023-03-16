@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
 import 'package:maketplace/auth/register/register_view.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/buttons.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +17,9 @@ class CodeValidatorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: CustomColors.blueVoltz,
-      body: _CodeValidatorBody(),
+    return Scaffold(
+      backgroundColor: AppKeys().customColors!.blueVoltz,
+      body: const _CodeValidatorBody(),
     );
   }
 }
@@ -52,7 +52,7 @@ class _CodeValidatorBody extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             SvgPicture.asset(
-                              'assets/svg/voltz_logo.svg',
+                              AppKeys().logo!,
                               width: 39.69,
                               height: 19.86,
                             ),
@@ -63,31 +63,31 @@ class _CodeValidatorBody extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 50),
-                        const SelectableText(
+                        SelectableText(
                           "Bienvenido",
                           style: TextStyle(
                             fontSize: 16.0,
-                            color: CustomColors.dark,
+                            color: AppKeys().customColors!.dark,
                           ),
                         ),
                         const SizedBox(height: 5),
-                        const SelectableText(
+                        SelectableText(
                           "Ingresa tu código de acceso.",
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 32.0,
-                            color: CustomColors.dark,
+                            color: AppKeys().customColors!.dark,
                           ),
                         ),
                         const SizedBox(height: 15),
                         RichText(
                           text: TextSpan(
                             text: "Te enviamos un mensaje de texto, con el código, al número ",
-                            style: const TextStyle(fontSize: 14, color: CustomColors.dark),
+                            style: TextStyle(fontSize: 14, color: AppKeys().customColors!.dark),
                             children: [
                               TextSpan(
                                 text: context.read<LoginViewModel>().phoneNumber.getOrElse(() => ""),
-                                style: const TextStyle(fontSize: 14, color: CustomColors.blueVoltz),
+                                style: TextStyle(fontSize: 14, color: AppKeys().customColors!.blueVoltz),
                               ),
                             ],
                           ),
@@ -103,13 +103,19 @@ class _CodeValidatorBody extends StatelessWidget {
                               switch (model.loginScreenStatus) {
                                 case LoginScreenStatus.registerScreen:
                                   Future.delayed(const Duration(seconds: 0), () {
-                                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const RegisterView()));
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (ctx) => RegisterView(
+                                          phoneNumber: model.phoneNumber.getOrElse(() => "INVALID PHONE"),
+                                        ),
+                                      ),
+                                    );
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: SelectableText(
                                         "Necesitamos crear tu usuario.",
                                         style: CustomStyles.styleVolcanicDos,
                                       ),
-                                      backgroundColor: CustomColors.energyYellow,
+                                      backgroundColor: AppKeys().customColors!.energyYellow,
                                       behavior: SnackBarBehavior.floating,
                                       duration: const Duration(milliseconds: 2000),
                                       margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -127,7 +133,7 @@ class _CodeValidatorBody extends StatelessWidget {
                                         "Bienvenido.",
                                         style: CustomStyles.styleVolcanicDos,
                                       ),
-                                      backgroundColor: CustomColors.energyYellow,
+                                      backgroundColor: AppKeys().customColors!.energyYellow,
                                       behavior: SnackBarBehavior.floating,
                                       duration: const Duration(milliseconds: 2000),
                                       margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -183,11 +189,11 @@ class _PinPut extends StackedHookView<LoginViewModel> {
     final defaultPinTheme = PinTheme(
       width: 44,
       height: 54,
-      textStyle: const TextStyle(fontSize: 32, color: CustomColors.dark, fontWeight: FontWeight.w700),
+      textStyle: TextStyle(fontSize: 32, color: AppKeys().customColors!.dark, fontWeight: FontWeight.w700),
       decoration: BoxDecoration(
-        border: Border.all(color: CustomColors.dark, width: 1.4),
+        border: Border.all(color: AppKeys().customColors!.dark, width: 1.4),
         borderRadius: BorderRadius.circular(14.0),
-        color: CustomColors.WBY,
+        color: AppKeys().customColors!.WBY,
       ),
     );
 

@@ -1,13 +1,13 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/order/order_view_mobile.dart';
 import 'package:maketplace/order/order_viewmodel.dart';
 import 'package:maketplace/payment/payment_view.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
@@ -48,9 +48,9 @@ class _OrderViewState extends State<OrderView> {
               ),
             );
           } else {
-            html.window.history.pushState(null, 'Voltz - Pedido ${viewModel.order!.consecutive}', '?cotz=${viewModel.order!.id}');
+            // html.window.history.pushState(null, 'Voltz - Pedido ${viewModel.order!.consecutive}', '?cotz=${viewModel.order!.id}');
             return Scaffold(
-              backgroundColor: CustomColors.backgroundCanvas,
+              backgroundColor: AppKeys().customColors!.backgroundCanvas,
               body: MediaQuery.of(context).size.width >= 480
                   ? Container(
                       padding: EdgeInsets.all(0),
@@ -78,18 +78,18 @@ class _OrderViewState extends State<OrderView> {
                                     _OrderHeader(
                                       total: viewModel.order!.totals!.total!,
                                     ),
-                                    const Divider(
+                                    Divider(
                                       height: 1,
-                                      color: CustomColors.grayBackground,
+                                      color: AppKeys().customColors!.grayBackground,
                                     ),
                                     _OrderHeaderId(
                                         createdAt: viewModel.order!.createdAt!.toDate(),
                                         alias: viewModel.order!.alias!,
                                         orderId: viewModel.order!.consecutive!.toString(),
                                         showOrder: showOrder),
-                                    const Divider(
+                                    Divider(
                                       height: 1,
-                                      color: CustomColors.grayBackground,
+                                      color: AppKeys().customColors!.grayBackground,
                                     ),
                                     const SizedBox(
                                       height: 24,
@@ -136,9 +136,9 @@ class _OrderViewState extends State<OrderView> {
                               total: viewModel.order!.totals!.total!,
                               consecutive: viewModel.order!.consecutive.toString(),
                             ),
-                            const Divider(
+                            Divider(
                               height: 1,
-                              color: CustomColors.grayBackground,
+                              color: AppKeys().customColors!.grayBackground,
                             ),
                             OrderTotalsMobile(
                               tax: viewModel.order!.totals!.tax!,
@@ -212,17 +212,17 @@ class _GoToPaymentSate extends State<_GoToPayment> {
       child: Container(
           width: double.infinity,
           alignment: Alignment.center,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
               Radius.circular(26),
             ),
-            color: CustomColors.energyYellow,
+            color: AppKeys().customColors!.energyYellow,
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(26)),
-              hoverColor: CustomColors.energyYellowHover,
+              hoverColor: AppKeys().customColors!.energyYellowHover,
               onTap: () {
                 setState(() {
                   widget.listenerShowOrder();
@@ -266,7 +266,7 @@ class _OrderHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/svg/voltz_logo.svg',
+            AppKeys().logo!,
             width: 122,
             height: 24.5,
           ),
@@ -334,8 +334,8 @@ class _OrderHeaderId extends StatelessWidget {
   final String alias;
   final VoidCallback showOrder;
 
-  final Color _buttonColor = CustomColors.safeBlue;
-  final Color _buttonHoverColor = CustomColors.safeBlueHover;
+  final Color _buttonColor = AppKeys().customColors!.safeBlue;
+  final Color _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
 
   @override
   Widget build(BuildContext context) {
@@ -343,7 +343,7 @@ class _OrderHeaderId extends StatelessWidget {
       final f = intl.DateFormat('MMMM dd, yyyy hh:mm', 'es_MX');
       String formattedDate = f.format(createdAt.toLocal());
       return Container(
-        padding: EdgeInsets.symmetric(vertical: 26, horizontal: 64),
+        padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 64),
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,20 +351,20 @@ class _OrderHeaderId extends StatelessWidget {
             SelectableText.rich(
               TextSpan(
                 children: [
-                  const TextSpan(
+                  TextSpan(
                     text: 'Pedido ',
                     style: TextStyle(
                       fontFamily: "Hellix",
-                      color: CustomColors.volcanicBlue,
+                      color: AppKeys().customColors!.volcanicBlue,
                       fontSize: 48,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   TextSpan(
                     text: "#$orderId",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: "Hellix",
-                      color: CustomColors.volcanicBlue,
+                      color: AppKeys().customColors!.volcanicBlue,
                       fontSize: 32,
                       fontWeight: FontWeight.w600,
                     ),
@@ -398,9 +398,9 @@ class _OrderHeaderId extends StatelessWidget {
                       ),*/
                         TextSpan(
                           text: alias,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Hellix",
-                            color: CustomColors.volcanicBlue,
+                            color: AppKeys().customColors!.volcanicBlue,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -424,20 +424,20 @@ class _OrderHeaderId extends StatelessWidget {
                   child: SelectableText.rich(
                     TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'FECHA: ',
                           style: TextStyle(
                             fontFamily: "Hellix",
-                            color: CustomColors.volcanicBlue,
+                            color: AppKeys().customColors!.volcanicBlue,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         TextSpan(
                           text: formattedDate,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: "Hellix",
-                            color: CustomColors.volcanicBlue,
+                            color: AppKeys().customColors!.volcanicBlue,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -517,9 +517,9 @@ class _OrderTotalsState extends State<_OrderTotals> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-        color: CustomColors.volcanicBlue,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+        color: AppKeys().customColors!.volcanicBlue,
       ),
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -657,18 +657,18 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-                  color: CustomColors.safeBlue,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                  color: AppKeys().customColors!.safeBlue,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: CustomColors.energyYellow,
+                        color: AppKeys().customColors!.energyYellow,
                       ),
                       alignment: Alignment.center,
                       width: 56,
@@ -699,7 +699,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                     borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length - 1
                         ? const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))
                         : null,
-                    color: CustomColors.blueBackground,
+                    color: AppKeys().customColors!.blueBackground,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,

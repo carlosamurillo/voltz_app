@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +7,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_views.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/inputText.dart';
 import 'package:maketplace/utils/shimmer.dart';
 import 'package:maketplace/utils/style.dart';
@@ -39,7 +39,7 @@ class CardGrid extends StatelessWidget {
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
         if (kIsWeb) {
-          html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+          // html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         }
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -134,7 +134,7 @@ class ProductCard extends StatelessWidget {
               width: 362.0,
               padding: const EdgeInsets.all(0.0),
               decoration: BoxDecoration(
-                color: CustomColors.white,
+                color: AppKeys().customColors!.white,
                 borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                 border: Border.all(color: const Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
               ),
@@ -211,7 +211,7 @@ class ProductCard extends StatelessWidget {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 14.0,
-                                          color: CustomColors.dark,
+                                          color: AppKeys().customColors!.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -231,7 +231,7 @@ class ProductCard extends StatelessWidget {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 14.0,
-                                          color: CustomColors.dark,
+                                          color: AppKeys().customColors!.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -259,7 +259,7 @@ class ProductCard extends StatelessWidget {
                                       ),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                        color: CustomColors.yellowVoltz,
+                                        color: AppKeys().customColors!.yellowVoltz,
                                         child: SelectableText(
                                           "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
                                           enableInteractiveSelection: false,
@@ -301,7 +301,7 @@ class ProductCard extends StatelessWidget {
                                                     fontStyle: FontStyle.normal,
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 18.0,
-                                                    color: CustomColors.dark,
+                                                    color: AppKeys().customColors!.dark,
                                                     height: 1.1,
                                                   ),
                                                 ),
@@ -315,7 +315,7 @@ class ProductCard extends StatelessWidget {
                                                     fontStyle: FontStyle.normal,
                                                     fontWeight: FontWeight.w400,
                                                     fontSize: 12.0,
-                                                    color: CustomColors.dark,
+                                                    color: AppKeys().customColors!.dark,
                                                     height: 1.1,
                                                   ),
                                                 ),
@@ -348,7 +348,7 @@ class ProductCard extends StatelessWidget {
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w400,
                                           fontSize: 12.0,
-                                          color: CustomColors.dark,
+                                          color: AppKeys().customColors!.dark,
                                           height: 1.1,
                                         ),
                                       ),
@@ -368,14 +368,17 @@ class ProductCard extends StatelessWidget {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w400,
                             fontSize: 16.0,
-                            color: CustomColors.dark,
+                            color: AppKeys().customColors!.dark,
                           ),
                         ),
                       ],
                     ),
                   ),
                   if (viewModel.selectedProducts[i].techFile != null) ...[
-                    getHeader(context, viewModel,),
+                    getHeader(
+                      context,
+                      viewModel,
+                    ),
                   ] else ...[
                     const Divider(
                       thickness: 1,
@@ -395,7 +398,10 @@ class ProductCard extends StatelessWidget {
         });
   }
 
-  Widget getHeader(BuildContext context, CardItemViewModel viewModel,) {
+  Widget getHeader(
+    BuildContext context,
+    CardItemViewModel viewModel,
+  ) {
     var media = MediaQuery.of(context).size;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -437,7 +443,7 @@ class ProductCard extends StatelessWidget {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
                           fontSize: 16.0,
-                          color: CustomColors.dark,
+                          color: AppKeys().customColors!.dark,
                         ),
                       ),
                     ),
@@ -481,7 +487,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
                       fontSize: 22.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                       height: 1.2,
                     ),
                   ),
@@ -491,7 +497,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                       height: 1.2,
                     ),
                   ),
@@ -600,7 +606,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               ),
                               color: const Color(0xFFE4E9FC),
                               border: Border.all(
-                                color: CustomColors.dark, //                   <--- border color
+                                color: AppKeys().customColors!.dark, //                   <--- border color
                                 width: 1.0,
                               ),
                             ),
@@ -615,7 +621,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 22.0,
-                                      color: CustomColors.dark,
+                                      color: AppKeys().customColors!.dark,
                                     ),
                                     textAlign: TextAlign.start,
                                     controller: viewModel.textEditingController,
@@ -647,9 +653,9 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                       ? Container(
                                           width: 141.0,
                                           height: 30,
-                                          decoration: const BoxDecoration(
-                                            color: CustomColors.dark,
-                                            borderRadius: BorderRadius.all(Radius.circular(200.0)),
+                                          decoration: BoxDecoration(
+                                            color: AppKeys().customColors!.dark,
+                                            borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                           ),
                                           child: TextFieldTapRegion(
                                             child: TextButton(
@@ -732,7 +738,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 22.0,
-                                    color: CustomColors.dark,
+                                    color: AppKeys().customColors!.dark,
                                     height: 1.2,
                                   ),
                                   textAlign: TextAlign.left,
@@ -744,7 +750,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w400,
                               fontSize: 12.0,
-                              color: CustomColors.dark,
+                              color: AppKeys().customColors!.dark,
                               height: 1.2,
                             ),
                           ),
@@ -772,7 +778,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontSize: 12.0,
-                    color: CustomColors.dark,
+                    color: AppKeys().customColors!.dark,
                   ),
                 ),
               ],
@@ -798,7 +804,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0,
-                            color: CustomColors.blueVoltz,
+                            color: AppKeys().customColors!.blueVoltz,
                           ),
                           textAlign: TextAlign.left,
                         ),
@@ -846,9 +852,9 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
-            decoration: const BoxDecoration(
-              color: CustomColors.dark,
-              borderRadius: BorderRadius.all(Radius.circular(6.0)),
+            decoration: BoxDecoration(
+              color: AppKeys().customColors!.dark,
+              borderRadius: const BorderRadius.all(Radius.circular(6.0)),
             ),
             width: 362.0,
             child: Column(
@@ -914,8 +920,8 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                 Container(
                   width: 362.0,
                   padding: const EdgeInsets.only(top: 35.0, right: 25.0, bottom: 35.0, left: 25.0),
-                  decoration: const BoxDecoration(
-                    color: CustomColors.dark,
+                  decoration: BoxDecoration(
+                    color: AppKeys().customColors!.dark,
                     borderRadius: BorderRadius.only(topLeft: Radius.circular(0), topRight: Radius.circular(0), bottomRight: Radius.circular(6), bottomLeft: Radius.circular(6)),
                   ),
                   child: Column(
@@ -928,7 +934,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 14.0,
-                          color: CustomColors.yellowVoltz,
+                          color: AppKeys().customColors!.yellowVoltz,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -942,7 +948,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontSize: 12.0,
-                          color: CustomColors.white,
+                          color: AppKeys().customColors!.white,
                         ),
                         textAlign: TextAlign.center,
                       ),

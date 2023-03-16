@@ -1,19 +1,18 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:maketplace/order/order_viewmodel.dart';
-
 
 class OrderTableDetailMobile extends StatefulWidget {
-  OrderTableDetailMobile({Key? key, required this.i,}) : super(key: key);
+  OrderTableDetailMobile({
+    Key? key,
+    required this.i,
+  }) : super(key: key);
   int i;
 
   @override
@@ -45,15 +44,17 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
         MaterialState.focused,
       };
       if (states.any(interactiveStates.contains)) {
-        return CustomColors.energyYellow;
+        return AppKeys().customColors!.energyYellow;
       }
-      return CustomColors.safeBlue;
-    };
-    Color headerColor = CustomColors.safeBlue;
+      return AppKeys().customColors!.safeBlue;
+    }
+
+    ;
+    Color headerColor = AppKeys().customColors!.safeBlue;
 
     return Container(
-        padding: const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4 ),
-        child:  Card(
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 4, bottom: 4),
+        child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -65,27 +66,29 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(topLeft:Radius.circular(16), topRight: Radius.circular(16)),
+                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
                   color: headerColor,
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                        flex:1,
-                        child: SelectableText( model.order!.detail![widget.i].productRequested!,
+                        flex: 1,
+                        child: SelectableText(
+                          model.order!.detail![widget.i].productRequested!,
                           style: CustomStyles.styleMobileWhite500, //overflow: TextOverflow.clip,
-                        )
-                    ),
+                        )),
                   ],
                 ),
               ),
-              for(int b = 0; b <= model.order!.detail![widget.i].productsOrdered!.length -1; b++) ...{
+              for (int b = 0; b <= model.order!.detail![widget.i].productsOrdered!.length - 1; b++) ...{
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   decoration: BoxDecoration(
-                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length -1 ? const BorderRadius.only(bottomLeft:Radius.circular(16), bottomRight: Radius.circular(16)) : null,
-                    color: CustomColors.blueBackground,
+                    borderRadius: b == model.order!.detail![widget.i].productsOrdered!.length - 1
+                        ? const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))
+                        : null,
+                    color: AppKeys().customColors!.blueBackground,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -99,13 +102,14 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                             SelectableText.rich(
                               TextSpan(
                                 children: [
-                                  TextSpan(text: model.order!.detail![widget.i].productsOrdered![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                                  TextSpan(
+                                    text: model.order!.detail![widget.i].productsOrdered![b].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
                                     style: CustomStyles.styleMobileVolcanic400,
                                   ),
-                                  TextSpan(text: " - ${model.order!.detail![widget.i].productsOrdered![b].brand!}",
+                                  TextSpan(
+                                    text: " - ${model.order!.detail![widget.i].productsOrdered![b].brand!}",
                                     style: CustomStyles.styleMobileVolcanic700,
                                   ),
-
                                 ],
                               ),
                               textAlign: TextAlign.start,
@@ -113,11 +117,12 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
                             SelectableText.rich(
                               TextSpan(
                                 children: [
-
-                                  TextSpan(text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].total!.afterDiscount!),
+                                  TextSpan(
+                                    text: currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].total!.afterDiscount!),
                                     style: CustomStyles.styleMobileBlue700,
                                   ),
-                                  TextSpan(text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].price!.price2!)} c/u)",
+                                  TextSpan(
+                                    text: " (${currencyFormat.format(model.order!.detail![widget.i].productsOrdered![b].price!.price2!)} c/u)",
                                     style: CustomStyles.styleMobileBlue400,
                                   ),
                                 ],
@@ -141,15 +146,14 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
               }
             ],
           ),
-        )
-    );
+        ));
   }
-
 }
 
 class _QuantityWidget extends StatefulWidget {
   const _QuantityWidget({Key? key, required this.i, required this.b, required this.listenerUpdateTotals}) : super(key: key);
-  final int i; final int b;
+  final int i;
+  final int b;
   final VoidCallback listenerUpdateTotals;
 
   @override
@@ -167,18 +171,16 @@ class _QuantityWidgetState extends State<_QuantityWidget> {
   void initState() {
     super.initState();
     _model = context.read<QuoteViewModel>();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.all(8),
       width: 90,
       child: SelectableText(
         _model.quote.detail![widget.i].productsSuggested![widget.b].quantity.toString(),
-        style:  CustomStyles.styleMobileVolcanic400,
+        style: CustomStyles.styleMobileVolcanic400,
         textAlign: TextAlign.left,
       ),
     );
@@ -199,28 +201,34 @@ class OrderHeaderMobile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/svg/voltz_logo.svg',
+            AppKeys().logo!,
             width: 39.69,
             height: 19.86,
           ),
           const Spacer(),
-          const SizedBox(width: 16,),
+          const SizedBox(
+            width: 16,
+          ),
           SelectableText.rich(
             TextSpan(
               children: [
-                const TextSpan(text: 'Pedido ',
+                TextSpan(
+                  text: 'Pedido ',
                   style: TextStyle(
                     fontFamily: "Hellix",
-                    color: CustomColors.volcanicBlue,
+                    color: AppKeys().customColors!.volcanicBlue,
                     fontSize: 16,
-                    fontWeight: FontWeight.w600,),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                TextSpan(text: "#$consecutive",
-                  style: const TextStyle(
+                TextSpan(
+                  text: "#$consecutive",
+                  style: TextStyle(
                     fontFamily: "Hellix",
-                    color: CustomColors.volcanicBlue,
+                    color: AppKeys().customColors!.volcanicBlue,
                     fontSize: 18,
-                    fontWeight: FontWeight.w600,),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -233,8 +241,11 @@ class OrderHeaderMobile extends StatelessWidget {
 }
 
 class OrderTotalsMobile extends StatefulWidget {
-  const OrderTotalsMobile({Key? key, required this.tax, required this.total, required this.subTotal,
-    required this.shippingTotal, required this.quoteId, required this.totalProducts}) : super(key: key, );
+  const OrderTotalsMobile(
+      {Key? key, required this.tax, required this.total, required this.subTotal, required this.shippingTotal, required this.quoteId, required this.totalProducts})
+      : super(
+          key: key,
+        );
   final double tax;
   final double total;
   final double subTotal;
@@ -252,7 +263,7 @@ class _OrderTotalsMobileState extends State<OrderTotalsMobile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: CustomColors.volcanicBlue,
+      color: AppKeys().customColors!.volcanicBlue,
       padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 24),
       child: Row(
         children: [
@@ -281,9 +292,7 @@ class _OrderTotalsMobileState extends State<OrderTotalsMobile> {
   }
 }
 
-
 class _Dialogs {
-
   showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
     // show the dialog
     showDialog(
@@ -291,18 +300,14 @@ class _Dialogs {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const SelectableText("Hacer pedido"),
-          titleTextStyle:
-          TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black,fontSize: 20),
+          titleTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 20),
           actionsOverflowButtonSpacing: 20,
           actions: [
             ElevatedButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const SelectableText("Cancelar")
-            ),
+                child: const SelectableText("Cancelar")),
             ElevatedButton(
                 onPressed: () async {
                   onConfirm();

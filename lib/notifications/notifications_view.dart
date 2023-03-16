@@ -1,13 +1,11 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maketplace/utils/added_dialog.dart';
-import 'package:maketplace/utils/buttons.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:stacked/stacked.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/notifications/notifications_service.dart';
 import 'package:maketplace/notifications/notifications_viewmodel.dart';
+import 'package:maketplace/utils/added_dialog.dart';
+import 'package:maketplace/utils/buttons.dart';
+import 'package:stacked/stacked.dart';
 
 class BaseNotificationWidget extends StatelessWidget {
   const BaseNotificationWidget({Key? key, required this.onTapButtonUno}) : super(key: key);
@@ -24,7 +22,8 @@ class BaseNotificationWidget extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         return GeneralDialog(
           text: model.notification.title,
-          button1: ThirdButton(text: model.notification.textButtonUno,
+          button1: ThirdButton(
+            text: model.notification.textButtonUno,
             onPressed: onTapButtonUno ?? onTapButtonUno!(),
           ),
           button2: SecondaryButton(text: model.notification.textButtonDos, onPressed: () => Navigator.of(context).pop()),
@@ -42,7 +41,7 @@ class SimpleNotificationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: CustomColors.safeBlue,
+      color: AppKeys().customColors!.safeBlue,
       margin: const EdgeInsets.symmetric(horizontal: 25),
       child: SafeArea(
         child: ListTile(
@@ -50,27 +49,30 @@ class SimpleNotificationWidget extends StatelessWidget {
               size: const Size(40, 40),
               child: ClipOval(
                   child: Container(
-                    color: CustomColors.yellowVoltz,
-                  ))),
+                color: AppKeys().customColors!.yellowVoltz,
+              ))),
           title: Text(
             data.title,
             style: GoogleFonts.inter(
-              color: CustomColors.white,
+              color: AppKeys().customColors!.white,
               fontWeight: FontWeight.w600,
               fontSize: 18,
-            ),),
+            ),
+          ),
           subtitle: Text(
             data.message,
             style: GoogleFonts.inter(
-              color: CustomColors.white,
+              color: AppKeys().customColors!.white,
               fontWeight: FontWeight.w400,
               fontSize: 14,
-            ),),
+            ),
+          ),
           trailing: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: () => dismissNotification(context),
+            icon: const Icon(Icons.close, color: Colors.white),
+            onPressed: () => dismissNotification(context),
+          ),
         ),
       ),
-    ),);
+    );
   }
 }

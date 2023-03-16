@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/auth/gate_simple_viewmodel.dart';
-import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:stacked/stacked.dart';
 
 class MenuDrawer extends StatelessWidget {
@@ -18,7 +18,7 @@ class MenuDrawer extends StatelessWidget {
           width: 300,
           height: media.height,
           child: Drawer(
-            backgroundColor: CustomColors.blueVoltz,
+            backgroundColor: AppKeys().customColors!.blueVoltz,
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(25),
@@ -30,14 +30,15 @@ class MenuDrawer extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SvgPicture.asset(
-                          'assets/svg/logo_voltz_white.svg',
+                          AppKeys().logoWhite!,
                           width: 120,
                           height: 52,
                         ),
                         IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close, color: Colors.white)),
                       ],
                     ),
-                    const SizedBox(height: 50),/*
+                    const SizedBox(height: 50),
+                    /*
                     DrawerItem(
                       icondata: Icons.home_outlined,
                       onPressed: () {},
@@ -92,13 +93,13 @@ class DrawerItem extends StatelessWidget {
     return Container(
         width: 300,
         decoration: BoxDecoration(
-          color: selected ? CustomColors.bluePlusOne : null,
+          color: selected ? AppKeys().customColors!.bluePlusOne : null,
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             borderRadius: const BorderRadius.all(Radius.circular(200)),
-            hoverColor: CustomColors.bluePlusOne.withOpacity(.7),
+            hoverColor: AppKeys().customColors!.bluePlusOne.withOpacity(.7),
             onTap: onPressed,
             child: Container(
               width: double.infinity,
