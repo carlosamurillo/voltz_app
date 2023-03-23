@@ -1,26 +1,23 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:maketplace/quote/quote_viewmodel.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:maketplace/utils/style.dart';
 import 'package:maketplace/cart/backlog_view.dart';
 import 'package:maketplace/cart/cart_expandable_view.dart';
 import 'package:maketplace/cart/discard_view.dart';
+import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/quote/quote_viewmodel.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
 
 class Tabs extends StatefulWidget {
-  Tabs({Key? key, required this.tabController }) : super(key: key);
+  Tabs({Key? key, required this.tabController}) : super(key: key);
   TabController tabController;
 
   @override
   __TabsState createState() => __TabsState();
 }
-class __TabsState extends State<Tabs>  {
 
+class __TabsState extends State<Tabs> {
   int selectedIndex = 0;
 
   @override
@@ -45,8 +42,7 @@ class __TabsState extends State<Tabs>  {
     });
     widget.tabController.addListener(() async {
       return setState(() {
-        if (widget.tabController.indexIsChanging)
-          selectedIndex = widget.tabController.index;
+        if (widget.tabController.indexIsChanging) selectedIndex = widget.tabController.index;
         // else if(widget.tabController.index != widget.tabController.previousIndex)
         //   selectedIndex = widget.tabController.index;
       });
@@ -81,14 +77,17 @@ class __TabsState extends State<Tabs>  {
                   widget.tabController.index = value;
                 });
               },
-              indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2.0, color: CustomColors.safeBlue, ),
+              indicator: UnderlineTabIndicator(
+                  borderSide: BorderSide(
+                    width: 2.0,
+                    color: AppKeys().customColors!.safeBlue,
+                  ),
                   //insets: EdgeInsets.symmetric(horizontal:40.0),
-                  insets: EdgeInsets.symmetric(horizontal:40)),
+                  insets: const EdgeInsets.symmetric(horizontal: 40)),
               //isScrollable: true,
-              labelColor:  CustomColors.safeBlue,
-              labelStyle:  CustomStyles.styleMuggleGray18x600,
-              unselectedLabelColor: CustomColors.muggleGray_2,
+              labelColor: AppKeys().customColors!.safeBlue,
+              labelStyle: CustomStyles.styleMuggleGray18x600,
+              unselectedLabelColor: AppKeys().customColors!.muggleGray_2,
               padding: EdgeInsets.zero,
               indicatorSize: TabBarIndicatorSize.tab,
               tabs: [
@@ -105,50 +104,44 @@ class __TabsState extends State<Tabs>  {
                             'assets/svg/cart_icon.svg',
                             width: 24.0,
                             height: 24.0,
-                            color: CustomColors.safeBlue,
+                            color: AppKeys().customColors!.safeBlue,
                           ),
                         ] else ...[
-                          SvgPicture.asset(
-                            'assets/svg/cart_icon.svg',
-                            width: 24.0,
-                            height: 24.0,
-                            color: CustomColors.muggleGray_2
-                          ),
+                          SvgPicture.asset('assets/svg/cart_icon.svg', width: 24.0, height: 24.0, color: AppKeys().customColors!.muggleGray_2),
                         ],
-                        SizedBox(width: 12,),
+                        SizedBox(
+                          width: 12,
+                        ),
                         _textTab1(),
                       ],
                     ),
                   ),
                 ),
                 Tab(
-                    height: 67,
-                    key: const Key("Backlog"),
-                    child: Container(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (selectedIndex == 1) ...[
-                            SvgPicture.asset(
-                              'assets/svg/settings_icon.svg',
-                              width: 24.0,
-                              height: 24.0,
-                              color: CustomColors.safeBlue,
-                            ),
-                          ] else ...[
-                            SvgPicture.asset(
-                                'assets/svg/settings_icon.svg',
-                                width: 24.0,
-                                height: 24.0,
-                                color: CustomColors.muggleGray_2
-                            ),
-                          ],
-                          SizedBox(width: 12,),
-                          _textTab2(),
+                  height: 67,
+                  key: const Key("Backlog"),
+                  child: Container(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (selectedIndex == 1) ...[
+                          SvgPicture.asset(
+                            'assets/svg/settings_icon.svg',
+                            width: 24.0,
+                            height: 24.0,
+                            color: AppKeys().customColors!.safeBlue,
+                          ),
+                        ] else ...[
+                          SvgPicture.asset('assets/svg/settings_icon.svg', width: 24.0, height: 24.0, color: AppKeys().customColors!.muggleGray_2),
                         ],
-                      ),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        _textTab2(),
+                      ],
                     ),
+                  ),
                 ),
                 Tab(
                   height: 67,
@@ -163,17 +156,14 @@ class __TabsState extends State<Tabs>  {
                             'assets/svg/discarded_icon.svg',
                             width: 24.0,
                             height: 24.0,
-                            color: CustomColors.safeBlue,
+                            color: AppKeys().customColors!.safeBlue,
                           ),
                         ] else ...[
-                          SvgPicture.asset(
-                              'assets/svg/discarded_icon.svg',
-                              width: 24.0,
-                              height: 24.0,
-                              color: CustomColors.muggleGray_2
-                          ),
+                          SvgPicture.asset('assets/svg/discarded_icon.svg', width: 24.0, height: 24.0, color: AppKeys().customColors!.muggleGray_2),
                         ],
-                        SizedBox(width: 12,),
+                        SizedBox(
+                          width: 12,
+                        ),
                         _textTab3(),
                       ],
                     ),
@@ -193,13 +183,13 @@ class __TabsState extends State<Tabs>  {
 }
 
 class _textTab1 extends StackedHookView<QuoteViewModel> {
-const _textTab1({Key? key}) : super(key: key, reactive: true);
+  const _textTab1({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+    BuildContext context,
+    QuoteViewModel model,
+  ) {
     if (model.quote.detail != null) {
       return Text("Productos cotizados (${model.quote.detail!.length})");
     } else {
@@ -207,14 +197,15 @@ const _textTab1({Key? key}) : super(key: key, reactive: true);
     }
   }
 }
+
 class _textTab2 extends StackedHookView<QuoteViewModel> {
   const _textTab2({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+    BuildContext context,
+    QuoteViewModel model,
+  ) {
     if (model.quote.detail != null) {
       return Text("En proceso de cotización (${model.quote.pendingProducts!.length})");
     } else {
@@ -222,14 +213,15 @@ class _textTab2 extends StackedHookView<QuoteViewModel> {
     }
   }
 }
+
 class _textTab3 extends StackedHookView<QuoteViewModel> {
   const _textTab3({Key? key}) : super(key: key, reactive: true);
 
   @override
   Widget builder(
-      BuildContext context,
-      QuoteViewModel model,
-      ) {
+    BuildContext context,
+    QuoteViewModel model,
+  ) {
     if (model.quote.detail != null) {
       return Text("No incluidos (${model.quote.discardedProducts!.length})");
     } else {
@@ -239,13 +231,16 @@ class _textTab3 extends StackedHookView<QuoteViewModel> {
 }
 
 class TabsContent extends StatefulWidget {
-  TabsContent({Key? key, required this.tabController,}) : super(key: key);
+  TabsContent({
+    Key? key,
+    required this.tabController,
+  }) : super(key: key);
   TabController tabController;
   @override
   __TabsContentState createState() => __TabsContentState();
 }
-class __TabsContentState extends State<TabsContent> {
 
+class __TabsContentState extends State<TabsContent> {
   @override
   void initState() {
     super.initState();
@@ -259,15 +254,10 @@ class __TabsContentState extends State<TabsContent> {
   @override
   Widget build(BuildContext context) {
     // if (authUser == null) return Loading();
-    return TabBarView(
-        controller: widget.tabController,
-        dragStartBehavior: DragStartBehavior.start,
-        children: [
-          CardGrid(),
-          BacklogView(),
-          DiscardView(),
-        ]);
+    return TabBarView(controller: widget.tabController, dragStartBehavior: DragStartBehavior.start, children: [
+      CardGrid(),
+      BacklogView(),
+      DiscardView(),
+    ]);
   }
 }
-
-

@@ -2,24 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/login/login_view.dart';
-import 'package:maketplace/auth/login/login_view_model.dart';
 import 'package:maketplace/auth/register/register_view_model.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/buttons.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/inputText.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key}) : super(key: key);
-
+  const RegisterView({Key? key, required this.phoneNumber}) : super(key: key);
+  final String phoneNumber;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RegisterViewModel()..init(),
-      child: const Scaffold(
-        backgroundColor: CustomColors.blueVoltz,
-        body: _RegisterBody(),
+      create: (context) => RegisterViewModel()..init(phoneNumber),
+      child: Scaffold(
+        backgroundColor: AppKeys().customColors!.blueVoltz,
+        body: const _RegisterBody(),
       ),
     );
   }
@@ -50,7 +49,7 @@ class _RegisterBody extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SvgPicture.asset(
-                        'assets/svg/voltz_logo.svg',
+                        AppKeys().logo!,
                         width: 39.69,
                         height: 19.86,
                       ),
@@ -61,20 +60,20 @@ class _RegisterBody extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 50),
-                  const SelectableText(
+                  SelectableText(
                     "Eres nuevo",
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const SelectableText(
+                  SelectableText(
                     "Regístrate gratis y rápido.",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 32.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                     ),
                   ),
                   const SizedBox(height: 7.5),
@@ -109,9 +108,9 @@ class _RegisterBody extends StatelessWidget {
                     hintText: "Número teléfono",
                     margin: const EdgeInsets.symmetric(vertical: 7.5),
                     enabled: false,
-                    initialValue: "(+52) ${context.read<LoginViewModel>().phoneNumber.getOrElse(() => "INVALID PHONE NUMBER")}",
+                    initialValue: "(+52) ${context.read<RegisterViewModel>().phoneNumber}",
                     suffixIcon: SizedBox(
-                      width: 105,
+                      width: 115,
                       child: ThirdButton(
                         onPressed: () {
                           context.read<RegisterViewModel>().signOut();
@@ -129,7 +128,7 @@ class _RegisterBody extends StatelessWidget {
                         child: CupertinoSwitch(
                           value: context.watch<RegisterViewModel>().isBusiness,
                           onChanged: (v) => context.read<RegisterViewModel>().isBusinessChanged(),
-                          activeColor: CustomColors.blueVoltz,
+                          activeColor: AppKeys().customColors!.blueVoltz,
                         ),
                       ),
                       const Expanded(child: Text("Soy una empresa")),
@@ -149,7 +148,7 @@ class _RegisterBody extends StatelessWidget {
                   ),
                   const SizedBox(height: 80),
                   LayoutBuilder(
-                    builder: (BuildContext ctx, BoxConstraints constraints){
+                    builder: (BuildContext ctx, BoxConstraints constraints) {
                       switch (context.read<RegisterViewModel>().registerStatus) {
                         case RegisterStatus.initial:
                           return const _ActionButton();
@@ -163,7 +162,7 @@ class _RegisterBody extends StatelessWidget {
                                 "Su usuario ha sido creado correctamente.",
                                 style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
                               ),
-                              backgroundColor: CustomColors.energyGreen,
+                              backgroundColor: AppKeys().customColors!.energyGreen,
                               behavior: SnackBarBehavior.floating,
                               duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -178,7 +177,7 @@ class _RegisterBody extends StatelessWidget {
                                 "Ha ocurrido un error, vuelve a intentarlo.",
                                 style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
                               ),
-                              backgroundColor: CustomColors.redAlert,
+                              backgroundColor: AppKeys().customColors!.redAlert,
                               behavior: SnackBarBehavior.floating,
                               duration: const Duration(milliseconds: 2000),
                               margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
@@ -209,8 +208,7 @@ class _ActionButton extends StatelessWidget {
       enabled: false,
       onPressed: () {
         FocusScope.of(context).unfocus();
-        final phoneNumber = context.read<LoginViewModel>().phoneNumber.getOrElse(() => "INVALID PHONE NUMBER");
-        context.read<RegisterViewModel>().register(phoneNumber);
+        context.read<RegisterViewModel>().register();
       },
     );
   }

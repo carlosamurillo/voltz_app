@@ -152,7 +152,7 @@ class QuotePdf {
       child: Row(
         children: [
           SvgImage(
-            svg: SVGIcons.logo_votz,
+            svg: AppKeys().logoIcon!,
             width: 97,
             height: 18,
           ),

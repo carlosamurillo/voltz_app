@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/keys_model.dart';
 
 class InputText extends StatefulWidget {
   InputText(
@@ -310,9 +310,9 @@ class _InputTextV2 extends State<InputTextV2> {
                 labelText: widget.labelText,
                 hintText: widget.hintText,
                 filled: true,
-                fillColor: CustomColors.muggleGray_3,
-                focusColor: CustomColors.muggleGray_3,
-                hoverColor: CustomColors.muggleGray_3,
+                fillColor: AppKeys().customColors!.muggleGray_3,
+                focusColor: AppKeys().customColors!.muggleGray_3,
+                hoverColor: AppKeys().customColors!.muggleGray_3,
                 enabledBorder: OutlineInputBorder(
                   borderRadius: widget.borderRadius,
                   borderSide: BorderSide(width: 0, color: Color(0x26395629).withOpacity(0.16)),

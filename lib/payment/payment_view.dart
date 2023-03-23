@@ -3,8 +3,8 @@ import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/order/order_viewmodel.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +20,8 @@ class PaymentInstructions extends StatefulWidget {
 
 class _PaymentInstructionsState extends State<PaymentInstructions> {
   String _actionTitle = '';
-  Color _buttonColor = CustomColors.safeBlue;
-  Color _buttonHoverColor = CustomColors.safeBlueHover;
+  Color _buttonColor = AppKeys().customColors!.safeBlue;
+  Color _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
   String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
 
   @override
@@ -33,16 +33,16 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
   setupVariables() {
     if (context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
       _actionTitle = 'Ya pagué mi envío';
-      _buttonColor = CustomColors.safeBlue;
-      _buttonHoverColor = CustomColors.safeBlueHover;
+      _buttonColor = AppKeys().customColors!.safeBlue;
+      _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
     } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
-      _buttonColor = CustomColors.energyYellow;
-      _buttonHoverColor = CustomColors.energyYellowHover;
+      _buttonColor = AppKeys().customColors!.energyYellow;
+      _buttonHoverColor = AppKeys().customColors!.energyYellowHover;
     } else {
       _actionTitle = 'Pago confirmado';
-      _buttonColor = CustomColors.energyGreen;
-      _buttonHoverColor = CustomColors.energyGreen;
+      _buttonColor = AppKeys().customColors!.energyGreen;
+      _buttonHoverColor = AppKeys().customColors!.energyGreen;
     }
   }
 
@@ -179,7 +179,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
             ),
             Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.volcanicGrey),
+                  border: Border.all(color: AppKeys().customColors!.volcanicGrey),
                   borderRadius: const BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
                       ),
                 ),
@@ -254,12 +254,12 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
                               Radius.circular(26),
                             ),
                             color: Color(0xFFFFFDFB),
-                            border: Border.all(width: 2, color: CustomColors.safeBlue)),
+                            border: Border.all(width: 2, color: AppKeys().customColors!.safeBlue)),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
                             borderRadius: BorderRadius.all(Radius.circular(26)),
-                            hoverColor: CustomColors.blueBackground,
+                            hoverColor: AppKeys().customColors!.blueBackground,
                             onTap: () async {
                               widget.showOrderListener();
                             },
@@ -357,8 +357,8 @@ class PaymentInstructionsMobile extends StatefulWidget {
 
 class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
   String _actionTitle = '';
-  Color _buttonColor = CustomColors.safeBlue;
-  Color _buttonHoverColor = CustomColors.safeBlueHover;
+  Color _buttonColor = AppKeys().customColors!.safeBlue;
+  Color _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
   String fiscalUrl = 'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
 
   @override
@@ -370,16 +370,16 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
   setupVariables() {
     if (context.read<OrderViewModel>().order!.paymentStatus == null || context.read<OrderViewModel>().order!.paymentStatus == 'pending') {
       _actionTitle = 'Ya pagué mi envío';
-      _buttonColor = CustomColors.safeBlue;
-      _buttonHoverColor = CustomColors.safeBlueHover;
+      _buttonColor = AppKeys().customColors!.safeBlue;
+      _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
     } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
-      _buttonColor = CustomColors.energyYellow;
-      _buttonHoverColor = CustomColors.energyYellowHover;
+      _buttonColor = AppKeys().customColors!.energyYellow;
+      _buttonHoverColor = AppKeys().customColors!.energyYellowHover;
     } else {
       _actionTitle = 'Pago confirmado';
-      _buttonColor = CustomColors.energyGreen;
-      _buttonHoverColor = CustomColors.energyGreen;
+      _buttonColor = AppKeys().customColors!.energyGreen;
+      _buttonHoverColor = AppKeys().customColors!.energyGreen;
     }
   }
 
@@ -496,7 +496,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
             ),
             Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: CustomColors.volcanicGrey),
+                  border: Border.all(color: AppKeys().customColors!.volcanicGrey),
                   borderRadius: const BorderRadius.all(Radius.circular(5.0) //                 <--- border radius here
                       ),
                 ),
@@ -569,12 +569,12 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
                       Radius.circular(26),
                     ),
                     color: Color(0xFFFFFDFB),
-                    border: Border.all(width: 2, color: CustomColors.safeBlue)),
+                    border: Border.all(width: 2, color: AppKeys().customColors!.safeBlue)),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.all(Radius.circular(26)),
-                    hoverColor: CustomColors.blueBackground,
+                    hoverColor: AppKeys().customColors!.blueBackground,
                     onTap: () async {
                       widget.showOrderListener();
                     },

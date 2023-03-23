@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_segment/flutter_segment.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/gate/auth_gate.dart';
-import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           // Notice that the counter didn't reset back to zero; the application
           // is not restarted.
           primarySwatch: Colors.blue,
-          primaryColor: CustomColors.safeBlue,
+          primaryColor: AppKeys().customColors!.safeBlue,
           fontFamily: "Hellix",
         ),
         localizationsDelegates: [

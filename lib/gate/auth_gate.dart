@@ -1,9 +1,7 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:stacked/stacked.dart';
 import 'package:maketplace/gate/auth_gate_viewmodel.dart';
+import 'package:maketplace/keys_model.dart';
+import 'package:stacked/stacked.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({Key? key, this.quoteId}) : super(key: key);
@@ -17,11 +15,9 @@ class AuthGate extends StatelessWidget {
       disposeViewModel: false,
       fireOnViewModelReadyOnce: false,
       builder: (context, model, child) {
-        return const Scaffold(
-          backgroundColor: CustomColors.WBY,
-          body: Center(
-              child: CircularProgressIndicator()
-          ),
+        return Scaffold(
+          backgroundColor: AppKeys().customColors!.WBY,
+          body: const Center(child: CircularProgressIndicator()),
         );
       },
     );

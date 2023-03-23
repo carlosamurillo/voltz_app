@@ -1,26 +1,28 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_viewmodel.dart';
-import 'package:stacked/stacked.dart';
-import 'package:stacked_hooks/stacked_hooks.dart';
-import 'package:maketplace/utils/custom_colors.dart';
-import 'package:maketplace/utils/shimmer.dart';
-import 'package:maketplace/utils/style.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/inputText.dart';
-
+import 'package:maketplace/utils/shimmer.dart';
+import 'package:maketplace/utils/style.dart';
+import 'package:stacked/stacked.dart';
+import 'package:stacked_hooks/stacked_hooks.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
-    Key? key, required this.product, this.isSearchVersion = true, this.isCartVersion = false,
-    this.onTapImprovePrice,}) : super(key: key);
+    Key? key,
+    required this.product,
+    this.isSearchVersion = true,
+    this.isCartVersion = false,
+    this.onTapImprovePrice,
+  }) : super(key: key);
   final Product product;
   final bool isSearchVersion;
   final bool isCartVersion;
@@ -39,340 +41,352 @@ class ProductCard extends StatelessWidget {
             print('ProductCard ... Se actualiza la vista ' + viewModel.product.toJson().toString());
             print('ProductCard ... getHeader ... ProductCardViewModel ... isCardExpanded = ${viewModel.isCardExpanded}');
           }
-          return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 362.0,
-                  padding: const EdgeInsets.all(0.0),
-                  decoration: BoxDecoration(
-                    color: CustomColors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                    border: Border.all(
-                        color: const Color(0xFFD9E0FC),
-                        width: 1,
-                        style: BorderStyle.solid
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 362.0,
-                        padding: const EdgeInsets.all(25),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (product.coverImage == null) ...[
-                                  SizedBox(
-                                      width: 120,
-                                      height: 120,
-                                      child: Image.asset(
+          return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Container(
+              width: 362.0,
+              padding: const EdgeInsets.all(0.0),
+              decoration: BoxDecoration(
+                color: AppKeys().customColors!.white,
+                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                border: Border.all(color: const Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 362.0,
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (product.coverImage == null) ...[
+                              SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: Image.asset(
+                                    'assets/images/no_photo.png',
+                                    height: 120,
+                                    width: 120,
+                                  )),
+                            ] else ...[
+                              SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: Image.network(
+                                    product.coverImage!,
+                                    height: 120,
+                                    width: 120,
+                                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                      return Image.asset(
                                         'assets/images/no_photo.png',
                                         height: 120,
                                         width: 120,
-                                      )),
-                                ] else ...[
-                                  SizedBox(
-                                      width: 120,
-                                      height: 120,
-                                      child: Image.network(
-                                        product.coverImage!,
-                                        height: 120,
-                                        width: 120,
-                                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                          return Image.asset(
-                                            'assets/images/no_photo.png',
-                                            height: 120,
-                                            width: 120,
-                                          );
-                                        },
-                                      )),
-                                ],
-                                const SizedBox(width: 15,),
-                                SizedBox(
-                                  width: 175.0,
-                                  height: 120.0,
-                                  child:  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                      );
+                                    },
+                                  )),
+                            ],
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            SizedBox(
+                              width: 175.0,
+                              height: 120.0,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                          if(product.brandFavicon != null)...[
-                                            Image.network(
-                                              product.brandFavicon!,
-                                              width: 16,
-                                              height: 17,
-                                              errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                                return Container();
-                                              },
-                                            ),
-                                            const SizedBox(width: 5,),
-                                          ],
-                                          SizedBox(
-                                            width: product.brandFavicon != null ? 154 : 175,
-                                            child: Tooltip(
-                                              message: product.brand?? '',
-                                              child: Text(
-                                                product.brand?? '',
-                                                maxLines: 1,
+                                      //Esto es temporal mientras se programa en el backend todas las marcas para la bd
+                                      if (product.brandFavicon != null) ...[
+                                        Image.network(
+                                          product.brandFavicon!,
+                                          width: 16,
+                                          height: 17,
+                                          errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                            return Container();
+                                          },
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                      ],
+                                      SizedBox(
+                                        width: product.brandFavicon != null ? 154 : 175,
+                                        child: Tooltip(
+                                          message: product.brand ?? '',
+                                          child: Text(
+                                            product.brand ?? '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              textStyle: TextStyle(
+                                                fontStyle: FontStyle.normal,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 14.0,
+                                                color: AppKeys().customColors!.dark,
+                                                height: 1.1,
                                                 overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.inter(
-                                                  textStyle: const TextStyle(
-                                                    fontStyle: FontStyle.normal,
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 14.0,
-                                                    color: CustomColors.dark,
-                                                    height: 1.1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
                                               ),
                                             ),
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                      const SizedBox(height: 5,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SizedBox(
-                                            width: 154,
-                                            child: Tooltip(
-                                              message: product.sku?? '',
-                                              child: Text(
-                                                product.sku?? '',
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.inter(
-                                                  textStyle: const TextStyle(
-                                                    fontStyle: FontStyle.normal,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 14.0,
-                                                    color: CustomColors.dark,
-                                                    height: 1.1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const Spacer(),
-                                      if(viewModel.userSignStatus == UserSignStatus.authenticated) ...[
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SelectableText(
-                                              product.pricePublic != null ?
-                                              viewModel.currencyFormat.format(product.pricePublic!) : '',
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        width: 154,
+                                        child: Tooltip(
+                                          message: product.sku ?? '',
+                                          child: Text(
+                                            product.sku ?? '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              textStyle: TextStyle(
                                                 fontStyle: FontStyle.normal,
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 14.0,
-                                                decoration: TextDecoration.lineThrough,
-                                                color: const Color(0xFF9C9FAA),
+                                                color: AppKeys().customColors!.dark,
                                                 height: 1.1,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const SizedBox(width: 5,),
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                              color: CustomColors.yellowVoltz,
-                                              child: SelectableText(
-                                                product.discountRate != null ?
-                                                "${(product.discountRate!).toStringAsFixed(2)}%" : '' ,
-                                                enableInteractiveSelection: false,
-                                                maxLines: 1,
-                                                style: GoogleFonts.inter(
-                                                  fontStyle: FontStyle.normal,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 12.0,
-                                                  color: Colors.white,
-                                                  height: 1.1,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                        const SizedBox(height: 5,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Shimmer(
-                                              linearGradient: viewModel.shimmerGradientWhiteBackground,
-                                              child: ShimmerLoading(
-                                                isLoading:
-                                                product.isCalculatingProductTotals,
-                                                shimmerEmptyBox: const ShimmerEmptyBox(
-                                                  width: 160,
-                                                  height: 21,
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    SelectableText(
-                                                      product.bestSupplier == null || product.bestSupplier!.price1 == null ? '' :
-                                                      viewModel.currencyFormat.format(product.bestSupplier!.price1),
-                                                      maxLines: 1,
-                                                      style: GoogleFonts.inter(
-                                                        fontStyle: FontStyle.normal,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 18.0,
-                                                        color: CustomColors.dark,
-                                                        height: 1.1,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(width: 5,),
-                                                    SelectableText(
-                                                      product.saleUnit == null ? '' :
-                                                      product.saleUnit!,
-                                                      maxLines: 1,
-                                                      style: GoogleFonts.inter(
-                                                        fontStyle: FontStyle.normal,
-                                                        fontWeight: FontWeight.w400,
-                                                        fontSize: 12.0,
-                                                        color: CustomColors.dark,
-                                                        height: 1.1,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 5,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              'assets/svg/copa_icon.svg',
-                                              width: 12,
-                                              height: 12,
-                                            ),
-                                            const SizedBox(width: 5,),
-                                            SelectableText(
-                                              "Precio según cantidad",
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12.0,
-                                                color: CustomColors.dark,
-                                                height: 1.1,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ] else ...[
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SelectableText(
-                                              product.pricePublic == null ? '' : viewModel.currencyFormat.format(product.pricePublic!),
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 18.0,
-                                                color: CustomColors.dark,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 5,
-                                            ),
-                                            SelectableText(
-                                              product.saleUnit == null ? '' :
-                                              "${(product.saleUnit!)}",
-                                              maxLines: 1,
-                                              style: GoogleFonts.inter(
-                                                fontStyle: FontStyle.normal,
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12.0,
-                                                color: CustomColors.dark,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 5,),
-                                        if(onTapImprovePrice != null) ...[
-                                          SizedBox(
-                                            width: 175,
-                                            child: PrimaryButton(
-                                              text: 'Mejorar precio',
-                                              onPressed: () => onTapImprovePrice!() ,
-                                            ),
-                                          )
-                                        ],
-                                      ],
+                                      ),
                                     ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 25,),
-                            SelectableText(product.skuDescription == null ? '' : product.skuDescription!
-                                .replaceAll("<em>", "")
-                                .replaceAll("<\/em>", ""),
-                              style: GoogleFonts.inter(
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16.0,
-                                color: CustomColors.dark,
+                                  const Spacer(),
+                                  if (viewModel.userSignStatus == UserSignStatus.authenticated) ...[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SelectableText(
+                                          product.pricePublic != null ? viewModel.currencyFormat.format(product.pricePublic!) : '',
+                                          maxLines: 1,
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14.0,
+                                            decoration: TextDecoration.lineThrough,
+                                            color: const Color(0xFF9C9FAA),
+                                            height: 1.1,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                          color: AppKeys().customColors!.yellowVoltz,
+                                          child: SelectableText(
+                                            product.discountRate != null ? "${(product.discountRate!).toStringAsFixed(2)}%" : '',
+                                            enableInteractiveSelection: false,
+                                            maxLines: 1,
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12.0,
+                                              color: Colors.white,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Shimmer(
+                                          linearGradient: viewModel.shimmerGradientWhiteBackground,
+                                          child: ShimmerLoading(
+                                            isLoading: product.isCalculatingProductTotals,
+                                            shimmerEmptyBox: const ShimmerEmptyBox(
+                                              width: 160,
+                                              height: 21,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                SelectableText(
+                                                  product.bestSupplier == null || product.bestSupplier!.price1 == null
+                                                      ? ''
+                                                      : viewModel.currencyFormat.format(product.bestSupplier!.price1),
+                                                  maxLines: 1,
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18.0,
+                                                    color: AppKeys().customColors!.dark,
+                                                    height: 1.1,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                SelectableText(
+                                                  product.saleUnit == null ? '' : product.saleUnit!,
+                                                  maxLines: 1,
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 12.0,
+                                                    color: AppKeys().customColors!.dark,
+                                                    height: 1.1,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/svg/copa_icon.svg',
+                                          width: 12,
+                                          height: 12,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        SelectableText(
+                                          "Precio según cantidad",
+                                          maxLines: 1,
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.0,
+                                            color: AppKeys().customColors!.dark,
+                                            height: 1.1,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ] else ...[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SelectableText(
+                                          product.pricePublic == null ? '' : viewModel.currencyFormat.format(product.pricePublic!),
+                                          maxLines: 1,
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 18.0,
+                                            color: AppKeys().customColors!.dark,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        SelectableText(
+                                          product.saleUnit == null ? '' : "${(product.saleUnit!)}",
+                                          maxLines: 1,
+                                          style: GoogleFonts.inter(
+                                            fontStyle: FontStyle.normal,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.0,
+                                            color: AppKeys().customColors!.dark,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    if (onTapImprovePrice != null) ...[
+                                      SizedBox(
+                                        width: 175,
+                                        child: PrimaryButton(
+                                          text: 'Mejorar precio',
+                                          onPressed: () => onTapImprovePrice!(),
+                                        ),
+                                      )
+                                    ],
+                                  ],
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      if(product.techFile!=null) ...[
-                        getHeader(context, viewModel),
-                      ] else ...[
-                        const Divider(
-                          thickness: 1,
-                          color: Color(0xFFD9E0FC),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        SelectableText(
+                          product.skuDescription == null ? '' : product.skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                          style: GoogleFonts.inter(
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.0,
+                            color: AppKeys().customColors!.dark,
+                          ),
                         ),
                       ],
-                      if(viewModel.isCardExpanded)...[
-                        ProductDetail(productId: product.id!),
-                      ],
-                      if(viewModel.userSignStatus == UserSignStatus.authenticated)...[
-                        ActionsView(
-                          showBuyNow: isSearchVersion ? true : false,
-                          showAddToQuote:  isSearchVersion ? false : isCartVersion ? false : true,
-                          productId: product.id!,
-                          addQuoteFunction: viewModel.addProductToQuote,
-                          toBuyNowFunction: viewModel.buyNow,
-                        ),
-                      ],
-                      if(viewModel.userSignStatus == UserSignStatus.anonymous && isCartVersion)...[
-                        //const _QuantityCalculatorWidget(),
-                      ],
-                    ],
+                    ),
                   ),
-                ),
-              ]
-          );
+                  if (product.techFile != null) ...[
+                    getHeader(context, viewModel),
+                  ] else ...[
+                    const Divider(
+                      thickness: 1,
+                      color: Color(0xFFD9E0FC),
+                    ),
+                  ],
+                  if (viewModel.isCardExpanded) ...[
+                    ProductDetail(productId: product.id!),
+                  ],
+                  if (viewModel.userSignStatus == UserSignStatus.authenticated) ...[
+                    ActionsView(
+                      showBuyNow: isSearchVersion ? true : false,
+                      showAddToQuote: isSearchVersion
+                          ? false
+                          : isCartVersion
+                              ? false
+                              : true,
+                      productId: product.id!,
+                      addQuoteFunction: viewModel.addProductToQuote,
+                      toBuyNowFunction: viewModel.buyNow,
+                    ),
+                  ],
+                  if (viewModel.userSignStatus == UserSignStatus.anonymous && isCartVersion) ...[
+                    //const _QuantityCalculatorWidget(),
+                  ],
+                ],
+              ),
+            ),
+          ]);
         });
   }
 
-  Widget getHeader(BuildContext context, ProductCardViewModel viewModel){
+  Widget getHeader(BuildContext context, ProductCardViewModel viewModel) {
     var media = MediaQuery.of(context).size;
     if (kDebugMode) {
       print('ProductCard ... getHeader ... ProductCardViewModel ... isCardExpanded = ${viewModel.isCardExpanded}');
@@ -390,12 +404,7 @@ class ProductCard extends StatelessWidget {
                 height: 60.0,
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  border: Border.symmetric(
-                      horizontal: BorderSide(
-                          color: Color(0xFFE4E9FC),
-                          width: 1,
-                          style: BorderStyle.solid)
-                  ),
+                  border: Border.symmetric(horizontal: BorderSide(color: Color(0xFFE4E9FC), width: 1, style: BorderStyle.solid)),
                 ),
                 padding: const EdgeInsets.only(top: 20.0, right: 25.0, bottom: 20.0, left: 25.0),
                 child: Row(
@@ -405,9 +414,15 @@ class ProductCard extends StatelessWidget {
                     SizedBox(
                       width: 24.0,
                       height: 24.0,
-                      child: SvgPicture.asset('assets/svg/info_icon.svg', height: 24, width: 24,),
+                      child: SvgPicture.asset(
+                        'assets/svg/info_icon.svg',
+                        height: 24,
+                        width: 24,
+                      ),
                     ),
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     SizedBox(
                       width: 167.0,
                       child: Text(
@@ -416,17 +431,16 @@ class ProductCard extends StatelessWidget {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w600,
                           fontSize: 16.0,
-                          color: CustomColors.dark,
+                          color: AppKeys().customColors!.dark,
                         ),
                       ),
                     ),
                     const Spacer(),
                     Container(
-                      child: viewModel.isCardExpanded ? const Icon( Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
+                      child: viewModel.isCardExpanded ? const Icon(Icons.expand_less, size: 24) : const Icon(Icons.expand_more, size: 24),
                     ),
                   ],
-                )
-            ),
+                )),
           ],
         ),
       ),
@@ -453,9 +467,13 @@ class ProductDetail extends StatelessWidget {
           if (kDebugMode) {
             print("ProductDetail ... Se actualiza la vista ...");
           }
-          if(viewModel.product != null && (viewModel.product!.techFile != null || viewModel.product!.imageUrls != null || viewModel.product!.featuresString != null ||
-              viewModel.product!.makerWeb != null)) {
-            return _ProductDetailWidget(product: viewModel.product!, openTechFile: viewModel.openTechFile, openWebPage: viewModel.openWebPage,);
+          if (viewModel.product != null &&
+              (viewModel.product!.techFile != null || viewModel.product!.imageUrls != null || viewModel.product!.featuresString != null || viewModel.product!.makerWeb != null)) {
+            return _ProductDetailWidget(
+              product: viewModel.product!,
+              openTechFile: viewModel.openTechFile,
+              openWebPage: viewModel.openWebPage,
+            );
           } else {
             return Container(
                 width: 362.0,
@@ -469,12 +487,10 @@ class ProductDetail extends StatelessWidget {
                     height: 30,
                     child: CircularProgressIndicator(),
                   ),
-                )
-            );
+                ));
           }
         });
   }
-
 }
 
 class _ProductDetailWidget extends StatelessWidget {
@@ -485,14 +501,13 @@ class _ProductDetailWidget extends StatelessWidget {
     required this.openWebPage,
   }) : super(key: key);
   final Product product;
-  final void Function (String url) openTechFile;
-  final void Function (String url) openWebPage;
+  final void Function(String url) openTechFile;
+  final void Function(String url) openWebPage;
 
   @override
   Widget build(BuildContext context) {
     print('_ProductDetailWidget ..... se renderiza.');
-    return
-    Container(
+    return Container(
       width: 362.0,
       padding: const EdgeInsets.all(25.0),
       decoration: const BoxDecoration(
@@ -502,7 +517,7 @@ class _ProductDetailWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if(product.techFile != null) ...[
+          if (product.techFile != null) ...[
             Row(
               children: [
                 Container(
@@ -518,7 +533,7 @@ class _ProductDetailWidget extends StatelessWidget {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0,
-                            color: CustomColors.dark,
+                            color: AppKeys().customColors!.dark,
                           ),
                         ),
                         MouseRegion(
@@ -529,11 +544,7 @@ class _ProductDetailWidget extends StatelessWidget {
                                 padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(Radius.circular(200.0)),
-                                  border: Border.all(
-                                      color: CustomColors.dark,
-                                      width: 1,
-                                      style: BorderStyle.solid
-                                  ),
+                                  border: Border.all(color: AppKeys().customColors!.dark, width: 1, style: BorderStyle.solid),
                                 ),
                                 child: Text(
                                   "Descargar",
@@ -541,16 +552,14 @@ class _ProductDetailWidget extends StatelessWidget {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 13.0,
-                                    color: CustomColors.dark,
+                                    color: AppKeys().customColors!.dark,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                            )
-                        ),
+                            )),
                       ],
-                    )
-                ),
+                    )),
               ],
             ),
             Row(
@@ -560,12 +569,11 @@ class _ProductDetailWidget extends StatelessWidget {
                     height: 1.0,
                     decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
-                    )
-                ),
+                    )),
               ],
             ),
           ],
-          if(product.imageUrls != null && product.imageUrls!.isNotEmpty) ...[
+          if (product.imageUrls != null && product.imageUrls!.isNotEmpty) ...[
             Row(
               children: [
                 Container(
@@ -586,7 +594,7 @@ class _ProductDetailWidget extends StatelessWidget {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 16.0,
-                                  color: CustomColors.dark,
+                                  color: AppKeys().customColors!.dark,
                                 ),
                               ),
                             ),
@@ -604,36 +612,35 @@ class _ProductDetailWidget extends StatelessWidget {
                             ),
                             items: product.imageUrls!
                                 .map((item) => Container(
-                              child: Container(
-                                height: 310,
-                                width: 310,
-                                margin: const EdgeInsets.all(5.0),
-                                child: ClipRRect(
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
-                                    child: Stack(
-                                      children: <Widget>[
-                                        Image.network(
-                                            item, fit: BoxFit.scaleDown,
-                                            width: double.infinity,
-                                            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                              return Image.asset(
-                                                'assets/images/no_photo.png',
-                                                height: 120,
-                                                width: 120,
-                                              );
-                                            },
-                                        ),
-                                      ],
-                                    )),
-                              ),
-                            ))
+                                      child: Container(
+                                        height: 310,
+                                        width: 310,
+                                        margin: const EdgeInsets.all(5.0),
+                                        child: ClipRRect(
+                                            borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                                            child: Stack(
+                                              children: <Widget>[
+                                                Image.network(
+                                                  item,
+                                                  fit: BoxFit.scaleDown,
+                                                  width: double.infinity,
+                                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                    return Image.asset(
+                                                      'assets/images/no_photo.png',
+                                                      height: 120,
+                                                      width: 120,
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            )),
+                                      ),
+                                    ))
                                 .toList(),
                           ),
                         ),
-
                       ],
-                    )
-                ),
+                    )),
               ],
             ),
             Row(
@@ -643,12 +650,11 @@ class _ProductDetailWidget extends StatelessWidget {
                     height: 1.0,
                     decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
-                    )
-                ),
+                    )),
               ],
             ),
           ],
-          if(product.featuresString != null) ...[
+          if (product.featuresString != null) ...[
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -671,7 +677,7 @@ class _ProductDetailWidget extends StatelessWidget {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16.0,
-                                color: CustomColors.dark,
+                                color: AppKeys().customColors!.dark,
                               ),
                             ),
                           ),
@@ -688,7 +694,7 @@ class _ProductDetailWidget extends StatelessWidget {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14.0,
-                                color: CustomColors.dark,
+                                color: AppKeys().customColors!.dark,
                               ),
                             ),
                           ),
@@ -701,17 +707,16 @@ class _ProductDetailWidget extends StatelessWidget {
                               height: 1.0,
                               decoration: const BoxDecoration(
                                 color: Color(0xFFE4E9FC),
-                              )
-                          ),
+                              )),
                         ],
                       ),
                     ],
-                  ) ,
+                  ),
                 ),
               ],
             ),
           ],
-          if(product.makerWeb != null) ...[
+          if (product.makerWeb != null) ...[
             Row(
               children: [
                 Container(
@@ -727,7 +732,7 @@ class _ProductDetailWidget extends StatelessWidget {
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
                             fontSize: 16.0,
-                            color: CustomColors.dark,
+                            color: AppKeys().customColors!.dark,
                           ),
                         ),
                         MouseRegion(
@@ -738,11 +743,7 @@ class _ProductDetailWidget extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 8.0, right: 24.0, bottom: 8.0, left: 24.0),
                               decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(Radius.circular(200.0)),
-                                border: Border.all(
-                                    color: CustomColors.dark,
-                                    width: 1,
-                                    style: BorderStyle.solid
-                                ),
+                                border: Border.all(color: AppKeys().customColors!.dark, width: 1, style: BorderStyle.solid),
                               ),
                               child: Text(
                                 "Visitar",
@@ -750,7 +751,7 @@ class _ProductDetailWidget extends StatelessWidget {
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
                                   fontSize: 13.0,
-                                  color: CustomColors.dark,
+                                  color: AppKeys().customColors!.dark,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -758,8 +759,7 @@ class _ProductDetailWidget extends StatelessWidget {
                           ),
                         ),
                       ],
-                    )
-                ),
+                    )),
               ],
             ),
             Row(
@@ -769,8 +769,7 @@ class _ProductDetailWidget extends StatelessWidget {
                     height: 1.0,
                     decoration: const BoxDecoration(
                       color: Color(0xFFE4E9FC),
-                    )
-                ),
+                    )),
               ],
             ),
           ],
@@ -781,30 +780,36 @@ class _ProductDetailWidget extends StatelessWidget {
 }
 
 class ActionsView extends StatelessWidget {
-  const ActionsView({Key? key,
-    required this.productId, required this.addQuoteFunction, this.showBuyNow = false, this.showAddToQuote = false, required this.toBuyNowFunction}) : super(key: key,);
+  const ActionsView({Key? key, required this.productId, required this.addQuoteFunction, this.showBuyNow = false, this.showAddToQuote = false, required this.toBuyNowFunction})
+      : super(
+          key: key,
+        );
   final String productId;
   final bool showBuyNow;
   final bool showAddToQuote;
   final void Function(String value, BuildContext context) addQuoteFunction;
-  final void Function(String value,) toBuyNowFunction;
+  final void Function(
+    String value,
+  ) toBuyNowFunction;
 
   @override
   Widget build(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     var media = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if(showBuyNow) ...[
+          if (showBuyNow) ...[
             PrimaryButton(text: 'Comprar ya', onPressed: () async => toBuyNowFunction(productId)),
-            const SizedBox(height: 10,)
+            const SizedBox(
+              height: 10,
+            )
           ],
-          if(showAddToQuote) ...[
-            SecondaryButton(text: 'Agregar a cotización', onPressed:  () async => addQuoteFunction(productId, context)),
+          if (showAddToQuote) ...[
+            SecondaryButton(text: 'Agregar a cotización', onPressed: () async => addQuoteFunction(productId, context)),
           ],
         ],
       ),
@@ -813,7 +818,9 @@ class ActionsView extends StatelessWidget {
 }
 
 class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
-  const _QuantityCalculatorWidget({Key? key,}) : super(key: key, reactive: true);
+  const _QuantityCalculatorWidget({
+    Key? key,
+  }) : super(key: key, reactive: true);
 
   Widget getQtyLabel(ProductCardViewModel viewModel, double elevation) {
     print('getQytLabel con elevation $elevation');
@@ -838,17 +845,17 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w500,
                       fontSize: 22.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                       height: 1.2,
                     ),
                   ),
-                  Text( viewModel.product.saleUnit == null ? '' :
-                    ' ${viewModel.product.saleUnit}',
+                  Text(
+                    viewModel.product.saleUnit == null ? '' : ' ${viewModel.product.saleUnit}',
                     style: GoogleFonts.inter(
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0,
-                      color: CustomColors.dark,
+                      color: AppKeys().customColors!.dark,
                       height: 1.2,
                     ),
                   ),
@@ -861,9 +868,9 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
 
   @override
   Widget builder(
-      BuildContext context,
-      ProductCardViewModel viewModel,
-      ) {
+    BuildContext context,
+    ProductCardViewModel viewModel,
+  ) {
     return Builder(builder: (BuildContext context) {
       return Container(
           decoration: const BoxDecoration(
@@ -873,9 +880,7 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
           padding: const EdgeInsets.all(25),
           width: 362,
           height: 169,
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             FocusScope(
               onFocusChange: (focused) {
                 print('FocusScope: Input Has Focus:  ${viewModel.focusNodeInput.hasFocus}');
@@ -960,7 +965,7 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                               ),
                               color: const Color(0xFFE4E9FC),
                               border: Border.all(
-                                color: CustomColors.dark, //                   <--- border color
+                                color: AppKeys().customColors!.dark, //                   <--- border color
                                 width: 1.0,
                               ),
                             ),
@@ -975,7 +980,7 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 22.0,
-                                      color: CustomColors.dark,
+                                      color: AppKeys().customColors!.dark,
                                     ),
                                     textAlign: TextAlign.start,
                                     controller: viewModel.textEditingController,
@@ -1005,50 +1010,52 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                                   alignment: Alignment.center,
                                   child: viewModel.isQtyControlOpen
                                       ? Container(
-                                    width: 141.0,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      color: CustomColors.dark,
-                                      borderRadius: BorderRadius.all(Radius.circular(200.0)),
-                                    ),
-                                    child: TextFieldTapRegion(
-                                      child: TextButton(
-                                        focusNode: viewModel.focusNodeButton,
-                                        style: ButtonStyle(
-                                          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-                                                (Set<MaterialState> states) {
-                                              return Colors.transparent;
-                                            },
+                                          width: 141.0,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: AppKeys().customColors!.dark,
+                                            borderRadius: const BorderRadius.all(Radius.circular(200.0)),
                                           ),
-                                          backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                                                (Set<MaterialState> states) {
-                                              return Colors.transparent;
-                                            },
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          print('Se dio clic en Button onPressCalculate');
-                                          viewModel.onPressCalculate(context,);
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          constraints: const BoxConstraints(
-                                            minHeight: 30.0,
-                                          ),
-                                          child: Text(
-                                            'Actualizar',
-                                            style: GoogleFonts.inter(
-                                              fontStyle: FontStyle.normal,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 13.0,
-                                              color: const Color(0xFF9C9FAA),
+                                          child: TextFieldTapRegion(
+                                            child: TextButton(
+                                              focusNode: viewModel.focusNodeButton,
+                                              style: ButtonStyle(
+                                                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                                                  (Set<MaterialState> states) {
+                                                    return Colors.transparent;
+                                                  },
+                                                ),
+                                                backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                                  (Set<MaterialState> states) {
+                                                    return Colors.transparent;
+                                                  },
+                                                ),
+                                              ),
+                                              onPressed: () {
+                                                print('Se dio clic en Button onPressCalculate');
+                                                viewModel.onPressCalculate(
+                                                  context,
+                                                );
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                constraints: const BoxConstraints(
+                                                  minHeight: 30.0,
+                                                ),
+                                                child: Text(
+                                                  'Actualizar',
+                                                  style: GoogleFonts.inter(
+                                                    fontStyle: FontStyle.normal,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 13.0,
+                                                    color: const Color(0xFF9C9FAA),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
                                             ),
-                                            textAlign: TextAlign.center,
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  )
+                                        )
                                       : Container(),
                                 ),
                               ],
@@ -1087,24 +1094,24 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                           viewModel.product.isCalculatingProductTotals
                               ? Container()
                               : SelectableText(
-                            viewModel.currencyFormat.format(viewModel.product.total!.afterDiscount ?? ''),
-                            style: GoogleFonts.inter(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 22.0,
-                              color: CustomColors.dark,
-                              height: 1.2,
-                            ),
-                            textAlign: TextAlign.left,
-                            //overflow: TextOverflow.clip,
-                          ),
+                                  viewModel.currencyFormat.format(viewModel.product.total!.afterDiscount ?? ''),
+                                  style: GoogleFonts.inter(
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 22.0,
+                                    color: AppKeys().customColors!.dark,
+                                    height: 1.2,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                  //overflow: TextOverflow.clip,
+                                ),
                           Text(
                             ' +iva',
                             style: GoogleFonts.inter(
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w400,
                               fontSize: 12.0,
-                              color: CustomColors.dark,
+                              color: AppKeys().customColors!.dark,
                               height: 1.2,
                             ),
                           ),
@@ -1132,7 +1139,7 @@ class _QuantityCalculatorWidget extends StackedHookView<ProductCardViewModel> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontSize: 12.0,
-                    color: CustomColors.dark,
+                    color: AppKeys().customColors!.dark,
                   ),
                 ),
               ],

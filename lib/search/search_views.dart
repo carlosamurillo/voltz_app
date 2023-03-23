@@ -2,11 +2,11 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
 import 'package:maketplace/utils/buttons.dart';
 import 'package:stacked/stacked.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 
 class SliverProductsSearchResult extends StatelessWidget {
   const SliverProductsSearchResult({super.key});
@@ -18,7 +18,7 @@ class SliverProductsSearchResult extends StatelessWidget {
       viewModelBuilder: () => ProductSearchViewModel(),
       builder: (context, viewModel, child) {
         print('ProductsSearchResults view ... ');
-        if(viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null){
+        if (viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null) {
           return const SliverFillRemaining(
             child: SearchInitialViewWidget(),
           );
@@ -28,8 +28,7 @@ class SliverProductsSearchResult extends StatelessWidget {
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
-              return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!,
-                onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: false);
+              return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: false);
             } else {
               return const SliverFillRemaining(
                 child: Center(
@@ -67,21 +66,21 @@ class SearchInitialViewWidget extends StatelessWidget {
               width: 120,
             ),
             const SizedBox(height: 25),
-            const Text(
+            Text(
               "Busca por código, nombre, especificación, y/o marca.",
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 32,
-                color: CustomColors.dark,
+                color: AppKeys().customColors!.dark,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               "Ejemplos: SML102022, Cable uso rudo, 16AMP, Tecnolite",
               style: TextStyle(
                 fontSize: 18,
-                color: CustomColors.dark,
+                color: AppKeys().customColors!.dark,
               ),
               textAlign: TextAlign.center,
             ),
@@ -126,12 +125,12 @@ class NoFoundCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 const SizedBox(height: 25),
-                const SelectableText(
+                SelectableText(
                   "¿No lo encuentras?",
                   style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 32.0,
-                    color: CustomColors.dark,
+                    color: AppKeys().customColors!.dark,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -143,23 +142,25 @@ class NoFoundCard extends StatelessWidget {
                 const SizedBox(height: 15),
                 RichText(
                   textAlign: TextAlign.center,
-                  text: const TextSpan(
+                  text: TextSpan(
                       text: "Buscaremos rápidamente ",
                       style: TextStyle(
                         fontSize: 18.0,
-                        color: CustomColors.blueVoltz,
+                        color: AppKeys().customColors!.blueVoltz,
                       ),
                       children: [
                         TextSpan(
                           text: "el mejor precio y disponibilidad en cientos de proveedores",
-                          style: TextStyle(color: CustomColors.dark),
+                          style: TextStyle(color: AppKeys().customColors!.dark),
                         ),
                       ]),
                 ),
                 const SizedBox(height: 15),
-                ThirdButton(text: "Solicitar producto", onPressed: () {
-                  html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
-                }),
+                ThirdButton(
+                    text: "Solicitar producto",
+                    onPressed: () {
+                      html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
+                    }),
               ],
             ),
           ),
@@ -183,8 +184,8 @@ class SliverClassicSearchView extends StatelessWidget {
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
-              return gv.SliverProductGridView(childCount: viewModel.data!.length,
-                  data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: isHomeVersion);
+              return gv.SliverProductGridView(
+                  childCount: viewModel.data!.length, data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: isHomeVersion);
             } else {
               return const SliverToBoxAdapter(
                 child: Center(
@@ -203,7 +204,6 @@ class SliverClassicSearchView extends StatelessWidget {
   }
 }
 
-
 class SliverSearchStatsView extends StatelessWidget {
   const SliverSearchStatsView({super.key});
 
@@ -214,44 +214,41 @@ class SliverSearchStatsView extends StatelessWidget {
       builder: (context, viewModel, child) {
         print('SearchStatsView ... se renderiza...');
         return SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 35),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Busca por código, nombre, especificación, y/o marca.",
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 22.0,
-                    color: CustomColors.dark,
-                  ),
-                  textAlign: TextAlign.left,
+            child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 35),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Busca por código, nombre, especificación, y/o marca.",
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 22.0,
+                  color: AppKeys().customColors!.dark,
                 ),
-                const Spacer(),
-                if(viewModel.data != null) ...[
-                  Text(
-                    '${viewModel.data!.nbHits} SKU disponibles',
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.0,
-                      color: CustomColors.dark,
-                    ),
-                    textAlign: TextAlign.right,
+                textAlign: TextAlign.left,
+              ),
+              const Spacer(),
+              if (viewModel.data != null) ...[
+                Text(
+                  '${viewModel.data!.nbHits} SKU disponibles',
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.0,
+                    color: AppKeys().customColors!.dark,
                   ),
-                ],
+                  textAlign: TextAlign.right,
+                ),
               ],
-            ),
-          )
-        );
+            ],
+          ),
+        ));
       },
     );
   }
 }
-
-
 
 class HowToSearchBanner extends StatelessWidget {
   const HowToSearchBanner({super.key});
@@ -263,16 +260,22 @@ class HowToSearchBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 50),
       height: 188,
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: CustomColors.yellowVoltz,
-        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+      decoration: BoxDecoration(
+        color: AppKeys().customColors!.yellowVoltz,
+        borderRadius: const BorderRadius.all(Radius.circular(6.0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset('assets/images/how_search.png', height: 138, width: 138,),
-          const SizedBox(width: 25,),
+          Image.asset(
+            'assets/images/how_search.png',
+            height: 138,
+            width: 138,
+          ),
+          const SizedBox(
+            width: 25,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -282,7 +285,7 @@ class HowToSearchBanner extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w700,
                   fontSize: 32.0,
-                  color: CustomColors.dark,
+                  color: AppKeys().customColors!.dark,
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -291,7 +294,7 @@ class HowToSearchBanner extends StatelessWidget {
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w400,
                   fontSize: 16.0,
-                  color: CustomColors.dark,
+                  color: AppKeys().customColors!.dark,
                 ),
                 textAlign: TextAlign.left,
               ),
@@ -301,7 +304,6 @@ class HowToSearchBanner extends StatelessWidget {
       ),
     );
   }
-
 }
 
 

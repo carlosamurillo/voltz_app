@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maketplace/utils/custom_colors.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/pet_voltz_path.dart';
 
 class PrimaryButton extends StatelessWidget {
@@ -16,9 +16,10 @@ class PrimaryButton extends StatelessWidget {
     return BaseButton(
       text: text,
       onPressed: onPressed,
-      textColor: CustomColors.white,
-      buttonColor: CustomColors.blueVoltz,
+      textColor: AppKeys().customColors!.buttonPrimaryTextColor,
+      buttonColor: AppKeys().customColors!.buttonPrimaryColor,
       icon: icon,
+      enabled: enabled,
     );
   }
 }
@@ -35,9 +36,9 @@ class SecondaryButton extends StatelessWidget {
     return BaseButton(
       text: text,
       onPressed: onPressed,
-      textColor: CustomColors.dark,
-      buttonColor: Colors.white,
-      borderColor: CustomColors.dark,
+      textColor: AppKeys().customColors!.buttonSecondaryTextColor,
+      buttonColor: AppKeys().customColors!.buttonSecondaryColor,
+      borderColor: AppKeys().customColors!.buttonSecondaryTextColor,
       icon: icon,
     );
   }
@@ -52,13 +53,27 @@ class ThirdButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseButton(text: text, onPressed: onPressed, textColor: CustomColors.white, buttonColor: CustomColors.dark, icon: icon);
+    return BaseButton(
+      text: text,
+      onPressed: onPressed,
+      textColor: AppKeys().customColors!.buttonThirdTextColor,
+      buttonColor: AppKeys().customColors!.buttonThirdColor,
+      icon: icon,
+    );
   }
 }
 
 class GeneralButton extends StatelessWidget {
-  const GeneralButton({Key? key, required this.text, required this.onPressed, required this.textColor, required this.buttonColor, this.borderColor, this.enabled = true, this.icon,})
-      : super(key: key);
+  const GeneralButton({
+    Key? key,
+    required this.text,
+    required this.onPressed,
+    required this.textColor,
+    required this.buttonColor,
+    this.borderColor,
+    this.enabled = true,
+    this.icon,
+  }) : super(key: key);
 
   final String text;
   final Function() onPressed;
@@ -84,39 +99,49 @@ class GeneralButton extends StatelessWidget {
             hoverColor: buttonColor.withOpacity(.3),
             onTap: enabled ? onPressed : null,
             child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if(icon != null)...[
-                    Icon(icon,
-                      size: 24,
-                      color: textColor,
-                    )
-                  ],
-                  const SizedBox(width: 8,),
-                  Text(
-                    text,
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.0,
-                      color: textColor,
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (icon != null) ...[
+                      Icon(
+                        icon,
+                        size: 24,
+                        color: textColor,
+                      )
+                    ],
+                    const SizedBox(
+                      width: 8,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
-            ),
+                    Text(
+                      text,
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16.0,
+                        color: textColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                )),
           ),
         ));
   }
 }
 
 class BaseButton extends StatelessWidget {
-  const BaseButton({Key? key, required this.text, required this.onPressed, required this.textColor, required this.buttonColor, this.borderColor, this.enabled = true, this.icon,})
-      : super(key: key);
+  const BaseButton({
+    Key? key,
+    required this.text,
+    required this.onPressed,
+    required this.textColor,
+    required this.buttonColor,
+    this.borderColor,
+    this.enabled = true,
+    this.icon,
+  }) : super(key: key);
 
   final String text;
   final Function() onPressed;
@@ -133,51 +158,53 @@ class BaseButton extends StatelessWidget {
 
     //final splashFactory = PathSplash.splashFactory();
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: 0.1,
-          surfaceTintColor: CustomColors.yellowVoltz ,
-          disabledBackgroundColor: buttonColor.withOpacity(0.6),
-          backgroundColor: buttonColor,
-          side: borderColor == null ? null : BorderSide(width: 1.0, color: borderColor!,),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(200),
-          ),
-          alignment: Alignment.center,
-          //splashFactory: splashFactory,
-        ),
-        onPressed: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if(icon != null) ...[
-                Icon(icon,
-                  size: 24,
-                  color: textColor,
-                )
-              ],
-              const SizedBox(width: 8,),
-              Text(
-                text,
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16.0,
-                  color: textColor,
-                ),
-                textAlign: TextAlign.center,
+      style: ElevatedButton.styleFrom(
+        elevation: 0.1,
+        surfaceTintColor: AppKeys().customColors!.yellowVoltz,
+        disabledBackgroundColor: buttonColor.withOpacity(0.6),
+        backgroundColor: enabled ? buttonColor : buttonColor.withOpacity(0.6),
+        side: borderColor == null
+            ? null
+            : BorderSide(
+                width: 1.0,
+                color: borderColor!,
               ),
-            ],
-          ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(200),
         ),
+        alignment: Alignment.center,
+        //splashFactory: splashFactory,
+      ),
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              Icon(icon, size: 24, color: textColor),
+              const SizedBox(width: 8),
+            ],
+            Text(
+              text,
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w500,
+                fontSize: 16.0,
+                color: textColor,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class CustomIconButton extends StatelessWidget {
-  const CustomIconButton({Key? key, required this.onPressed, required this.buttonColor, required this.backGroundColor,
-    this.enabled = true, required this.icon, required this.borderColor})
+  const CustomIconButton(
+      {Key? key, required this.onPressed, required this.buttonColor, required this.backGroundColor, this.enabled = true, required this.icon, required this.borderColor})
       : super(key: key);
 
   final Function() onPressed;
@@ -190,12 +217,8 @@ class CustomIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: borderColor),
-          color: enabled ? buttonColor : buttonColor.withOpacity(.8),
-            shape: BoxShape.circle
-        ),
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(border: Border.all(color: borderColor), color: enabled ? buttonColor : buttonColor.withOpacity(.8), shape: BoxShape.circle),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -206,7 +229,10 @@ class CustomIconButton extends StatelessWidget {
               decoration: const BoxDecoration(shape: BoxShape.circle),
               height: 40,
               width: 40,
-              child: Icon(icon, color: backGroundColor,),
+              child: Icon(
+                icon,
+                color: backGroundColor,
+              ),
             ),
           ),
         ));

@@ -7,12 +7,11 @@ import 'package:maketplace/cart/container_viewmodel.dart';
 import 'package:maketplace/cart/tabs_view.dart';
 import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
-import 'package:maketplace/csv_quote/download_button.dart';
 import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/pdf_quote/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/search/search_views.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart' show StackedHookView;
@@ -32,7 +31,7 @@ class CartView extends StatelessWidget {
       builder: (context, model, child) {
         return Scaffold(
           endDrawer: model.userSignStatus == UserSignStatus.authenticated ? const MenuDrawer() : null,
-          backgroundColor: CustomColors.WBY,
+          backgroundColor: AppKeys().customColors!.WBY,
           // No appBar property provided, only the body.
           body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -115,11 +114,11 @@ class CartViewState extends State<CartView2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: CustomColors.grayBackground_2,
+        backgroundColor: AppKeys().customColors!.grayBackground_2,
         body: Stack(
           children: [
             Container(
-              color: CustomColors.WBY,
+              color: AppKeys().customColors!.WBY,
               padding: const EdgeInsets.all(0),
               child: Column(
                 children: [
@@ -146,7 +145,7 @@ class _BottomExpandedAppBar extends StatelessWidget {
       controller: DraggableScrollableController(),
       builder: (context, scrollControllerBottom) {
         return ColoredBox(
-          color: CustomColors.safeBlue,
+          color: AppKeys().customColors!.safeBlue,
           // color: CustomColors.redAlert,
           child: ResumeBottom(scrollControllerBottom: scrollControllerBottom),
         );
@@ -156,7 +155,10 @@ class _BottomExpandedAppBar extends StatelessWidget {
 }
 
 class _BottomReminderTakeOrder extends StatelessWidget {
-  const _BottomReminderTakeOrder({Key? key}) : super(key: key,);
+  const _BottomReminderTakeOrder({Key? key})
+      : super(
+          key: key,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +168,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         if (model.quote.detail != null) {
           return Container(
-            color: CustomColors.safeBlue,
+            color: AppKeys().customColors!.safeBlue,
             width: media.width,
             height: media.height * 0.20,
             child: SingleChildScrollView(
@@ -197,7 +199,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 20.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                   const SizedBox(
@@ -209,7 +211,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ],
@@ -221,22 +223,22 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                 children: [
                                   Container(
                                       width: 250,
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(200),
                                         ),
-                                        color: CustomColors.energyYellow,
+                                        color: AppKeys().customColors!.energyYellow,
                                       ),
                                       child: Material(
                                         color: Colors.transparent,
                                         child: InkWell(
                                           borderRadius: const BorderRadius.all(Radius.circular(200)),
-                                          hoverColor: CustomColors.energyYellowHover,
+                                          hoverColor: AppKeys().customColors!.energyYellowHover,
                                           onTap: () {
                                             _Dialogs dialog = _Dialogs();
                                             dialog.showAlertDialog(
                                               context,
-                                                  () async {
+                                              () async {
                                                 model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),
@@ -271,10 +273,10 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.lock,
                                     size: 16,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                   const SizedBox(
                                     width: 5,
@@ -285,7 +287,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ],
@@ -300,7 +302,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
             ),
           );
         } else {
-          return Container(color: CustomColors.safeBlue);
+          return Container(color: AppKeys().customColors!.safeBlue);
         }
       },
     );
@@ -320,7 +322,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
         var media = MediaQuery.of(context).size;
         if (model.quote.detail != null) {
           return Container(
-            color: CustomColors.safeBlue,
+            color: AppKeys().customColors!.safeBlue,
             width: 310,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -343,7 +345,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 42.0,
-                                color: CustomColors.white,
+                                color: AppKeys().customColors!.white,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -360,7 +362,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -370,7 +372,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -388,7 +390,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -398,7 +400,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -416,7 +418,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.yellowVoltz,
+                                    color: AppKeys().customColors!.yellowVoltz,
                                   ),
                                 ),
                                 const Spacer(),
@@ -426,7 +428,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.yellowVoltz,
+                                    color: AppKeys().customColors!.yellowVoltz,
                                   ),
                                 ),
                               ],
@@ -444,7 +446,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -454,7 +456,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -472,7 +474,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -483,7 +485,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ] else ...[
@@ -493,7 +495,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ]
@@ -527,7 +529,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w700,
                                     fontSize: 20.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const SizedBox(
@@ -539,7 +541,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -551,17 +553,17 @@ class Resume extends StackedHookView<QuoteViewModel> {
                               children: [
                                 Container(
                                     width: 250,
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(200),
                                       ),
-                                      color: CustomColors.energyYellow,
+                                      color: AppKeys().customColors!.energyYellow,
                                     ),
                                     child: Material(
                                       color: Colors.transparent,
                                       child: InkWell(
                                         borderRadius: const BorderRadius.all(Radius.circular(200)),
-                                        hoverColor: CustomColors.energyYellowHover,
+                                        hoverColor: AppKeys().customColors!.energyYellowHover,
                                         onTap: () {
                                           _Dialogs dialog = _Dialogs();
                                           dialog.showAlertDialog(
@@ -601,10 +603,10 @@ class Resume extends StackedHookView<QuoteViewModel> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.lock,
                                   size: 16,
-                                  color: CustomColors.white,
+                                  color: AppKeys().customColors!.white,
                                 ),
                                 const SizedBox(
                                   width: 5,
@@ -615,7 +617,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -628,15 +630,18 @@ class Resume extends StackedHookView<QuoteViewModel> {
             ),
           );
         } else {
-          return Container(color: CustomColors.safeBlue);
+          return Container(color: AppKeys().customColors!.safeBlue);
         }
       },
     );
   }
 }
 
-class ResumeBottom extends StatelessWidget{
-  const ResumeBottom({Key? key, required this.scrollControllerBottom}) : super(key: key,);
+class ResumeBottom extends StatelessWidget {
+  const ResumeBottom({Key? key, required this.scrollControllerBottom})
+      : super(
+          key: key,
+        );
 
   final ScrollController scrollControllerBottom;
 
@@ -657,7 +662,7 @@ class ResumeBottom extends StatelessWidget{
                 children: [
                   Expanded(
                     child: SizedBox(
-                      // width: media.width,
+                        // width: media.width,
                         width: clampDouble(360, media.width < 360 ? media.width : 360, 360),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -667,9 +672,9 @@ class ResumeBottom extends StatelessWidget{
                               padding: EdgeInsets.symmetric(vertical: 25.0),
                               child: Center(
                                   child: SizedBox(
-                                    width: 38,
-                                    child: Divider(thickness: 5, color: Colors.white, height: 5),
-                                  )),
+                                width: 38,
+                                child: Divider(thickness: 5, color: Colors.white, height: 5),
+                              )),
                             ),
                             Text(
                               'Realiza tu pedido ya',
@@ -677,7 +682,7 @@ class ResumeBottom extends StatelessWidget{
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 42.0,
-                                color: CustomColors.white,
+                                color: AppKeys().customColors!.white,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -694,7 +699,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -704,7 +709,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -722,7 +727,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -732,7 +737,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -750,7 +755,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.yellowVoltz,
+                                    color: AppKeys().customColors!.yellowVoltz,
                                   ),
                                 ),
                                 const Spacer(),
@@ -760,7 +765,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.yellowVoltz,
+                                    color: AppKeys().customColors!.yellowVoltz,
                                   ),
                                 ),
                               ],
@@ -778,7 +783,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -788,7 +793,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                               ],
@@ -806,7 +811,7 @@ class ResumeBottom extends StatelessWidget{
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 14.0,
-                                    color: CustomColors.white,
+                                    color: AppKeys().customColors!.white,
                                   ),
                                 ),
                                 const Spacer(),
@@ -817,7 +822,7 @@ class ResumeBottom extends StatelessWidget{
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ] else ...[
@@ -827,7 +832,7 @@ class ResumeBottom extends StatelessWidget{
                                       fontStyle: FontStyle.normal,
                                       fontWeight: FontWeight.w500,
                                       fontSize: 16.0,
-                                      color: CustomColors.white,
+                                      color: AppKeys().customColors!.white,
                                     ),
                                   ),
                                 ]
@@ -844,7 +849,7 @@ class ResumeBottom extends StatelessWidget{
             ],
           );
         } else {
-          return Container(color: CustomColors.safeBlue);
+          return Container(color: AppKeys().customColors!.safeBlue);
         }
       },
     );
@@ -902,7 +907,7 @@ class _CartContainer extends StatelessWidget {
           ),
           width: media.width,
           // height: media.width >= CustomStyles.desktopBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
-          color: CustomColors.WBY,
+          color: AppKeys().customColors!.WBY,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -953,7 +958,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                         fontSize: 14.0,
-                        color: CustomColors.dark,
+                        color: AppKeys().customColors!.dark,
                       ),
                     ),
                   ],
@@ -971,7 +976,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
                         fontSize: 14.0,
-                        color: CustomColors.dark,
+                        color: AppKeys().customColors!.dark,
                       ),
                     ),
                   ],
@@ -992,7 +997,7 @@ class CustomerInfo extends StackedHookView<QuoteViewModel> {
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w700,
                         fontSize: media.width >= CustomStyles.desktopBreak ? 42.0 : 32,
-                        color: CustomColors.dark,
+                        color: AppKeys().customColors!.dark,
                         overflow: TextOverflow.clip,
                       ),
                     ),

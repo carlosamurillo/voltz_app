@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
-import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/common/open_search_service.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/notifications/notifications_view.dart';
 import 'package:maketplace/search/input_search_repository.dart';
-import 'package:maketplace/search/search_repository.dart';
 import 'package:maketplace/utils/buttons.dart';
-import 'package:maketplace/utils/custom_colors.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-void showNotificationDialog(BuildContext context,) async {
+void showNotificationDialog(
+  BuildContext context,
+) async {
   return await showDialog(
     context: context,
-    barrierColor: CustomColors.blueVoltz.withOpacity(.7),
+    barrierColor: AppKeys().customColors!.blueVoltz.withOpacity(.7),
     builder: (context) => const AlertDialog(
-      backgroundColor: Colors.white,
-      insetPadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.all(25),
-      content: BaseNotificationWidget(onTapButtonUno: goToQuotationFromDialog,)
-    ),
+        backgroundColor: Colors.white,
+        insetPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.all(25),
+        content: BaseNotificationWidget(
+          onTapButtonUno: goToQuotationFromDialog,
+        )),
   );
 }
-
 
 final _inputSearchRepository = locator<InputSearchRepository>();
 final OpenSearchService _openSearchService = locator<OpenSearchService>();
@@ -35,7 +35,7 @@ goToQuotationFromDialog() async {
 void showExistDialog(BuildContext context) async {
   return await showDialog(
     context: context,
-    barrierColor: CustomColors.blueVoltz.withOpacity(.7),
+    barrierColor: AppKeys().customColors!.blueVoltz.withOpacity(.7),
     builder: (context) => AlertDialog(
       backgroundColor: Colors.white,
       insetPadding: EdgeInsets.zero,
@@ -71,18 +71,18 @@ class GeneralDialog extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 15),
-          const Icon(
+          Icon(
             Icons.check_circle,
-            color: CustomColors.blueVoltz,
+            color: AppKeys().customColors!.blueVoltz,
             size: 72,
           ),
           const SizedBox(height: 15),
           SelectableText(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 32.0,
-              color: CustomColors.dark,
+              color: AppKeys().customColors!.dark,
             ),
             textAlign: TextAlign.center,
           ),
