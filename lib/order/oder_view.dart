@@ -216,13 +216,13 @@ class _GoToPaymentSate extends State<_GoToPayment> {
             borderRadius: BorderRadius.all(
               Radius.circular(26),
             ),
-            color: AppKeys().customColors!.energyYellow,
+            color: AppKeys().customColors!.energyColor,
           ),
           child: Material(
             color: Colors.transparent,
             child: InkWell(
               borderRadius: const BorderRadius.all(Radius.circular(26)),
-              hoverColor: AppKeys().customColors!.energyYellowHover,
+              hoverColor: AppKeys().customColors!.energyColorHover,
               onTap: () {
                 setState(() {
                   widget.listenerShowOrder();
@@ -239,7 +239,7 @@ class _GoToPaymentSate extends State<_GoToPayment> {
                   children: [
                     Text(
                       'Ir a pago',
-                      style: CustomStyles.styleVolcanicBlueDos,
+                      style: CustomStyles.styleVolcanicBlueDos.copyWith(color: Colors.white),
                     )
                   ],
                 ),
@@ -668,7 +668,7 @@ class _OrerdeTableDetailState extends State<_OrerdeTableDetail> {
                       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: AppKeys().customColors!.energyYellow,
+                        color: AppKeys().customColors!.energyColor,
                       ),
                       alignment: Alignment.center,
                       width: 56,

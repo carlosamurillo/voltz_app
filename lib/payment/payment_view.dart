@@ -37,8 +37,8 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
       _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
     } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
-      _buttonColor = AppKeys().customColors!.energyYellow;
-      _buttonHoverColor = AppKeys().customColors!.energyYellowHover;
+      _buttonColor = AppKeys().customColors!.energyColor;
+      _buttonHoverColor = AppKeys().customColors!.energyColorHover;
     } else {
       _actionTitle = 'Pago confirmado';
       _buttonColor = AppKeys().customColors!.energyGreen;
@@ -374,8 +374,8 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
       _buttonHoverColor = AppKeys().customColors!.safeBlueHover;
     } else if (context.read<OrderViewModel>().order!.paymentStatus == 'verifying') {
       _actionTitle = 'Verificando pago...';
-      _buttonColor = AppKeys().customColors!.energyYellow;
-      _buttonHoverColor = AppKeys().customColors!.energyYellowHover;
+      _buttonColor = AppKeys().customColors!.energyColor;
+      _buttonHoverColor = AppKeys().customColors!.energyColorHover;
     } else {
       _actionTitle = 'Pago confirmado';
       _buttonColor = AppKeys().customColors!.energyGreen;

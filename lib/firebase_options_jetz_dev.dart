@@ -45,15 +45,25 @@ class DefaultFirebaseOptionsJetzDevelop {
     }
   }
 
+  // static const FirebaseOptions web = FirebaseOptions(
+  //   apiKey: "AIzaSyCWuZkrkGuhf9vrs8utndk0d1T2Y598f3E",
+  //   authDomain: "jetz-marketplace-dev.firebaseapp.com",
+  //   projectId: "jetz-marketplace-dev",
+  //   storageBucket: "jetz-marketplace-dev.appspot.com",
+  //   messagingSenderId: "428926511251",
+  //   appId: "1:428926511251:web:5de79d30f93bf81d448566",
+  //   measurementId: "G-737DGY18W4",
+  // );
+
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: "AIzaSyCWuZkrkGuhf9vrs8utndk0d1T2Y598f3E",
-    authDomain: "jetz-marketplace-dev.firebaseapp.com",
-    projectId: "jetz-marketplace-dev",
-    storageBucket: "jetz-marketplace-dev.appspot.com",
-    messagingSenderId: "428926511251",
-    appId: "1:428926511251:web:5de79d30f93bf81d448566",
-    measurementId: "G-737DGY18W4",
+    apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
+    appId: '1:884121058223:web:5287e00d4f25ca3ef24d5a',
+    messagingSenderId: '884121058223',
+    projectId: 'voltz-develop',
+    authDomain: 'voltz-develop.firebaseapp.com',
+    storageBucket: 'voltz-develop.appspot.com',
   );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB5brA3CcB3KLf7EHgK4obbRO7EUBJaZYs',
     appId: '1:884121058223:android:b36cc85bd565538bf24d5a',

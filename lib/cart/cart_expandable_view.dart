@@ -89,7 +89,7 @@ class CardGrid extends StatelessWidget {
                   ),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: media.height * 0.20,
+                      height: media.height * 0.28,
                     ),
                   ),
                   // if (media.width < CustomStyles.mobileBreak) ...[
@@ -259,7 +259,7 @@ class ProductCard extends StatelessWidget {
                                       ),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                        color: AppKeys().customColors!.yellowVoltz,
+                                        color: AppKeys().customColors!.energyColorHover,
                                         child: SelectableText(
                                           "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
                                           enableInteractiveSelection: false,
@@ -869,7 +869,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/assistant_icon.png',
+                        AppKeys().assistantIcon!,
                         width: 62.0,
                         height: 62.0,
                       ),

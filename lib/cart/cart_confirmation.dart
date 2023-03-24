@@ -221,13 +221,13 @@ class _Resume extends StackedHookView<QuoteViewModel> {
                         borderRadius: BorderRadius.all(
                           Radius.circular(6),
                         ),
-                        color: AppKeys().customColors!.energyYellow,
+                        color: AppKeys().customColors!.energyColor,
                       ),
                       child: Material(
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.circular(6)),
-                          hoverColor: AppKeys().customColors!.energyYellowHover,
+                          hoverColor: AppKeys().customColors!.energyColorHover,
                           onTap: () {
                             _Dialogs dialog = _Dialogs();
                             dialog.showAlertDialog(
@@ -251,7 +251,7 @@ class _Resume extends StackedHookView<QuoteViewModel> {
                                 Text(
                                   'Hacer pedido',
                                   textAlign: TextAlign.center,
-                                  style: CustomStyles.styleVolcanic16600,
+                                  style: CustomStyles.styleVolcanic16600.copyWith(color: Colors.white),
                                 ),
                               ],
                             ),

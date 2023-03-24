@@ -62,7 +62,7 @@ class SearchInitialViewWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Image.asset(
-              "assets/images/assistant_icon.png",
+              AppKeys().assistantIcon!,
               width: 120,
             ),
             const SizedBox(height: 25),
@@ -136,7 +136,7 @@ class NoFoundCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 Image.asset(
-                  "assets/images/assistant_icon.png",
+                  AppKeys().assistantIcon!,
                   width: 62,
                 ),
                 const SizedBox(height: 15),
@@ -261,7 +261,7 @@ class HowToSearchBanner extends StatelessWidget {
       height: 188,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppKeys().customColors!.yellowVoltz,
+        color: AppKeys().customColors!.energyColor,
         borderRadius: const BorderRadius.all(Radius.circular(6.0)),
       ),
       child: Row(
@@ -269,36 +269,38 @@ class HowToSearchBanner extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/images/how_search.png',
+            AppKeys().howToSearch!,
             height: 138,
             width: 138,
           ),
           const SizedBox(
             width: 25,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Busca por código, nombre, especificación, y/o marca.",
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 32.0,
-                  color: AppKeys().customColors!.dark,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Busca por código, nombre, especificación, y/o marca.",
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 32.0,
+                    color: AppKeys().customColors!.bannerTextColor,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                "Ejemplos: SML102022, Cable uso rudo, 16AMP, y/o Tecnolite",
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16.0,
-                  color: AppKeys().customColors!.dark,
+                Text(
+                  "Ejemplos: SML102022, Cable uso rudo, 16AMP, y/o Tecnolite",
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16.0,
+                    color: AppKeys().customColors!.bannerTextColor,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
-              ),
-            ],
+              ],
+            ),
           )
         ],
       ),

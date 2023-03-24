@@ -6,6 +6,7 @@ class UserData {
   DateTime? created;
   String email;
   String fullName;
+  String lastName;
   String phone;
   String? photoURL;
   String role;
@@ -16,6 +17,7 @@ class UserData {
     this.created,
     required this.email,
     required this.fullName,
+    required this.lastName,
     required this.phone,
     this.photoURL,
     required this.role,
@@ -27,6 +29,7 @@ class UserData {
         created: DateTime.now(),
         email: "",
         fullName: "",
+        lastName: "",
         phone: "",
         role: "",
       );
@@ -36,6 +39,7 @@ class UserData {
         created: convertTimestampToLocal(json['created'] as Timestamp),
         email: json['email'],
         fullName: json['full_name'],
+        lastName: json['last_name'] ?? '',
         phone: json['phone'],
         photoURL: json['photo_URL'],
         role: json['role'],
@@ -47,6 +51,7 @@ class UserData {
     DateTime? created,
     String? email,
     String? fullName,
+    String? lastName,
     String? phone,
     String? photoURL,
     String? role,
@@ -57,6 +62,7 @@ class UserData {
         created: created ?? this.created,
         email: email ?? this.email,
         fullName: fullName ?? this.fullName,
+        lastName: lastName ?? this.lastName,
         phone: phone ?? this.phone,
         photoURL: photoURL ?? this.photoURL,
         role: role ?? this.role,
@@ -69,6 +75,7 @@ class UserData {
     data['created'] = this.created;
     data['email'] = this.email;
     data['full_name'] = this.fullName;
+    data['last_name'] = this.lastName;
     data['phone'] = this.phone;
     data['photo_URL'] = this.photoURL;
     data['role'] = this.role;

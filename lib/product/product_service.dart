@@ -1,24 +1,27 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:observable_ish/observable_ish.dart';
-import 'package:stacked/stacked.dart'  show ListenableServiceMixin;
 import 'package:maketplace/product/product_model.dart';
+import 'package:observable_ish/observable_ish.dart';
+import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 class ProductService with ListenableServiceMixin {
   final RxValue<Product?> _rxProduct = RxValue<Product?>(null);
   Product? get product => _rxProduct.value;
 
-  Product? getCopyOfProduct(){
-    if(_rxProduct.value != null) {
-      return Product.copyWith(
-          _rxProduct.value!.toJson(), _rxProduct.value!.id!);
+  final RxValue<double> _rxPriceToMultiply = RxValue<double>(0);
+  double get priceToMultiply => _rxPriceToMultiply.value;
+
+  Product? getCopyOfProduct() {
+    if (_rxProduct.value != null) {
+      return Product.copyWith(_rxProduct.value!.toJson(), _rxProduct.value!.id!);
     } else {
       return null;
     }
   }
 
   ProductService() {
-    listenToReactiveValues([_rxProduct,]);
+    listenToReactiveValues([
+      _rxProduct,
+    ]);
   }
 
   init(String productId) async {
@@ -27,7 +30,7 @@ class ProductService with ListenableServiceMixin {
   }
 
   late DocumentReference reference;
-  _initReference(String productId){
+  _initReference(String productId) {
     reference = FirebaseFirestore.instance.collection('products').doc(productId);
   }
 
@@ -45,7 +48,15 @@ class ProductService with ListenableServiceMixin {
 
   bool viewRecorded = false;
   Future<Product> _processProduct(DocumentSnapshot documentSnapshot) async {
-    return Product.fromJsonWithId(json: documentSnapshot.data() as Map<String, dynamic>, id: documentSnapshot.id);
+    final toReturn = Product.fromJsonWithId(json: documentSnapshot.data() as Map<String, dynamic>, id: documentSnapshot.id);
+    if (toReturn.bestSupplier?.priceBest != null) {
+      _rxPriceToMultiply.value = toReturn.bestSupplier!.priceBest!;
+    } else if (toReturn.price?.price2 != null) {
+      _rxPriceToMultiply.value = toReturn.price!.price2!;
+    } else if (toReturn.pricePublic != null) {
+      _rxPriceToMultiply.value = toReturn.pricePublic!;
+    }
+    notifyListeners();
+    return toReturn;
   }
-
 }

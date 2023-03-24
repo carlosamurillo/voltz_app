@@ -145,7 +145,7 @@ class _BottomExpandedAppBar extends StatelessWidget {
       controller: DraggableScrollableController(),
       builder: (context, scrollControllerBottom) {
         return ColoredBox(
-          color: AppKeys().customColors!.safeBlue,
+          color: AppKeys().customColors!.sidebarColor,
           // color: CustomColors.redAlert,
           child: ResumeBottom(scrollControllerBottom: scrollControllerBottom),
         );
@@ -168,7 +168,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         if (model.quote.detail != null) {
           return Container(
-            color: AppKeys().customColors!.safeBlue,
+            color: AppKeys().customColors!.sidebarColor,
             width: media.width,
             height: media.height * 0.20,
             child: SingleChildScrollView(
@@ -227,13 +227,13 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                         borderRadius: const BorderRadius.all(
                                           Radius.circular(200),
                                         ),
-                                        color: AppKeys().customColors!.energyYellow,
+                                        color: AppKeys().customColors!.energyColor,
                                       ),
                                       child: Material(
                                         color: Colors.transparent,
                                         child: InkWell(
                                           borderRadius: const BorderRadius.all(Radius.circular(200)),
-                                          hoverColor: AppKeys().customColors!.energyYellowHover,
+                                          hoverColor: AppKeys().customColors!.energyColorHover,
                                           onTap: () {
                                             _Dialogs dialog = _Dialogs();
                                             dialog.showAlertDialog(
@@ -257,7 +257,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                                 Text(
                                                   'Hacer pedido',
                                                   textAlign: TextAlign.center,
-                                                  style: CustomStyles.styleVolcanic16600,
+                                                  style: CustomStyles.styleVolcanic16600.copyWith(color: Colors.white),
                                                 ),
                                               ],
                                             ),
@@ -322,7 +322,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
         var media = MediaQuery.of(context).size;
         if (model.quote.detail != null) {
           return Container(
-            color: AppKeys().customColors!.safeBlue,
+            color: AppKeys().customColors!.sidebarColor,
             width: 310,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -557,13 +557,13 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                       borderRadius: const BorderRadius.all(
                                         Radius.circular(200),
                                       ),
-                                      color: AppKeys().customColors!.energyYellow,
+                                      color: AppKeys().customColors!.energyColor,
                                     ),
                                     child: Material(
                                       color: Colors.transparent,
                                       child: InkWell(
                                         borderRadius: const BorderRadius.all(Radius.circular(200)),
-                                        hoverColor: AppKeys().customColors!.energyYellowHover,
+                                        hoverColor: AppKeys().customColors!.energyColorHover,
                                         onTap: () {
                                           _Dialogs dialog = _Dialogs();
                                           dialog.showAlertDialog(
@@ -587,7 +587,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                               Text(
                                                 'Hacer pedido',
                                                 textAlign: TextAlign.center,
-                                                style: CustomStyles.styleVolcanic16600,
+                                                style: CustomStyles.styleVolcanic16600.copyWith(color: Colors.white),
                                               ),
                                             ],
                                           ),
@@ -1091,7 +1091,7 @@ class ComebackLater extends StatelessWidget {
         child: Row(
           children: [
             Image.asset(
-              'assets/images/assistant_icon.png',
+              AppKeys().assistantIcon!,
               width: 48.0,
               height: 48.0,
             ),

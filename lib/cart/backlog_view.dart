@@ -64,7 +64,7 @@ class WeAreWorking extends StackedHookView<QuoteViewModel> {
         child: Row(
           children: [
             Image.asset(
-              'assets/images/assistant_icon.png',
+              AppKeys().assistantIcon!,
               width: 48.0,
               height: 48.0,
             ),

@@ -141,7 +141,7 @@ abstract class CustomStyles {
   static TextStyle styleMobileYellow500 = GoogleFonts.montserrat(
       textStyle: TextStyle(
     fontStyle: FontStyle.normal,
-    color: AppKeys().customColors!.energyYellow,
+    color: AppKeys().customColors!.energyColor,
     fontWeight: FontWeight.w500,
     fontSize: 14,
   ));
@@ -253,7 +253,7 @@ abstract class CustomStyles {
   );
   static TextStyle styleEnergyYellow_416x600 = GoogleFonts.montserrat(
     textStyle:
-        TextStyle(fontStyle: FontStyle.normal, color: AppKeys().customColors!.energyYellow, fontWeight: FontWeight.w600, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),
+        TextStyle(fontStyle: FontStyle.normal, color: AppKeys().customColors!.energyColor, fontWeight: FontWeight.w600, fontSize: 16, height: 1.2, overflow: TextOverflow.clip),
   );
 
   static TextStyle styleVolcanic20700 = GoogleFonts.montserrat(
@@ -300,7 +300,7 @@ abstract class CustomStyles {
   static TextStyle styleEnergyYellow14x500Underline = GoogleFonts.montserrat(
     textStyle: TextStyle(
         fontStyle: FontStyle.normal,
-        color: AppKeys().customColors!.energyYellow,
+        color: AppKeys().customColors!.energyColor,
         fontWeight: FontWeight.w500,
         fontSize: 14,
         height: 1.0,
@@ -343,7 +343,7 @@ abstract class CustomStyles {
   static TextStyle styleEnergyYellow14x400 = GoogleFonts.montserrat(
     textStyle: TextStyle(
       fontStyle: FontStyle.normal,
-      color: AppKeys().customColors!.energyYellow,
+      color: AppKeys().customColors!.energyColor,
       fontWeight: FontWeight.w400,
       fontSize: 14,
       height: 1.0,

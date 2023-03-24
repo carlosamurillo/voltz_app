@@ -101,6 +101,7 @@ class RegisterViewModel extends ReactiveViewModel {
             'created': FieldValue.serverTimestamp(),
             'email': emailOption.getOrElse(() => "INVALID EMAIL"),
             'full_name': nameOption.getOrElse(() => "INVALID NAME"),
+            'last_name': lastNameOption.getOrElse(() => "INVALID NAME"),
             'phone': _phoneNumber,
             'role': "UserRole.User",
           };
