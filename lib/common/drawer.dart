@@ -45,16 +45,16 @@ class MenuDrawer extends StatelessWidget {
                       selected: true,
                       text: "Inicio",
                     ),
-                    const SizedBox(height: 10),
-                    DrawerItem(
-                      icondata: Icons.bookmark_added_sharp,
-                      onPressed: () => viewModel.navigateToHome(),
-                      selected: false,
-                      text: "Catálogo",
-                    ),
                     const SizedBox(height: 10),*/
                     DrawerItem(
-                      icondata: Icons.bookmark_added_sharp,
+                      icondata: Icons.home,
+                      onPressed: () => viewModel.navigateToHome(),
+                      selected: false,
+                      text: "Inicio",
+                    ),
+                    const SizedBox(height: 10),
+                    DrawerItem(
+                      icondata: Icons.my_library_books_outlined,
                       onPressed: () => viewModel.navigateToQuotes(),
                       selected: false,
                       text: "Mis cotizaciones",
@@ -117,7 +117,7 @@ class DrawerItem extends StatelessWidget {
                         fontSize: 16.0,
                         color: Colors.white,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.start,
                     ),
                   ),
                 ],

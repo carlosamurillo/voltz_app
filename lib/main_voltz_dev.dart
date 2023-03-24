@@ -21,6 +21,8 @@ void main() async {
     logoWhiteBackground: 'assets/svg/logo_voltz_white_background.svg',
     logoMobile: 'assets/svg/logo_mobile.svg',
     logoIcon: SVGIcons.logo_votz,
+    assistantIcon: "assets/images/assistant_icon.png",
+    howToSearch: 'assets/images/how_search.png',
   );
 
   mainCommonVoltz();

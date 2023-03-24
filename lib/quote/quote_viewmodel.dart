@@ -109,9 +109,9 @@ class QuoteViewModel extends ReactiveViewModel {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: SelectableText(
         "Gracias, hemos recibido tu orden.",
-        style: CustomStyles.styleVolcanicDos,
+        style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
       ),
-      backgroundColor: AppKeys().customColors!.energyYellow,
+      backgroundColor: AppKeys().customColors!.energyColor,
       behavior: SnackBarBehavior.floating,
       duration: const Duration(milliseconds: 5000),
       margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),

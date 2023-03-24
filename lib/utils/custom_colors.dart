@@ -4,9 +4,6 @@ class CustomColors {
   Color safeBlue = const Color(0xFF2E5CFF);
   Color safeBlueHover = const Color(0xFF274DD2);
 
-  Color energyYellow = const Color(0xFFF7CB2F);
-  Color energyYellowHover = const Color(0xFFDCB52B);
-
   Color volcanicBlue = const Color(0xFF394055);
 
   Color volcanicGrey = const Color(0xFF686868);
@@ -47,6 +44,7 @@ class CustomColors {
   Color yellowLight = const Color(0xFFFEF7E0);
   Color yellowmid = const Color(0xFFFBE597);
   Color WBY = const Color(0xFFE4E9FC);
+  Color WBYPlusOne = const Color(0xFFD9E0FC);
   Color dark1 = const Color(0xFF9C9FAA);
   Color darkPlusOne = const Color(0xFF9C9FAA);
 
@@ -58,6 +56,13 @@ class CustomColors {
 
   Color buttonThirdColor = const Color(0xFF394055);
   Color buttonThirdTextColor = const Color(0xFFFFFFFF);
+
+  Color sidebarColor = const Color(0xFF2E5CFF);
+
+  Color energyColor = const Color(0xFFF7CB2F);
+  Color energyColorHover = const Color(0xFFDCB52B);
+
+  Color bannerTextColor = const Color(0xFF394055);
 }
 
 class JeztCustomColors extends CustomColors {
@@ -96,4 +101,11 @@ class JeztCustomColors extends CustomColors {
 
   Color buttonThirdColor = const Color(0xFFD2002E);
   Color buttonThirdTextColor = const Color(0xFFFFFFFF);
+
+  Color sidebarColor = const Color(0xFF242424);
+
+  Color energyColor = const Color(0xFFD2002E);
+  Color energyColorHover = const Color(0xFFD20532);
+
+  Color bannerTextColor = const Color(0xFFFFFFFF);
 }

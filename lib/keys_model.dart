@@ -16,6 +16,8 @@ class AppKeys {
   final String? logoWhiteBackground;
   final String? logoMobile;
   final String? logoIcon;
+  final String? assistantIcon;
+  final String? howToSearch;
 
   static AppKeys? _instance;
 
@@ -32,6 +34,8 @@ class AppKeys {
     String? logoWhiteBackground,
     String? logoMobile,
     String? logoIcon,
+    String? assistantIcon,
+    String? howToSearch,
   }) =>
       _instance ??= AppKeys._(
         cloudFunctionsUrl: cloudFunctionsUrl,
@@ -46,6 +50,8 @@ class AppKeys {
         logoWhiteBackground: logoWhiteBackground,
         logoMobile: logoMobile,
         logoIcon: logoIcon,
+        assistantIcon: assistantIcon,
+        howToSearch: howToSearch,
       );
 
   AppKeys._({
@@ -61,5 +67,7 @@ class AppKeys {
     this.logoWhiteBackground,
     this.logoMobile,
     this.logoIcon,
+    this.assistantIcon,
+    this.howToSearch,
   });
 }

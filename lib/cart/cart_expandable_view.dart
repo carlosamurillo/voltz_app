@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+//import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class CardGrid extends StatelessWidget {
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
         if (kIsWeb) {
-          html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+          // html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         }
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +89,7 @@ class CardGrid extends StatelessWidget {
                   ),
                   SliverToBoxAdapter(
                     child: SizedBox(
-                      height: media.height * 0.20,
+                      height: media.height * 0.28,
                     ),
                   ),
                   // if (media.width < CustomStyles.mobileBreak) ...[
@@ -259,7 +259,7 @@ class ProductCard extends StatelessWidget {
                                       ),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                        color: AppKeys().customColors!.yellowVoltz,
+                                        color: AppKeys().customColors!.energyColorHover,
                                         child: SelectableText(
                                           "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
                                           enableInteractiveSelection: false,
@@ -869,7 +869,7 @@ class PendingCard extends StackedHookView<QuoteViewModel> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/assistant_icon.png',
+                        AppKeys().assistantIcon!,
                         width: 62.0,
                         height: 62.0,
                       ),

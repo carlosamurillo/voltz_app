@@ -44,7 +44,7 @@ class _OrderTableDetailMobileState extends State<OrderTableDetailMobile> {
         MaterialState.focused,
       };
       if (states.any(interactiveStates.contains)) {
-        return AppKeys().customColors!.energyYellow;
+        return AppKeys().customColors!.energyColor;
       }
       return AppKeys().customColors!.safeBlue;
     }

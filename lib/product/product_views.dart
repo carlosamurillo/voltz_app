@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/add_to_quote/general_dialog.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
@@ -21,12 +22,16 @@ class ProductCard extends StatelessWidget {
     required this.product,
     this.isSearchVersion = true,
     this.isCartVersion = false,
+    this.removeActionsViewSection = false,
     this.onTapImprovePrice,
+    this.calculatorFromUniqueProductWidget,
   }) : super(key: key);
   final Product product;
   final bool isSearchVersion;
   final bool isCartVersion;
+  final bool removeActionsViewSection;
   final Function? onTapImprovePrice;
+  final Widget? calculatorFromUniqueProductWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +200,7 @@ class ProductCard extends StatelessWidget {
                                         ),
                                         Container(
                                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                          color: AppKeys().customColors!.yellowVoltz,
+                                          color: AppKeys().customColors!.energyColorHover,
                                           child: SelectableText(
                                             product.discountRate != null ? "${(product.discountRate!).toStringAsFixed(2)}%" : '',
                                             enableInteractiveSelection: false,
@@ -363,7 +368,7 @@ class ProductCard extends StatelessWidget {
                   if (viewModel.isCardExpanded) ...[
                     ProductDetail(productId: product.id!),
                   ],
-                  if (viewModel.userSignStatus == UserSignStatus.authenticated) ...[
+                  if (!removeActionsViewSection ?? viewModel.userSignStatus == UserSignStatus.authenticated) ...[
                     ActionsView(
                       showBuyNow: isSearchVersion ? true : false,
                       showAddToQuote: isSearchVersion
@@ -375,6 +380,9 @@ class ProductCard extends StatelessWidget {
                       addQuoteFunction: viewModel.addProductToQuote,
                       toBuyNowFunction: viewModel.buyNow,
                     ),
+                  ],
+                  if (calculatorFromUniqueProductWidget != null) ...[
+                    calculatorFromUniqueProductWidget!,
                   ],
                   if (viewModel.userSignStatus == UserSignStatus.anonymous && isCartVersion) ...[
                     //const _QuantityCalculatorWidget(),
@@ -811,6 +819,12 @@ class ActionsView extends StatelessWidget {
           if (showAddToQuote) ...[
             SecondaryButton(text: 'Agregar a cotización', onPressed: () async => addQuoteFunction(productId, context)),
           ],
+          //TODO remover esto despues
+          SecondaryButton(
+              text: 'Prueba add cotización',
+              onPressed: () {
+                showAddQuoteDialog(context);
+              }),
         ],
       ),
     );

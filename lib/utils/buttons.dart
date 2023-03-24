@@ -203,9 +203,16 @@ class BaseButton extends StatelessWidget {
 }
 
 class CustomIconButton extends StatelessWidget {
-  const CustomIconButton(
-      {Key? key, required this.onPressed, required this.buttonColor, required this.backGroundColor, this.enabled = true, required this.icon, required this.borderColor})
-      : super(key: key);
+  const CustomIconButton({
+    Key? key,
+    required this.onPressed,
+    required this.buttonColor,
+    required this.backGroundColor,
+    this.enabled = true,
+    required this.icon,
+    required this.borderColor,
+    this.weight,
+  }) : super(key: key);
 
   final Function() onPressed;
   final Color buttonColor;
@@ -213,6 +220,7 @@ class CustomIconButton extends StatelessWidget {
   final bool enabled;
   final IconData icon;
   final Color borderColor;
+  final double? weight;
 
   @override
   Widget build(BuildContext context) {
@@ -232,6 +240,7 @@ class CustomIconButton extends StatelessWidget {
               child: Icon(
                 icon,
                 color: backGroundColor,
+                weight: weight,
               ),
             ),
           ),
