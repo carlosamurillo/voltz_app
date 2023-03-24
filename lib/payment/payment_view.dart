@@ -1,4 +1,4 @@
-//import 'dart:html' as html;
+import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -231,7 +231,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
               width: 666,
               child: GestureDetector(
                 onTap: () {
-                  // html.window.open(fiscalUrl, "_blank");
+                  html.window.open(fiscalUrl, "_blank");
                 },
                 child: Text(
                   "Descargar comprobante situación fiscal",
@@ -329,7 +329,7 @@ class _PaymentInstructionsState extends State<PaymentInstructions> {
               width: 666,
               child: GestureDetector(
                 onTap: () {
-                  // html.window.open('https://walink.co/d9aef3', "_blank");
+                  html.window.open('https://walink.co/d9aef3', "_blank");
                 },
                 child: Text(
                   "¿Pago en efectivo? Contácta un agente Voltz",
@@ -550,7 +550,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
               width: 368,
               child: GestureDetector(
                 onTap: () {
-                  // html.window.open(fiscalUrl, "_blank");
+                  html.window.open(fiscalUrl, "_blank");
                 },
                 child: Text(
                   "Descargar comprobante situación fiscal",
@@ -647,7 +647,7 @@ class _PaymentInstructionsMobileState extends State<PaymentInstructionsMobile> {
               width: 368,
               child: GestureDetector(
                 onTap: () {
-                  // html.window.open('https://walink.co/d9aef3', "_blank");
+                  html.window.open('https://walink.co/d9aef3', "_blank");
                 },
                 child: Text(
                   "¿Pago en efectivo? Contácta un agente Voltz",
