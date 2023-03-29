@@ -9,6 +9,7 @@
 import 'package:stacked_core/stacked_core.dart';
 import 'package:stacked_services/src/navigation/navigation_service.dart';
 
+import '../add_to_quote/add_to_quote_service.dart';
 import '../auth/login/login_service.dart';
 import '../common/open_search_service.dart';
 import '../gate/auth_service.dart';
@@ -38,4 +39,5 @@ Future<void> setupLocator(
   locator.registerLazySingleton(() => AuthService());
   locator.registerLazySingleton(() => LoginService());
   locator.registerLazySingleton(() => OpenSearchService());
+  locator.registerLazySingleton(() => AddToQuoteService());
 }

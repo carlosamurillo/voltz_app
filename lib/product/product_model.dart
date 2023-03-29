@@ -153,12 +153,12 @@ class Product {
     }
     if (json.containsKey('price') && json.containsKey('price_public') && price != null && price!.price2 != null && pricePublic != null) {
       discountRate = ((pricePublic! - price!.price2!) / pricePublic!) * 100;
-      if(pricePublic == 0){
+      if (pricePublic == 0) {
         pricePublic = price!.priceBest! * 1.66;
       }
     } else if (json.containsKey('best_supplier') && json.containsKey('price_public') && bestSupplier != null && bestSupplier!.price1 != null && pricePublic != null) {
       discountRate = ((pricePublic! - bestSupplier!.price1!) / pricePublic!) * 100;
-      if(pricePublic == 0){
+      if (pricePublic == 0) {
         pricePublic = bestSupplier!.priceBest! * 1.66;
       }
     }
@@ -168,7 +168,6 @@ class Product {
     if (json.containsKey('selected')) {
       selected = json['selected'];
     }
-
   }
 
   Map<String, dynamic> toJson() {
@@ -247,7 +246,11 @@ class BestSupplier {
   double? price1;
   String? supplierCode;
 
-  BestSupplier({this.priceBest = 0, this.price1 = 0, this.supplierCode,});
+  BestSupplier({
+    this.priceBest = 0,
+    this.price1 = 0,
+    this.supplierCode,
+  });
 
   BestSupplier.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('price_best')) {

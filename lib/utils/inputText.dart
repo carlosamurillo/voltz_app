@@ -97,11 +97,15 @@ class _InputText extends State<InputText> {
               onTap: widget.onTap,
               inputFormatters: widget.inputFormatters,
               enabled: widget.enabled,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                fontStyle: FontStyle.normal,
-                letterSpacing: 0,
+              style: GoogleFonts.inter(
+                textStyle: TextStyle(
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16.0,
+                  color: AppKeys().customColors!.dark,
+                  height: 1.1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               textAlign: widget.textAlign,
               autofocus: widget.autoFocus,
@@ -114,22 +118,30 @@ class _InputText extends State<InputText> {
                 isCollapsed: true,
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 alignLabelWithHint: true,
-                hintStyle: TextStyle(
-                  color: Color(0xFF4E5462).withOpacity(0.64),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
+                hintStyle: GoogleFonts.inter(
+                  textStyle: TextStyle(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16.0,
+                    color: AppKeys().customColors!.dark1,
+                    height: 1.1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                labelStyle: TextStyle(
-                  color: Color(0xFF4E5462).withOpacity(0.64),
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 16,
+                labelStyle: GoogleFonts.inter(
+                  textStyle: TextStyle(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16.0,
+                    color: AppKeys().customColors!.dark1,
+                    height: 1.1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 labelText: widget.labelText,
                 hintText: widget.hintText,
                 filled: true,
-                fillColor: Color(0xff263956).withOpacity(0.04),
+                fillColor: AppKeys().customColors!.WBY,
                 focusColor: Color(0xff263956),
                 hoverColor: Color(0xFFFFFFFF),
                 enabledBorder: OutlineInputBorder(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/add_to_quote/add_to_quote_viewmodel.dart';
 import 'package:maketplace/add_to_quote/general_dialog.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/keys_model.dart';
@@ -13,6 +14,7 @@ import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/inputText.dart';
 import 'package:maketplace/utils/shimmer.dart';
 import 'package:maketplace/utils/style.dart';
+import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
@@ -359,7 +361,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   if (product.techFile != null) ...[
                     getHeader(context, viewModel),
-                  ] else ...[
+                  ] else if (viewModel.userSignStatus == UserSignStatus.authenticated) ...[
                     const Divider(
                       thickness: 1,
                       color: Color(0xFFD9E0FC),
@@ -370,6 +372,7 @@ class ProductCard extends StatelessWidget {
                   ],
                   if (!removeActionsViewSection ?? viewModel.userSignStatus == UserSignStatus.authenticated) ...[
                     ActionsView(
+                      showButtons: viewModel.userSignStatus == UserSignStatus.authenticated,
                       showBuyNow: isSearchVersion ? true : false,
                       showAddToQuote: isSearchVersion
                           ? false
@@ -377,6 +380,7 @@ class ProductCard extends StatelessWidget {
                               ? false
                               : true,
                       productId: product.id!,
+                      product: product,
                       addQuoteFunction: viewModel.addProductToQuote,
                       toBuyNowFunction: viewModel.buyNow,
                     ),
@@ -788,23 +792,32 @@ class _ProductDetailWidget extends StatelessWidget {
 }
 
 class ActionsView extends StatelessWidget {
-  const ActionsView({Key? key, required this.productId, required this.addQuoteFunction, this.showBuyNow = false, this.showAddToQuote = false, required this.toBuyNowFunction})
-      : super(
+  const ActionsView({
+    Key? key,
+    required this.productId,
+    required this.product,
+    required this.addQuoteFunction,
+    this.showBuyNow = false,
+    this.showAddToQuote = false,
+    required this.toBuyNowFunction,
+    this.showButtons = true,
+  }) : super(
           key: key,
         );
   final String productId;
+  final Product product;
   final bool showBuyNow;
   final bool showAddToQuote;
   final void Function(String value, BuildContext context) addQuoteFunction;
-  final void Function(
-    String value,
-  ) toBuyNowFunction;
+  final void Function(String value) toBuyNowFunction;
+  final bool showButtons;
 
   @override
   Widget build(
     BuildContext context,
   ) {
     var media = MediaQuery.of(context).size;
+    if (!showButtons) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.all(25),
       child: Column(
@@ -816,15 +829,20 @@ class ActionsView extends StatelessWidget {
               height: 10,
             )
           ],
+          //cuando se encuentra dentro de una cotizacion
           if (showAddToQuote) ...[
             SecondaryButton(text: 'Agregar a cotización', onPressed: () async => addQuoteFunction(productId, context)),
+          ]
+          //cuando no estas dentro de una cotizacion
+          else ...[
+            SecondaryButton(
+                text: 'Agregar a cotización',
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  context.read<AddToQuoteViewModel>().initProduct(product);
+                  showAddQuoteDialog(context);
+                }),
           ],
-          //TODO remover esto despues
-          SecondaryButton(
-              text: 'Prueba add cotización',
-              onPressed: () {
-                showAddQuoteDialog(context);
-              }),
         ],
       ),
     );
