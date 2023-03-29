@@ -16,8 +16,8 @@ class PrimaryButton extends StatelessWidget {
     return BaseButton(
       text: text,
       onPressed: onPressed,
-      textColor: AppKeys().customColors!.buttonPrimaryTextColor,
-      buttonColor: AppKeys().customColors!.buttonPrimaryColor,
+      textColor: enabled ? AppKeys().customColors!.buttonPrimaryTextColor : AppKeys().customColors!.dark1,
+      buttonColor: enabled ? AppKeys().customColors!.buttonPrimaryColor : const Color(0xFFF8FAFF),
       icon: icon,
       enabled: enabled,
     );

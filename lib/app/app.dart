@@ -1,3 +1,4 @@
+import 'package:maketplace/add_to_quote/add_to_quote_service.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view.dart';
 import 'package:maketplace/cart/buy_now_view.dart';
@@ -31,6 +32,7 @@ import 'package:stacked_services/stacked_services.dart';
     LazySingleton(classType: AuthService),
     LazySingleton(classType: LoginService),
     LazySingleton(classType: OpenSearchService),
+    LazySingleton(classType: AddToQuoteService),
   ],
   routes: [
     /** Onboarding and signup **/

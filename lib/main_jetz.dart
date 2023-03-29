@@ -24,7 +24,7 @@ void mainCommonJetz() async {
     options: kIsWeb ? _config.firebaseOptions : null,
   );
   String? quoteId = Uri.base.queryParameters["cotz"];
-  // String? quoteId = "LDviRW7F3hoBPZ4LzWfN";
+  // String? quoteId = "wE3myVoPjZ7WXcaGawD6";
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
   runApp(MyApp(

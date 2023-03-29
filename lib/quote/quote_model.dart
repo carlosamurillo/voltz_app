@@ -130,6 +130,46 @@ class QuoteModel {
     }
     return data;
   }
+
+  Map<String, dynamic> toJsonCreate() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['version'] = this.version;
+    data['consecutive'] = this.consecutive;
+    data['alias'] = this.alias;
+
+    //campos nuevos
+    data['created_at'] = FieldValue.serverTimestamp();
+    data['published_at'] = FieldValue.serverTimestamp();
+    data['updated_at'] = FieldValue.serverTimestamp();
+
+    data['accepted'] = this.accepted;
+    if (this.detail != null) {
+      data['detail'] = this.detail!.map((v) => v.toJson()).toList();
+    }
+    if (this.discardedProducts != null) {
+      data['discarded_products'] = this.discardedProducts!.map((v) => v.toMap()).toList();
+    }
+    if (this.shipping != null) {
+      data['shipping'] = this.shipping!.toMap();
+    }
+    if (this.pendingProducts != null) {
+      data['arr_not_result'] = this.pendingProducts!.map((v) => v.toJson()).toList();
+    }
+    if (this.record != null) {
+      data['record'] = this.record!.toMap();
+    }
+    data['quote_category'] = this.quoteCategory;
+    if (this.totals != null) {
+      data['totals'] = this.totals!.toMap();
+    }
+    if (this.customer != null) {
+      data['customer'] = this.customer!.toMap();
+    }
+    if (this.author != null) {
+      data['author'] = this.author!.toMap();
+    }
+    return data;
+  }
 }
 
 class Totals {
