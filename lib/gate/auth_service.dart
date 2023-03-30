@@ -34,7 +34,7 @@ class AuthService with ListenableServiceMixin {
     });
   }
 
-  setRedirect(bool value){
+  setRedirect(bool value) {
     _redirect = value;
   }
 
@@ -68,7 +68,7 @@ class AuthService with ListenableServiceMixin {
   }
 
   redirect() async {
-    if(_redirect) {
+    if (_redirect) {
       if (quoteId == null) {
         _navigationService.clearStackAndShow(Routes.homeView);
       } else {

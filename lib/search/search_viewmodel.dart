@@ -1,29 +1,46 @@
+import 'dart:async';
 
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/search/search_model.dart';
 import 'package:maketplace/search/search_repository.dart';
 import 'package:stacked/stacked.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:stacked_services/stacked_services.dart';
-import 'package:maketplace/app/app.router.dart';
 
 class ProductSearchViewModel extends StreamViewModel<List<Product>> {
-
   final NavigationService _navigationService = locator<NavigationService>();
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
+  List<Product>? _productsData;
+  List<Product>? get productsData => _productsData;
+
+  int _pageKey = 0;
+  int get pageKey => _pageKey;
+
+  StreamSubscription<SearchMetadata>? _skuCountSubscription;
+  bool? _areStillProductsToShow;
+  bool? get areStillProductsToShow => _areStillProductsToShow;
+
   @override
-  List<ListenableServiceMixin> get listenableServices => [_productSearchRepository,];
+  List<ListenableServiceMixin> get listenableServices => [
+        _productSearchRepository,
+      ];
 
   String? get lastQuery => _productSearchRepository.lastQuery;
 
   init() async {
+    _skuCountSubscription?.cancel();
+    _skuCountSubscription = _productSearchRepository.searchMetaData().listen((meta) {
+      _areStillProductsToShow = meta.nbHits > (10 * (pageKey + 1));
+      notifyListeners();
+    });
     showLastSearch();
   }
 
   showLastSearch() async {
-    if(lastQuery != null && lastQuery!.isNotEmpty){
+    if (lastQuery != null && lastQuery!.isNotEmpty) {
       return _productSearchRepository.query('');
     }
   }
@@ -33,17 +50,32 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
 
   @override
   void onData(List<Product>? data) {
-    data?.add(Product());
-    super.onData(data);
+    // data?.add(Product());
+    if (_productSearchRepository.isSearching) {
+      _productSearchRepository.restartFilters();
+      _pageKey = 0;
+      _productsData?.clear();
+    }
+    if (_productsData == null) {
+      _productsData = data;
+    } else {
+      _productsData!.addAll(data ?? []);
+    }
+    notifyListeners();
+    super.onData(_productsData);
   }
 
   navigateToLogin() async {
     return _navigationService.navigateToLoginView();
   }
+
+  updatePage() {
+    _productSearchRepository.applyState(++_pageKey);
+    notifyListeners();
+  }
 }
 
 class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
-
   final ProductSearchRepository _productSearchRepository = ProductSearchRepository();
   final PagingController<int, Product> pagingController = PagingController(firstPageKey: 0);
 
@@ -51,7 +83,7 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
     _initPageController();
   }
 
-  void _initPageController(){
+  void _initPageController() {
     stream.listen((page) {
       if (page.pageKey == 0) {
         pagingController.refresh();
@@ -80,13 +112,14 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
   }
 }
 
-class SearchStatsViewModel extends StreamViewModel<SearchMetadata>{
+class SearchStatsViewModel extends StreamViewModel<SearchMetadata> {
   final ProductSearchRepository _productSearchRepository = locator<ProductSearchRepository>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_productSearchRepository,];
+  List<ListenableServiceMixin> get listenableServices => [
+        _productSearchRepository,
+      ];
 
   @override
   Stream<SearchMetadata> get stream => _productSearchRepository.searchMetaData();
-
 }

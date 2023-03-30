@@ -1,33 +1,32 @@
-
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart' show ListenableServiceMixin;
 
 class NotificationService with ListenableServiceMixin {
-  final _rxNotification = RxValue<NotificationModel>(NotificationModel.withButtons('', '', false, NotificationType.simple, '', '',));
+  // final _rxNotification = RxValue<NotificationModel>(NotificationModel.withButtons('', '', false, NotificationType.simple, '', ''));
+  final _rxNotification = RxValue<NotificationModel>(NotificationModel.simple('', '', false, NotificationType.simple));
+
   NotificationModel get notification => _rxNotification.value;
 
   NotificationService() {
-    listenToReactiveValues([_rxNotification,]);
+    listenToReactiveValues([_rxNotification]);
   }
 
-  NotificationModel getCopyOfNotification(){
-    return NotificationModel.copyWith(
-        _rxNotification.value.toJson());
-  }
+  NotificationModel getCopyOfNotification() => _rxNotification.value;
 
-  void emitSimpleNotification(String title, String message) async {
+  void emitSimpleNotification(String title, String message) {
     _rxNotification.value = NotificationModel.simple(title, message, true, NotificationType.simple);
     notifyListeners();
   }
 
-  void reset() async {
-    _rxNotification.value = NotificationModel.withButtons('', '', false, NotificationType.simple, '', '');
+  void reset() {
+    // _rxNotification.value = NotificationModel.withButtons('', '', false, NotificationType.simple, '', '');
+    _rxNotification.value = NotificationModel.simple('', '', false, NotificationType.simple);
+
     notifyListeners();
   }
-  
-  void emitDialogNotification(String title, String textButtonUno, String textButtonDos,) async {
-    _rxNotification.value = NotificationModel.withButtons(title, '', true, NotificationType.dialog,
-        textButtonUno, textButtonDos,);
+
+  void emitDialogNotification(String title, String textButtonUno, String textButtonDos, bool showButtons) {
+    _rxNotification.value = NotificationModel.withButtons(title, '', true, NotificationType.dialog, textButtonUno, textButtonDos, showButtons);
     notifyListeners();
   }
 }
@@ -38,7 +37,7 @@ enum NotificationType {
   enhance;
 
   static NotificationType? fromString(String value) {
-    switch (value){
+    switch (value) {
       case 'simple':
         return NotificationType.simple;
       case 'dialog':
@@ -57,33 +56,40 @@ class NotificationModel {
   String textButtonDos = '';
   String message = '';
   bool showNotification = false;
+  bool showButtons;
   NotificationType type = NotificationType.simple;
 
-  NotificationModel.simple(this.title, this.message, this.showNotification, this.type,);
-  NotificationModel.withButtons(this.title, this.message, this.showNotification, this.type,
-      this.textButtonUno, this.textButtonDos,);
+  NotificationModel.simple(
+    this.title,
+    this.message,
+    this.showNotification,
+    this.type, [
+    this.showButtons = false,
+  ]);
+  NotificationModel.withButtons(
+    this.title,
+    this.message,
+    this.showNotification,
+    this.type,
+    this.textButtonUno,
+    this.textButtonDos,
+    this.showButtons,
+  );
 
-  NotificationModel.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    textButtonUno = json['text_button_uno'];
-    textButtonDos = json['text_button_dos'];
-    message = json['message'];
-    showNotification = json['show_notification'];
-    type = NotificationType.fromString(json['type'])!;
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is NotificationModel &&
+        other.title == title &&
+        other.textButtonUno == textButtonUno &&
+        other.textButtonDos == textButtonDos &&
+        other.message == message &&
+        other.showNotification == showNotification &&
+        other.showButtons == showButtons &&
+        other.type == type;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['message'] = this.message;
-    data['show_notification'] = this.showNotification;
-    data['type'] = this.type.name;
-    data['text_button_uno'] = this.textButtonUno;
-    data['text_button_dos'] = this.textButtonDos;
-    return data;
-  }
-
-  static NotificationModel copyWith(Map<String, dynamic> json) {
-    return NotificationModel.fromJson(json);
-  }
+  @override
+  int get hashCode => title.hashCode ^ textButtonUno.hashCode ^ textButtonDos.hashCode ^ message.hashCode ^ showNotification.hashCode ^ showButtons.hashCode ^ type.hashCode;
 }

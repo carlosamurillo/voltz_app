@@ -108,6 +108,9 @@ class Product {
     if (json.containsKey('image_cover')) {
       coverImage = json['image_cover'];
     }
+    if (json.containsKey('source')) {
+      source = json['source'];
+    }
     if (json.containsKey('quantity')) {
       quantity = double.tryParse(json['quantity'].toString());
     }
@@ -185,11 +188,17 @@ class Product {
     if (this.techFile != null) {
       data['tech_file'] = this.techFile!;
     }
+    if (this.source != null) {
+      data['source'] = this.source!;
+    }
     if (this.saleValue != null) {
       data['sale_value'] = this.saleValue!;
     }
     if (this.saleUnit != null) {
       data['sale_unit'] = this.saleUnit!;
+    }
+    if (this.priceCurrency != null) {
+      data['price_currency'] = this.priceCurrency!;
     }
     if (this.pricePublic != null) {
       data['price_public'] = this.pricePublic!;
@@ -237,6 +246,7 @@ class Product {
     if (this.bestSupplier != null) {
       data['best_supplier'] = this.bestSupplier!.toMap();
     }
+
     return data;
   }
 }
@@ -245,10 +255,14 @@ class BestSupplier {
   double? priceBest;
   double? price1;
   String? supplierCode;
+  String? currency;
+  double? priceMargin;
 
   BestSupplier({
     this.priceBest = 0,
     this.price1 = 0,
+    this.currency,
+    this.priceMargin = 0,
     this.supplierCode,
   });
 
@@ -261,6 +275,12 @@ class BestSupplier {
     }
     if (json.containsKey('supplier_code')) {
       supplierCode = json['supplier_code'];
+    }
+    if (json.containsKey('currency')) {
+      currency = json['currency'];
+    }
+    if (json.containsKey('price_margin')) {
+      priceMargin = json['price_margin'];
     }
   }
 
@@ -275,6 +295,12 @@ class BestSupplier {
     if (this.supplierCode != null) {
       data['supplier_code'] = this.supplierCode;
     }
+    if (this.currency != null) {
+      data['currency'] = this.currency;
+    }
+    if (this.priceMargin != null) {
+      data['price_margin'] = this.priceMargin;
+    }
     return data;
   }
 }
@@ -283,13 +309,15 @@ class Price {
   double? priceBest;
   double? price1;
   double? price2;
+  double? priceMargin;
   String? currency;
   double? stock;
   String? supplierCode;
   String? supplierName;
+
   DollarConversion? dollarConversion;
 
-  Price({this.priceBest = 0, this.price1 = 0, this.price2 = 0, this.currency, this.stock = 0, this.supplierCode, this.supplierName, this.dollarConversion});
+  Price({this.priceBest = 0, this.price1 = 0, this.price2 = 0, this.priceMargin = 0, this.currency, this.stock = 0, this.supplierCode, this.supplierName, this.dollarConversion});
 
   Price.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('price_best')) {
@@ -300,6 +328,9 @@ class Price {
     }
     if (json.containsKey('price_2')) {
       price2 = json['price_2'] * 1.0;
+    }
+    if (json.containsKey('price_margin')) {
+      priceMargin = json['price_margin'] * 1.0;
     }
     if (json.containsKey('currency')) {
       currency = json['currency'];
@@ -328,6 +359,9 @@ class Price {
     }
     if (this.price2 != null) {
       data['price_2'] = this.price2;
+    }
+    if (this.priceMargin != null) {
+      data['price_margin'] = this.priceMargin;
     }
     if (this.currency != null) {
       data['currency'] = this.currency;
@@ -364,7 +398,7 @@ class DollarConversion {
       currency = json['currency'];
     }
     if (json.containsKey('value')) {
-      value = json['value'];
+      value = double.tryParse(json['value'].toString());
     }
     if (json.containsKey('source')) {
       source = json['source'];

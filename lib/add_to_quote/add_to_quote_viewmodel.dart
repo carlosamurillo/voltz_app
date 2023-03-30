@@ -1,15 +1,23 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/common/open_search_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
+import 'package:maketplace/quote/quote_service.dart';
+import 'package:maketplace/search/input_search_repository.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:uuid/uuid.dart';
 
 class AddToQuoteViewModel extends ChangeNotifier {
   final NavigationService _navigationService = locator<NavigationService>();
+  final _quoteService = locator<QuoteService>();
+  final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
+  final OpenSearchService _openSearchService = locator<OpenSearchService>();
 
   List<QuoteModel> _quoteList = [];
   List<QuoteModel> get quoteList => _quoteList;
@@ -21,11 +29,12 @@ class AddToQuoteViewModel extends ChangeNotifier {
   AddProductToQuoteState addProductToQuoteState = AddProductToQuoteState.initial;
   CreateQuoteWithProductState createQuoteWithProductState = CreateQuoteWithProductState.initial;
 
-  late Query quoteListQuery;
+  late Query quotesTempQuery;
+  StreamSubscription<List<QuoteModel>>? quoteListStreamSubscription;
 
   void init() {
-    quoteListQuery = FirebaseFirestore.instance.collection('quote-detail').orderBy("created_at", descending: true).limit(3);
-    getQuoteList();
+    quoteListStreamSubscription?.cancel();
+    initQuotesTemp();
   }
 
   void initProduct(Product product) {
@@ -35,20 +44,36 @@ class AddToQuoteViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getQuoteList() async {
+  void initQuotesTemp() {
     getQuoteState = GetQuoteState.loading;
     notifyListeners();
-    final response = await quoteListQuery.get();
-    if (response.docs.isNotEmpty) {
-      _quoteList = response.docs
-          .map(
-            (doc) => QuoteModel.fromJson(doc.data() as Map<String, dynamic>, doc.id),
-          )
-          .toList();
-      notifyListeners();
+    if (_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
+      quotesTempQuery = FirebaseFirestore.instance
+          .collection('quote-detail')
+          .where("customer.id", isEqualTo: _quoteService.quote.customer!.id)
+          .where("accepted", isEqualTo: false)
+          .orderBy("created_at", descending: true);
+    } else {
+      quotesTempQuery = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: '');
     }
-    getQuoteState = GetQuoteState.loaded;
-    notifyListeners();
+    quoteListStreamSubscription?.cancel();
+    quoteListStreamSubscription = getQuoteListStream().listen(
+      (list) {
+        _quoteList = list;
+        getQuoteState = GetQuoteState.loaded;
+        notifyListeners();
+      },
+    );
+  }
+
+  Stream<List<QuoteModel>> getQuoteListStream() async* {
+    yield* quotesTempQuery.snapshots().map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => QuoteModel.fromJson(doc.data() as Map<String, dynamic>, doc.id),
+              )
+              .toList(),
+        );
   }
 
   Future<void> addProductToQuote(QuoteModel quoteModel) async {
@@ -131,7 +156,6 @@ class AddToQuoteViewModel extends ChangeNotifier {
       );
       createQuoteWithProductState = CreateQuoteWithProductState.loaded;
       notifyListeners();
-      getQuoteList();
     } else {
       //
       createQuoteWithProductState = CreateQuoteWithProductState.loadFailure;
@@ -140,6 +164,8 @@ class AddToQuoteViewModel extends ChangeNotifier {
   }
 
   Future<void> navigateToQuoteDetail(String quoteId) async {
+    _inputSearchRepository.cancelSearch();
+    _openSearchService.changeSearchOpened(false);
     final args = CartViewArguments(quoteId: quoteId);
     return _navigationService.replaceWith(Routes.cartView, arguments: args);
   }

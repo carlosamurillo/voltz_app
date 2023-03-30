@@ -46,15 +46,15 @@ class QuoteDetailViewModel extends ReactiveViewModel {
       quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: '').snapshots();
     }
     _quoteDetailService.init(_quoteService.quote.customer!.id);
-    _streamQuotes();
+    // _streamQuotes();
 
     return notifyListeners();
   }
 
-  void _streamQuotes() async {
-    _quoteModelSubscription?.cancel();
-    _quoteModelSubscription = _quoteDetailService.streamQuotes().listen((event) => _quoteDetailService.changeQuoteDetailList(event));
-  }
+  // void _streamQuotes() async {
+  //   _quoteModelSubscription?.cancel();
+  //   _quoteModelSubscription = _quoteDetailService.streamQuotes().listen((event) => _quoteDetailService.changeQuoteDetailList(event));
+  // }
 
   void goToCart(String? id) async {
     if (id == null) return;

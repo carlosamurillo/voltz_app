@@ -9,6 +9,7 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FocusScope.of(context).unfocus();
     return ViewModelBuilder<AuthGateViewModel>.reactive(
       viewModelBuilder: () => AuthGateViewModel(),
       onViewModelReady: (viewModel) => viewModel.init(quoteId: quoteId),

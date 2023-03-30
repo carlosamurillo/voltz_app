@@ -5,6 +5,9 @@ import 'package:maketplace/search/search_model.dart';
 import 'package:stacked/stacked.dart';
 
 class ProductSearchRepository with ListenableServiceMixin {
+  bool _isSearching = false;
+  bool get isSearching => _isSearching;
+
   /// Hits Searcher with default search .
   final _productsSearcher = HitsSearcher.create(
     applicationID: AppKeys().algoliaAppId!,
@@ -12,7 +15,9 @@ class ProductSearchRepository with ListenableServiceMixin {
     state: SearchState(
       indexName: 'ecommerce_products',
       facetFilters: List.from(['status:Disponible']),
-      hitsPerPage: 40,
+      // hitsPerPage: 0,
+      page: 0,
+      hitsPerPage: 10,
     ),
   );
 
@@ -50,10 +55,18 @@ class ProductSearchRepository with ListenableServiceMixin {
   /// Execute a query in products
   Future<void> query(String string) async {
     if (string.isNotEmpty && string.length >= 3) {
+      _isSearching = true;
+      notifyListeners();
       _productsSearcher.query(string);
     } else {
       _productsSearcher.query('');
     }
+  }
+
+  void restartFilters() async {
+    _productsSearcher.applyState((state) => state.copyWith(page: 0));
+    _isSearching = false;
+    notifyListeners();
   }
 
   void applyState(int? pageKey) async {

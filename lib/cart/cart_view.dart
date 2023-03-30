@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:maketplace/cart/cart_expandable_view.dart';
 import 'package:maketplace/cart/container_viewmodel.dart';
 import 'package:maketplace/cart/tabs_view.dart';
@@ -54,27 +53,29 @@ class CartView extends StatelessWidget {
             body: Builder(builder: (BuildContext context) {
               if (model.isSearchSelected) {
                 return const CustomScrollView(
-                    //physics: model.isSearchSelected ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
-                    // Add the app bar and list of items as slivers in the next steps.
-                    slivers: <Widget>[
-                      /*SliverToBoxAdapter(
+                  //physics: model.isSearchSelected ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
+                  // Add the app bar and list of items as slivers in the next steps.
+                  slivers: <Widget>[
+                    /*SliverToBoxAdapter(
                               child: SizedBox(height: 25,),
                             ),
                             SliverSearchStatsView(),*/
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 25,
-                        ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 25,
                       ),
-                      SliverProductsSearchResult(),
-                      SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: 25,
-                        ),
+                    ),
+                    SliverProductsSearchResult(),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 25,
                       ),
-                    ]);
+                    ),
+                  ],
+                );
               }
               return Stack(
+                key: UniqueKey(),
                 children: [
                   _CartContainer(
                     quoteId: quoteId,
@@ -90,47 +91,6 @@ class CartView extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class CartView2 extends StatefulWidget {
-  const CartView2({
-    Key? key,
-    required this.quoteId,
-  }) : super(key: key);
-  final String quoteId;
-
-  @override
-  CartViewState createState() => CartViewState();
-}
-
-class CartViewState extends State<CartView2> {
-  @override
-  void initState() {
-    super.initState();
-    initializeDateFormatting();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: AppKeys().customColors!.grayBackground_2,
-        body: Stack(
-          children: [
-            Container(
-              color: AppKeys().customColors!.WBY,
-              padding: const EdgeInsets.all(0),
-              child: Column(
-                children: [
-                  const Header(),
-                  _SliverContainer(
-                    quoteId: widget.quoteId,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
   }
 }
 
@@ -239,7 +199,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                             dialog.showAlertDialog(
                                               context,
                                               () async {
-                                                model.onGenerateOrder(context);
+                                                // model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),
                                               model.quote.id!,
@@ -569,7 +529,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                           dialog.showAlertDialog(
                                             context,
                                             () async {
-                                              model.onGenerateOrder(context);
+                                              // model.onGenerateOrder(context);
                                             },
                                             model.createConfirmMessage(),
                                             model.quote.id!,
@@ -868,7 +828,7 @@ class _SliverContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ContainerViewModel>.reactive(
+    return ViewModelBuilder<ContainerViewModel>.nonReactive(
       viewModelBuilder: () => ContainerViewModel(),
       builder: (context, model, child) {
         if (model.isSearchSelected) return const SliverProductsSearchResult();

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:maketplace/auth/login/code_validator_view.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
 import 'package:maketplace/keys_model.dart';
@@ -12,24 +11,24 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({Key? key}) : super(key: key);
-
+  const LoginView({Key? key, this.quoteId}) : super(key: key);
+  final String? quoteId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppKeys().customColors!.blueVoltz,
-      body: const _LoginBody(),
+      body: _LoginBody(quoteId: quoteId),
     );
   }
 }
 
 class _LoginBody extends StatelessWidget {
-  const _LoginBody({Key? key}) : super(key: key);
-
+  const _LoginBody({Key? key, this.quoteId}) : super(key: key);
+  final String? quoteId;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
-      viewModelBuilder: () => LoginViewModel(),
+      viewModelBuilder: () => LoginViewModel()..init(quoteId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SafeArea(
@@ -58,7 +57,7 @@ class _LoginBody extends StatelessWidget {
                                 height: 19.86,
                               ),
                               IconButton(
-                                onPressed: () => model.navigateBack(),
+                                onPressed: () => model.navigateToBack(),
                                 icon: const Icon(Icons.close),
                               ),
                             ],
@@ -117,7 +116,7 @@ class _LoginBody extends StatelessWidget {
                                 switch (model.loginScreenStatus) {
                                   case LoginScreenStatus.inputCodeScreen:
                                     Future.delayed(const Duration(seconds: 0), () {
-                                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const CodeValidatorView()));
+                                      model.navigateToCodeValidatorView();
                                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: SelectableText(
                                           "Ingrese el código de verificación.",

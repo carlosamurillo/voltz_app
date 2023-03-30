@@ -10,12 +10,13 @@ import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key, required this.phoneNumber}) : super(key: key);
+  const RegisterView({Key? key, required this.phoneNumber, this.quoteId}) : super(key: key);
   final String phoneNumber;
+  final String? quoteId;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RegisterViewModel()..init(phoneNumber),
+      create: (context) => RegisterViewModel()..init(phoneNumber, quoteId),
       child: Scaffold(
         backgroundColor: AppKeys().customColors!.blueVoltz,
         body: const _RegisterBody(),
@@ -54,7 +55,9 @@ class _RegisterBody extends StatelessWidget {
                         height: 19.86,
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.read<RegisterViewModel>().signOut();
+                        },
                         icon: const Icon(Icons.close),
                       ),
                     ],
@@ -156,7 +159,9 @@ class _RegisterBody extends StatelessWidget {
                           return const Center(child: CircularProgressIndicator());
                         case RegisterStatus.success:
                           Future.delayed(const Duration(seconds: 0), () {
-                            Navigator.of(context).pop();
+                            //
+                            context.read<RegisterViewModel>().navigateToSuccessRegister();
+                            //
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: SelectableText(
                                 "Su usuario ha sido creado correctamente.",
@@ -205,7 +210,7 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return PrimaryButton(
       text: "Registrar",
-      enabled: false,
+      enabled: context.watch<RegisterViewModel>().isValidForm,
       onPressed: () {
         FocusScope.of(context).unfocus();
         context.read<RegisterViewModel>().register();

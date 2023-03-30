@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class RegisterViewModel extends ReactiveViewModel {
   final _authService = locator<AuthService>();
+  final NavigationService _navigationService = locator<NavigationService>();
   @override
   List<ListenableServiceMixin> get listenableServices => [
         _authService,
@@ -25,18 +28,24 @@ class RegisterViewModel extends ReactiveViewModel {
   late RegisterStatus _registerStatus;
   late bool _isProcessing;
 
+  late bool _isValidForm;
+
   bool get isBusiness => _isBussiness;
   Either<String, String> get nameOption => _nameOption;
   Either<String, String> get lastNameOption => _lastNameOption;
   Either<String, String> get emailOption => _emailOption;
   Either<String, String> get rfcOption => _rfcOption;
   String get phoneNumber => _phoneNumber;
+  bool get isValidForm => _isValidForm;
 
   RegisterStatus get registerStatus => _registerStatus;
   bool get isProcessing => _isProcessing;
   bool get showErrorMessages => _showErrorMessages;
 
-  void init(String phoneNumber) {
+  String? _quoteId;
+
+  void init(String phoneNumber, String? quoteId) {
+    _quoteId = quoteId;
     _isBussiness = false;
     _nameOption = left('');
     _lastNameOption = left('');
@@ -45,18 +54,21 @@ class RegisterViewModel extends ReactiveViewModel {
     _phoneNumber = phoneNumber;
     _isProcessing = false;
     _showErrorMessages = false;
+    _isValidForm = false;
     _registerStatus = RegisterStatus.initial;
   }
 
   void changeName(String? value) {
     if (value == null) return;
-    _nameOption = value.length > 5 ? right(value) : left(value);
+    _nameOption = value.length > 3 ? right(value) : left(value);
+    validateFields();
     notifyListeners();
   }
 
   void changeLastName(String? value) {
     if (value == null) return;
-    _lastNameOption = value.length > 5 ? right(value) : left(value);
+    _lastNameOption = value.length > 3 ? right(value) : left(value);
+    validateFields();
     notifyListeners();
   }
 
@@ -69,6 +81,7 @@ class RegisterViewModel extends ReactiveViewModel {
     } else {
       _emailOption = left(value);
     }
+    validateFields();
     notifyListeners();
   }
 
@@ -80,12 +93,24 @@ class RegisterViewModel extends ReactiveViewModel {
     } else {
       _rfcOption = left(value);
     }
+    validateFields();
     notifyListeners();
   }
 
   void isBusinessChanged() {
     _isBussiness = !_isBussiness;
+    validateFields();
     notifyListeners();
+  }
+
+  bool validateFields() {
+    _isValidForm = nameOption.isRight() && //
+        lastNameOption.isRight() &&
+        emailOption.isRight() &&
+        ((isBusiness && rfcOption.isRight()) || !isBusiness);
+    _showErrorMessages = true;
+    notifyListeners();
+    return _isValidForm;
   }
 
   Future<void> register() async {
@@ -94,7 +119,7 @@ class RegisterViewModel extends ReactiveViewModel {
     _registerStatus = RegisterStatus.processing;
     notifyListeners();
     try {
-      if (nameOption.isRight() && lastNameOption.isRight() && emailOption.isRight() && ((isBusiness && rfcOption.isRight()) || !isBusiness)) {
+      if (validateFields()) {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           Map<String, dynamic> data = {
@@ -131,7 +156,23 @@ class RegisterViewModel extends ReactiveViewModel {
     }
   }
 
-  signOut() => _authService.signOut();
+  signOut() {
+    _authService.signOut();
+    navigateToHomeClearingAll();
+  }
+
+  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null));
+
+  navigateToSuccessRegister() {
+    if (_quoteId != null) {
+      final args = CartViewArguments(quoteId: _quoteId!);
+      _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+    } else if (_navigationService.previousRoute.isNotEmpty) {
+      _navigationService.back();
+    } else {
+      navigateToHomeClearingAll();
+    }
+  }
 }
 
 enum RegisterStatus { initial, processing, success, failure }

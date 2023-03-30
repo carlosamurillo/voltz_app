@@ -91,6 +91,7 @@ class ProductCardViewModel extends ReactiveViewModel {
   final _quoteService = locator<QuoteService>();
   addProductToQuote(String idProduct, BuildContext context) async {
     _quoteService.addProductToQuote(idProduct);
+    notifyListeners();
     _showNotificationDialog(context);
   }
 

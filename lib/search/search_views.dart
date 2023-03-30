@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/search/search_viewmodel.dart';
 import 'package:maketplace/search/sliver_masonary_grid_view.dart' deferred as gv;
+import 'package:maketplace/search/sliver_masonary_grid_view.dart';
 import 'package:maketplace/utils/buttons.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
 
 class SliverProductsSearchResult extends StatelessWidget {
@@ -15,7 +17,7 @@ class SliverProductsSearchResult extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
-      viewModelBuilder: () => ProductSearchViewModel(),
+      viewModelBuilder: () => ProductSearchViewModel()..init(),
       builder: (context, viewModel, child) {
         print('ProductsSearchResults view ... ');
         if (viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null) {
@@ -23,12 +25,37 @@ class SliverProductsSearchResult extends StatelessWidget {
             child: SearchInitialViewWidget(),
           );
         }
-
+        if (viewModel.productsData != null) {
+          return SliverProductGridView(
+            data: viewModel.productsData!,
+            // data: viewModel.data!,
+            onTapImprovePrice: viewModel.navigateToLogin,
+            isHomeVersion: false,
+            onLoadMore: () => viewModel.updatePage(),
+            showLoadMoreDialog: viewModel.areStillProductsToShow ?? false,
+          );
+        } else {
+          return const SliverToBoxAdapter(
+            child: Center(
+              child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
         return FutureBuilder(
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done && viewModel.data!.isNotEmpty) {
-              return gv.SliverProductGridView(childCount: viewModel.data!.length, data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: false);
+              return gv.SliverProductGridView(
+                data: viewModel.data!,
+                onTapImprovePrice: viewModel.navigateToLogin,
+                isHomeVersion: false,
+                onLoadMore: () => viewModel.updatePage(),
+                showLoadMoreDialog: viewModel.areStillProductsToShow ?? false,
+              );
             } else {
               return const SliverFillRemaining(
                 child: Center(
@@ -106,6 +133,37 @@ class SearchNotFoundWidget extends StatelessWidget {
   }
 }
 
+class ShowMoreCard extends StatelessWidget {
+  const ShowMoreCard({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+  final Function() onPressed;
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context).size;
+    return SizedBox(
+      width: 180.0,
+      child: Container(
+        constraints: BoxConstraints(minHeight: (media.width < CustomStyles.mobileBreak) ? 200 : 350, maxWidth: 180.0),
+        margin: const EdgeInsets.all(30),
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 56),
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SecondaryButton(
+              text: "Más resultados",
+              onPressed: onPressed,
+              buttonColor: AppKeys().customColors!.WBY,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class NoFoundCard extends StatelessWidget {
   const NoFoundCard({
     Key? key,
@@ -177,15 +235,42 @@ class SliverClassicSearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
-      viewModelBuilder: () => ProductSearchViewModel(),
+      viewModelBuilder: () => ProductSearchViewModel()..init(),
       builder: (context, viewModel, child) {
+        if (viewModel.productsData != null) {
+          return SliverProductGridView(
+            data: viewModel.productsData!,
+            // data: viewModel.data!,
+            onTapImprovePrice: viewModel.navigateToLogin,
+            isHomeVersion: isHomeVersion,
+            onLoadMore: () => viewModel.updatePage(),
+            showLoadMoreDialog: viewModel.areStillProductsToShow ?? false,
+          );
+        } else {
+          return const SliverToBoxAdapter(
+            child: Center(
+              child: SizedBox(
+                width: 30,
+                height: 30,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
         print('SliverClassicSearchView ... se renderiza...');
         return FutureBuilder(
           future: gv.loadLibrary(),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && viewModel.data != null) {
+            if (snapshot.connectionState == ConnectionState.done && viewModel.productsData != null) {
               return gv.SliverProductGridView(
-                  childCount: viewModel.data!.length, data: viewModel.data!, onTapImprovePrice: viewModel.navigateToLogin, isHomeVersion: isHomeVersion);
+                key: UniqueKey(),
+                data: viewModel.productsData!,
+                // data: viewModel.data!,
+                onTapImprovePrice: viewModel.navigateToLogin,
+                isHomeVersion: isHomeVersion,
+                onLoadMore: () => viewModel.updatePage(),
+                showLoadMoreDialog: viewModel.areStillProductsToShow ?? false,
+              );
             } else {
               return const SliverToBoxAdapter(
                 child: Center(

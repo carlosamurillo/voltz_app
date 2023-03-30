@@ -233,7 +233,7 @@ class _Resume extends StackedHookView<QuoteViewModel> {
                             dialog.showAlertDialog(
                               context,
                               () async {
-                                viewModel.onGenerateOrder(context);
+                                // viewModel.onGenerateOrder(context);
                               },
                               viewModel.createConfirmMessage(),
                               viewModel.quote.id!,

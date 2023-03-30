@@ -188,6 +188,11 @@ class LoginService with ListenableServiceMixin {
     }
     notifyListeners();
   }
+
+  updateLoginScreenStatus(LoginScreenStatus status) {
+    _rxLoginScreenStatus.value = status;
+    notifyListeners();
+  }
 }
 
 enum LoginScreenStatus { loginScreen, inputCodeScreen, registerScreen, overview, failure, none }

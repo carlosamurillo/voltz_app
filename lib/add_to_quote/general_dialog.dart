@@ -264,6 +264,7 @@ class _GeneralDialogContent extends StatelessWidget {
         fit: StackFit.loose,
         children: [
           SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,14 +409,23 @@ class _ListOfQuotesWidget extends StatelessWidget {
     if (quoteList.isEmpty) {
       return const SizedBox.shrink();
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: quoteList
-          .map(
-            (model) => _QuoteItem(context1: context1, model: model),
-          )
-          .toList(),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minHeight: 90,
+        maxHeight: 280,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: quoteList
+              .map(
+                (model) => _QuoteItem(context1: context1, model: model),
+              )
+              .toList(),
+        ),
+      ),
     );
   }
 }
@@ -431,6 +441,7 @@ class _QuoteItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 80,
       margin: const EdgeInsets.symmetric(vertical: 7.5),
       decoration: BoxDecoration(
         border: Border.all(color: AppKeys().customColors!.WBYPlusOne),
