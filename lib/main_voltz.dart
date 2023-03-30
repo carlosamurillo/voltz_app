@@ -23,9 +23,9 @@ void mainCommonVoltz() async {
   await Firebase.initializeApp(
     options: kIsWeb ? _config.firebaseOptions : null,
   );
-  // String? quoteId = Uri.base.queryParameters["cotz"];
+  String? quoteId = Uri.base.queryParameters["cotz"];
 
-  String? quoteId = "O4nUAA87XXRwjMjfNY8D";
+  // String? quoteId = "O4nUAA87XXRwjMjfNY8D";
 
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();
