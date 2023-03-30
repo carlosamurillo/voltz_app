@@ -8,6 +8,9 @@ class ProductSearchRepository with ListenableServiceMixin {
   bool _isSearching = false;
   bool get isSearching => _isSearching;
 
+  int _pageKey = 0;
+  int get pageKey => _pageKey;
+
   /// Hits Searcher with default search .
   final _productsSearcher = HitsSearcher.create(
     applicationID: AppKeys().algoliaAppId!,
@@ -65,12 +68,14 @@ class ProductSearchRepository with ListenableServiceMixin {
 
   void restartFilters() async {
     _productsSearcher.applyState((state) => state.copyWith(page: 0));
+    _pageKey = 0;
     _isSearching = false;
     notifyListeners();
   }
 
-  void applyState(int? pageKey) async {
-    _productsSearcher.applyState((state) => state.copyWith(page: pageKey));
+  void applyState() async {
+    _productsSearcher.applyState((state) => state.copyWith(page: ++_pageKey));
+    notifyListeners();
   }
 
   /// Dispose of underlying resources.

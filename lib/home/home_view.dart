@@ -53,7 +53,7 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                 ],
-                SliverClassicSearchView(isHomeVersion: true),
+                const SliverClassicSearchView(isHomeVersion: true),
                 //
               ]),
         );

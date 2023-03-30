@@ -16,9 +16,6 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
   List<Product>? _productsData;
   List<Product>? get productsData => _productsData;
 
-  int _pageKey = 0;
-  int get pageKey => _pageKey;
-
   StreamSubscription<SearchMetadata>? _skuCountSubscription;
   bool? _areStillProductsToShow;
   bool? get areStillProductsToShow => _areStillProductsToShow;
@@ -33,7 +30,7 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
   init() async {
     _skuCountSubscription?.cancel();
     _skuCountSubscription = _productSearchRepository.searchMetaData().listen((meta) {
-      _areStillProductsToShow = meta.nbHits > (10 * (pageKey + 1));
+      _areStillProductsToShow = meta.nbHits > (10 * (_productSearchRepository.pageKey + 1));
       notifyListeners();
     });
     showLastSearch();
@@ -53,7 +50,6 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
     // data?.add(Product());
     if (_productSearchRepository.isSearching) {
       _productSearchRepository.restartFilters();
-      _pageKey = 0;
       _productsData?.clear();
     }
     if (_productsData == null) {
@@ -70,7 +66,7 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
   }
 
   updatePage() {
-    _productSearchRepository.applyState(++_pageKey);
+    _productSearchRepository.applyState();
     notifyListeners();
   }
 }
@@ -98,7 +94,7 @@ class ProductSearchViewModelPaged extends StreamViewModel<HitsPage> {
       pagingController.appendPage(page.items, page.nextPageKey);
     }).onError((error) => pagingController.error = error);
 
-    pagingController.addPageRequestListener((pageKey) => _productSearchRepository.applyState(pageKey));
+    pagingController.addPageRequestListener((pageKey) => _productSearchRepository.applyState());
   }
 
   @override
