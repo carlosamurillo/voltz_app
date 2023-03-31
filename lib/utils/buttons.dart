@@ -25,11 +25,12 @@ class PrimaryButton extends StatelessWidget {
 }
 
 class SecondaryButton extends StatelessWidget {
-  const SecondaryButton({Key? key, required this.text, required this.onPressed, this.icon}) : super(key: key);
+  const SecondaryButton({Key? key, required this.text, required this.onPressed, this.icon, this.buttonColor}) : super(key: key);
 
   final String text;
   final Function() onPressed;
   final IconData? icon;
+  final Color? buttonColor;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class SecondaryButton extends StatelessWidget {
       text: text,
       onPressed: onPressed,
       textColor: AppKeys().customColors!.buttonSecondaryTextColor,
-      buttonColor: AppKeys().customColors!.buttonSecondaryColor,
+      buttonColor: buttonColor ?? AppKeys().customColors!.buttonSecondaryColor,
       borderColor: AppKeys().customColors!.buttonSecondaryTextColor,
       icon: icon,
     );

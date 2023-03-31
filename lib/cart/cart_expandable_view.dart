@@ -33,8 +33,11 @@ class CardGrid extends StatelessWidget {
       builder: (context, viewModel, child) {
         var media = MediaQuery.of(context).size;
         if (viewModel.selectedProducts.isEmpty) {
-          return const Center(
-            child: SizedBox(width: 30, height: 30, child: CircularProgressIndicator()),
+          //TODO en caso no hayan productos, poner un no tienes productos en esta cotizacion aqui
+          return SizedBox(
+            height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
+            width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
+            child: const Center(child: CircularProgressIndicator()),
           );
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
@@ -50,6 +53,7 @@ class CardGrid extends StatelessWidget {
               height: media.width >= CustomStyles.mobileBreak ? media.height - CustomStyles.desktopHeaderHeight : media.height - CustomStyles.mobileHeaderHeight,
               width: media.width >= CustomStyles.mobileBreak ? (media.width - 310) : media.width,
               child: CustomScrollView(
+                physics: viewModel.isSearchSelected ? const NeverScrollableScrollPhysics() : null,
                 slivers: <Widget>[
                   if (media.width >= CustomStyles.desktopBreak) ...[
                     const SliverPadding(
@@ -120,282 +124,309 @@ class ProductCard extends StatelessWidget {
     //if (widget.i == 1) return NoFoundCard();
 
     return ViewModelBuilder<CardItemViewModel>.reactive(
-        viewModelBuilder: () => CardItemViewModel(),
-        onViewModelReady: (viewModel) => viewModel.initCartView(
-              cardIndex: i,
-            ),
-        fireOnViewModelReadyOnce: false,
-        disposeViewModel: true,
-        createNewViewModelOnInsert: true,
-        builder: (context, viewModel, child) {
-          print('_ProductCard ... Se actualiza la vista ');
-          return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Container(
-              width: 362.0,
-              padding: const EdgeInsets.all(0.0),
-              decoration: BoxDecoration(
-                color: AppKeys().customColors!.white,
-                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                border: Border.all(color: const Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 362.0,
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (viewModel.selectedProducts[i].coverImage == null) ...[
-                              SizedBox(
-                                  width: 120,
-                                  height: 120,
-                                  child: Image.asset(
-                                    'assets/images/no_photo.png',
-                                    height: 120,
-                                    width: 120,
-                                  )),
-                            ] else ...[
-                              SizedBox(
-                                  width: 120,
-                                  height: 120,
-                                  child: Image.network(
-                                    viewModel.selectedProducts[i].coverImage!,
-                                    height: 120,
-                                    width: 120,
-                                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                      return Image.asset(
+      viewModelBuilder: () => CardItemViewModel(),
+      onViewModelReady: (viewModel) => viewModel.initCartView(
+        cardIndex: i,
+      ),
+      fireOnViewModelReadyOnce: false,
+      disposeViewModel: true,
+      createNewViewModelOnInsert: true,
+      builder: (context, viewModel, child) {
+        print('_ProductCard ... Se actualiza la vista ');
+        return Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 362.0,
+                  padding: const EdgeInsets.all(0.0),
+                  decoration: BoxDecoration(
+                    color: AppKeys().customColors!.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                    border: Border.all(color: const Color(0xFFD9E0FC), width: 1, style: BorderStyle.solid),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 362.0,
+                        padding: const EdgeInsets.all(25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (viewModel.selectedProducts[i].coverImage == null) ...[
+                                  SizedBox(
+                                      width: 120,
+                                      height: 120,
+                                      child: Image.asset(
                                         'assets/images/no_photo.png',
                                         height: 120,
                                         width: 120,
-                                      );
-                                    },
-                                  )),
-                            ],
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            SizedBox(
-                              width: 175.0,
-                              height: 120.0,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      //Esto es temporal mientras se programa en el backend todas las marcas para la bd
-                                      if (viewModel.selectedProducts[i].brandFavicon != null) ...[
-                                        Image.network(
-                                          viewModel.selectedProducts[i].brandFavicon!,
-                                          width: 16,
-                                          height: 17,
-                                          errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                                            return Container();
-                                          },
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                      ],
-                                      SelectableText(
-                                        viewModel.selectedProducts[i].brand!,
-                                        maxLines: 1,
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14.0,
-                                          color: AppKeys().customColors!.dark,
-                                          height: 1.1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SelectableText(
-                                        viewModel.selectedProducts[i].sku!,
-                                        maxLines: 1,
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14.0,
-                                          color: AppKeys().customColors!.dark,
-                                          height: 1.1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SelectableText(
-                                        viewModel.currencyFormat.format(viewModel.selectedProducts[i].pricePublic!),
-                                        maxLines: 1,
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14.0,
-                                          decoration: TextDecoration.lineThrough,
-                                          color: const Color(0xFF9C9FAA),
-                                          height: 1.1,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                        color: AppKeys().customColors!.energyColorHover,
-                                        child: SelectableText(
-                                          "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
-                                          enableInteractiveSelection: false,
-                                          maxLines: 1,
-                                          style: GoogleFonts.inter(
-                                            fontStyle: FontStyle.normal,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12.0,
-                                            color: Colors.white,
-                                            height: 1.1,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        height: 19,
-                                        child: Shimmer(
-                                          linearGradient: viewModel.shimmerGradientWhiteBackground,
-                                          child: ShimmerLoading(
-                                            isLoading: viewModel.selectedProducts[i].isCalculatingProductTotals,
-                                            shimmerEmptyBox: const ShimmerEmptyBox(
-                                              width: 160,
-                                              height: 19,
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                SelectableText(
-                                                  viewModel.currencyFormat.format(viewModel.selectedProducts[i].price!.price2!),
-                                                  maxLines: 1,
-                                                  style: GoogleFonts.inter(
-                                                    fontStyle: FontStyle.normal,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 18.0,
-                                                    color: AppKeys().customColors!.dark,
-                                                    height: 1.1,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                SelectableText(
-                                                  viewModel.selectedProducts[i].saleUnit!,
-                                                  maxLines: 1,
-                                                  style: GoogleFonts.inter(
-                                                    fontStyle: FontStyle.normal,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 12.0,
-                                                    color: AppKeys().customColors!.dark,
-                                                    height: 1.1,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/svg/copa_icon.svg',
-                                        width: 12,
-                                        height: 12,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      SelectableText(
-                                        "Precio según cantidad",
-                                        maxLines: 1,
-                                        style: GoogleFonts.inter(
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 12.0,
-                                          color: AppKeys().customColors!.dark,
-                                          height: 1.1,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                      )),
+                                ] else ...[
+                                  SizedBox(
+                                      width: 120,
+                                      height: 120,
+                                      child: Image.network(
+                                        viewModel.selectedProducts[i].coverImage!,
+                                        height: 120,
+                                        width: 120,
+                                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                          return Image.asset(
+                                            'assets/images/no_photo.png',
+                                            height: 120,
+                                            width: 120,
+                                          );
+                                        },
+                                      )),
                                 ],
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                SizedBox(
+                                  width: 175.0,
+                                  height: 120.0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          //Esto es temporal mientras se programa en el backend todas las marcas para la bd
+                                          if (viewModel.selectedProducts[i].brandFavicon != null) ...[
+                                            Image.network(
+                                              viewModel.selectedProducts[i].brandFavicon!,
+                                              width: 16,
+                                              height: 17,
+                                              errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                                return Container();
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              width: 5,
+                                            ),
+                                          ],
+                                          SelectableText(
+                                            viewModel.selectedProducts[i].brand!,
+                                            maxLines: 1,
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 14.0,
+                                              color: AppKeys().customColors!.dark,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SelectableText(
+                                            viewModel.selectedProducts[i].sku!,
+                                            maxLines: 1,
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.0,
+                                              color: AppKeys().customColors!.dark,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SelectableText(
+                                            viewModel.currencyFormat.format(viewModel.selectedProducts[i].pricePublic!),
+                                            maxLines: 1,
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14.0,
+                                              decoration: TextDecoration.lineThrough,
+                                              color: const Color(0xFF9C9FAA),
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                            color: AppKeys().customColors!.energyColorHover,
+                                            child: SelectableText(
+                                              "${(viewModel.selectedProducts[i].discountRate!).toStringAsFixed(2)}%",
+                                              enableInteractiveSelection: false,
+                                              maxLines: 1,
+                                              style: GoogleFonts.inter(
+                                                fontStyle: FontStyle.normal,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 12.0,
+                                                color: Colors.white,
+                                                height: 1.1,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SizedBox(
+                                            height: 19,
+                                            child: Shimmer(
+                                              linearGradient: viewModel.shimmerGradientWhiteBackground,
+                                              child: ShimmerLoading(
+                                                isLoading: viewModel.selectedProducts[i].isCalculatingProductTotals,
+                                                shimmerEmptyBox: const ShimmerEmptyBox(
+                                                  width: 160,
+                                                  height: 19,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    SelectableText(
+                                                      viewModel.currencyFormat.format(viewModel.selectedProducts[i].price!.price2!),
+                                                      maxLines: 1,
+                                                      style: GoogleFonts.inter(
+                                                        fontStyle: FontStyle.normal,
+                                                        fontWeight: FontWeight.w500,
+                                                        fontSize: 18.0,
+                                                        color: AppKeys().customColors!.dark,
+                                                        height: 1.1,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    SelectableText(
+                                                      viewModel.selectedProducts[i].saleUnit!,
+                                                      maxLines: 1,
+                                                      style: GoogleFonts.inter(
+                                                        fontStyle: FontStyle.normal,
+                                                        fontWeight: FontWeight.w400,
+                                                        fontSize: 12.0,
+                                                        color: AppKeys().customColors!.dark,
+                                                        height: 1.1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            'assets/svg/copa_icon.svg',
+                                            width: 12,
+                                            height: 12,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          SelectableText(
+                                            "Precio según cantidad",
+                                            maxLines: 1,
+                                            style: GoogleFonts.inter(
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 12.0,
+                                              color: AppKeys().customColors!.dark,
+                                              height: 1.1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            SelectableText(
+                              viewModel.selectedProducts[i].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
+                              style: GoogleFonts.inter(
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16.0,
+                                color: AppKeys().customColors!.dark,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 25,
+                      ),
+                      if (viewModel.selectedProducts[i].techFile != null) ...[
+                        getHeader(
+                          context,
+                          viewModel,
                         ),
-                        SelectableText(
-                          viewModel.selectedProducts[i].skuDescription!.replaceAll("<em>", "").replaceAll("<\/em>", ""),
-                          style: GoogleFonts.inter(
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 16.0,
-                            color: AppKeys().customColors!.dark,
-                          ),
+                      ] else ...[
+                        const Divider(
+                          thickness: 1,
+                          color: Color(0xFFD9E0FC),
                         ),
                       ],
+                      if (viewModel.selectedProducts[i].isCardExpanded) ...[
+                        ProductDetail(
+                          productId: viewModel.selectedProducts[i].id!,
+                        ),
+                      ],
+                      _QuantityCalculatorWidget(index: i),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Builder(builder: (context) {
+              if (viewModel.modelRemoveStatus == QuoteModelRemoveStatus.removing) {
+                return Positioned(
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 362.0,
+                    padding: const EdgeInsets.all(0.0),
+                    child: ColoredBox(
+                      color: Colors.white.withOpacity(.8),
+                      child: const Center(child: CircularProgressIndicator()),
                     ),
                   ),
-                  if (viewModel.selectedProducts[i].techFile != null) ...[
-                    getHeader(
-                      context,
-                      viewModel,
-                    ),
-                  ] else ...[
-                    const Divider(
-                      thickness: 1,
-                      color: Color(0xFFD9E0FC),
-                    ),
-                  ],
-                  if (viewModel.selectedProducts[i].isCardExpanded) ...[
-                    ProductDetail(
-                      productId: viewModel.selectedProducts[i].id!,
-                    ),
-                  ],
-                  _QuantityCalculatorWidget(index: i),
-                ],
-              ),
-            ),
-          ]);
-        });
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
+          ],
+        );
+      },
+    );
   }
 
   Widget getHeader(
@@ -817,7 +848,7 @@ class _QuantityCalculatorWidget extends StackedHookView<CardItemViewModel> {
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                         onTap: () async {
-                          await viewModel.onDeleteSku(viewModel.quote.detail![index]);
+                          await viewModel.onDeleteSku(viewModel.quote.detail![index], context);
                           return viewModel.notifyListeners();
                         },
                         child: Text(

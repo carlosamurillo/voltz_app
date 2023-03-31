@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.locator.dart';
-import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/notifications/notifications_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
@@ -106,7 +105,9 @@ class QuoteService with ListenableServiceMixin {
         "Recalculando totales...",
         "Ir a la cotización",
         "Seguir agregando",
+        false,
       );
+      notifyListeners();
       DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_rxQuote.value.id);
       recordLastAction = 'add_product';
       await reference.update({'record.next_action': 'add_product', 'record.meta_data': idProduct});
@@ -148,7 +149,7 @@ class QuoteService with ListenableServiceMixin {
 
           if (quote.accepted) {
             Future.delayed(const Duration(milliseconds: 1500), () {
-              _navigationService.navigateToOrderView(orderId: quote.id!);
+              // _navigationService.navigateToOrderView(orderId: quote.id!);
             });
           } else if (!viewRecorded) {
             //TODO mejorar esto y porque no da
@@ -166,8 +167,10 @@ class QuoteService with ListenableServiceMixin {
                 "¡Agregado a la cotización!",
                 "Ir a la cotización",
                 "Seguir agregando",
+                true,
               );
               recordLastAction = '';
+              notifyListeners();
             }
             print("Se llamo notifyListeners desde Servicio QuoteService");
           }

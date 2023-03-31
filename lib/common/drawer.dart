@@ -64,7 +64,6 @@ class MenuDrawer extends StatelessWidget {
                       icondata: Icons.close,
                       onPressed: () {
                         viewModel.signOut();
-                        Navigator.of(context).pop();
                       },
                       selected: false,
                       text: "Cerrar sesión",

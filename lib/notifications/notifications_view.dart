@@ -22,11 +22,18 @@ class BaseNotificationWidget extends StatelessWidget {
         var media = MediaQuery.of(context).size;
         return GeneralDialog(
           text: model.notification.title,
-          button1: ThirdButton(
-            text: model.notification.textButtonUno,
-            onPressed: onTapButtonUno ?? onTapButtonUno!(),
-          ),
-          button2: SecondaryButton(text: model.notification.textButtonDos, onPressed: () => Navigator.of(context).pop()),
+          button1: model.notification.showButtons
+              ? ThirdButton(
+                  text: model.notification.textButtonUno,
+                  onPressed: onTapButtonUno ?? onTapButtonUno!(),
+                )
+              : const SizedBox.shrink(),
+          button2: model.notification.showButtons
+              ? SecondaryButton(
+                  text: model.notification.textButtonDos,
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : const SizedBox.shrink(),
         );
       },
     );

@@ -1,19 +1,19 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:flutter/cupertino.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/gate/auth_service.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/utils/stats.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 
 class CardItemViewModel extends ReactiveViewModel {
-
-  var currencyFormat =
-  intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
+  var currencyFormat = intl.NumberFormat.currency(locale: "es_MX", symbol: "\$");
   final TextEditingController textEditingController = TextEditingController();
   double lastValue = 0;
 
@@ -23,6 +23,10 @@ class CardItemViewModel extends ReactiveViewModel {
 
   bool get isQtyLabelHighlight => _isQtyLabelHighlight;
   bool _isQtyLabelHighlight = false;
+
+  //estado para verificar si un producto esta siendo quitado
+  QuoteModelRemoveStatus _modelRemoveStatus = QuoteModelRemoveStatus.initial;
+  QuoteModelRemoveStatus get modelRemoveStatus => _modelRemoveStatus;
 
   final shimmerGradientDarkBackground = const LinearGradient(
     colors: [
@@ -91,7 +95,9 @@ class CardItemViewModel extends ReactiveViewModel {
     }
   }*/
 
-  initCartView({required int cardIndex,}) {
+  initCartView({
+    required int cardIndex,
+  }) {
     print('Se ejecuta initCardView de cart_item_viewmodel');
     selectedProducts[cardIndex].cardIndex = cardIndex;
     _focusNodeInput.addListener(() => _onFocusInputChange(cardIndex));
@@ -153,8 +159,7 @@ class CardItemViewModel extends ReactiveViewModel {
   _onFocusButtonChange() async {
     print('Button Has Focus:  ${_focusNodeButton.hasFocus}');
     if (_focusNodeButton.hasFocus) {
-    } else {
-    }
+    } else {}
   }
 
   onPressCalculate(BuildContext context, int cardIndex) async {
@@ -162,9 +167,10 @@ class CardItemViewModel extends ReactiveViewModel {
     await setCalculateVisibility(false);
     lastValue = double.tryParse(textEditingController.text) ?? 0;
     print('La cantidad que se va a guardar es ${textEditingController.text}');
-    await onUpdateQuote(double.tryParse(textEditingController.text) ?? 0,
-      cardIndex,);
-
+    await onUpdateQuote(
+      double.tryParse(textEditingController.text) ?? 0,
+      cardIndex,
+    );
   }
 
   areaLostFocus(int cardIndex) async {
@@ -205,7 +211,7 @@ class CardItemViewModel extends ReactiveViewModel {
     });
   }
 
-  setQuantity(int i, double quantity){
+  setQuantity(int i, double quantity) {
     selectedProducts[i].quantity = quantity;
   }
 
@@ -216,19 +222,36 @@ class CardItemViewModel extends ReactiveViewModel {
     calculateTotals();
     await _quoteService.updateQuote(quote);
     loadingProductTotals(cardIndex);
-    return Stats.SkuSeleccionado(quoteId: quote.id!, skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true,  orElse: () => Product(sku: null)).sku,
-        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id, productRequested: quote.detail![i].productRequested!,
+    return Stats.SkuSeleccionado(
+        quoteId: quote.id!,
+        skuSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(sku: null)).sku,
+        productIdSuggested: quote.detail![i].productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id,
+        productRequested: quote.detail![i].productRequested!,
         countProductsSuggested: quote.detail![i].productsSuggested!.length);
   }
 
-  Future<void> onDeleteSku(Detail value) async {
+  Future<void> onDeleteSku(Detail value, context) async {
+    _modelRemoveStatus = QuoteModelRemoveStatus.removing;
+    notifyListeners();
     loadingTotals();
     quote.detail!.remove(value);
-    quote.discardedProducts!.add(DiscardedProducts(requestedProducts: value.productRequested, reason: "No lo quiero.", position: value.position));
+    quote.discardedProducts!.add(
+      DiscardedProducts(
+        requestedProducts: value.productRequested,
+        reason: "No lo quiero.",
+        position: value.position,
+      ),
+    );
     calculateTotals();
     await _quoteService.updateQuote(quote);
-    return Stats.SkuBorrado(quoteId: quote.id!, skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(sku: null)).sku,
-        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id, productRequested: value.productRequested!,
+    _modelRemoveStatus = QuoteModelRemoveStatus.removed;
+    notifyListeners();
+    _showRemoveModelSnackbar(context);
+    return Stats.SkuBorrado(
+        quoteId: quote.id!,
+        skuSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(sku: null)).sku,
+        productIdSuggested: value.productsSuggested?.firstWhere((element) => element.selected == true, orElse: () => Product(id: null)).id,
+        productRequested: value.productRequested!,
         countProductsSuggested: value.productsSuggested!.length);
   }
 
@@ -240,7 +263,7 @@ class CardItemViewModel extends ReactiveViewModel {
   }
 
   Future<void> removeOne(int cardIndex) async {
-    if(selectedProducts[cardIndex].quantity! > 1) {
+    if (selectedProducts[cardIndex].quantity! > 1) {
       await highlightQtyLabel(true, cardIndex);
       selectedProducts[cardIndex].quantity = selectedProducts[cardIndex].quantity! - 1;
       textEditingController.text = selectedProducts[cardIndex].quantity!.toString();
@@ -248,7 +271,7 @@ class CardItemViewModel extends ReactiveViewModel {
     }
   }
 
-  Future<void> saveQty (int cardIndex) async {
+  Future<void> saveQty(int cardIndex) async {
     await loadingProductTotals(cardIndex);
     loadingTotals();
     calculateTotals();
@@ -265,16 +288,30 @@ class CardItemViewModel extends ReactiveViewModel {
   }
 
   // instruccion para que el backend calcule totales
-  void calculateTotals(){
+  void calculateTotals() {
     quote.record!.nextAction = 'calculate_totals';
   }
 
-  void loadingAll (int productIndex) {
+  void loadingAll(int productIndex) {
     _quoteService.loadingAll();
   }
 
-  void loadingTotals () {
+  void loadingTotals() {
     _quoteService.loadingQuoteTotals();
+  }
+
+  void _showRemoveModelSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: SelectableText(
+        "Producto removido.",
+        style: CustomStyles.styleVolcanicDos,
+      ),
+      backgroundColor: AppKeys().customColors!.energyGreen,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(milliseconds: 1000),
+      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+      onVisible: () async {},
+    ));
   }
 
   final shimmerGradientWhiteBackground = const LinearGradient(
@@ -292,5 +329,6 @@ class CardItemViewModel extends ReactiveViewModel {
     end: Alignment(1.0, 0.3),
     tileMode: TileMode.clamp,
   );
-
 }
+
+enum QuoteModelRemoveStatus { initial, removing, removed, none }

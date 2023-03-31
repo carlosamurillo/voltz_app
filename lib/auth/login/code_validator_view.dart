@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/auth/login/login_view_model.dart';
-import 'package:maketplace/auth/register/register_view.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:maketplace/utils/style.dart';
@@ -13,23 +12,24 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class CodeValidatorView extends StatelessWidget {
-  const CodeValidatorView({Key? key}) : super(key: key);
-
+  const CodeValidatorView({Key? key, this.quoteId}) : super(key: key);
+  final String? quoteId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppKeys().customColors!.blueVoltz,
-      body: const _CodeValidatorBody(),
+      body: _CodeValidatorBody(quoteId: quoteId),
     );
   }
 }
 
 class _CodeValidatorBody extends StatelessWidget {
-  const _CodeValidatorBody({Key? key}) : super(key: key);
+  const _CodeValidatorBody({Key? key, this.quoteId}) : super(key: key);
+  final String? quoteId;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
-      viewModelBuilder: () => LoginViewModel(),
+      viewModelBuilder: () => LoginViewModel()..init(quoteId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SafeArea(
@@ -57,7 +57,7 @@ class _CodeValidatorBody extends StatelessWidget {
                               height: 19.86,
                             ),
                             IconButton(
-                              onPressed: () => model.navigateBack(),
+                              onPressed: () => model.navigateToHomeClearingAll(),
                               icon: const Icon(Icons.close),
                             ),
                           ],
@@ -103,13 +103,9 @@ class _CodeValidatorBody extends StatelessWidget {
                               switch (model.loginScreenStatus) {
                                 case LoginScreenStatus.registerScreen:
                                   Future.delayed(const Duration(seconds: 0), () {
-                                    Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                        builder: (ctx) => RegisterView(
-                                          phoneNumber: model.phoneNumber.getOrElse(() => "INVALID PHONE"),
-                                        ),
-                                      ),
-                                    );
+                                    //
+                                    model.navigateToRegisterView(model.phoneNumber.getOrElse(() => "INVALID PHONE"));
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: SelectableText(
                                         "Necesitamos crear tu usuario.",
@@ -125,7 +121,9 @@ class _CodeValidatorBody extends StatelessWidget {
                                   return const _ActionButton();
                                 case LoginScreenStatus.overview:
                                   Future.delayed(const Duration(seconds: 0), () {
-                                    Navigator.of(context).pop();
+                                    //
+                                    model.navigateLoginSuccess();
+
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: SelectableText(
                                         "Bienvenido.",

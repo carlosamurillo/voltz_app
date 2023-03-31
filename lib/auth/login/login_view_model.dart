@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/auth/login/login_service.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
@@ -27,6 +28,13 @@ class LoginViewModel extends ReactiveViewModel {
   Either<String, String> get codeNumber => _loginService.codeNumber;
   LoginScreenStatus get loginScreenStatus => _loginService.loginScreenStatus;
 
+  String? _quoteId;
+
+  init(String? quoteId) {
+    _quoteId = quoteId;
+    notifyListeners();
+  }
+
   void checkboxWhatsappChanged() {
     _loginService.checkboxWhatsappChanged();
     notifyListeners();
@@ -43,5 +51,37 @@ class LoginViewModel extends ReactiveViewModel {
     _loginService.validateCode();
   }
 
-  navigateBack() => _navigationService.back();
+  navigateToBack() {
+    if (_navigationService.previousRoute.isNotEmpty) {
+      _navigationService.back();
+    } else {
+      navigateToHomeClearingAll();
+    }
+  }
+
+  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null));
+
+  navigateLoginSuccess() {
+    if (_quoteId != null) {
+      final args = CartViewArguments(quoteId: _quoteId!);
+      _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+    } else if (_navigationService.previousRoute.isNotEmpty) {
+      _navigationService.back();
+    } else {
+      navigateToHomeClearingAll();
+    }
+  }
+
+  navigateToCodeValidatorView() {
+    _loginService.updateLoginScreenStatus(LoginScreenStatus.none);
+    notifyListeners();
+
+    _navigationService.navigateToCodeValidatorView(quoteId: _quoteId);
+  }
+
+  navigateToRegisterView(String phoneNumber) {
+    _loginService.updateLoginScreenStatus(LoginScreenStatus.none);
+    notifyListeners();
+    _navigationService.navigateToRegisterView(phoneNumber: phoneNumber, quoteId: _quoteId);
+  }
 }
