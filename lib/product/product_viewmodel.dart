@@ -1,4 +1,4 @@
-import 'dart:js' as js;
+// import 'dart:js' as js;
 
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart' as intl;
@@ -30,11 +30,11 @@ class ProductViewModel extends ReactiveViewModel {
   }
 
   Future<void> openTechFile(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   Future<void> openWebPage(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 
   navigateBack() async {

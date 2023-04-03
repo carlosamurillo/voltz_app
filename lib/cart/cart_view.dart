@@ -199,7 +199,7 @@ class _BottomReminderTakeOrder extends StatelessWidget {
                                             dialog.showAlertDialog(
                                               context,
                                               () async {
-                                                // model.onGenerateOrder(context);
+                                                model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),
                                               model.quote.id!,
@@ -529,7 +529,7 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                           dialog.showAlertDialog(
                                             context,
                                             () async {
-                                              // model.onGenerateOrder(context);
+                                              model.onGenerateOrder(context);
                                             },
                                             model.createConfirmMessage(),
                                             model.quote.id!,

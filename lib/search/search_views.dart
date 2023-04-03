@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -217,7 +217,7 @@ class NoFoundCard extends StatelessWidget {
                 ThirdButton(
                     text: "Solicitar producto",
                     onPressed: () {
-                      html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
+                      // html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
                     }),
               ],
             ),

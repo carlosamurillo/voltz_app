@@ -1,4 +1,4 @@
-import 'dart:html' as html;
+// import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ class CardGrid extends StatelessWidget {
         }
         print('Se ejecuta renderizado de la vista reactiva de GridViewModel');
         if (kIsWeb) {
-          html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
+          // html.window.history.pushState(null, 'Voltz - Cotización ${viewModel.quote.consecutive}', '?cotz=${viewModel.quote.id!}');
         }
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,

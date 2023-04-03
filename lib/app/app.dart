@@ -11,6 +11,7 @@ import 'package:maketplace/gate/auth_gate.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/home/home_view.dart';
 import 'package:maketplace/notifications/notifications_service.dart';
+import 'package:maketplace/order/oder_view.dart';
 import 'package:maketplace/product/product_service.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/quote_detail/quote_detail_view.dart';
@@ -40,7 +41,7 @@ import 'package:stacked_services/stacked_services.dart';
     /** Onboarding and signup **/
     CupertinoRoute(page: AuthGate),
     CupertinoRoute(page: CartView),
-    // CupertinoRoute(page: OrderView),
+    CupertinoRoute(page: OrderView),
     CupertinoRoute(page: CartConfirmation),
     CupertinoRoute(page: HomeView),
     CupertinoRoute(page: BuyNowView),

@@ -11,6 +11,24 @@
 // import 'package:maketplace/utils/style.dart';
 // import 'package:provider/provider.dart';
 // import 'package:stacked/stacked.dart';
+import 'package:flutter/material.dart';
+
+class OrderView extends StatelessWidget {
+  const OrderView({Key? key, required this.orderId}) : super(key: key);
+
+  final String orderId;
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: Text("Vista de pedido"),
+      ),
+    );
+  }
+}
+
+
+
 
 // class OrderView extends StatefulWidget {
 //   const OrderView({Key? key, required this.orderId}) : super(key: key);

@@ -210,7 +210,12 @@ class _BottomReminderTakeOrder extends StackedHookView<ToBuyNowViewModel> {
                                       child: InkWell(
                                         borderRadius: const BorderRadius.all(Radius.circular(200)),
                                         hoverColor: AppKeys().customColors!.energyColor,
-                                        onTap: () {},
+                                        onTap: () {
+                                          _Dialogs dialog = _Dialogs();
+                                          dialog.showAlertDialog(context, () async {
+                                            model.onGenerateOrder(context);
+                                          }, "¿Confirmas que deseas hacer el pedido?");
+                                        },
                                         child: Container(
                                           width: double.infinity,
                                           padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -742,9 +747,7 @@ class Resume extends StackedHookView<ToBuyNowViewModel> {
                                           () async {
                                             model.onGenerateOrder(context);
                                           },
-                                          '',
-                                          // model.createConfirmMessage(),
-                                          model.product!.id!,
+                                          "¿Confirmas que deseas hacer el pedido?",
                                         );
                                       },
                                       child: Container(
@@ -807,7 +810,7 @@ class Resume extends StackedHookView<ToBuyNowViewModel> {
 }
 
 class _Dialogs {
-  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message, String quoteId) {
+  showAlertDialog(BuildContext context, VoidCallback onConfirm, String message) {
     // show the dialog
     showDialog(
       context: context,
