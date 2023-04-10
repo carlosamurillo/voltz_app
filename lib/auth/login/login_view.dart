@@ -11,24 +11,26 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class LoginView extends StatelessWidget {
-  const LoginView({Key? key, this.quoteId}) : super(key: key);
+  const LoginView({Key? key, this.quoteId, this.orderId}) : super(key: key);
   final String? quoteId;
+  final String? orderId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppKeys().customColors!.blueVoltz,
-      body: _LoginBody(quoteId: quoteId),
+      body: _LoginBody(quoteId: quoteId, orderId: orderId),
     );
   }
 }
 
 class _LoginBody extends StatelessWidget {
-  const _LoginBody({Key? key, this.quoteId}) : super(key: key);
+  const _LoginBody({Key? key, this.quoteId, this.orderId}) : super(key: key);
   final String? quoteId;
+  final String? orderId;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
-      viewModelBuilder: () => LoginViewModel()..init(quoteId),
+      viewModelBuilder: () => LoginViewModel()..init(quoteId, orderId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SafeArea(

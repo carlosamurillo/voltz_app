@@ -13,8 +13,10 @@ class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     this.quoteId,
+    this.orderId,
   });
   final String? quoteId;
+  final String? orderId;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,9 @@ class MyApp extends StatelessWidget {
           // home: CodeValidatorView(),
           home: AuthGate(
             quoteId: quoteId,
+            orderId: orderId,
           ),
+
           navigatorKey: StackedService.navigatorKey,
           // home: AddCardView(), // Used when testing a view
           //initialRoute: Routes.cartView,

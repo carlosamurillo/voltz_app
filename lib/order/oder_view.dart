@@ -12,6 +12,12 @@
 // import 'package:provider/provider.dart';
 // import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
+import 'package:maketplace/utils/buttons.dart';
+import 'package:provider/provider.dart';
 
 class OrderView extends StatelessWidget {
   const OrderView({Key? key, required this.orderId}) : super(key: key);
@@ -19,16 +25,547 @@ class OrderView extends StatelessWidget {
   final String orderId;
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Vista de pedido"),
+    return ChangeNotifierProvider(
+      create: (context) => OrderViewModel()..init(orderId),
+      child: Scaffold(
+        backgroundColor: AppKeys().customColors!.WBY,
+        body: Builder(builder: (context) {
+          final hasOrder = context.watch<OrderViewModel>().order != null;
+          if (!hasOrder) {
+            return const Center(
+              child: CircularProgressIndicator(),
+              // child: _Content(),
+            );
+          }
+          return const Center(
+            child: _Content(),
+          );
+        }),
       ),
     );
   }
 }
 
+class _Content extends StatelessWidget {
+  const _Content({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final order = context.watch<OrderViewModel>().order!;
+    final customColors = AppKeys().customColors!;
+    final size = MediaQuery.of(context).size;
+    // html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+    return SingleChildScrollView(
+      // physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const SizedBox(height: 130),
+          Text("Tu pedido", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 42.0, color: customColors.dark)),
+          SizedBox(height: 10),
+          Text("Alias ${order.alias}", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 28.0, color: customColors.dark)),
+          SizedBox(height: 10),
+          Text("ID: #${order.consecutive}", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.normal, fontSize: 14.0, color: customColors.dark)),
+          SizedBox(height: 25),
+          Wrap(
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              const _TrackingWidget(),
+              if (size.width > 745) const SizedBox(width: 25) else SizedBox(height: 25, width: size.width > 360 ? 360 : double.infinity),
+              const _ContentItemWidget(),
+            ],
+          ),
+          const SizedBox(height: 130),
+        ],
+      ),
+    );
+  }
+}
 
+class _ContentItemWidget extends StatelessWidget {
+  const _ContentItemWidget({
+    super.key,
+  });
 
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final colors = AppKeys().customColors!;
+    return Container(
+      color: Colors.white,
+      constraints: BoxConstraints(
+        maxWidth: size.width > 360 ? 360 : double.infinity,
+        // maxWidth: 360,
+        maxHeight: 580,
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Realiza tu pago",
+                    style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 32.0, color: colors.dark),
+                  ),
+                  LinearProgressIndicator(
+                    backgroundColor: colors.dark,
+                    color: colors.energyColor,
+                    value: 0.5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text("Vence"),
+                      Text("00:00:00"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            _PaymentItemWidget(),
+            _PaymentItemWidget2(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PaymentItemWidget extends StatelessWidget {
+  const _PaymentItemWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppKeys().customColors!.WBY),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_balance_wallet_rounded, color: AppKeys().customColors!.dark),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "Transferencia electronica",
+                  style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 16.0, color: AppKeys().customColors!.dark),
+                ),
+              ),
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.keyboard_arrow_down_outlined),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(25),
+          color: AppKeys().customColors!.WBYPlusOne,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const <Widget>[
+                    _BankItemWidget(
+                      title: "Banco destino",
+                      text: "BBVA",
+                    ),
+                    SizedBox(height: 15),
+                    _BankItemWidget(
+                      title: "No. Cuenta",
+                      text: "0119621431",
+                    ),
+                    SizedBox(height: 15),
+                    _BankItemWidget(
+                      title: "CLABE",
+                      text: "012320001196214312",
+                    ),
+                    SizedBox(height: 15),
+                    _BankItemWidget(
+                      title: "Titutlar",
+                      text: "VOLTZ MEXICO SAPI DE CV",
+                    ),
+                    SizedBox(height: 15),
+                    _BankItemWidget(
+                      title: "Valor a pagar",
+                      text: "\$0,000,000.00 MXN",
+                    ),
+                    SizedBox(height: 15),
+                    _BankItemWidget(
+                      title: "Concepto",
+                      text: "872625",
+                    ),
+                  ],
+                ),
+              ),
+              SvgPicture.asset(
+                "assets/svg/under_part.svg",
+                height: 20,
+                fit: BoxFit.fitHeight,
+              ),
+              const SizedBox(height: 15),
+              PrimaryButton(text: "Ya pague", onPressed: () {}),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PaymentItemWidget2 extends StatelessWidget {
+  const _PaymentItemWidget2({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppKeys().customColors!.WBY),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_balance_wallet_rounded, color: AppKeys().customColors!.dark),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "Otras formas de pago",
+                  style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 16.0, color: AppKeys().customColors!.dark),
+                ),
+              ),
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.keyboard_arrow_down_outlined),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(25),
+          color: AppKeys().customColors!.WBYPlusOne,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Text(
+                      "Contacta a un agente Voltz\npara pagar con estos medios",
+                      textAlign: TextAlign.center,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
+                        Expanded(child: Image.asset("assets/images/payments/amex.png")),
+                        Expanded(child: Image.asset("assets/images/payments/paypal.png")),
+                        Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SvgPicture.asset(
+                "assets/svg/under_part.svg",
+                height: 20,
+                fit: BoxFit.fitHeight,
+              ),
+              const SizedBox(height: 15),
+              PrimaryButton(text: "Ya pague", onPressed: () {}),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _BankItemWidget extends StatelessWidget {
+  const _BankItemWidget({
+    super.key,
+    required this.title,
+    required this.text,
+  });
+  final String title;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 12.0, color: AppKeys().customColors!.dark),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            textAlign: TextAlign.end,
+            style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 14.0, color: AppKeys().customColors!.dark),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrackingWidget extends StatelessWidget {
+  const _TrackingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final order = context.watch<OrderViewModel>().order!;
+    final size = MediaQuery.of(context).size;
+    final colors = AppKeys().customColors!;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 35, vertical: 25),
+      color: Colors.white,
+      constraints: BoxConstraints(
+        maxWidth: size.width > 360 ? 360 : double.infinity,
+        // maxWidth: 360,
+        maxHeight: 580,
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Row(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                const _PointWidget(completed: true),
+                const SizedBox(height: 5),
+                _LineWidget(pending: true),
+                const SizedBox(height: 5),
+                _PointWidget(pending: true),
+                const SizedBox(height: 5),
+                _LineWidget(),
+                const SizedBox(height: 5),
+                _PointWidget(),
+                const SizedBox(height: 5),
+                _LineWidget(),
+                const SizedBox(height: 5),
+                _PointWidget(),
+              ],
+            ),
+            const SizedBox(width: 25),
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  _TrackItemWidget(
+                    iconData: Icons.format_list_numbered_rounded,
+                    title: "Pedido realizado",
+                    date: "11/02/22 14:00:00",
+                    actionWidget: SecondaryButton(
+                      onPressed: () {},
+                      text: "Ver productos",
+                    ),
+                    // actionWidget: InkWell(
+                    //   onTap: () {},
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.min,
+                    //     children: <Widget>[
+                    //       Text(
+                    //         "Ver productos",
+                    //         style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 12.0, color: customColors.dark),
+                    //       ),
+                    //       const SizedBox(width: 9),
+                    //       Icon(Icons.arrow_forward_ios, color: customColors.dark, size: 13),
+                    //     ],
+                    //   ),
+                    // ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.attach_money_rounded,
+                    title: "Pagar pedido",
+                    date: "11/02/22 14:00:00",
+                    actionWidget: PrimaryButton(
+                      onPressed: () {},
+                      text: "Realizar pago",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.local_shipping,
+                    title: "Envio",
+                    date: "11/02/22 14:00:00",
+                    actionWidget: ThirdButton(
+                      onPressed: () {},
+                      text: "Programar envio",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.done_all,
+                    title: "Entregado",
+                    date: "11/02/22 14:00:00",
+                    actionWidget: PrimaryButton(
+                      onPressed: () {},
+                      text: "ver comprobante",
+                      enabled: false,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LineWidget extends StatelessWidget {
+  const _LineWidget({
+    super.key,
+    this.completed = false,
+    this.pending = false,
+  });
+
+  final bool completed;
+  final bool pending;
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return SizedBox(
+      height: 115,
+      child: VerticalDivider(
+          width: 2,
+          color: pending
+              ? colors.energyColor
+              : completed
+                  ? colors.dark
+                  : colors.dark1,
+          thickness: 2),
+    );
+  }
+}
+
+class _PointWidget extends StatelessWidget {
+  const _PointWidget({
+    super.key,
+    this.completed = false,
+    this.pending = false,
+  });
+
+  final bool completed;
+  final bool pending;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: 15,
+        height: 15,
+        color: pending
+            ? colors.energyColor
+            : completed
+                ? colors.dark
+                : colors.dark1,
+      ),
+    );
+  }
+}
+
+class _TrackItemWidget extends StatelessWidget {
+  const _TrackItemWidget({
+    super.key,
+    required this.iconData,
+    required this.title,
+    required this.date,
+    required this.actionWidget,
+  });
+  final IconData iconData;
+  final String title;
+  final String date;
+  final Widget actionWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return Container(
+      height: 100,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: colors.dark, shape: BoxShape.circle),
+            child: Icon(iconData, color: Colors.white),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                    height: 1,
+                    color: AppKeys().customColors!.dark,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  date,
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12.0,
+                    height: 1,
+                    color: AppKeys().customColors!.dark,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                actionWidget,
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
 // class OrderView extends StatefulWidget {
 //   const OrderView({Key? key, required this.orderId}) : super(key: key);

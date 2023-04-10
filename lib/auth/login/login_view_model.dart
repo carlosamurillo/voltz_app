@@ -29,9 +29,11 @@ class LoginViewModel extends ReactiveViewModel {
   LoginScreenStatus get loginScreenStatus => _loginService.loginScreenStatus;
 
   String? _quoteId;
+  String? _orderId;
 
-  init(String? quoteId) {
+  init(String? quoteId, String? ordderId) {
     _quoteId = quoteId;
+    _orderId = ordderId;
     notifyListeners();
   }
 
@@ -59,13 +61,18 @@ class LoginViewModel extends ReactiveViewModel {
     }
   }
 
-  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null));
+  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null, orderId: null));
 
   navigateLoginSuccess() {
     if (_quoteId != null) {
       final args = CartViewArguments(quoteId: _quoteId!);
       _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
-    } else if (_navigationService.previousRoute.isNotEmpty) {
+    } //
+    else if (_orderId != null) {
+      final args = OrderViewArguments(orderId: _orderId!);
+      _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
+    } //
+    else if (_navigationService.previousRoute.isNotEmpty) {
       _navigationService.back();
     } else {
       navigateToHomeClearingAll();
@@ -76,7 +83,7 @@ class LoginViewModel extends ReactiveViewModel {
     _loginService.updateLoginScreenStatus(LoginScreenStatus.none);
     notifyListeners();
 
-    _navigationService.navigateToCodeValidatorView(quoteId: _quoteId);
+    _navigationService.navigateToCodeValidatorView(quoteId: _quoteId, orderId: _orderId);
   }
 
   navigateToRegisterView(String phoneNumber) {

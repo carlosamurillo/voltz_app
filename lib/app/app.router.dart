@@ -106,8 +106,8 @@ class StackedRouter extends _i1.RouterBase {
         orElse: () => const AuthGateArguments(),
       );
       return _i12.CupertinoPageRoute<dynamic>(
-        builder: (context) =>
-            _i2.AuthGate(key: args.key, quoteId: args.quoteId),
+        builder: (context) => _i2.AuthGate(
+            key: args.key, quoteId: args.quoteId, orderId: args.orderId),
         settings: data,
       );
     },
@@ -154,8 +154,8 @@ class StackedRouter extends _i1.RouterBase {
         orElse: () => const LoginViewArguments(),
       );
       return _i12.CupertinoPageRoute<dynamic>(
-        builder: (context) =>
-            _i8.LoginView(key: args.key, quoteId: args.quoteId),
+        builder: (context) => _i8.LoginView(
+            key: args.key, quoteId: args.quoteId, orderId: args.orderId),
         settings: data,
       );
     },
@@ -165,7 +165,8 @@ class StackedRouter extends _i1.RouterBase {
         builder: (context) => _i9.RegisterView(
             key: args.key,
             phoneNumber: args.phoneNumber,
-            quoteId: args.quoteId),
+            quoteId: args.quoteId,
+            orderId: args.orderId),
         settings: data,
       );
     },
@@ -174,8 +175,8 @@ class StackedRouter extends _i1.RouterBase {
         orElse: () => const CodeValidatorViewArguments(),
       );
       return _i12.CupertinoPageRoute<dynamic>(
-        builder: (context) =>
-            _i10.CodeValidatorView(key: args.key, quoteId: args.quoteId),
+        builder: (context) => _i10.CodeValidatorView(
+            key: args.key, quoteId: args.quoteId, orderId: args.orderId),
         settings: data,
       );
     },
@@ -197,11 +198,14 @@ class AuthGateArguments {
   const AuthGateArguments({
     this.key,
     this.quoteId,
+    this.orderId,
   });
 
   final _i13.Key? key;
 
   final String? quoteId;
+
+  final String? orderId;
 }
 
 class CartViewArguments {
@@ -252,11 +256,14 @@ class LoginViewArguments {
   const LoginViewArguments({
     this.key,
     this.quoteId,
+    this.orderId,
   });
 
   final _i13.Key? key;
 
   final String? quoteId;
+
+  final String? orderId;
 }
 
 class RegisterViewArguments {
@@ -264,6 +271,7 @@ class RegisterViewArguments {
     this.key,
     required this.phoneNumber,
     this.quoteId,
+    this.orderId,
   });
 
   final _i13.Key? key;
@@ -271,23 +279,29 @@ class RegisterViewArguments {
   final String phoneNumber;
 
   final String? quoteId;
+
+  final String? orderId;
 }
 
 class CodeValidatorViewArguments {
   const CodeValidatorViewArguments({
     this.key,
     this.quoteId,
+    this.orderId,
   });
 
   final _i13.Key? key;
 
   final String? quoteId;
+
+  final String? orderId;
 }
 
 extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> navigateToAuthGate({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -295,7 +309,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.authGate,
-        arguments: AuthGateArguments(key: key, quoteId: quoteId),
+        arguments:
+            AuthGateArguments(key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -387,6 +402,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> navigateToLoginView({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -394,7 +410,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.loginView,
-        arguments: LoginViewArguments(key: key, quoteId: quoteId),
+        arguments:
+            LoginViewArguments(key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -405,6 +422,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
     _i13.Key? key,
     required String phoneNumber,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -413,7 +431,10 @@ extension NavigatorStateExtension on _i14.NavigationService {
   }) async {
     return navigateTo<dynamic>(Routes.registerView,
         arguments: RegisterViewArguments(
-            key: key, phoneNumber: phoneNumber, quoteId: quoteId),
+            key: key,
+            phoneNumber: phoneNumber,
+            quoteId: quoteId,
+            orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -423,6 +444,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> navigateToCodeValidatorView({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -430,7 +452,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.codeValidatorView,
-        arguments: CodeValidatorViewArguments(key: key, quoteId: quoteId),
+        arguments: CodeValidatorViewArguments(
+            key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -454,6 +477,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> replaceWithAuthGate({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -461,7 +485,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.authGate,
-        arguments: AuthGateArguments(key: key, quoteId: quoteId),
+        arguments:
+            AuthGateArguments(key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -553,6 +578,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> replaceWithLoginView({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -560,7 +586,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.loginView,
-        arguments: LoginViewArguments(key: key, quoteId: quoteId),
+        arguments:
+            LoginViewArguments(key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -571,6 +598,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
     _i13.Key? key,
     required String phoneNumber,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -579,7 +607,10 @@ extension NavigatorStateExtension on _i14.NavigationService {
   }) async {
     return replaceWith<dynamic>(Routes.registerView,
         arguments: RegisterViewArguments(
-            key: key, phoneNumber: phoneNumber, quoteId: quoteId),
+            key: key,
+            phoneNumber: phoneNumber,
+            quoteId: quoteId,
+            orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -589,6 +620,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> replaceWithCodeValidatorView({
     _i13.Key? key,
     String? quoteId,
+    String? orderId,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -596,7 +628,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.codeValidatorView,
-        arguments: CodeValidatorViewArguments(key: key, quoteId: quoteId),
+        arguments: CodeValidatorViewArguments(
+            key: key, quoteId: quoteId, orderId: orderId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

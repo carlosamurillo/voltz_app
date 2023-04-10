@@ -44,7 +44,7 @@ class CustomColors {
   Color yellowLight = const Color(0xFFFEF7E0);
   Color yellowmid = const Color(0xFFFBE597);
   Color WBY = const Color(0xFFE4E9FC);
-  Color WBYPlusOne = const Color(0xFFD9E0FC);
+  Color WBYPlusOne = const Color(0xFFF8FAFF);
   Color dark1 = const Color(0xFF9C9FAA);
   Color darkPlusOne = const Color(0xFF9C9FAA);
 

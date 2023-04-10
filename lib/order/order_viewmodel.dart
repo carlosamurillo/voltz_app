@@ -1,43 +1,51 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/order/order_model.dart';
+import 'package:maketplace/utils/stats.dart';
+import 'package:stacked_services/stacked_services.dart';
 
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:maketplace/order/order_model.dart';
-// import 'package:stacked/stacked.dart' show BaseViewModel;
-// import 'package:maketplace/utils/stats.dart';
+class OrderViewModel extends ChangeNotifier {
+  final NavigationService _navigationService = locator<NavigationService>();
 
-// class OrderViewModel  extends BaseViewModel {
+  OrderModel? _order;
+  OrderModel? get order => _order;
 
-//   OrderModel? order;
-//   String _orderId = "";
+  String _orderId = "";
 
-//   init(String quoteId) {
-//     _orderId = quoteId;
-//     _listenChanges();
-//     Stats.OrderViewed( _orderId);
-//   }
+  init(String orderId) {
+    _orderId = orderId;
 
-//   void changePaymentStatus(){
-//     bool execute = false;
-//     if(order!.paymentStatus == null || order!.paymentStatus == 'pending') {
-//       order!.paymentStatus = 'verifying';
-//       execute = true;
-//     }
-//     if ( execute == true) {
-//       DocumentReference reference = FirebaseFirestore.instance.collection(
-//           'order-detail').doc(_orderId);
-//       reference.update({'payment_status': order!.paymentStatus});
-//     }
-//   }
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.isAnonymous) {
+      Future.delayed(
+        const Duration(seconds: 0),
+        () async {
+          final args = LoginViewArguments(orderId: orderId);
+          _navigationService.clearStackAndShow(Routes.loginView, arguments: args);
+          return;
+        },
+      );
+    } else {
+      _listenChanges();
+      Stats.OrderViewed(_orderId);
+    }
+  }
 
-//   void _listenChanges() async {
-//     DocumentReference reference = FirebaseFirestore.instance.collection(
-//         'order-detail').doc(_orderId);
-//     reference.snapshots().listen((documentSnapshot) async {
-//       if (documentSnapshot.exists) {
-//         order = OrderModel.fromJson(
-//             documentSnapshot.data() as Map<String, dynamic>,
-//             documentSnapshot.id);
-//         notifyListeners();
-//       }
-//     });
-//   }
-// }
+  OrderStatus _orderStatus = OrderStatus.inPayment;
+  OrderStatus get ordderStatus => _orderStatus;
+
+  void _listenChanges() async {
+    DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
+    reference.snapshots().listen((documentSnapshot) async {
+      if (documentSnapshot.exists) {
+        _order = OrderModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+        notifyListeners();
+      }
+    });
+  }
+}
+
+enum OrderStatus { initial, inPayment, inSend, finished }

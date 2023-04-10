@@ -1,4 +1,4 @@
-import 'dart:js' as js;
+// import 'dart:js' as js;
 import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -930,6 +930,6 @@ class QuotePdf {
   }
 
   Future<void> _openPdf(String url) async {
-    js.context.callMethod('open', [url]);
+    // js.context.callMethod('open', [url]);
   }
 }
