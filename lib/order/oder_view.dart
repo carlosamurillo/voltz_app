@@ -1,4 +1,4 @@
-// // import 'dart:html' as html;
+import 'dart:html' as html;
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_svg/svg.dart';
@@ -53,7 +53,7 @@ class _Content extends StatelessWidget {
     final order = context.watch<OrderViewModel>().order!;
     final customColors = AppKeys().customColors!;
     final size = MediaQuery.of(context).size;
-    // html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+    html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
     return SingleChildScrollView(
       // physics: const NeverScrollableScrollPhysics(),
       child: Column(

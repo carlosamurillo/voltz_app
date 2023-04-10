@@ -7,7 +7,7 @@ class OrderModel {
   String? alias;
   Timestamp? createdAt;
   Shipping? shipping;
-  String? paymentStatus;
+  PaymentStatus? paymentStatus;
   Totals? totals = Totals();
   Customer? customer = Customer();
   String? quoteDetailId;
@@ -18,7 +18,7 @@ class OrderModel {
     this.alias,
     this.createdAt,
     this.shipping,
-    this.paymentStatus = 'pending',
+    this.paymentStatus = PaymentStatus.initial,
     this.totals,
     this.customer,
     this.quoteDetailId,
@@ -32,7 +32,7 @@ class OrderModel {
     if (json.containsKey('shipping') && json['shipping'] != null) {
       shipping = new Shipping.fromJson(json['shipping']);
     }
-    paymentStatus = json['payment_status'];
+    paymentStatus = strToPaymentStatus(json['payment_status']);
     quoteDetailId = json['quote_detail_id'];
     if (json.containsKey('totals') && json['totals'] != null) {
       totals = Totals.fromJson(json['totals']);
@@ -60,10 +60,27 @@ class OrderModel {
     }
     return data;
   }
+
+  PaymentStatus strToPaymentStatus(String? status) {
+    switch (status) {
+      case 'pending':
+        return PaymentStatus.pending;
+      case 'verifying':
+        return PaymentStatus.verifying;
+      case 'paid':
+        return PaymentStatus.paid;
+      default:
+        throw PaymentStatus.initial;
+    }
+  }
 }
 
 class Shipping {
   int? total;
+  ShippingStatus status = ShippingStatus.initial;
+  Timestamp? processedDate;
+  Timestamp? shippedDate;
+  Timestamp? deliveredDate;
 
   Shipping({
     this.total,
@@ -71,12 +88,29 @@ class Shipping {
 
   Shipping.fromJson(Map<String, dynamic> json) {
     total = json['total'];
+    status = strToShippoingStatus(json['status']);
+    processedDate = json['processed_date'];
+    shippedDate = json['shipped_date'];
+    deliveredDate = json['delivered_date'];
   }
 
   Map<String, dynamic> toMap() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['total'] = this.total;
     return data;
+  }
+
+  ShippingStatus strToShippoingStatus(String? status) {
+    switch (status) {
+      case 'processing':
+        return ShippingStatus.processing;
+      case 'shipped':
+        return ShippingStatus.shipped;
+      case 'delivered':
+        return ShippingStatus.delivered;
+      default:
+        throw ShippingStatus.initial;
+    }
   }
 }
 
@@ -150,32 +184,10 @@ class Customer {
 //           .snapshots()
 //           .map((snapshot) => [snapshot]);
 
-//   Future<void> updatePaymentStatus(PaymentStatus status) async {
-//     final orderRef = FirebaseFirestore.instance.collection('order-detail').doc(documentId);
-//     final result = await FirebaseFirestore.instance.runTransaction((transaction) async {
-//       final snapshot = await transaction.get(orderRef);
-//       final data = snapshot.data();
-//       final updatedData = Map<String, dynamic>.from(data);
-//       updatedData['payment_status'] = _enumToString(status);
-//       transaction.update(orderRef, updatedData);
-//       return updatedData;
-//     });
-//     print('Updated order detail: $result');
-//   }
-
-//   String _enumToString(PaymentStatus status) {
-//     switch (status) {
-//       case PaymentStatus.pending:
-//         return 'pending';
-//       case PaymentStatus.verifying:
-//         return 'verifying';
-//       case PaymentStatus.paid:
-//         return 'paid';
-//       default:
-//         throw ArgumentError('Invalid payment status');
-//     }
-//   }
-
 //   Stream<List<Order>> get orderModelsStream =>
 //       ordersStream.map((snapshot) => snapshot.map((doc) => Order.fromJson(doc.data())).toList());
 // }
+
+enum PaymentStatus { initial, pending, verifying, paid }
+
+enum ShippingStatus { initial, processing, shipped, delivered }

@@ -34,9 +34,6 @@ class OrderViewModel extends ChangeNotifier {
     }
   }
 
-  OrderStatus _orderStatus = OrderStatus.inPayment;
-  OrderStatus get ordderStatus => _orderStatus;
-
   void _listenChanges() async {
     DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
     reference.snapshots().listen((documentSnapshot) async {
@@ -46,6 +43,30 @@ class OrderViewModel extends ChangeNotifier {
       }
     });
   }
+
+  Future<void> updatePaymentStatus(PaymentStatus status) async {
+    final orderRef = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
+    final result = await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(orderRef);
+      final data = snapshot.data();
+      final updatedData = Map<String, dynamic>.from(data!);
+      updatedData['payment_status'] = _enumPaymentStatusToString(status);
+      transaction.update(orderRef, updatedData);
+      return updatedData;
+    });
+    print('Updated order detail: $result');
+  }
 }
 
-enum OrderStatus { initial, inPayment, inSend, finished }
+String _enumPaymentStatusToString(PaymentStatus status) {
+  switch (status) {
+    case PaymentStatus.pending:
+      return 'pending';
+    case PaymentStatus.verifying:
+      return 'verifying';
+    case PaymentStatus.paid:
+      return 'paid';
+    default:
+      throw ArgumentError('Invalid payment status');
+  }
+}
