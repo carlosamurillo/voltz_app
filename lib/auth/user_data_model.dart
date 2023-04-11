@@ -11,6 +11,8 @@ class UserData {
   String? photoURL;
   String role;
   String? trengoId;
+  String? profileUserId;
+  Record? record = Record();
 
   UserData({
     this.companyName,
@@ -22,6 +24,7 @@ class UserData {
     this.photoURL,
     required this.role,
     this.trengoId,
+    this.profileUserId,
   });
 
   factory UserData.initial() => UserData(
@@ -32,6 +35,7 @@ class UserData {
         lastName: "",
         phone: "",
         role: "",
+        profileUserId: "",
       );
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
@@ -44,6 +48,7 @@ class UserData {
         photoURL: json['photo_URL'],
         role: json['role'],
         trengoId: json['trengo_id'],
+        profileUserId: json['profile_user_id'],
       );
 
   UserData copyWith({
@@ -56,6 +61,7 @@ class UserData {
     String? photoURL,
     String? role,
     String? trengoId,
+    String? profileUserId,
   }) =>
       UserData(
         companyName: companyName ?? this.companyName,
@@ -67,6 +73,7 @@ class UserData {
         photoURL: photoURL ?? this.photoURL,
         role: role ?? this.role,
         trengoId: trengoId ?? this.trengoId,
+        profileUserId: profileUserId ?? this.profileUserId,
       );
 
   Map<String, dynamic> toJson() {
@@ -80,6 +87,7 @@ class UserData {
     data['photo_URL'] = this.photoURL;
     data['role'] = this.role;
     data['trengo_id'] = this.trengoId;
+    data['profile_user_id'] = this.profileUserId;
     return data;
   }
 }
@@ -87,4 +95,19 @@ class UserData {
 DateTime convertTimestampToLocal(Timestamp date) {
   var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
   return dateTime.toLocal();
+}
+
+class Record {
+  String? nextAction;
+  Record({this.nextAction});
+
+  Record.fromJson(Map<String, dynamic> json) {
+    nextAction = json['next_action'];
+  }
+
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['next_action'] = this.nextAction;
+    return data;
+  }
 }

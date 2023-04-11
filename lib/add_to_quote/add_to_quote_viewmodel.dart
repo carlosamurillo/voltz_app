@@ -13,11 +13,14 @@ import 'package:maketplace/search/input_search_repository.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:maketplace/gate/auth_service.dart';
+
 class AddToQuoteViewModel extends ChangeNotifier {
   final NavigationService _navigationService = locator<NavigationService>();
   final _quoteService = locator<QuoteService>();
   final InputSearchRepository _inputSearchRepository = locator<InputSearchRepository>();
   final OpenSearchService _openSearchService = locator<OpenSearchService>();
+  final _authService = locator<AuthService>();
 
   List<QuoteModel> _quoteList = [];
   List<QuoteModel> get quoteList => _quoteList;
@@ -133,8 +136,8 @@ class AddToQuoteViewModel extends ChangeNotifier {
       ),
       consecutive: null,
       customer: Customer(
-        category: "C",
-        id: "QbjkZZG7gP0PH5dkUcwP",
+        category: null,
+        id: _authService.signedUserData!.profileUserId,
       ),
       detail: [],
       discardedProducts: [],

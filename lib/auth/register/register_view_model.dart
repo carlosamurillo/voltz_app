@@ -129,6 +129,7 @@ class RegisterViewModel extends ReactiveViewModel {
             'last_name': lastNameOption.getOrElse(() => "INVALID NAME"),
             'phone': _phoneNumber,
             'role': "UserRole.User",
+            'record': {'next_action': 'create_user', 'metadata': _quoteId}
           };
           if (isBusiness) {
             data["rfc"] = rfcOption.getOrElse(() => "INVALID RFC");
