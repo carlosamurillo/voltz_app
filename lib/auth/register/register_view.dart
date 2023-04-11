@@ -10,13 +10,14 @@ import 'package:maketplace/utils/style.dart';
 import 'package:provider/provider.dart';
 
 class RegisterView extends StatelessWidget {
-  const RegisterView({Key? key, required this.phoneNumber, this.quoteId}) : super(key: key);
+  const RegisterView({Key? key, required this.phoneNumber, this.quoteId, this.orderId}) : super(key: key);
   final String phoneNumber;
   final String? quoteId;
+  final String? orderId;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => RegisterViewModel()..init(phoneNumber, quoteId),
+      create: (context) => RegisterViewModel()..init(phoneNumber, quoteId, orderId),
       child: Scaffold(
         backgroundColor: AppKeys().customColors!.blueVoltz,
         body: const _RegisterBody(),

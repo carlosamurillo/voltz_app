@@ -370,7 +370,7 @@ class ProductCard extends StatelessWidget {
                   if (viewModel.isCardExpanded) ...[
                     ProductDetail(productId: product.id!),
                   ],
-                  if (!removeActionsViewSection ?? viewModel.userSignStatus == UserSignStatus.authenticated) ...[
+                  if (!removeActionsViewSection && viewModel.userSignStatus == UserSignStatus.authenticated) ...[
                     ActionsView(
                       showButtons: viewModel.userSignStatus == UserSignStatus.authenticated,
                       showBuyNow: isSearchVersion ? true : false,

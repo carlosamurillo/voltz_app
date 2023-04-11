@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/utils/stats.dart';
+import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart' show ReactiveViewModel, ListenableServiceMixin;
 import 'package:stacked_services/stacked_services.dart' show NavigationService;
 
@@ -110,27 +112,27 @@ class QuoteViewModel extends ReactiveViewModel {
     );
   }
 
-  // void onGenerateOrder(BuildContext context) async {
-  //   updateQuote(quote).then((value) async {
-  //     DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-  //     await reference.update({'accepted': true});
-  //   });
+  void onGenerateOrder(BuildContext context) async {
+    updateQuote(quote).then((value) async {
+      DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
+      await reference.update({'accepted': true});
+    });
 
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     content: SelectableText(
-  //       "Gracias, hemos recibido tu orden.",
-  //       style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
-  //     ),
-  //     backgroundColor: AppKeys().customColors!.energyColor,
-  //     behavior: SnackBarBehavior.floating,
-  //     duration: const Duration(milliseconds: 5000),
-  //     margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
-  //     onVisible: () async {},
-  //   ));
-  //   await _saveOrder(_generateOrderV2()); //se cambio a V2
-  //   Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
-  //   //_navigationService.navigateToOrderView(orderId: quote.id!);
-  // }
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: SelectableText(
+        "Gracias, hemos recibido tu orden.",
+        style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+      ),
+      backgroundColor: AppKeys().customColors!.energyColor,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(milliseconds: 5000),
+      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+      onVisible: () async {},
+    ));
+    // await _saveOrder(_generateOrderV2()); //se cambio a V2
+    // Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
+    _navigationService.replaceWithOrderView(orderId: quote.id!, fromQuote: true);
+  }
 
   setQuantity(int i, int b, double quantity) {
     quote.detail![i].productsSuggested![b].quantity = quantity;

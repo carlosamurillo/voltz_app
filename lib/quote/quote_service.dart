@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/notifications/notifications_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
@@ -77,6 +78,7 @@ class QuoteService with ListenableServiceMixin {
     if (documentSnapshot.exists) {
       print('si existe data de quote, se guarda en primera consulta individual');
       _rxQuote.value = await _processQuote(documentSnapshot);
+
       streamProducts();
       _getCustomerName(id: _rxQuote.value.customer!.id);
     } else {
@@ -147,10 +149,9 @@ class QuoteService with ListenableServiceMixin {
         if (documentSnapshot.exists) {
           QuoteModel data = await _processQuote(documentSnapshot);
 
-          if (quote.accepted) {
-            Future.delayed(const Duration(milliseconds: 1500), () {
-              // _navigationService.navigateToOrderView(orderId: quote.id!);
-            });
+          if (data.accepted) {
+            final args = OrderViewArguments(orderId: data.id!, fromQuote: true);
+            _navigationService.replaceWith(Routes.orderView, arguments: args);
           } else if (!viewRecorded) {
             //TODO mejorar esto y porque no da
             // Stats.QuoteViewed(_rxQuote.value.id!);

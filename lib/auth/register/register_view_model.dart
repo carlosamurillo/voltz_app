@@ -43,9 +43,11 @@ class RegisterViewModel extends ReactiveViewModel {
   bool get showErrorMessages => _showErrorMessages;
 
   String? _quoteId;
+  String? _orderId;
 
-  void init(String phoneNumber, String? quoteId) {
+  void init(String phoneNumber, String? quoteId, String? orderId) {
     _quoteId = quoteId;
+    _orderId = orderId;
     _isBussiness = false;
     _nameOption = left('');
     _lastNameOption = left('');
@@ -161,13 +163,18 @@ class RegisterViewModel extends ReactiveViewModel {
     navigateToHomeClearingAll();
   }
 
-  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null));
+  navigateToHomeClearingAll() => _navigationService.clearStackAndShow(Routes.authGate, arguments: const AuthGateArguments(quoteId: null, orderId: null));
 
   navigateToSuccessRegister() {
     if (_quoteId != null) {
       final args = CartViewArguments(quoteId: _quoteId!);
       _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
-    } else if (_navigationService.previousRoute.isNotEmpty) {
+    } //
+    else if (_orderId != null) {
+      final args = OrderViewArguments(orderId: _orderId!, fromQuote: false);
+      _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
+    } //
+    else if (_navigationService.previousRoute.isNotEmpty) {
       _navigationService.back();
     } else {
       navigateToHomeClearingAll();

@@ -12,24 +12,26 @@ import 'package:stacked/stacked.dart';
 import 'package:stacked_hooks/stacked_hooks.dart';
 
 class CodeValidatorView extends StatelessWidget {
-  const CodeValidatorView({Key? key, this.quoteId}) : super(key: key);
+  const CodeValidatorView({Key? key, this.quoteId, this.orderId}) : super(key: key);
   final String? quoteId;
+  final String? orderId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppKeys().customColors!.blueVoltz,
-      body: _CodeValidatorBody(quoteId: quoteId),
+      body: _CodeValidatorBody(quoteId: quoteId, orderId: orderId),
     );
   }
 }
 
 class _CodeValidatorBody extends StatelessWidget {
-  const _CodeValidatorBody({Key? key, this.quoteId}) : super(key: key);
+  const _CodeValidatorBody({Key? key, this.quoteId, this.orderId}) : super(key: key);
   final String? quoteId;
+  final String? orderId;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
-      viewModelBuilder: () => LoginViewModel()..init(quoteId),
+      viewModelBuilder: () => LoginViewModel()..init(quoteId, orderId),
       builder: (context, model, child) {
         var media = MediaQuery.of(context).size;
         return SafeArea(

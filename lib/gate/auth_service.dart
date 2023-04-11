@@ -18,6 +18,8 @@ class AuthService with ListenableServiceMixin {
 
   final RxValue<String?> _rxQuoteId = RxValue<String?>(null);
   String? get quoteId => _rxQuoteId.value;
+  final RxValue<String?> _rxOrderId = RxValue<String?>(null);
+  String? get orderId => _rxOrderId.value;
   Routes? routeRedirect;
 
   bool _redirect = true;
@@ -26,8 +28,9 @@ class AuthService with ListenableServiceMixin {
     listenToReactiveValues([_rxUserStatus, _rxSignedUserData, _rxQuoteId]);
   }
 
-  initAuthGate(String? quoteId) async {
+  initAuthGate(String? quoteId, String? orderId) async {
     _rxQuoteId.value = quoteId;
+    _rxOrderId.value = orderId;
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       await _verifySignedInUser(user);
       redirect();
@@ -69,11 +72,14 @@ class AuthService with ListenableServiceMixin {
 
   redirect() async {
     if (_redirect) {
-      if (quoteId == null) {
-        _navigationService.clearStackAndShow(Routes.homeView);
-      } else {
+      if (quoteId != null) {
         final args = CartViewArguments(quoteId: quoteId!);
         _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+      } else if (orderId != null) {
+        final args = OrderViewArguments(orderId: orderId!, fromQuote: false);
+        _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
+      } else {
+        _navigationService.clearStackAndShow(Routes.homeView);
       }
     } else {
       notifyListeners();

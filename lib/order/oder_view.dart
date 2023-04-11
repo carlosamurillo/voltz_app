@@ -1,4 +1,4 @@
-// // import 'dart:html' as html;
+import 'dart:html' as html;
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_svg/svg.dart';
@@ -11,6 +11,700 @@
 // import 'package:maketplace/utils/style.dart';
 // import 'package:provider/provider.dart';
 // import 'package:stacked/stacked.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:maketplace/common/app_bar_view.dart';
+import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/order/mobile/payment_options_view.dart';
+import 'package:maketplace/order/order_model.dart';
+import 'package:maketplace/order/order_viewmodel.dart';
+import 'package:maketplace/utils/buttons.dart';
+import 'package:provider/provider.dart';
+
+class OrderView extends StatelessWidget {
+  const OrderView({Key? key, required this.orderId, required this.fromQuote}) : super(key: key);
+
+  final String orderId;
+  final bool fromQuote;
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => OrderViewModel()..init(orderId, fromQuote),
+      child: Scaffold(
+        appBar: NormalAppBar(context: context),
+        backgroundColor: AppKeys().customColors!.WBY,
+        body: Builder(builder: (context) {
+          final hasOrder = context.watch<OrderViewModel>().order != null;
+          if (!hasOrder) {
+            return const Center(
+              child: CircularProgressIndicator(),
+              // child: _Content(),
+            );
+          }
+          return const Center(
+            child: _Content(),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _Content extends StatelessWidget {
+  const _Content({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final order = context.watch<OrderViewModel>().order!;
+    final customColors = AppKeys().customColors!;
+    final size = MediaQuery.of(context).size;
+    if (kIsWeb) {
+      html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+    }
+    return SingleChildScrollView(
+      // physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          const SizedBox(height: 130),
+          Text("Tu pedido", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 42.0, color: customColors.dark)),
+          SizedBox(height: 10),
+          Text("Alias ${order.alias}", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 28.0, color: customColors.dark)),
+          SizedBox(height: 10),
+          Text("ID: #${order.consecutive}", style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.normal, fontSize: 14.0, color: customColors.dark)),
+          SizedBox(height: 25),
+          Wrap(
+            alignment: WrapAlignment.center,
+            children: <Widget>[
+              const _TrackingWidget(),
+              // if (size.width > 745) const SizedBox(width: 25) else SizedBox(height: 25, width: size.width > 360 ? 360 : double.infinity),
+              // const _ContentItemWidget(),
+              if (size.width > 745) const SizedBox(width: 25) else const SizedBox.shrink(),
+              if (size.width > 745) const _ContentItemWidget() else const SizedBox.shrink(),
+            ],
+          ),
+          const SizedBox(height: 130),
+        ],
+      ),
+    );
+  }
+}
+
+class _ContentItemWidget extends StatelessWidget {
+  const _ContentItemWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final colors = AppKeys().customColors!;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          color: Colors.white,
+          constraints: BoxConstraints(
+            maxWidth: size.width > 360 ? 360 : double.infinity,
+            // maxWidth: 360,
+            maxHeight: 580,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Realiza tu pago",
+                        style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 32.0, color: colors.dark),
+                      ),
+                      // LinearProgressIndicator(
+                      //   backgroundColor: colors.dark,
+                      //   color: colors.energyColor,
+                      //   value: 0.5,
+                      // ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: <Widget>[
+                      //     Text("Vence"),
+                      //     Text("00:00:00"),
+                      //   ],
+                      // ),
+                    ],
+                  ),
+                ),
+                _PaymentItemWidget(),
+                _PaymentItemWidget2(),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: size.width > 360 ? 360 : double.infinity,
+            // minHeight: 360,
+            maxHeight: 580,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Constancia S. Fiscal Voltz",
+                style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.normal, fontSize: 14.0, color: AppKeys().customColors!.dark),
+              ),
+              const SizedBox(width: 30),
+              SecondaryButton(
+                text: "Descargar",
+                buttonColor: AppKeys().customColors!.WBY,
+                onPressed: () {
+                  final fiscalUrl =
+                      'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
+                  html.window.open(fiscalUrl, "_blank");
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PaymentItemWidget extends HookWidget {
+  const _PaymentItemWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final open = useState(true);
+    final order = context.watch<OrderViewModel>().order!;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppKeys().customColors!.WBY),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_balance_wallet_rounded, color: AppKeys().customColors!.dark),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "Transferencia electronica",
+                  style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 16.0, color: AppKeys().customColors!.dark),
+                ),
+              ),
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: () {
+                  open.value = !open.value;
+                },
+                icon: open.value ? const Icon(Icons.keyboard_arrow_down_outlined) : const Icon(Icons.keyboard_arrow_up_outlined),
+              ),
+            ],
+          ),
+        ),
+        if (open.value)
+          Container(
+            padding: EdgeInsets.all(25),
+            color: AppKeys().customColors!.WBYPlusOne,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const _BankItemWidget(
+                        title: "Banco destino",
+                        text: "BBVA",
+                      ),
+                      const SizedBox(height: 15),
+                      const _BankItemWidget(
+                        title: "No. Cuenta",
+                        text: "0119621431",
+                      ),
+                      const SizedBox(height: 15),
+                      const _BankItemWidget(
+                        title: "CLABE",
+                        text: "012320001196214312",
+                      ),
+                      const SizedBox(height: 15),
+                      const _BankItemWidget(
+                        title: "Titutlar",
+                        text: "VOLTZ MEXICO SAPI DE CV",
+                      ),
+                      const SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "Valor a pagar",
+                        text: "\$${order.totals!.total!.toStringAsFixed(2)} mxn",
+                      ),
+                      const SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "Concepto",
+                        text: order.consecutive!.toString(),
+                      ),
+                    ],
+                  ),
+                ),
+                SvgPicture.asset(
+                  "assets/svg/under_part.svg",
+                  height: 20,
+                  fit: BoxFit.fitHeight,
+                ),
+                const SizedBox(height: 15),
+                Builder(
+                  builder: (ctx) {
+                    final stepStatus = context.watch<OrderViewModel>().stepStatus;
+
+                    if ((stepStatus == StepStatus.pendingPayment) || (stepStatus == StepStatus.verifyingPayment)) {
+                      return PrimaryButton(
+                        text: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "Ya pague",
+                        onPressed: () {
+                          if (stepStatus != StepStatus.verifyingPayment) {
+                            context.read<OrderViewModel>().updatePaymentStatus(PaymentStatus.verifying);
+                          }
+                        },
+                        enabled: stepStatus != StepStatus.verifyingPayment,
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _PaymentItemWidget2 extends HookWidget {
+  const _PaymentItemWidget2({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final open = useState(false);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AppKeys().customColors!.WBY),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.account_balance_wallet_rounded, color: AppKeys().customColors!.dark),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  "Otras formas de pago",
+                  style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 16.0, color: AppKeys().customColors!.dark),
+                ),
+              ),
+              const SizedBox(width: 10),
+              IconButton(
+                onPressed: () {
+                  open.value = !open.value;
+                },
+                icon: open.value ? const Icon(Icons.keyboard_arrow_down_outlined) : const Icon(Icons.keyboard_arrow_up_outlined),
+              ),
+            ],
+          ),
+        ),
+        if (open.value)
+          Container(
+            padding: const EdgeInsets.all(25),
+            color: AppKeys().customColors!.WBYPlusOne,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Text(
+                        "Contacta a un agente Voltz\npara pagar con estos medios",
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
+                              const SizedBox(width: 10),
+                              Expanded(child: Image.asset("assets/images/payments/amex.png")),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(child: Image.asset("assets/images/payments/paypal.png")),
+                              const SizedBox(width: 10),
+                              Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                PrimaryButton(
+                  text: "Contactar agente",
+                  onPressed: () {
+                    html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
+                  },
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _BankItemWidget extends StatelessWidget {
+  const _BankItemWidget({
+    super.key,
+    required this.title,
+    required this.text,
+  });
+  final String title;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          title,
+          style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 12.0, color: AppKeys().customColors!.dark),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            textAlign: TextAlign.end,
+            style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 14.0, color: AppKeys().customColors!.dark),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TrackingWidget extends StatelessWidget {
+  const _TrackingWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final stepStatus = context.watch<OrderViewModel>().stepStatus;
+    final order = context.watch<OrderViewModel>().order!;
+    final size = MediaQuery.of(context).size;
+    final colors = AppKeys().customColors!;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 35, vertical: 25),
+      color: Colors.white,
+      constraints: BoxConstraints(
+        maxWidth: size.width > 360 ? 360 : double.infinity,
+        // maxWidth: 360,
+        maxHeight: 580,
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Row(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                _PointWidget(
+                  pending: stepStatus == StepStatus.initial,
+                  completed: true,
+                ),
+                const SizedBox(height: 5),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.pendingPayment || stepStatus == StepStatus.verifyingPayment,
+                  completed: stepStatus == StepStatus.paymentDone || (stepStatus != StepStatus.pendingPayment && stepStatus != StepStatus.verifyingPayment),
+                ),
+                const SizedBox(height: 5),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.pendingPayment || stepStatus == StepStatus.verifyingPayment,
+                  completed: stepStatus == StepStatus.paymentDone || (stepStatus != StepStatus.pendingPayment && stepStatus != StepStatus.verifyingPayment),
+                ),
+                const SizedBox(height: 5),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.shippingProcessing || stepStatus == StepStatus.shippingShipped,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
+                const SizedBox(height: 5),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.shippingProcessing || stepStatus == StepStatus.shippingShipped,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
+                const SizedBox(height: 5),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.shippingDelivered,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
+                const SizedBox(height: 5),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.shippingDelivered,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
+              ],
+            ),
+            const SizedBox(width: 25),
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  _TrackItemWidget(
+                    iconData: Icons.format_list_numbered_rounded,
+                    title: "Pedido realizado",
+                    date: DateFormat("dd/MM/yyyy HH:mm").format(order.createdAt!),
+                    actionWidget: SecondaryButton(
+                      onPressed: () {},
+                      text: "Ver productos",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.attach_money_rounded,
+                    title: "Pagar pedido",
+                    date: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "\$${order.totals!.total!.toStringAsFixed(2)} mxn",
+                    actionWidget: Builder(builder: (context) {
+                      if (stepStatus == StepStatus.pendingPayment) {
+                        return PrimaryButton(
+                          onPressed: () {
+                            if (size.width > 720) {
+                              // reemplazar ventana de la derecha
+                            } else {
+                              //mostrar una nueva ventana con metodos de pago
+                              final orderVMRead = context.read<OrderViewModel>();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => PaymentOptionsView(
+                                    contextVM: context,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          text: "Realizar pago",
+                        );
+                      } else if (stepStatus == StepStatus.verifyingPayment) {
+                        return PrimaryButton(
+                          onPressed: () {},
+                          text: "Realizar pago",
+                          enabled: false,
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                        return SecondaryButton(
+                          onPressed: () {},
+                          text: "Descargar factura",
+                        );
+                      }
+                    }),
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.local_shipping,
+                    title: "Envio",
+                    date: stepStatus == StepStatus.shippingProcessing
+                        ? "Recolectando material"
+                        : stepStatus == StepStatus.shippingShipped
+                            ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.shippedDate!)
+                            : stepStatus == StepStatus.shippingDelivered
+                                ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.shippedDate!)
+                                : "Esperando pago",
+                    actionWidget: Builder(builder: (context) {
+                      if (stepStatus == StepStatus.shippingProcessing) {
+                        return const SizedBox.shrink();
+                        return ThirdButton(
+                          onPressed: () {},
+                          text: "Programar envio",
+                        );
+                      } else if (stepStatus == StepStatus.shippingShipped) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }),
+                  ),
+                  const SizedBox(height: 20),
+                  Divider(height: 1, color: Color(0xFFE4E9FC)),
+                  const SizedBox(height: 20),
+                  _TrackItemWidget(
+                    iconData: Icons.done_all,
+                    title: "Entregado",
+                    date: stepStatus == StepStatus.shippingShipped
+                        ? "En ruta"
+                        : stepStatus == StepStatus.shippingDelivered
+                            ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.deliveredDate!)
+                            : "Esperando",
+                    actionWidget: Builder(builder: (context) {
+                      return const SizedBox.shrink();
+                    }),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LineWidget extends StatelessWidget {
+  const _LineWidget({
+    super.key,
+    this.completed = false,
+    this.pending = false,
+  });
+
+  final bool completed;
+  final bool pending;
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return SizedBox(
+      height: 115,
+      child: VerticalDivider(
+          width: 2,
+          color: pending
+              ? colors.energyColor
+              : completed
+                  ? colors.dark
+                  : colors.dark1,
+          thickness: 2),
+    );
+  }
+}
+
+class _PointWidget extends StatelessWidget {
+  const _PointWidget({
+    super.key,
+    this.completed = false,
+    this.pending = false,
+  });
+
+  final bool completed;
+  final bool pending;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100),
+      child: Container(
+        width: 15,
+        height: 15,
+        color: pending
+            ? colors.energyColor
+            : completed
+                ? colors.dark
+                : colors.dark1,
+      ),
+    );
+  }
+}
+
+class _TrackItemWidget extends StatelessWidget {
+  const _TrackItemWidget({
+    super.key,
+    required this.iconData,
+    required this.title,
+    required this.date,
+    required this.actionWidget,
+  });
+  final IconData iconData;
+  final String title;
+  final String date;
+  final Widget actionWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = AppKeys().customColors!;
+    return Container(
+      height: 100,
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: colors.dark, shape: BoxShape.circle),
+            child: Icon(iconData, color: Colors.white),
+          ),
+          const SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                    height: 1,
+                    color: AppKeys().customColors!.dark,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  date,
+                  style: GoogleFonts.inter(
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 12.0,
+                    height: 1,
+                    color: AppKeys().customColors!.dark,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                actionWidget,
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
 
 // class OrderView extends StatefulWidget {
 //   const OrderView({Key? key, required this.orderId}) : super(key: key);

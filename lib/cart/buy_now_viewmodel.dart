@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/product/product_service.dart';
 import 'package:maketplace/utils/style.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked_services/stacked_services.dart';
 
 class ToBuyNowViewModel extends ReactiveViewModel {
   final _productService = locator<ProductService>();
+  final NavigationService _navigationService = locator<NavigationService>();
   Product? get product => _productService.product;
   double get priceToMultiply => _productService.priceToMultiply;
 
@@ -95,25 +98,33 @@ class ToBuyNowViewModel extends ReactiveViewModel {
   }
 
   void onGenerateOrder(BuildContext context) async {
-    // updateQuote(quote).then((value) async {
-    //   DocumentReference reference = FirebaseFirestore.instance.collection('quote-detail').doc(_quoteId);
-    //   await reference.update({'accepted': true});
-    // });
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: SelectableText(
-        "Gracias, hemos recibido tu orden.",
-        style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
-      ),
-      backgroundColor: AppKeys().customColors!.energyColor,
-      behavior: SnackBarBehavior.floating,
-      duration: const Duration(milliseconds: 5000),
-      margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
-      onVisible: () async {},
-    ));
-    // await _saveOrder(_generateOrderV2()); //se cambio a V2
-    // Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
-    //_navigationService.navigateToOrderView(orderId: quote.id!);
+    final created = await _productService.createOrder();
+    if (created) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: SelectableText(
+          "Gracias, hemos recibido tu orden.",
+          style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+        ),
+        backgroundColor: AppKeys().customColors!.energyColor,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(milliseconds: 5000),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+        onVisible: () async {},
+      ));
+      _navigationService.replaceWithOrderView(orderId: _productService.quoteModel!.id!, fromQuote: true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: SelectableText(
+          "No se ha podido crear tu orden.",
+          style: CustomStyles.styleVolcanicDos.copyWith(color: Colors.white),
+        ),
+        backgroundColor: AppKeys().customColors!.redAlert,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(milliseconds: 5000),
+        margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
+        onVisible: () async {},
+      ));
+    }
   }
 
 //
