@@ -17,9 +17,11 @@ class OrderViewModel extends ChangeNotifier {
   StepStatus get stepStatus => _stepStatus;
 
   String _orderId = "";
+  late bool _fromQuote;
 
-  init(String orderId) {
+  init(String orderId, bool fromQuote) {
     _orderId = orderId;
+    _fromQuote = fromQuote;
 
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.isAnonymous) {
@@ -38,14 +40,30 @@ class OrderViewModel extends ChangeNotifier {
   }
 
   void _listenChanges() async {
-    DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
-    reference.snapshots().listen((documentSnapshot) async {
-      if (documentSnapshot.exists) {
-        _order = OrderModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
-        _stepStatus = _getStepStatus(_order?.paymentStatus, _order?.shipping);
-        notifyListeners();
-      }
-    });
+    if (!_fromQuote) {
+      DocumentReference reference = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
+      reference.snapshots().listen((documentSnapshot) async {
+        if (documentSnapshot.exists) {
+          _order = OrderModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+          _stepStatus = _getStepStatus(_order?.paymentStatus, _order?.shipping);
+          notifyListeners();
+        }
+      });
+    } else {
+      FirebaseFirestore.instance
+          .collection('order-detail') //
+          .where('quote_detail_id', isEqualTo: _orderId)
+          .snapshots()
+          .listen((s) {
+        if (s.docs.isNotEmpty) {
+          final snap = s.docs.first;
+          _order = OrderModel.fromJson(snap.data(), snap.id);
+          _orderId = snap.id;
+          _stepStatus = _getStepStatus(_order?.paymentStatus, _order?.shipping);
+          notifyListeners();
+        }
+      });
+    }
   }
 
   StepStatus _getStepStatus(PaymentStatus? paymentStatus, Shipping? orderShipping) {
@@ -76,15 +94,11 @@ class OrderViewModel extends ChangeNotifier {
 
   Future<void> updatePaymentStatus(PaymentStatus status) async {
     final orderRef = FirebaseFirestore.instance.collection('order-detail').doc(_orderId);
-    final result = await FirebaseFirestore.instance.runTransaction((transaction) async {
-      final snapshot = await transaction.get(orderRef);
-      final data = snapshot.data();
-      final updatedData = Map<String, dynamic>.from(data!);
-      updatedData['payment_status'] = _enumPaymentStatusToString(status);
-      transaction.update(orderRef, updatedData);
-      return updatedData;
+    await orderRef.update({
+      "payment_status": _enumPaymentStatusToString(status),
     });
-    print('Updated order detail: $result');
+    ;
+    print('Updated order detail: true');
   }
 }
 

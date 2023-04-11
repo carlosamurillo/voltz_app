@@ -122,8 +122,8 @@ class StackedRouter extends _i1.RouterBase {
     _i4.OrderView: (data) {
       final args = data.getArgs<OrderViewArguments>(nullOk: false);
       return _i12.CupertinoPageRoute<dynamic>(
-        builder: (context) =>
-            _i4.OrderView(key: args.key, orderId: args.orderId),
+        builder: (context) => _i4.OrderView(
+            key: args.key, orderId: args.orderId, fromQuote: args.fromQuote),
         settings: data,
       );
     },
@@ -223,11 +223,14 @@ class OrderViewArguments {
   const OrderViewArguments({
     this.key,
     required this.orderId,
+    required this.fromQuote,
   });
 
   final _i13.Key? key;
 
   final String orderId;
+
+  final bool fromQuote;
 }
 
 class CartConfirmationArguments {
@@ -337,6 +340,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> navigateToOrderView({
     _i13.Key? key,
     required String orderId,
+    required bool fromQuote,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -344,7 +348,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return navigateTo<dynamic>(Routes.orderView,
-        arguments: OrderViewArguments(key: key, orderId: orderId),
+        arguments: OrderViewArguments(
+            key: key, orderId: orderId, fromQuote: fromQuote),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -513,6 +518,7 @@ extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> replaceWithOrderView({
     _i13.Key? key,
     required String orderId,
+    required bool fromQuote,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -520,7 +526,8 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition,
   }) async {
     return replaceWith<dynamic>(Routes.orderView,
-        arguments: OrderViewArguments(key: key, orderId: orderId),
+        arguments: OrderViewArguments(
+            key: key, orderId: orderId, fromQuote: fromQuote),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

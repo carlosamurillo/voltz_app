@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/utils/buttons.dart';
 
@@ -70,8 +71,14 @@ class NormalAppBar extends AppBar {
         Padding(
           padding: isMobile ? const EdgeInsets.symmetric(horizontal: 20.0) : const EdgeInsets.symmetric(horizontal: 40.0),
           child: CustomIconButton(
-            icon: Icons.cancel,
-            onPressed: () => Navigator.of(context).pop(),
+            icon: Icons.close,
+            onPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else {
+                Navigator.of(context).pushReplacementNamed(Routes.authGate);
+              }
+            },
             buttonColor: Colors.transparent,
             backGroundColor: Colors.black,
             borderColor: Colors.transparent,

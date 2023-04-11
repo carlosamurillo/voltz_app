@@ -74,7 +74,7 @@ class ProductService with ListenableServiceMixin {
 
     final quoteModel = QuoteModel(
       accepted: false,
-      alias: 'elalias', //se llena cuando se crea la orden
+      alias: 'QbjkZZG7gP0PH5dkUcwP $productId', //se llena cuando se crea la orden
       author: Author(
         id: currentUser.uid,
         email: currentUser.email,
@@ -100,7 +100,10 @@ class ProductService with ListenableServiceMixin {
     if (response.exists) {
       _rxQuoteModel.value = QuoteModel.fromJson(response.data()!, response.id);
       await FirebaseFirestore.instance.collection('quote-detail').doc(response.id).update(
-        {'record.next_action': 'add_product', 'record.meta_data': productId},
+        {
+          'record.next_action': 'add_product',
+          'record.meta_data': productId,
+        },
       );
       notifyListeners();
     } else {

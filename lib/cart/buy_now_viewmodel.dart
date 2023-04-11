@@ -111,7 +111,7 @@ class ToBuyNowViewModel extends ReactiveViewModel {
         margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height - 40, right: 20, left: 20),
         onVisible: () async {},
       ));
-      _navigationService.replaceWithOrderView(orderId: _productService.quoteModel!.id!);
+      _navigationService.replaceWithOrderView(orderId: _productService.quoteModel!.id!, fromQuote: true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: SelectableText(

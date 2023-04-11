@@ -149,14 +149,9 @@ class QuoteService with ListenableServiceMixin {
         if (documentSnapshot.exists) {
           QuoteModel data = await _processQuote(documentSnapshot);
 
-          if (quote.accepted) {
-            Future.delayed(
-              const Duration(milliseconds: 1500),
-              () {
-                final args = OrderViewArguments(orderId: quote.id!);
-                _navigationService.replaceWith(Routes.orderView, arguments: args);
-              },
-            );
+          if (data.accepted) {
+            final args = OrderViewArguments(orderId: data.id!, fromQuote: true);
+            _navigationService.replaceWith(Routes.orderView, arguments: args);
           } else if (!viewRecorded) {
             //TODO mejorar esto y porque no da
             // Stats.QuoteViewed(_rxQuote.value.id!);

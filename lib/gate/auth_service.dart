@@ -76,7 +76,7 @@ class AuthService with ListenableServiceMixin {
         final args = CartViewArguments(quoteId: quoteId!);
         _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
       } else if (orderId != null) {
-        final args = OrderViewArguments(orderId: orderId!);
+        final args = OrderViewArguments(orderId: orderId!, fromQuote: false);
         _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
       } else {
         _navigationService.clearStackAndShow(Routes.homeView);

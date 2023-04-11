@@ -131,7 +131,7 @@ class QuoteViewModel extends ReactiveViewModel {
     ));
     // await _saveOrder(_generateOrderV2()); //se cambio a V2
     // Stats.QuoteAccepted(_quoteId, quote.totals!.total!);
-    _navigationService.replaceWithOrderView(orderId: quote.id!);
+    _navigationService.replaceWithOrderView(orderId: quote.id!, fromQuote: true);
   }
 
   setQuantity(int i, int b, double quantity) {

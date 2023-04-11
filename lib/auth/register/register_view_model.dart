@@ -171,7 +171,7 @@ class RegisterViewModel extends ReactiveViewModel {
       _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
     } //
     else if (_orderId != null) {
-      final args = OrderViewArguments(orderId: _orderId!);
+      final args = OrderViewArguments(orderId: _orderId!, fromQuote: false);
       _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
     } //
     else if (_navigationService.previousRoute.isNotEmpty) {

@@ -1,60 +1,101 @@
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maketplace/common/app_bar_view.dart';
 import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/order/order_model.dart';
 import 'package:maketplace/order/order_viewmodel.dart';
 import 'package:maketplace/utils/buttons.dart';
+import 'package:provider/provider.dart';
 
 class PaymentOptionsView extends StatelessWidget {
-  const PaymentOptionsView({super.key, required this.orderVM});
-  final OrderViewModel orderVM;
+  const PaymentOptionsView({super.key, required this.contextVM});
+  final BuildContext contextVM;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final colors = AppKeys().customColors!;
     return Scaffold(
+      appBar: NormalAppBar(context: context),
       body: Center(
-        child: Container(
-          color: Colors.white,
-          constraints: BoxConstraints(
-            maxWidth: size.width > 360 ? 360 : double.infinity,
-            // maxWidth: 360,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Realiza tu pago",
-                        style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 32.0, color: colors.dark),
-                      ),
-                      LinearProgressIndicator(
-                        backgroundColor: colors.dark,
-                        color: colors.energyColor,
-                        value: 0.5,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text("Vence"),
-                          Text("00:00:00"),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              color: Colors.white,
+              constraints: BoxConstraints(
+                maxWidth: size.width > 360 ? 360 : double.infinity,
+                // maxWidth: 360,
+                maxHeight: 580,
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Realiza tu pago",
+                            style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.bold, fontSize: 32.0, color: colors.dark),
+                          ),
+                          // LinearProgressIndicator(
+                          //   backgroundColor: colors.dark,
+                          //   color: colors.energyColor,
+                          //   value: 0.5,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //   children: <Widget>[
+                          //     Text("Vence"),
+                          //     Text("00:00:00"),
+                          //   ],
+                          // ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    _PaymentItemWidget(
+                      contextVM: contextVM,
+                    ),
+                    _PaymentItemWidget2(),
+                  ],
                 ),
-                _PaymentItemWidget(),
-                _PaymentItemWidget2(),
-              ],
+              ),
             ),
-          ),
+            Container(
+              constraints: BoxConstraints(
+                maxWidth: size.width > 360 ? 360 : double.infinity,
+                // maxWidth: 360,
+                maxHeight: 580,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Constancia S. Fiscal Voltz",
+                    style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.normal, fontSize: 14.0, color: AppKeys().customColors!.dark),
+                  ),
+                  const SizedBox(width: 30),
+                  SecondaryButton(
+                    text: "Descargar",
+                    buttonColor: AppKeys().customColors!.WBY,
+                    onPressed: () {
+                      final fiscalUrl =
+                          'https://firebasestorage.googleapis.com/v0/b/voltz-pro.appspot.com/o/public%2Fcsf_VOLTZ.pdf?alt=media&token=605ceadf-2576-44e4-b353-1ef990872d9f';
+                      html.window.open(fiscalUrl, "_blank");
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -62,8 +103,8 @@ class PaymentOptionsView extends StatelessWidget {
 }
 
 class _PaymentItemWidget extends HookWidget {
-  const _PaymentItemWidget({Key? key}) : super(key: key);
-
+  const _PaymentItemWidget({super.key, required this.contextVM});
+  final BuildContext contextVM;
   @override
   Widget build(BuildContext context) {
     final open = useState(true);
@@ -147,7 +188,21 @@ class _PaymentItemWidget extends HookWidget {
                   fit: BoxFit.fitHeight,
                 ),
                 const SizedBox(height: 15),
-                PrimaryButton(text: "Ya pague", onPressed: () {}),
+                Builder(
+                  builder: (ctx) {
+                    final stepStatus = contextVM.watch<OrderViewModel>().stepStatus;
+                    return PrimaryButton(
+                      text: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "Ya pague",
+                      onPressed: () {
+                        if (stepStatus != StepStatus.verifyingPayment) {
+                          contextVM.read<OrderViewModel>().updatePaymentStatus(PaymentStatus.verifying);
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      enabled: stepStatus != StepStatus.verifyingPayment,
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -199,7 +254,6 @@ class _PaymentItemWidget2 extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  color: Colors.white,
                   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -208,25 +262,36 @@ class _PaymentItemWidget2 extends HookWidget {
                         "Contacta a un agente Voltz\npara pagar con estos medios",
                         textAlign: TextAlign.center,
                       ),
-                      Row(
+                      const SizedBox(height: 20),
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
-                          Expanded(child: Image.asset("assets/images/payments/amex.png")),
-                          Expanded(child: Image.asset("assets/images/payments/paypal.png")),
-                          Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
+                          Row(
+                            children: [
+                              Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
+                              const SizedBox(width: 10),
+                              Expanded(child: Image.asset("assets/images/payments/amex.png")),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(child: Image.asset("assets/images/payments/paypal.png")),
+                              const SizedBox(width: 10),
+                              Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
+                            ],
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                SvgPicture.asset(
-                  "assets/svg/under_part.svg",
-                  height: 20,
-                  fit: BoxFit.fitHeight,
+                const SizedBox(height: 20),
+                PrimaryButton(
+                  text: "Contactar agente",
+                  onPressed: () {
+                    html.window.open('https://api.whatsapp.com/send/?phone=523313078145&text=Hola%2C+quiero+que+me+cotices%3A&type=phone_number&app_absent=0', "_blank");
+                  },
                 ),
-                const SizedBox(height: 15),
-                PrimaryButton(text: "Ya pague", onPressed: () {}),
               ],
             ),
           ),
