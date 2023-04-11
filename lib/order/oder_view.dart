@@ -103,6 +103,7 @@ class _ContentItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final colors = AppKeys().customColors!;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -152,7 +153,7 @@ class _ContentItemWidget extends StatelessWidget {
         Container(
           constraints: BoxConstraints(
             maxWidth: size.width > 360 ? 360 : double.infinity,
-            // maxWidth: 360,
+            // minHeight: 360,
             maxHeight: 580,
           ),
           child: Row(
@@ -273,15 +274,19 @@ class _PaymentItemWidget extends HookWidget {
                 Builder(
                   builder: (ctx) {
                     final stepStatus = context.watch<OrderViewModel>().stepStatus;
-                    return PrimaryButton(
-                      text: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "Ya pague",
-                      onPressed: () {
-                        if (stepStatus != StepStatus.verifyingPayment) {
-                          context.read<OrderViewModel>().updatePaymentStatus(PaymentStatus.verifying);
-                        }
-                      },
-                      enabled: stepStatus != StepStatus.verifyingPayment,
-                    );
+
+                    if ((stepStatus == StepStatus.pendingPayment) || (stepStatus == StepStatus.verifyingPayment)) {
+                      return PrimaryButton(
+                        text: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "Ya pague",
+                        onPressed: () {
+                          if (stepStatus != StepStatus.verifyingPayment) {
+                            context.read<OrderViewModel>().updatePaymentStatus(PaymentStatus.verifying);
+                          }
+                        },
+                        enabled: stepStatus != StepStatus.verifyingPayment,
+                      );
+                    }
+                    return const SizedBox.shrink();
                   },
                 ),
               ],
@@ -328,14 +333,14 @@ class _PaymentItemWidget2 extends HookWidget {
         ),
         if (open.value)
           Container(
-            padding: EdgeInsets.all(25),
+            padding: const EdgeInsets.all(25),
             color: AppKeys().customColors!.WBYPlusOne,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

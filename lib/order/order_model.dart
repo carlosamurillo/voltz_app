@@ -103,7 +103,7 @@ class Shipping {
 
   ShippingStatus strToShippoingStatus(String? status) {
     switch (status) {
-      case 'processing':
+      case 'processed':
         return ShippingStatus.processing;
       case 'shipped':
         return ShippingStatus.shipped;
