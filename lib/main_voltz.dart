@@ -24,10 +24,10 @@ void mainCommonVoltz() async {
     options: kIsWeb ? _config.firebaseOptions : null,
   );
   String? quoteId = Uri.base.queryParameters["cotz"];
-  // String? orderId = Uri.base.queryParameters["order"];
+  String? orderId = Uri.base.queryParameters["order"];
 
   // String? quoteId = "O4nUAA87XXRwjMjfNY8D";
-  String? orderId = "rqz1gZjEa3Plg34mAwty";
+  // String? orderId = "rqz1gZjEa3Plg34mAwty";
 
   // print("el id cotizacion es : ${quoteId}");
   setupLocator();

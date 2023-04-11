@@ -11,10 +11,15 @@ import 'dart:html' as html;
 // import 'package:maketplace/utils/style.dart';
 // import 'package:provider/provider.dart';
 // import 'package:stacked/stacked.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:maketplace/common/app_bar_view.dart';
 import 'package:maketplace/keys_model.dart';
+import 'package:maketplace/order/mobile/payment_options_view.dart';
 import 'package:maketplace/order/order_viewmodel.dart';
 import 'package:maketplace/utils/buttons.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +33,7 @@ class OrderView extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => OrderViewModel()..init(orderId),
       child: Scaffold(
+        appBar: NormalAppBar(context: context),
         backgroundColor: AppKeys().customColors!.WBY,
         body: Builder(builder: (context) {
           final hasOrder = context.watch<OrderViewModel>().order != null;
@@ -53,7 +59,9 @@ class _Content extends StatelessWidget {
     final order = context.watch<OrderViewModel>().order!;
     final customColors = AppKeys().customColors!;
     final size = MediaQuery.of(context).size;
-    html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+    if (kIsWeb) {
+      html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+    }
     return SingleChildScrollView(
       // physics: const NeverScrollableScrollPhysics(),
       child: Column(
@@ -71,8 +79,10 @@ class _Content extends StatelessWidget {
             alignment: WrapAlignment.center,
             children: <Widget>[
               const _TrackingWidget(),
-              if (size.width > 745) const SizedBox(width: 25) else SizedBox(height: 25, width: size.width > 360 ? 360 : double.infinity),
-              const _ContentItemWidget(),
+              // if (size.width > 745) const SizedBox(width: 25) else SizedBox(height: 25, width: size.width > 360 ? 360 : double.infinity),
+              // const _ContentItemWidget(),
+              if (size.width > 745) const SizedBox(width: 25) else const SizedBox.shrink(),
+              if (size.width > 745) const _ContentItemWidget() else const SizedBox.shrink(),
             ],
           ),
           const SizedBox(height: 130),
@@ -136,11 +146,12 @@ class _ContentItemWidget extends StatelessWidget {
   }
 }
 
-class _PaymentItemWidget extends StatelessWidget {
+class _PaymentItemWidget extends HookWidget {
   const _PaymentItemWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final open = useState(true);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -161,77 +172,81 @@ class _PaymentItemWidget extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                onPressed: () {
+                  open.value = !open.value;
+                },
+                icon: open.value ? const Icon(Icons.keyboard_arrow_down_outlined) : const Icon(Icons.keyboard_arrow_up_outlined),
               ),
             ],
           ),
         ),
-        Container(
-          padding: EdgeInsets.all(25),
-          color: AppKeys().customColors!.WBYPlusOne,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
-                    _BankItemWidget(
-                      title: "Banco destino",
-                      text: "BBVA",
-                    ),
-                    SizedBox(height: 15),
-                    _BankItemWidget(
-                      title: "No. Cuenta",
-                      text: "0119621431",
-                    ),
-                    SizedBox(height: 15),
-                    _BankItemWidget(
-                      title: "CLABE",
-                      text: "012320001196214312",
-                    ),
-                    SizedBox(height: 15),
-                    _BankItemWidget(
-                      title: "Titutlar",
-                      text: "VOLTZ MEXICO SAPI DE CV",
-                    ),
-                    SizedBox(height: 15),
-                    _BankItemWidget(
-                      title: "Valor a pagar",
-                      text: "\$0,000,000.00 MXN",
-                    ),
-                    SizedBox(height: 15),
-                    _BankItemWidget(
-                      title: "Concepto",
-                      text: "872625",
-                    ),
-                  ],
+        if (open.value)
+          Container(
+            padding: EdgeInsets.all(25),
+            color: AppKeys().customColors!.WBYPlusOne,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const <Widget>[
+                      _BankItemWidget(
+                        title: "Banco destino",
+                        text: "BBVA",
+                      ),
+                      SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "No. Cuenta",
+                        text: "0119621431",
+                      ),
+                      SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "CLABE",
+                        text: "012320001196214312",
+                      ),
+                      SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "Titutlar",
+                        text: "VOLTZ MEXICO SAPI DE CV",
+                      ),
+                      SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "Valor a pagar",
+                        text: "\$0,000,000.00 MXN",
+                      ),
+                      SizedBox(height: 15),
+                      _BankItemWidget(
+                        title: "Concepto",
+                        text: "872625",
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SvgPicture.asset(
-                "assets/svg/under_part.svg",
-                height: 20,
-                fit: BoxFit.fitHeight,
-              ),
-              const SizedBox(height: 15),
-              PrimaryButton(text: "Ya pague", onPressed: () {}),
-            ],
+                SvgPicture.asset(
+                  "assets/svg/under_part.svg",
+                  height: 20,
+                  fit: BoxFit.fitHeight,
+                ),
+                const SizedBox(height: 15),
+                PrimaryButton(text: "Ya pague", onPressed: () {}),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
 }
 
-class _PaymentItemWidget2 extends StatelessWidget {
+class _PaymentItemWidget2 extends HookWidget {
   const _PaymentItemWidget2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final open = useState(false);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -252,51 +267,54 @@ class _PaymentItemWidget2 extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.keyboard_arrow_down_outlined),
+                onPressed: () {
+                  open.value = !open.value;
+                },
+                icon: open.value ? const Icon(Icons.keyboard_arrow_down_outlined) : const Icon(Icons.keyboard_arrow_up_outlined),
               ),
             ],
           ),
         ),
-        Container(
-          padding: EdgeInsets.all(25),
-          color: AppKeys().customColors!.WBYPlusOne,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const Text(
-                      "Contacta a un agente Voltz\npara pagar con estos medios",
-                      textAlign: TextAlign.center,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
-                        Expanded(child: Image.asset("assets/images/payments/amex.png")),
-                        Expanded(child: Image.asset("assets/images/payments/paypal.png")),
-                        Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
-                      ],
-                    ),
-                  ],
+        if (open.value)
+          Container(
+            padding: EdgeInsets.all(25),
+            color: AppKeys().customColors!.WBYPlusOne,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const Text(
+                        "Contacta a un agente Voltz\npara pagar con estos medios",
+                        textAlign: TextAlign.center,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(child: Image.asset("assets/images/payments/visamaster.png")),
+                          Expanded(child: Image.asset("assets/images/payments/amex.png")),
+                          Expanded(child: Image.asset("assets/images/payments/paypal.png")),
+                          Expanded(child: Image.asset("assets/images/payments/efectivo.png")),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SvgPicture.asset(
-                "assets/svg/under_part.svg",
-                height: 20,
-                fit: BoxFit.fitHeight,
-              ),
-              const SizedBox(height: 15),
-              PrimaryButton(text: "Ya pague", onPressed: () {}),
-            ],
+                SvgPicture.asset(
+                  "assets/svg/under_part.svg",
+                  height: 20,
+                  fit: BoxFit.fitHeight,
+                ),
+                const SizedBox(height: 15),
+                PrimaryButton(text: "Ya pague", onPressed: () {}),
+              ],
+            ),
           ),
-        ),
       ],
     );
   }
@@ -339,6 +357,7 @@ class _TrackingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stepStatus = context.watch<OrderViewModel>().stepStatus;
     final order = context.watch<OrderViewModel>().order!;
     final size = MediaQuery.of(context).size;
     final colors = AppKeys().customColors!;
@@ -356,19 +375,40 @@ class _TrackingWidget extends StatelessWidget {
           children: <Widget>[
             Column(
               children: <Widget>[
-                const _PointWidget(completed: true),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.initial,
+                  completed: true,
+                ),
                 const SizedBox(height: 5),
-                _LineWidget(pending: true),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.pendingPayment || stepStatus == StepStatus.verifyingPayment,
+                  completed: stepStatus == StepStatus.paymentDone || (stepStatus != StepStatus.pendingPayment && stepStatus != StepStatus.verifyingPayment),
+                ),
                 const SizedBox(height: 5),
-                _PointWidget(pending: true),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.pendingPayment || stepStatus == StepStatus.verifyingPayment,
+                  completed: stepStatus == StepStatus.paymentDone || (stepStatus != StepStatus.pendingPayment && stepStatus != StepStatus.verifyingPayment),
+                ),
                 const SizedBox(height: 5),
-                _LineWidget(),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.shippingProcessing || stepStatus == StepStatus.shippingShipped,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
                 const SizedBox(height: 5),
-                _PointWidget(),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.shippingProcessing || stepStatus == StepStatus.shippingShipped,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
                 const SizedBox(height: 5),
-                _LineWidget(),
+                _LineWidget(
+                  pending: stepStatus == StepStatus.shippingDelivered,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
                 const SizedBox(height: 5),
-                _PointWidget(),
+                _PointWidget(
+                  pending: stepStatus == StepStatus.shippingDelivered,
+                  completed: stepStatus == StepStatus.shippingDelivered,
+                ),
               ],
             ),
             const SizedBox(width: 25),
@@ -378,25 +418,11 @@ class _TrackingWidget extends StatelessWidget {
                   _TrackItemWidget(
                     iconData: Icons.format_list_numbered_rounded,
                     title: "Pedido realizado",
-                    date: "11/02/22 14:00:00",
+                    date: DateFormat("dd/MM/yyyy HH:mm").format(order.createdAt!),
                     actionWidget: SecondaryButton(
                       onPressed: () {},
                       text: "Ver productos",
                     ),
-                    // actionWidget: InkWell(
-                    //   onTap: () {},
-                    //   child: Row(
-                    //     mainAxisSize: MainAxisSize.min,
-                    //     children: <Widget>[
-                    //       Text(
-                    //         "Ver productos",
-                    //         style: GoogleFonts.inter(fontStyle: FontStyle.normal, fontWeight: FontWeight.w500, fontSize: 12.0, color: customColors.dark),
-                    //       ),
-                    //       const SizedBox(width: 9),
-                    //       Icon(Icons.arrow_forward_ios, color: customColors.dark, size: 13),
-                    //     ],
-                    //   ),
-                    // ),
                   ),
                   const SizedBox(height: 20),
                   const Divider(height: 1, color: Color(0xFFE4E9FC)),
@@ -404,11 +430,40 @@ class _TrackingWidget extends StatelessWidget {
                   _TrackItemWidget(
                     iconData: Icons.attach_money_rounded,
                     title: "Pagar pedido",
-                    date: "11/02/22 14:00:00",
-                    actionWidget: PrimaryButton(
-                      onPressed: () {},
-                      text: "Realizar pago",
-                    ),
+                    date: stepStatus == StepStatus.verifyingPayment ? "Verificando..." : "\$${order.totals!.total!.toStringAsFixed(2)} mxn",
+                    actionWidget: Builder(builder: (context) {
+                      if (stepStatus == StepStatus.pendingPayment) {
+                        return PrimaryButton(
+                          onPressed: () {
+                            if (size.width > 720) {
+                              // reemplazar ventana de la derecha
+                            } else {
+                              //mostrar una nueva ventana con metodos de pago
+                              final orderVM = context.read<OrderViewModel>();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (ctx) => PaymentOptionsView(
+                                    orderVM: orderVM,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          text: "Realizar pago",
+                        );
+                      } else if (stepStatus == StepStatus.verifyingPayment) {
+                        return PrimaryButton(
+                          onPressed: () {},
+                          text: "Realizar pago",
+                          enabled: false,
+                        );
+                      } else {
+                        return SecondaryButton(
+                          onPressed: () {},
+                          text: "Descargar factura",
+                        );
+                      }
+                    }),
                   ),
                   const SizedBox(height: 20),
                   const Divider(height: 1, color: Color(0xFFE4E9FC)),
@@ -416,11 +471,25 @@ class _TrackingWidget extends StatelessWidget {
                   _TrackItemWidget(
                     iconData: Icons.local_shipping,
                     title: "Envio",
-                    date: "11/02/22 14:00:00",
-                    actionWidget: ThirdButton(
-                      onPressed: () {},
-                      text: "Programar envio",
-                    ),
+                    date: stepStatus == StepStatus.shippingProcessing
+                        ? "Recolectando material"
+                        : stepStatus == StepStatus.shippingShipped
+                            ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.shippedDate!)
+                            : stepStatus == StepStatus.shippingDelivered
+                                ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.shippedDate!)
+                                : "Esperando pago",
+                    actionWidget: Builder(builder: (context) {
+                      if (stepStatus == StepStatus.shippingProcessing) {
+                        return ThirdButton(
+                          onPressed: () {},
+                          text: "Programar envio",
+                        );
+                      } else if (stepStatus == StepStatus.shippingShipped) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    }),
                   ),
                   const SizedBox(height: 20),
                   Divider(height: 1, color: Color(0xFFE4E9FC)),
@@ -428,12 +497,14 @@ class _TrackingWidget extends StatelessWidget {
                   _TrackItemWidget(
                     iconData: Icons.done_all,
                     title: "Entregado",
-                    date: "11/02/22 14:00:00",
-                    actionWidget: PrimaryButton(
-                      onPressed: () {},
-                      text: "ver comprobante",
-                      enabled: false,
-                    ),
+                    date: stepStatus == StepStatus.shippingShipped
+                        ? "En ruta"
+                        : stepStatus == StepStatus.shippingDelivered
+                            ? DateFormat("dd/MM/yyyy HH:mm").format(order.shipping!.deliveredDate!)
+                            : "Esperando",
+                    actionWidget: Builder(builder: (context) {
+                      return const SizedBox.shrink();
+                    }),
                   ),
                 ],
               ),

@@ -13,6 +13,9 @@ class OrderViewModel extends ChangeNotifier {
   OrderModel? _order;
   OrderModel? get order => _order;
 
+  StepStatus _stepStatus = StepStatus.initial;
+  StepStatus get stepStatus => _stepStatus;
+
   String _orderId = "";
 
   init(String orderId) {
@@ -39,9 +42,36 @@ class OrderViewModel extends ChangeNotifier {
     reference.snapshots().listen((documentSnapshot) async {
       if (documentSnapshot.exists) {
         _order = OrderModel.fromJson(documentSnapshot.data() as Map<String, dynamic>, documentSnapshot.id);
+        _stepStatus = _getStepStatus(_order?.paymentStatus, _order?.shipping);
         notifyListeners();
       }
     });
+  }
+
+  StepStatus _getStepStatus(PaymentStatus? paymentStatus, Shipping? orderShipping) {
+    switch (orderShipping?.status) {
+      case ShippingStatus.processing:
+        return StepStatus.shippingProcessing;
+      case ShippingStatus.shipped:
+        return StepStatus.shippingShipped;
+      case ShippingStatus.delivered:
+        return StepStatus.shippingDelivered;
+      default:
+        break;
+    }
+
+    switch (paymentStatus) {
+      case PaymentStatus.pending:
+        return StepStatus.pendingPayment;
+      case PaymentStatus.verifying:
+        return StepStatus.verifyingPayment;
+      case PaymentStatus.paid:
+        return StepStatus.paymentDone;
+      default:
+        break;
+    }
+
+    return StepStatus.initial;
   }
 
   Future<void> updatePaymentStatus(PaymentStatus status) async {
@@ -70,3 +100,5 @@ String _enumPaymentStatusToString(PaymentStatus status) {
       throw ArgumentError('Invalid payment status');
   }
 }
+
+enum StepStatus { initial, pendingPayment, verifyingPayment, paymentDone, shippingProcessing, shippingShipped, shippingDelivered }

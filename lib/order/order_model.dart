@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class OrderModel {
   int? version = 2;
   String? id;
   int? consecutive;
   String? alias;
-  Timestamp? createdAt;
+  DateTime? createdAt;
   Shipping? shipping;
   PaymentStatus? paymentStatus;
   Totals? totals = Totals();
@@ -28,7 +29,7 @@ class OrderModel {
     id = docId;
     consecutive = json['consecutive'];
     alias = json['alias'];
-    createdAt = json['created_at'];
+    createdAt = _convertTimestampToLocal(json['created_at'] as Timestamp?);
     if (json.containsKey('shipping') && json['shipping'] != null) {
       shipping = new Shipping.fromJson(json['shipping']);
     }
@@ -70,7 +71,7 @@ class OrderModel {
       case 'paid':
         return PaymentStatus.paid;
       default:
-        throw PaymentStatus.initial;
+        return PaymentStatus.initial;
     }
   }
 }
@@ -78,9 +79,9 @@ class OrderModel {
 class Shipping {
   int? total;
   ShippingStatus status = ShippingStatus.initial;
-  Timestamp? processedDate;
-  Timestamp? shippedDate;
-  Timestamp? deliveredDate;
+  DateTime? processedDate;
+  DateTime? shippedDate;
+  DateTime? deliveredDate;
 
   Shipping({
     this.total,
@@ -89,9 +90,9 @@ class Shipping {
   Shipping.fromJson(Map<String, dynamic> json) {
     total = json['total'];
     status = strToShippoingStatus(json['status']);
-    processedDate = json['processed_date'];
-    shippedDate = json['shipped_date'];
-    deliveredDate = json['delivered_date'];
+    processedDate = _convertTimestampToLocal(json['processed_date'] as Timestamp?);
+    shippedDate = _convertTimestampToLocal(json['shipped_date'] as Timestamp?);
+    deliveredDate = _convertTimestampToLocal(json['delivered_date'] as Timestamp?);
   }
 
   Map<String, dynamic> toMap() {
@@ -109,7 +110,7 @@ class Shipping {
       case 'delivered':
         return ShippingStatus.delivered;
       default:
-        throw ShippingStatus.initial;
+        return ShippingStatus.initial;
     }
   }
 }
@@ -191,3 +192,9 @@ class Customer {
 enum PaymentStatus { initial, pending, verifying, paid }
 
 enum ShippingStatus { initial, processing, shipped, delivered }
+
+DateTime? _convertTimestampToLocal(Timestamp? date) {
+  if (date == null) return null;
+  var dateTime = DateFormat("yyyy-MM-dd HH:mm:ss").parse(date.toDate().toUtc().toString(), true);
+  return dateTime.toLocal();
+}
