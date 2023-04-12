@@ -487,7 +487,7 @@ class _TrackingWidget extends StatelessWidget {
                     date: DateFormat("dd/MM/yyyy HH:mm").format(order.createdAt!),
                     actionWidget: SecondaryButton(
                       onPressed: () async {
-                        return context.read<OrderViewModel>().generatePdf();
+                        // return context.read<OrderViewModel>().generatePdf();
                       },
                       text: "Ver productos",
                     ),
