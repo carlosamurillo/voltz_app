@@ -48,7 +48,7 @@ class AuthService with ListenableServiceMixin {
       } else {
         _rxUserStatus.value = UserSignStatus.authenticated;
       }
-      //await verifyUserRegister(user.uid);
+      await verifyUserRegister(user.uid);
     } else {
       await signInAnonymously();
       _rxUserStatus.value = UserSignStatus.anonymous;
