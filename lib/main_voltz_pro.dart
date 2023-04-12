@@ -1,6 +1,8 @@
 import 'package:maketplace/firebase_options_voltz_pro.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/main_voltz.dart';
+import 'package:maketplace/pdf_quote_order/svg_icons.dart';
+import 'package:maketplace/utils/custom_colors.dart';
 
 void main() async {
   // Init flavor config
@@ -11,6 +13,15 @@ void main() async {
     firebaseOptions: DefaultFirebaseOptionsVoltzProduction.currentPlatform,
     segmentWriteKey: 'kjvSHxgKXqtlLdxHf92dv5Jrf8hWl0B9',
     appUrl: 'https://app.voltz.mx/',
+    //
+    customColors: CustomColors(),
+    logo: 'assets/svg/voltz_logo.svg',
+    logoWhite: 'assets/svg/logo_voltz_white.svg',
+    logoWhiteBackground: 'assets/svg/logo_voltz_white_background.svg',
+    logoMobile: 'assets/svg/logo_mobile.svg',
+    logoIcon: SVGIcons.logo_votz,
+    assistantIcon: "assets/images/assistant_icon.png",
+    howToSearch: 'assets/images/how_search.png',
   );
 
   mainCommonVoltz();
