@@ -80,7 +80,7 @@ class SliverProductGridView extends StatelessWidget {
       );
     } else {
       return const SliverToBoxAdapter(
-        child: SizedBox(),
+        child: NoFoundCard(),
       );
     }
   }

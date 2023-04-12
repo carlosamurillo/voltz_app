@@ -54,7 +54,14 @@ class LoginViewModel extends ReactiveViewModel {
   }
 
   navigateToBack() {
-    if (_navigationService.previousRoute.isNotEmpty) {
+    if (_quoteId != null) {
+      final args = CartViewArguments(quoteId: _quoteId!);
+      _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+    } else if (_orderId != null) {
+      final args = OrderViewArguments(orderId: _orderId!, fromQuote: false);
+      _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
+    } //
+    else if (_navigationService.previousRoute.isNotEmpty) {
       _navigationService.back();
     } else {
       navigateToHomeClearingAll();

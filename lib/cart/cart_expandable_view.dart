@@ -78,6 +78,7 @@ class CardGrid extends StatelessWidget {
                       mainAxisSpacing: 25,
                       crossAxisSpacing: 25,
                       itemBuilder: (context, index) {
+                        // if (index == 0) return const NoFoundCard();
                         if (index < viewModel.selectedProducts.length) {
                           return ProductCard(
                             i: index,
@@ -121,8 +122,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //if (widget.i == 1) return NoFoundCard();
-
     return ViewModelBuilder<CardItemViewModel>.reactive(
       viewModelBuilder: () => CardItemViewModel(),
       onViewModelReady: (viewModel) => viewModel.initCartView(

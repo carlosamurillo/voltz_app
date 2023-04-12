@@ -97,16 +97,16 @@ class QuoteViewModel extends ReactiveViewModel {
     );
   }
 
-  bool verifiedIsAuthenticated () {
+  bool verifiedIsAuthenticated() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.isAnonymous) {
       Future.delayed(
         const Duration(seconds: 0),
-            () async {
+        () async {
           //Si la funcion regresa aqui es porque el registro fue correcto, quiere decir que busca su punto de partida
           // caso contrario desde el modulo de registro se le esta enviando al user al home view, en caso presione la X
           final args = LoginViewArguments(quoteId: _quoteId);
-          _navigationService.clearStackAndShow(Routes.loginView, arguments: args);
+          await _navigationService.clearStackAndShow(Routes.loginView, arguments: args);
           return;
         },
       );

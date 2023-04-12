@@ -20,7 +20,14 @@ class SearchInputViewModel extends ReactiveViewModel {
   init() async {
     isSearchSelected ? _inputSearchRepository.focusNodeSearch.requestFocus() : _inputSearchRepository.focusNodeSearch.unfocus();
     _productSearchRepository.setupLastQuery();
+
     return notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _inputSearchRepository.onDispose();
+    super.dispose();
   }
 
   final Debouncer _debouncer = Debouncer(milliseconds: 400);
@@ -45,12 +52,6 @@ class SearchInputViewModel extends ReactiveViewModel {
     _inputSearchRepository.cancelSearch();
     _openSearchService.changeSearchOpened(false);
     return notifyListeners();
-  }
-
-  @override
-  void dispose() async {
-    _inputSearchRepository.onDispose();
-    super.dispose();
   }
 }
 

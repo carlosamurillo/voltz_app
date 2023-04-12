@@ -526,10 +526,10 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                         hoverColor: AppKeys().customColors!.energyColorHover,
                                         onTap: () {
                                           _Dialogs dialog = _Dialogs();
-                                          if(model.verifiedIsAuthenticated()) {
+                                          if (model.verifiedIsAuthenticated()) {
                                             dialog.showAlertDialog(
                                               context,
-                                                  () async {
+                                              () async {
                                                 model.onGenerateOrder(context);
                                               },
                                               model.createConfirmMessage(),

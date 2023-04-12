@@ -62,7 +62,7 @@ class _Content extends StatelessWidget {
     final customColors = AppKeys().customColors!;
     final size = MediaQuery.of(context).size;
     if (kIsWeb) {
-      html.window.history.pushState(null, 'Voltz - Orden ${order.consecutive}', '?order=${order.id!}');
+      html.window.history.pushState(null, 'Voltz - Pedido ${order.consecutive}', '?order=${order.id!}');
     }
     return SingleChildScrollView(
       // physics: const NeverScrollableScrollPhysics(),

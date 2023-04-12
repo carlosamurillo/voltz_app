@@ -5,9 +5,6 @@ import 'package:maketplace/search/search_model.dart';
 import 'package:stacked/stacked.dart';
 
 class ProductSearchRepository with ListenableServiceMixin {
-  bool _isSearching = false;
-  bool get isSearching => _isSearching;
-
   int _pageKey = 0;
   int get pageKey => _pageKey;
 
@@ -51,15 +48,22 @@ class ProductSearchRepository with ListenableServiceMixin {
   /// Ultima cadena de texto de busqueda digitada por el usuario
   String? _lastQuery;
   String? get lastQuery => _lastQuery;
-  Future<void> setupLastQuery() async {
-    _productsSearcher.state.listen((searchState) async => (_lastQuery = searchState.query));
+  void setupLastQuery() {
+    _productsSearcher.state.listen(
+      (searchState) {
+        if (searchState.query == null) {
+          _lastQuery = '';
+        } else {
+          _lastQuery = searchState.query;
+        }
+      },
+    );
   }
 
   /// Execute a query in products
   Future<void> query(String string) async {
     if (string.isNotEmpty && string.length >= 3) {
-      _isSearching = true;
-      notifyListeners();
+      restartFilters();
       _productsSearcher.query(string);
     } else {
       _productsSearcher.query('');
@@ -69,13 +73,10 @@ class ProductSearchRepository with ListenableServiceMixin {
   void restartFilters() async {
     _productsSearcher.applyState((state) => state.copyWith(page: 0));
     _pageKey = 0;
-    _isSearching = false;
-    notifyListeners();
   }
 
   void applyState() async {
     _productsSearcher.applyState((state) => state.copyWith(page: ++_pageKey));
-    notifyListeners();
   }
 
   /// Dispose of underlying resources.

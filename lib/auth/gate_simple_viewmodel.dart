@@ -35,12 +35,16 @@ class GateSimpleViewModel extends ReactiveViewModel {
     _navigationService.back();
     _inputSearchRepository.cancelSearch();
     _openSearchService.changeSearchOpened(false);
-    return _navigationService.pushNamedAndRemoveUntil(
-      Routes.homeView,
-      predicate: (route) {
-        return route.settings.name != Routes.homeView;
-      },
-    );
+    if (_navigationService.previousRoute != '/home-view') {
+      return _navigationService.pushNamedAndRemoveUntil(
+        Routes.homeView,
+        predicate: (route) {
+          return route.settings.name != Routes.homeView;
+        },
+      );
+    } else {
+      // return _navigationService.back();
+    }
     // return _navigationService.clearStackAndShow(Routes.homeView);
   }
 

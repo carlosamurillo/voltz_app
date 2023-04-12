@@ -31,12 +31,12 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
     _skuCountSubscription?.cancel();
     _skuCountSubscription = _productSearchRepository.searchMetaData().listen((meta) {
       _areStillProductsToShow = meta.nbHits > (10 * (_productSearchRepository.pageKey + 1));
-      notifyListeners();
     });
     showLastSearch();
+    return notifyListeners();
   }
 
-  showLastSearch() async {
+  showLastSearch() {
     if (lastQuery != null && lastQuery!.isNotEmpty) {
       return _productSearchRepository.query('');
     }
@@ -48,17 +48,19 @@ class ProductSearchViewModel extends StreamViewModel<List<Product>> {
   @override
   void onData(List<Product>? data) {
     // data?.add(Product());
-    if (_productSearchRepository.isSearching) {
-      _productSearchRepository.restartFilters();
-      _productsData?.clear();
-    }
-    if (_productsData == null) {
+    if (_productSearchRepository.pageKey == 0) {
       _productsData = data;
     } else {
+      if (_productsData == null) {
+        _productsData = [];
+      }
       _productsData!.addAll(data ?? []);
     }
+    // if (_productsData == null || (_productsData?.isEmpty ?? true)) {
+    // } else {
+    // }
     notifyListeners();
-    super.onData(_productsData);
+    super.onData(data);
   }
 
   navigateToLogin() async {

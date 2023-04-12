@@ -13,7 +13,7 @@ class SearchInputWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<SearchInputViewModel>.reactive(
         viewModelBuilder: () => SearchInputViewModel(),
-        onViewModelReady: (viewModel) async => viewModel.init(),
+        onViewModelReady: (viewModel) => viewModel.init(),
         fireOnViewModelReadyOnce: false,
         disposeViewModel: false,
         createNewViewModelOnInsert: false,
