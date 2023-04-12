@@ -225,10 +225,12 @@ class Detail {
     if (json['products_suggested'] != null) {
       productsSuggested = <Product>[];
       for (int a = 0; a < json['products_suggested'].length; a++) {
-        productsSuggested!.add(Product.fromJsonWithId(
-          json: json['products_suggested'][a],
-          id: json['products_suggested'][a]['product_id'],
-        ));
+        productsSuggested!.add(
+          Product.fromJsonWithId(
+            json: json['products_suggested'][a],
+            id: json['products_suggested'][a]['product_id'],
+          ),
+        );
       }
     }
   }

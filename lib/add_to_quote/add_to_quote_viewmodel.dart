@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/common/open_search_service.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/search/input_search_repository.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:uuid/uuid.dart';
-
-import 'package:maketplace/gate/auth_service.dart';
 
 class AddToQuoteViewModel extends ChangeNotifier {
   final NavigationService _navigationService = locator<NavigationService>();
@@ -50,10 +49,10 @@ class AddToQuoteViewModel extends ChangeNotifier {
   void initQuotesTemp() {
     getQuoteState = GetQuoteState.loading;
     notifyListeners();
-    if (_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
+    if (_authService.signedUserData != null && _authService.signedUserData!.profileUserId != null) {
       quotesTempQuery = FirebaseFirestore.instance
           .collection('quote-detail')
-          .where("customer.id", isEqualTo: _quoteService.quote.customer!.id)
+          .where("customer.id", isEqualTo: _authService.signedUserData!.profileUserId)
           .where("accepted", isEqualTo: false)
           .orderBy("created_at", descending: true);
     } else {
