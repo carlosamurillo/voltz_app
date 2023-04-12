@@ -17,9 +17,11 @@ class SliverProductsSearchResult extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return ViewModelBuilder<ProductSearchViewModel>.reactive(
+      key: Key('productsearch1'),
       // viewModelBuilder: () => ProductSearchViewModel()..init(),
       viewModelBuilder: () => ProductSearchViewModel(),
       onViewModelReady: (vm) => vm.init(),
+      fireOnViewModelReadyOnce: true,
       builder: (context, viewModel, child) {
         print('ProductsSearchResults view ... ');
         if (viewModel.lastQuery == null || viewModel.lastQuery!.isEmpty || viewModel.data == null) {
@@ -240,6 +242,8 @@ class SliverClassicSearchView extends StatelessWidget {
       // viewModelBuilder: () => ProductSearchViewModel()..init(),
       viewModelBuilder: () => ProductSearchViewModel(),
       onViewModelReady: (vm) => vm.init(),
+      key: Key('productsearch2'),
+      fireOnViewModelReadyOnce: true,
       builder: (context, viewModel, child) {
         if (viewModel.productsData != null) {
           return SliverProductGridView(
