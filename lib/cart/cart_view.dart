@@ -526,14 +526,16 @@ class Resume extends StackedHookView<QuoteViewModel> {
                                         hoverColor: AppKeys().customColors!.energyColorHover,
                                         onTap: () {
                                           _Dialogs dialog = _Dialogs();
-                                          dialog.showAlertDialog(
-                                            context,
-                                            () async {
-                                              model.onGenerateOrder(context);
-                                            },
-                                            model.createConfirmMessage(),
-                                            model.quote.id!,
-                                          );
+                                          if(model.verifiedIsAuthenticated()) {
+                                            dialog.showAlertDialog(
+                                              context,
+                                                  () async {
+                                                model.onGenerateOrder(context);
+                                              },
+                                              model.createConfirmMessage(),
+                                              model.quote.id!,
+                                            );
+                                          }
                                         },
                                         child: Container(
                                           width: double.infinity,

@@ -55,22 +55,7 @@ class QuoteViewModel extends ReactiveViewModel {
   ) async {
     _quoteId = quoteId;
     initReference();
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.isAnonymous) {
-      Future.delayed(
-        const Duration(seconds: 0),
-        () async {
-          //Si la funcion regresa aqui es porque el registro fue correcto, quiere decir que busca su punto de partida
-          // caso contrario desde el modulo de registro se le esta enviando al user al home view, en caso presione la X
-          final args = LoginViewArguments(quoteId: quoteId);
-          _navigationService.clearStackAndShow(Routes.loginView, arguments: args);
-          return;
-        },
-      );
-    } else {
-      _quoteService.init(quoteId);
-    }
-
+    _quoteService.init(quoteId);
     return notifyListeners();
   }
 
@@ -110,6 +95,24 @@ class QuoteViewModel extends ReactiveViewModel {
     return _navigationService.navigateToCartView(
       quoteId: quote.id!,
     );
+  }
+
+  bool verifiedIsAuthenticated () {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.isAnonymous) {
+      Future.delayed(
+        const Duration(seconds: 0),
+            () async {
+          //Si la funcion regresa aqui es porque el registro fue correcto, quiere decir que busca su punto de partida
+          // caso contrario desde el modulo de registro se le esta enviando al user al home view, en caso presione la X
+          final args = LoginViewArguments(quoteId: _quoteId);
+          _navigationService.clearStackAndShow(Routes.loginView, arguments: args);
+          return;
+        },
+      );
+      return false;
+    }
+    return true;
   }
 
   void onGenerateOrder(BuildContext context) async {

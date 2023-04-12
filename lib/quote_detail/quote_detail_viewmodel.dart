@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
+import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';
 import 'package:maketplace/quote_detail/quote_service.dart';
@@ -15,6 +16,7 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   final _quoteDetailService = locator<QuoteDetailService>();
   final NavigationService _navigationService = locator<NavigationService>();
   final _quoteService = locator<QuoteService>();
+  final _authService = locator<AuthService>();
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_quoteDetailService];
@@ -40,12 +42,8 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   }
 
   init() {
-    if (_quoteService.quote.customer != null && _quoteService.quote.customer!.id != null) {
-      quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: _quoteService.quote.customer!.id).snapshots();
-    } else {
-      quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: '').snapshots();
-    }
-    _quoteDetailService.init(_quoteService.quote.customer!.id);
+    quotesTemp = FirebaseFirestore.instance.collection('quote-detail').where("customer.id", isEqualTo: _authService.signedUserData!.profileUserId).snapshots();
+    _quoteDetailService.init(_authService.signedUserData!.profileUserId);
     // _streamQuotes();
 
     return notifyListeners();
