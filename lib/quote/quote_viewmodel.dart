@@ -7,7 +7,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/pdf_quote/quote_to_pdf.dart';
+import 'package:maketplace/pdf_quote_order/quote_to_pdf.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/quote/quote_service.dart';

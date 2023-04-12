@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:maketplace/app/app.locator.dart';
 import 'package:maketplace/app/app.router.dart';
 import 'package:maketplace/order/order_model.dart';
+import 'package:maketplace/pdf_quote_order/order_to_pdf.dart';
 import 'package:maketplace/utils/stats.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -64,6 +65,12 @@ class OrderViewModel extends ChangeNotifier {
         }
       });
     }
+  }
+
+  Future<void> generatePdf() async {
+    //TODO
+    OrderPdf quotePdf = OrderPdf(order: _order!, selectedProducts: []);
+    quotePdf.generatePdf();
   }
 
   StepStatus _getStepStatus(PaymentStatus? paymentStatus, Shipping? orderShipping) {

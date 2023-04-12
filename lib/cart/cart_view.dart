@@ -8,7 +8,7 @@ import 'package:maketplace/common/drawer.dart';
 import 'package:maketplace/common/header.dart';
 import 'package:maketplace/gate/auth_service.dart';
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/pdf_quote/download_button.dart';
+import 'package:maketplace/pdf_quote_order/download_button.dart';
 import 'package:maketplace/quote/quote_viewmodel.dart';
 import 'package:maketplace/search/search_views.dart';
 import 'package:maketplace/utils/style.dart';

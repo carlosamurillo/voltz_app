@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:maketplace/keys_model.dart';
-import 'package:maketplace/pdf_quote/svg_icons.dart';
+import 'package:maketplace/pdf_quote_order/svg_icons.dart';
 import 'package:maketplace/product/product_model.dart';
 import 'package:maketplace/quote/quote_model.dart';
 import 'package:maketplace/utils/extensions.dart';

@@ -1,7 +1,7 @@
 import 'package:maketplace/firebase_options_jetz_dev.dart';
 import 'package:maketplace/keys_model.dart';
 import 'package:maketplace/main_jetz.dart';
-import 'package:maketplace/pdf_quote/svg_icons.dart';
+import 'package:maketplace/pdf_quote_order/svg_icons.dart';
 import 'package:maketplace/utils/custom_colors.dart';
 
 void main() async {
