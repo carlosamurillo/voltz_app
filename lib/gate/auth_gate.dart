@@ -15,7 +15,7 @@ class AuthGate extends StatelessWidget {
       viewModelBuilder: () => AuthGateViewModel(),
       onViewModelReady: (viewModel) => viewModel.init(quoteId: quoteId, orderId: orderId),
       disposeViewModel: false,
-      fireOnViewModelReadyOnce: false,
+      fireOnViewModelReadyOnce: true,
       builder: (context, model, child) {
         return Scaffold(
           backgroundColor: AppKeys().customColors!.WBY,

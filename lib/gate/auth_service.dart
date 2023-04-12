@@ -33,8 +33,8 @@ class AuthService with ListenableServiceMixin {
     _rxOrderId.value = orderId;
     FirebaseAuth.instance.authStateChanges().listen((User? user) async {
       await _verifySignedInUser(user);
-      redirect();
     });
+    redirect();
   }
 
   setRedirect(bool value) {
@@ -70,20 +70,23 @@ class AuthService with ListenableServiceMixin {
     }
   }
 
-  redirect() async {
+  redirect() {
     if (_redirect) {
       if (quoteId != null) {
         final args = CartViewArguments(quoteId: quoteId!);
         _navigationService.clearStackAndShow(Routes.cartView, arguments: args);
+        return;
       } else if (orderId != null) {
         final args = OrderViewArguments(orderId: orderId!, fromQuote: false);
         _navigationService.clearStackAndShow(Routes.orderView, arguments: args);
+        return;
       } else {
         _navigationService.clearStackAndShow(Routes.homeView);
+        return;
       }
     } else {
-      notifyListeners();
       _redirect = true;
+      notifyListeners();
     }
   }
 
