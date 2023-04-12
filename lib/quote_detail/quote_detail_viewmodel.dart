@@ -19,7 +19,7 @@ class QuoteDetailViewModel extends ReactiveViewModel {
   final _authService = locator<AuthService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_quoteDetailService];
+  List<ListenableServiceMixin> get listenableServices => [_quoteDetailService, _authService];
 
   bool updateGrid = true;
 
